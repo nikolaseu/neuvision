@@ -10,6 +10,7 @@ LIBS += \
         -lvtkCommonDataModel \
         -lvtkRenderingCore \
         -lvtkCommonMath \
+        -lvtkGUISupportQt \
         #-lvtkRenderingLOD \
         #-lvtkCommonExecutionModel \
         #-lvtksys \
@@ -39,4 +40,3 @@ LIBS += \
         #-lvtkftgl \
         #lvtkfreetype \
         #-lvtkFiltersSources \
-        #-lvtkGUISupportQt \
