@@ -1,0 +1,17 @@
+<map id="QwtAbstractSeriesStore" name="QwtAbstractSeriesStore">
+<area shape="rect" id="node3" href="$class_qwt_plot_series_item.html" title="Base class for plot items representing a series of samples. " alt="" coords="267,197,397,224"/>
+<area shape="rect" id="node21" href="$class_qwt_series_store.html" title="Class storing a QwtSeriesData object. " alt="" coords="261,80,403,107"/>
+<area shape="rect" id="node23" href="$class_qwt_series_store.html" title="QwtSeriesStore\&lt; QPointF \&gt;" alt="" coords="241,29,423,56"/>
+<area shape="rect" id="node27" href="$class_qwt_series_store.html" title="QwtSeriesStore\&lt; QwtInterval\lSample \&gt;" alt="" coords="238,131,426,173"/>
+<area shape="rect" id="node31" href="$class_qwt_series_store.html" title="QwtSeriesStore\&lt; QwtOHLCSample \&gt;" alt="" coords="214,299,450,325"/>
+<area shape="rect" id="node34" href="$class_qwt_series_store.html" title="QwtSeriesStore\&lt; QwtPoint3D \&gt;" alt="" coords="231,248,433,275"/>
+<area shape="rect" id="node37" href="$class_qwt_series_store.html" title="QwtSeriesStore\&lt; QwtSetSample \&gt;" alt="" coords="499,349,720,376"/>
+<area shape="rect" id="node5" href="$class_qwt_plot_abstract_bar_chart.html" title="Abstract base class for bar chart items. " alt="" coords="526,197,693,224"/>
+<area shape="rect" id="node11" href="$class_qwt_plot_curve.html" title="A plot item, that represents a series of points. " alt="" coords="559,45,660,72"/>
+<area shape="rect" id="node13" href="$class_qwt_plot_histogram.html" title="QwtPlotHistogram represents a series of samples, where an interval is associated with a value ( &#160;)..." alt="" coords="546,96,673,123"/>
+<area shape="rect" id="node15" href="$class_qwt_plot_interval_curve.html" title="QwtPlotIntervalCurve represents a series of samples, where each value is associated with an interval ..." alt="" coords="538,147,681,173"/>
+<area shape="rect" id="node17" href="$class_qwt_plot_spectro_curve.html" title="Curve that displays 3D points as dots, where the z coordinate is mapped to a color. " alt="" coords="536,248,683,275"/>
+<area shape="rect" id="node19" href="$class_qwt_plot_trading_curve.html" title="QwtPlotTradingCurve illustrates movements in the price of a financial instrument over time..." alt="" coords="537,299,681,325"/>
+<area shape="rect" id="node7" href="$class_qwt_plot_bar_chart.html" title="QwtPlotBarChart displays a series of a values as bars. " alt="" coords="782,147,901,173"/>
+<area shape="rect" id="node9" href="$class_qwt_plot_multi_bar_chart.html" title="QwtPlotMultiBarChart displays a series of a samples that consist each of a set of values..." alt="" coords="768,248,915,275"/>
+</map>
