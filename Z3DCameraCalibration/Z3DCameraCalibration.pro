@@ -1,0 +1,55 @@
+include(../NEUVision.pri)
+
+QT       += core gui
+
+greaterThan(QT_MAJOR_VERSION, 4) {
+    QT += widgets
+}
+
+CONFIG += c++11
+#CONFIG += console
+
+DESTDIR = $$Z3D_BUILD_DIR
+
+TARGET = Z3DCameraCalibration
+TEMPLATE = app
+
+###############################################################################
+# Project files
+SOURCES  += \
+    main.cpp\
+    mainwindow.cpp
+
+HEADERS  += \
+    mainwindow.h
+
+FORMS    += \
+    mainwindow.ui
+
+###############################################################################
+# OpenCV
+include($$PWD/../3rdparty/opencv.pri)
+
+###############################################################################
+# Qt Solutions - Property Browser
+include($$PWD/../3rdparty/qtpropertybrowser/src/qtpropertybrowser.pri)
+
+###############################################################################
+# Qwt
+include($$PWD/../3rdparty/qwt.pri)
+
+###############################################################################
+# Camera acquisition
+include($$PWD/../lib/zcameraacquisition/zcameraacquisition.pri)
+
+###############################################################################
+# Camera calibration
+include($$PWD/../lib/zcameracalibration/zcameracalibration.pri)
+
+###############################################################################
+# Calibrated camera
+include($$PWD/../lib/zcalibratedcamera/zcalibratedcamera.pri)
+
+###############################################################################
+# Camera calibrator
+include($$PWD/../lib/zcameracalibrator/zcameracalibrator.pri)

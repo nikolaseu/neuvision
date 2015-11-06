@@ -1,0 +1,22 @@
+<RCC>
+    <qresource prefix="/qml">
+        <file alias="binarypatternprojection.qml">src/qml/binarypatternprojection.qml</file>
+        <file alias="sinusoidalpatternprojection.qml">src/qml/sinusoidalpatternprojection.qml</file>
+    </qresource>
+    <qresource prefix="/pattern">
+        <file alias="binary.1024.bmp">res/pattern/binary.1024.bmp</file>
+        <file alias="binary.1024.inv.bmp">res/pattern/binary.1024.inv.bmp</file>
+        <file alias="binary.2048.bmp">res/pattern/binary.2048.bmp</file>
+        <file alias="binary.2048.inv.bmp">res/pattern/binary.2048.inv.bmp</file>
+        <file alias="gray.1024.bmp">res/pattern/gray.1024.bmp</file>
+        <file alias="gray.1024.inv.bmp">res/pattern/gray.1024.inv.bmp</file>
+        <file alias="gray.2048.bmp">res/pattern/gray.2048.bmp</file>
+        <file alias="gray.2048.inv.bmp">res/pattern/gray.2048.inv.bmp</file>
+        <file alias="sin.1024.png">res/pattern/sin.1024.png</file>
+        <file alias="sin.2048.png">res/pattern/sin.2048.png</file>
+    </qresource>
+    <qresource prefix="/">
+        <file alias="splash.png">res/splash.png</file>
+        <file alias="empty.png">res/empty.png</file>
+    </qresource>
+</RCC>
