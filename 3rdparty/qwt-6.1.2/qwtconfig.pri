@@ -42,7 +42,7 @@ QWT_INSTALL_LIBS      = $${QWT_INSTALL_PREFIX}/lib
 # runtime environment of designer/creator.
 ######################################################################
 
-QWT_INSTALL_PLUGINS   = $${QWT_INSTALL_PREFIX}/plugins/designer
+#nikolaseu QWT_INSTALL_PLUGINS   = $${QWT_INSTALL_PREFIX}/plugins/designer
 
 # linux distributors often organize the Qt installation
 # their way and QT_INSTALL_PREFIX doesn't offer a good
@@ -118,7 +118,7 @@ QWT_CONFIG     += QwtOpenGL
 # Otherwise you have to build it from the designer directory.
 ######################################################################
 
-QWT_CONFIG     += QwtDesigner
+#nikolaseu QWT_CONFIG     += QwtDesigner
 
 ######################################################################
 # Compile all Qwt classes into the designer plugin instead

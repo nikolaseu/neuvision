@@ -19,7 +19,9 @@ QWT_OUT_ROOT = $${OUT_PWD}/..
 TEMPLATE          = lib
 TARGET            = $$qwtLibraryTarget(qwt)
 
-DESTDIR           = $${QWT_OUT_ROOT}/lib
+#nikolaseu DESTDIR           = $${QWT_OUT_ROOT}/lib
+include(../../../NEUVision.pri)
+DESTDIR           = $$Z3D_BUILD_DIR
 
 contains(QWT_CONFIG, QwtDll) {
 
