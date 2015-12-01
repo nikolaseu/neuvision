@@ -137,6 +137,7 @@ int main(int argc, char* argv[])
 
         splash.showMessage("Loading calibration pattern finder plugins...");
         app.processEvents();
+        Z3D::ZCalibrationPatternFinderProvider::loadPlugins();
 
         splash.showMessage("Loading main window...");
         app.processEvents();
