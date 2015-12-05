@@ -19,6 +19,15 @@ ZCameraSelectorWidget::ZCameraSelectorWidget(QWidget *parent)
     foreach (Z3D::ZCameraPluginInterface *plugin, m_pluginList) {
         ui->pluginsComboBox->addItem(plugin->name());
     }
+
+    QObject::connect(this, SIGNAL(cameraSelected(Z3D::ZCameraInterface::Ptr)),
+                     ui->cameraPreview, SLOT(setCamera(Z3D::ZCameraInterface::Ptr)));
+
+    QObject::connect(ui->pluginsComboBox, SIGNAL(currentIndexChanged(int)),
+                     this, SLOT(onPluginIndexChanged(int)));
+
+    QObject::connect(ui->cameraListWidget, SIGNAL(currentRowChanged(int)),
+                     this, SLOT(onCameraIndexChanged(int)));
 }
 
 ZCameraSelectorWidget::~ZCameraSelectorWidget()
@@ -42,7 +51,7 @@ ZCameraInterface::Ptr ZCameraSelectorWidget::getCamera()
     return cameraSelector.m_selectedCamera;
 }
 
-void ZCameraSelectorWidget::on_pluginsComboBox_currentIndexChanged(int index)
+void ZCameraSelectorWidget::onPluginIndexChanged(int index)
 {
     ui->cameraListWidget->clear();
 
@@ -54,26 +63,15 @@ void ZCameraSelectorWidget::on_pluginsComboBox_currentIndexChanged(int index)
         ui->cameraListWidget->addItem(cameraInfo->name());
 }
 
-void ZCameraSelectorWidget::on_cameraListWidget_currentRowChanged(int currentRow)
+void ZCameraSelectorWidget::onCameraIndexChanged(int index)
 {
-    if (currentRow >= 0 && currentRow < m_currentCameraList.size()) {
-        m_selectedCamera = m_currentCameraList[currentRow]->getCamera();
+    if (index >= 0 && index < m_currentCameraList.size()) {
+        m_selectedCamera = m_currentCameraList[index]->getCamera();
     } else {
         m_selectedCamera = Z3D::ZCameraInterface::Ptr(0);
     }
 
-    ui->cameraPreview->setCamera(m_selectedCamera);
-}
-
-void ZCameraSelectorWidget::on_continueButton_clicked()
-{
-    if (m_selectedCamera) {
-        /// stop acquisition
-        if (m_selectedCamera->isRunning())
-            m_selectedCamera->stopAcquisition();
-
-        emit cameraSelected(m_selectedCamera);
-    }
+    emit cameraSelected(m_selectedCamera);
 }
 
 Z3D::ZCameraInterface::Ptr ZCameraSelectorWidget::getSelectedCamera() const

@@ -34,11 +34,9 @@ signals:
     void cameraSelected(Z3D::ZCameraInterface::Ptr camera);
 
 private slots:
-    void on_pluginsComboBox_currentIndexChanged(int index);
+    void onPluginIndexChanged(int index);
 
-    void on_cameraListWidget_currentRowChanged(int currentRow);
-
-    void on_continueButton_clicked();
+    void onCameraIndexChanged(int index);
 
 private:
     Ui::ZCameraSelectorWidget *ui;

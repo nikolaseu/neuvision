@@ -21,6 +21,7 @@ public:
     explicit ZCameraPreviewer(QWidget *parent = 0);
     ~ZCameraPreviewer();
 
+public slots:
     void setCamera(Z3D::ZCameraInterface::Ptr camera);
 
 protected slots:
