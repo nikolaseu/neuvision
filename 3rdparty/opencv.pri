@@ -4,28 +4,16 @@
 win32 {
     !contains(QMAKE_TARGET.arch, x86_64) {
         ## Windows x86 (32bit) specific build here
-        #OPENCV_INCLUDE_DIR = "C:/Users/T93907/Documents/OpenCV/include"
-        #OPENCV_LIB_DIR = "C:/Users/T93907/Documents/OpenCV/lib"
-        #CV_VER = 246
-
-        #OPENCV_INCLUDE_DIR = "D:/Nicou/Software/OpenCV/include"
-        #OPENCV_LIB_DIR = "D:/Nicou/Software/OpenCV/lib"
-        #CV_VER = 249
-
-        #OPENCV_INCLUDE_DIR = "C:/Users/T93907/Documents/OpenCV-3.0.0-beta/include"
-        #OPENCV_LIB_DIR = "C:/Users/T93907/Documents/OpenCV-3.0.0-beta/lib"
-        #CV_VER = 300
-
         OPENCV_INCLUDE_DIR = "D:/Nicou/Software/OpenCV-3.0.0-beta/include"
         OPENCV_LIB_DIR = "D:/Nicou/Software/OpenCV-3.0.0-beta/lib"
-        CV_VER = 300
+        OPENCV_VER = 300
 
-        message('Using OpenCV x86 version '$$CV_VER)
+        message('Using OpenCV x86 version '$$OPENCV_VER)
     } else {
         ## Windows x64 (64bit) specific build here
         OPENCV_INCLUDE_DIR = "C:/Users/T93907/Documents/OpenCV/2.4.9/opencv/build/include"
         OPENCV_LIB_DIR = "C:/Users/T93907/Documents/OpenCV/2.4.9/opencv/build/x64/vc12/lib"
-        CV_VER = 249
+        OPENCV_VER = 249
 
         message('Using OpenCV x86_64')
     }
@@ -35,14 +23,22 @@ win32 {
 unix: {
     OPENCV_INCLUDE_DIR = "/usr/local/include"
     OPENCV_LIB_DIR = "/usr/local/lib"
+    OPENCV_VER = 300
 }
 
-lessThan(CV_VER, 300) {
+# Mac OSX
+macx: {
+    OPENCV_INCLUDE_DIR = "/usr/local/opt/opencv3/include"
+    OPENCV_LIB_DIR = "/usr/local/opt/opencv3/lib"
+    OPENCV_VER = 300
+}
+
+lessThan(OPENCV_VER, 300) {
     # OpenCV 2
     CV_LIB_NAMES = core imgproc calib3d features2d flann contrib highgui
 } else {
     # OpenCV >= 3
-    CV_LIB_NAMES = world
+    CV_LIB_NAMES = core imgproc imgcodecs videoio calib3d features2d flann highgui
 }
 
 for(lib, CV_LIB_NAMES) {
@@ -51,9 +47,9 @@ for(lib, CV_LIB_NAMES) {
 
 win32: {
     CONFIG(release, debug|release) {
-        CV_LIB_PREFIX = $$CV_VER
+        CV_LIB_PREFIX = $$OPENCV_VER
     } else {
-        CV_LIB_PREFIX = $${CV_VER}d
+        CV_LIB_PREFIX = $${OPENCV_VER}d
     }
     for(lib, CV_LIBS) {
         CV_LIBS_NEW += $$lib$$CV_LIB_PREFIX

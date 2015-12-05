@@ -34,16 +34,16 @@ void ZCameraProvider::loadPlugins(QString folder)
         }
     #endif
 
-        if (!pluginsDir.cd("plugins/cameraacquisition")) {
-            qWarning() << "standard camera acquisition plugin folder 'plugins/cameraacquisition' not found";
+        if (!(pluginsDir.cd("plugins") && pluginsDir.cd("cameraacquisition"))) {
+            qWarning() << "standard camera acquisition plugin folder 'plugins/cameraacquisition' not found in" << pluginsDir.absolutePath();
             return;
         }
     }
 
-    qDebug() << "searching for camera acquisition plugins in" << pluginsDir.currentPath();
+    qDebug() << "searching for camera acquisition plugins in" << pluginsDir.absolutePath();
 
     QStringList filters;
-    filters << "*.dll" << "*.so";
+    filters << "*.dll" << "*.so" << "*.dylib";
     pluginsDir.setNameFilters(filters);
 
     foreach (QString fileName, pluginsDir.entryList(QDir::Files)) {

@@ -31,16 +31,16 @@ void ZCalibrationPatternFinderProvider::loadPlugins(QString folder)
         }
     #endif
 
-        if (!pluginsDir.cd("plugins/calibrationpatternfinder")) {
-            qWarning() << "standard calibration pattern finder plugin folder 'plugins/calibrationpatternfinder' not found";
+        if (!(pluginsDir.cd("plugins") && pluginsDir.cd("calibrationpatternfinder"))) {
+            qWarning() << "standard calibration pattern finder plugin folder 'plugins/calibrationpatternfinder' not found in" << pluginsDir.absolutePath();
             return;
         }
     }
 
-    qDebug() << "searching for calibration pattern finder plugins in" << pluginsDir.currentPath();
+    qDebug() << "searching for calibration pattern finder plugins in" << pluginsDir.absolutePath();
 
     QStringList filters;
-    filters << "*.dll" << "*.so";
+    filters << "*.dll" << "*.so" << "*.dylib";
     pluginsDir.setNameFilters(filters);
 
     foreach (QString fileName, pluginsDir.entryList(QDir::Files)) {

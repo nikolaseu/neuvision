@@ -161,7 +161,7 @@ win32 {
 
 macx:!static:CONFIG(qt_framework, qt_framework|qt_no_framework) {
 
-    QWT_CONFIG += QwtFramework
+#nikolaseu    QWT_CONFIG += QwtFramework
 }  
 
 ######################################################################
