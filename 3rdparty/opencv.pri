@@ -35,10 +35,10 @@ macx: {
 
 lessThan(OPENCV_VER, 300) {
     # OpenCV 2
-    CV_LIB_NAMES = core imgproc calib3d features2d flann contrib highgui
+    CV_LIB_NAMES = core imgproc calib3d features2d flann contrib
 } else {
     # OpenCV >= 3
-    CV_LIB_NAMES = core imgproc imgcodecs videoio calib3d features2d flann highgui
+    CV_LIB_NAMES = core imgproc imgcodecs videoio calib3d features2d flann
 }
 
 for(lib, CV_LIB_NAMES) {
