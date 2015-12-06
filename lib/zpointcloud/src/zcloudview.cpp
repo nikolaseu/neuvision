@@ -110,7 +110,6 @@ ZCloudView::ZCloudView(QWidget *parent) :
     vtkSmartPointer<vtkCamera> camera = renderer->GetActiveCamera();
     camera->ParallelProjectionOn();
     camera->SetParallelScale(1000);
-    renderer->Render();
 
     /// add scale
     /*vtkSmartPointer<vtkLegendScaleActor> grid_actor_ = vtkSmartPointer<vtkLegendScaleActor>::New();
