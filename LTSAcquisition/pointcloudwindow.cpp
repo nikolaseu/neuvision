@@ -4,10 +4,10 @@
 #include <QDebug>
 #include <QTimer>
 
-#ifdef Q_OS_LINUX
-#include "vtkCamera.h" // necessary in linux
+#ifdef Q_OS_UNIX
+#include "vtkCamera.h" // necessary in linux AND mac
 //#include "vtkLegendScaleActor.h"
-#include "vtkRenderWindow.h" // necessary in linux
+#include "vtkRenderWindow.h" // necessary in linux AND mac
 #endif
 
 PointCloudWindow::PointCloudWindow(QWidget *parent) :
