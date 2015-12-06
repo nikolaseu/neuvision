@@ -1,6 +1,14 @@
-win32:CONFIG(release, debug|release): LIBS += -L$$OUT_PWD/../lib/zlasertriangulationcalibrator/src/release/ -lzlasertriangulationcalibrator1
-else:win32:CONFIG(debug, debug|release): LIBS += -L$$OUT_PWD/../lib/zlasertriangulationcalibrator/src/debug/ -lzlasertriangulationcalibratord1
-else:unix: LIBS += -L$$OUT_PWD/../lib/zlasertriangulationcalibrator/src/ -lzlasertriangulationcalibrator
+win32: {
+    CONFIG(release, debug|release): LIBS += -L$$Z3D_BUILD_DIR -lzlasertriangulationcalibrator1
+    CONFIG(debug, debug|release):   LIBS += -L$$Z3D_BUILD_DIR -lzlasertriangulationcalibratord1
+}
+
+unix:!macx: LIBS += -L$$Z3D_BUILD_DIR -lzlasertriangulationcalibrator
+
+macx: {
+    CONFIG(release, debug|release): LIBS += -L$$Z3D_BUILD_DIR -lzlasertriangulationcalibrator
+    CONFIG(debug, debug|release):   LIBS += -L$$Z3D_BUILD_DIR -lzlasertriangulationcalibrator_debug
+}
 
 INCLUDEPATH += $$PWD/src
 DEPENDPATH += $$PWD/src
