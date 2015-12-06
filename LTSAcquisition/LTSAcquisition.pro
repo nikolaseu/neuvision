@@ -29,10 +29,6 @@ FORMS    += \
 
 
 ###############################################################################
-# Laser Triangulation calibration
-include($$PWD/../lib/zlasertriangulationcalibrator/zlasertriangulationcalibrator.pri)
-
-###############################################################################
 # OpenCV
 include($$PWD/../3rdparty/opencv.pri)
 
@@ -47,6 +43,10 @@ include($$PWD/../3rdparty/qtpropertybrowser/src/qtpropertybrowser.pri)
 ###############################################################################
 # Qwt
 include($$PWD/../3rdparty/qwt.pri)
+
+###############################################################################
+# Core
+include($$PWD/../lib/zcore/zcore.pri)
 
 ###############################################################################
 # Camera acquisition
@@ -71,3 +71,7 @@ include($$PWD/../lib/zpointcloud/zpointcloud.pri)
 ###############################################################################
 # Laser Triangulation
 include($$PWD/../lib/zlasertriangulation/zlasertriangulation.pri)
+
+###############################################################################
+# Laser Triangulation calibration
+include($$PWD/../lib/zlasertriangulationcalibrator/zlasertriangulationcalibrator.pri)

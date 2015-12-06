@@ -20,3 +20,6 @@ greaterThan(QT_MAJOR_VERSION, 4) {
 } else {
     QMAKE_CXXFLAGS += -std=c++0x
 }
+
+# define Z3D_RELEASE when building in release mode
+CONFIG(release, debug|release): DEFINES += Z3D_RELEASE

@@ -16,6 +16,10 @@ SOURCES += \
     main.cpp \
 
 ###############################################################################
+# Core
+include($$PWD/../lib/zcore/zcore.pri)
+
+###############################################################################
 # Camera acquisition
 include($$PWD/../lib/zcameraacquisition/zcameraacquisition.pri)
 

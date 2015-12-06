@@ -39,6 +39,10 @@ include($$PWD/../3rdparty/qtpropertybrowser/src/qtpropertybrowser.pri)
 include($$PWD/../3rdparty/qwt.pri)
 
 ###############################################################################
+# Core
+include($$PWD/../lib/zcore/zcore.pri)
+
+###############################################################################
 # Camera acquisition
 include($$PWD/../lib/zcameraacquisition/zcameraacquisition.pri)
 

@@ -33,5 +33,9 @@ include($$PWD/../3rdparty/opencv.pri)
 include($$PWD/../3rdparty/qtpropertybrowser/src/qtpropertybrowser.pri)
 
 ###############################################################################
+# Core
+include($$PWD/../lib/zcore/zcore.pri)
+
+###############################################################################
 # Camera acquisition
 include($$PWD/../lib/zcameraacquisition/zcameraacquisition.pri)
