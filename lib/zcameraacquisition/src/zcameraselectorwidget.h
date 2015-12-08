@@ -26,10 +26,6 @@ public:
     explicit ZCameraSelectorWidget(QWidget *parent = 0);
     ~ZCameraSelectorWidget();
 
-    static Z3D::ZCameraInterface::Ptr getCamera();
-
-    Z3D::ZCameraInterface::Ptr getSelectedCamera() const;
-
 signals:
     void cameraSelected(Z3D::ZCameraInterface::Ptr camera);
 

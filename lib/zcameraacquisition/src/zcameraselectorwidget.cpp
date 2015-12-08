@@ -35,22 +35,6 @@ ZCameraSelectorWidget::~ZCameraSelectorWidget()
     delete ui;
 }
 
-ZCameraInterface::Ptr ZCameraSelectorWidget::getCamera()
-{
-    Z3D::ZCameraSelectorWidget cameraSelector;
-    cameraSelector.setWindowModality(Qt::WindowModal);
-    cameraSelector.show();
-
-    QEventLoop eventLoop;
-
-    QObject::connect(&cameraSelector, SIGNAL(cameraSelected(Z3D::ZCameraInterface::Ptr)),
-                     &eventLoop, SLOT(quit()));
-
-    eventLoop.exec();
-
-    return cameraSelector.m_selectedCamera;
-}
-
 void ZCameraSelectorWidget::onPluginIndexChanged(int index)
 {
     ui->cameraListWidget->clear();
@@ -72,11 +56,6 @@ void ZCameraSelectorWidget::onCameraIndexChanged(int index)
     }
 
     emit cameraSelected(m_selectedCamera);
-}
-
-Z3D::ZCameraInterface::Ptr ZCameraSelectorWidget::getSelectedCamera() const
-{
-    return m_selectedCamera;
 }
 
 } // namespace Z3D

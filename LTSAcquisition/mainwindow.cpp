@@ -14,7 +14,7 @@
 #include <Z3DLaserTriangulation>
 
 #include "zcameracalibratorwidget.h"
-#include "zcameraselectorwidget.h"
+#include "zcameraselectordialog.h"
 
 #include <QDebug>
 #include <QDir>
@@ -248,7 +248,7 @@ void MainWindow::on_calibrateCameraButton_clicked()
 
 void MainWindow::on_addCameraButton_clicked()
 {
-    Z3D::ZCameraInterface::Ptr camera = Z3D::ZCameraSelectorWidget::getCamera();
+    Z3D::ZCameraInterface::Ptr camera = Z3D::ZCameraSelectorDialog::getCamera();
 
     if (!camera)
         return;

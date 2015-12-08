@@ -26,7 +26,8 @@ HEADERS      += \
     zcameraselectorwidget.h \
     zcamerasettingswidget.h \
     zimageviewer.h \
-    zimageviewwidget.h
+    zimageviewwidget.h \
+    zcameraselectordialog.h
 
 SOURCES      += \
     zcameraframesrecorder.cpp \
@@ -39,12 +40,14 @@ SOURCES      += \
     zcameraselectorwidget.cpp \
     zcamerasettingswidget.cpp \
     zimageviewer.cpp \
-    zimageviewwidget.cpp
+    zimageviewwidget.cpp \
+    zcameraselectordialog.cpp
 
 FORMS        += \
     zcamerapreviewer.ui \
     zcameraselectorwidget.ui \
-    zcamerasettingswidget.ui
+    zcamerasettingswidget.ui \
+    zcameraselectordialog.ui
 
 ###############################################################################
 # OpenCV
