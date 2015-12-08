@@ -21,10 +21,13 @@ public:
 private slots:
     void onCameraSelected(Z3D::ZCameraInterface::Ptr camera);
 
-    void on_continueButton_clicked();
+    void onContinueButtonClicked();
+    void onFinishButtonClicked();
 
 private:
     Ui::MainWindow *ui;
+
+    Z3D::ZCameraInterface::Ptr m_selectedCamera;
 };
 
 #endif // MAINWINDOW_H

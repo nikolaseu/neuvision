@@ -12,6 +12,14 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+
+    ui->finishButton->setVisible(false);
+
+    QObject::connect(ui->continueButton, SIGNAL(clicked(bool)),
+                     this, SLOT(onContinueButtonClicked()));
+
+    QObject::connect(ui->finishButton, SIGNAL(clicked(bool)),
+                     this, SLOT(onFinishButtonClicked()));
 }
 
 MainWindow::~MainWindow()
@@ -21,8 +29,37 @@ MainWindow::~MainWindow()
 
 void MainWindow::onCameraSelected(Z3D::ZCameraInterface::Ptr camera)
 {
-    if (camera) {
-        Z3D::ZCalibratedCamera::Ptr calibratedCamera(new Z3D::ZCalibratedCamera(camera, Z3D::ZCameraCalibration::Ptr(0)));
+    m_selectedCamera = camera;
+
+    ui->finishButton->setVisible(m_selectedCamera);
+}
+
+void MainWindow::onContinueButtonClicked()
+{
+    if (ui->calibrateFromFilesRadioButton->isChecked()) {
+        /// open the camera calibration window directly, without a camera
+        m_selectedCamera = Z3D::ZCameraInterface::Ptr(0);
+        onFinishButtonClicked();
+    } else if (ui->calibrateOnlineRadioButton->isChecked()) {
+        /// open the camera calibration window without a camera
+        static Z3D::ZCameraSelectorWidget *cameraSelectorWidget = 0;
+        if (!cameraSelectorWidget) {
+            cameraSelectorWidget = new Z3D::ZCameraSelectorWidget(ui->pageCameraSelection);
+            QObject::connect(cameraSelectorWidget, SIGNAL(cameraSelected(Z3D::ZCameraInterface::Ptr)),
+                             this, SLOT(onCameraSelected(Z3D::ZCameraInterface::Ptr)));
+
+            ui->cameraSelectionLayout->addWidget(cameraSelectorWidget);
+        }
+        ui->stackedWidget->setCurrentWidget(ui->pageCameraSelection);
+    } else {
+        qWarning() << "something is wrong!";
+    }
+}
+
+void MainWindow::onFinishButtonClicked()
+{
+    if (m_selectedCamera) {
+        Z3D::ZCalibratedCamera::Ptr calibratedCamera(new Z3D::ZCalibratedCamera(m_selectedCamera, Z3D::ZCameraCalibration::Ptr(0)));
         Z3D::ZCameraCalibratorWidget *calibratorWindow = new Z3D::ZCameraCalibratorWidget(calibratedCamera);
         calibratorWindow->show();
     } else {
@@ -32,29 +69,4 @@ void MainWindow::onCameraSelected(Z3D::ZCameraInterface::Ptr camera)
 
     close();
     //deleteLater(); // we can't delete this, its the "main"!!
-}
-
-void MainWindow::on_continueButton_clicked()
-{
-    if (ui->calibrateFromFilesRadioButton->isChecked()) {
-        /// open the camera calibration window directly, without a camera
-        onCameraSelected(Z3D::ZCameraInterface::Ptr(0));
-    } else if (ui->calibrateOnlineRadioButton->isChecked()) {
-        /// open the camera calibration window without a camera
-        static Z3D::ZCameraSelectorWidget *cameraSelectorWidget = 0;
-        if (!cameraSelectorWidget) {
-            cameraSelectorWidget = new Z3D::ZCameraSelectorWidget(ui->pageCameraSelection);
-            QObject::connect(cameraSelectorWidget, SIGNAL(cameraSelected(Z3D::ZCameraInterface::Ptr)),
-                             this, SLOT(onCameraSelected(Z3D::ZCameraInterface::Ptr)));
-
-            QVBoxLayout *layout = new QVBoxLayout(ui->pageCameraSelection);
-            layout->setMargin(0);
-            layout->addWidget(cameraSelectorWidget);
-
-            ui->pageCameraSelection->setLayout(layout);
-        }
-        ui->stackedWidget->setCurrentWidget(ui->pageCameraSelection);
-    } else {
-        qWarning() << "something is wrong!";
-    }
 }
