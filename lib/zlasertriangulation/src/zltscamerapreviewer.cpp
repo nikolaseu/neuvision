@@ -100,7 +100,7 @@ void LTSCameraPreviewer::onNewImageReceived(ZImageGrayscale::Ptr image)
 
 void LTSCameraPreviewer::onNewPointCloudReceived(ZPointCloud::Ptr cloud)
 {
-
+    Q_UNUSED(cloud)
 }
 
 void LTSCameraPreviewer::onRangeMinimumChanged(double min)

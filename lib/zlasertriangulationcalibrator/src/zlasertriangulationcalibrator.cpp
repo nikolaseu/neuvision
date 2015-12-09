@@ -250,6 +250,7 @@ void ZLaserTriangulationCalibrator::calibrate()
 
 void ZLaserTriangulationCalibrator::saveResults(const QString &fileName)
 {
+    Q_UNUSED(fileName)
     //! TODO
 }
 

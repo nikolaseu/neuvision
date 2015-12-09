@@ -909,8 +909,8 @@ void ZCloudView::on_actionToolsFitCylinder_triggered()
 
     std::vector<double> errorsInliersD;
     errorsInliersD.reserve(errorsInliers.size());
-    for (int i=0; i<errorsInliers.size(); ++i)
-        errorsInliersD.push_back(errorsInliers[i]);
+    for (const auto value : errorsInliers)
+        errorsInliersD.push_back(value);
 
     plotter.addHistogramData(errorsInliersD, 100);
     plotter.setTitle(qPrintable(tr("Cylinder fit error distribution")));
@@ -1193,8 +1193,8 @@ void ZCloudView::on_actionToolsFitPlane_triggered()
 
     std::vector<double> errorsInliersD;
     errorsInliersD.reserve(errorsInliers.size());
-    for (int i=0; i<errorsInliers.size(); ++i)
-        errorsInliersD.push_back(errorsInliers[i]);
+    for (const auto value : errorsInliers)
+        errorsInliersD.push_back(value);
 
     plotter.addHistogramData(errorsInliersD, 100);
     plotter.setTitle(qPrintable(tr("Plane fit error distribution")));

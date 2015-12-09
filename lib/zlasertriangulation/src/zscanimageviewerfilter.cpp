@@ -183,7 +183,7 @@ ZImageGrayscale::Ptr LineSubtractionRansacScanImageViewerFilter::processImage(ZI
 
         if (imgRowVector.size() > 3) {
             inputCloud->resize(imgRowVector.size());
-            for (int n=0; n<imgRowVector.size(); ++n) {
+            for (int size = imgRowVector.size(), n = 0; n<size; ++n) {
                 const cv::Point2i &point = imgRowVector[n];
                 pcl::PointXYZ &pointPcl = inputCloud->points[n];
                 pointPcl.x = point.x;

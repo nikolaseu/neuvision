@@ -16,6 +16,7 @@ void LogHandler(QtMsgType type, const char *msg)
 #else // QT_VERSION >= 0x050000
 void LogHandler(QtMsgType type, const QMessageLogContext &context, const QString &msgstr)
 {
+    Q_UNUSED(context)
 #endif
 
     static FILE *m_logFile = 0;
@@ -50,6 +51,9 @@ void LogHandler(QtMsgType type, const QMessageLogContext &context, const QString
     QString debugType;
 
     switch (type) {
+    case QtInfoMsg:
+        debugType = "[I]";
+        break;
     case QtDebugMsg:
         debugType = "[D]";
         break;

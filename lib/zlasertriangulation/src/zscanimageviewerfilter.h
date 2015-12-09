@@ -24,7 +24,7 @@ public:
     virtual ~ScanImageViewerFilter();
 
 signals:
-    virtual void imageProcessed(ZImageGrayscale::Ptr image);
+    void imageProcessed(ZImageGrayscale::Ptr image);
 
 public slots:
     virtual ZImageGrayscale::Ptr processImage(ZImageGrayscale::Ptr image);
