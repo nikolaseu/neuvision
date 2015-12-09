@@ -18,12 +18,28 @@ CalibratedCameraProvider::CalibratedCameraProvider()
 
 QList<Z3D::ZCalibratedCamera::Ptr> CalibratedCameraProvider::loadCameras(QString folder)
 {
-    /// if no folder is indicated, use current running folder + "/cameras"
-    if (folder.isEmpty()) {
-        folder = QDir::current().absoluteFilePath("cameras");
-    }
+    QDir configDir = QDir(folder);
 
-    QDir configDir(folder);
+    /// if no folder is indicated, use current running folder and standard search path
+    if (folder.isEmpty()) {
+        configDir = QDir::current();
+
+    #if defined(Q_OS_WIN)
+//        if (pluginsDir.dirName().toLower() == "debug" || pluginsDir.dirName().toLower() == "release")
+//            pluginsDir.cdUp();
+    #elif defined(Q_OS_MAC)
+        if (configDir.dirName() == "MacOS") {
+            configDir.cdUp();
+            configDir.cdUp();
+            configDir.cdUp();
+        }
+    #endif
+
+        if (!configDir.cd("cameras")) {
+            qWarning() << "cameras configuration folder 'cameras' not found in" << configDir.absolutePath();
+            return QList<Z3D::ZCalibratedCamera::Ptr>();
+        }
+    }
 
     qDebug() << "loading cameras from" << configDir.absolutePath();
 

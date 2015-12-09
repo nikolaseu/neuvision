@@ -2,7 +2,6 @@
 
 #include "zcalibrationpatternfinderplugininterface.h"
 
-#include <QCoreApplication>
 #include <QDebug>
 #include <QDir>
 #include <QPluginLoader>
@@ -18,7 +17,7 @@ void ZCalibrationPatternFinderProvider::loadPlugins(QString folder)
 
     /// if no folder is indicated, use current running folder and standard search path
     if (folder.isEmpty()) {
-        pluginsDir = QCoreApplication::applicationDirPath();
+        pluginsDir = QDir::current();
 
     #if defined(Q_OS_WIN)
 //        if (pluginsDir.dirName().toLower() == "debug" || pluginsDir.dirName().toLower() == "release")
