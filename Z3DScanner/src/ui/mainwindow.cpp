@@ -66,6 +66,9 @@ MainWindow::MainWindow(QWidget *parent)
     QObject::connect(m_take3dSnapshotSignalMapper, SIGNAL(mapped(int)),
                      this, SLOT(take3dCameraSnapshot(int)));
 
+    /// disable all until ready
+    ui->centralwidget->setEnabled(false);
+
     /// finish initialization
     QTimer::singleShot(0, this, SLOT(init()));
 }
@@ -177,10 +180,10 @@ void MainWindow::onPatternProjectionTypeChanged(int index)
     /// add config widget
     QWidget *currentWidget = m_currentPatternProjection->configWidget();
     currentWidget->setVisible(true);
+#ifndef Q_OS_MAC
+    /// FIXME somehow this messes up the menu bar in OSX
     ui->patternProjectionConfigLayout->addWidget(currentWidget);
-
-    /// disable all until ready
-    ui->centralwidget->setEnabled(false);
+#endif
 }
 
 void MainWindow::addCameras(QList<Z3D::ZCalibratedCamera::Ptr> cameras)
