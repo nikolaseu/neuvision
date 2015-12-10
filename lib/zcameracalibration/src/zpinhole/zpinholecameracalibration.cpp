@@ -7,6 +7,7 @@
 
 #include <QDateTime>
 #include <QDebug>
+#include <QDir>
 #include <QSettings>
 #include <QtConcurrentRun>
 
@@ -176,11 +177,30 @@ bool ZPinholeCameraCalibration::loadFromFile(const QString &fileName)
     if (fileName.isEmpty() || fileName.isNull())
         return false;
 
+    QDir currentDir = QDir::current();
+    if (!currentDir.exists(fileName)) {
+    #if defined(Q_OS_WIN)
+//        if (pluginsDir.dirName().toLower() == "debug" || pluginsDir.dirName().toLower() == "release")
+//            pluginsDir.cdUp();
+    #elif defined(Q_OS_MAC)
+        if (currentDir.dirName() == "MacOS") {
+            currentDir.cdUp();
+            currentDir.cdUp();
+            currentDir.cdUp();
+        }
+    #endif
+
+        if (!currentDir.exists(fileName)) {
+            qWarning() << "calibration file" << fileName << "not found in" << currentDir.absolutePath();
+            return false;
+        }
+    }
+
     bool valid = false;
 
     blockSignals(true);
 
-    QSettings settings(fileName, QSettings::IniFormat);
+    QSettings settings(currentDir.absoluteFilePath(fileName), QSettings::IniFormat);
 
     QString calibDate;
 
