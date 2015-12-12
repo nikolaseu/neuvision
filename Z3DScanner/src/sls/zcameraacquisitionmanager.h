@@ -17,8 +17,8 @@ public:
 
 signals:
     void acquisitionReady(QString acquisitionId);
-    void imagesAcquired(std::vector<Z3D::ZImageGrayscale::Ptr> images, QString id);
-    void acquisitionFinished(std::vector< std::vector<Z3D::ZImageGrayscale::Ptr> > acquiredImages, QString acquisitionId);
+    void imagesAcquired(std::vector<Z3D::ZImageGrayscale::Ptr> &images, QString id);
+    void acquisitionFinished(std::vector< std::vector<Z3D::ZImageGrayscale::Ptr> > &acquiredImages, QString acquisitionId);
 
 public slots:
     void prepareAcquisition(QString acquisitionId);

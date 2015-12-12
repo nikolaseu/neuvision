@@ -41,9 +41,6 @@ void ZCameraAcquisitionManager::prepareAcquisition(QString acquisitionId)
 
 void ZCameraAcquisitionManager::acquireSingle(QString id)
 {
-    std::vector<ZImageGrayscale::Ptr> images;
-    images.reserve(m_cameras.size());
-
     for (auto cam : m_cameras) {
         /// if the camera is simulated, set which image should use now
         if (cam->uuid().startsWith("ZSIMULATED")) {
@@ -51,7 +48,16 @@ void ZCameraAcquisitionManager::acquireSingle(QString id)
             cam->setAttribute("CurrentFile", id);
         }
 
-        /// Retrieve an image
+        /// schedule an image request, the camera should manage the snapshot asynchronously
+        cam->requestSnapshot();
+    }
+
+    m_images.push_back(std::vector<Z3D::ZImageGrayscale::Ptr>());
+    auto &images = m_images.back();
+    images.reserve(m_cameras.size());
+
+    for (auto cam : m_cameras) {
+        /// Retrieve the image, this will block until the snapshot is retrieved
         ZImageGrayscale::Ptr imptr = cam->getSnapshot();
 
         if (imptr) {
@@ -71,8 +77,6 @@ void ZCameraAcquisitionManager::acquireSingle(QString id)
 
         images.push_back(imptr);
     }
-
-    m_images.push_back(images);
 
     emit imagesAcquired(images, id);
 }
