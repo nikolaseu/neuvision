@@ -65,8 +65,8 @@ void ZStereoStructuredLightSystem::setAcquisitionManager(ZCameraAcquisitionManag
     if (m_camList.size() >= 2 && !m_stereoSystem) {
         m_stereoSystem = new StereoSystem();
 
-        m_stereoSystem->setCamera1(m_camList[0]);
-        m_stereoSystem->setCamera2(m_camList[1]);
+        m_stereoSystem->setLeftCamera(m_camList[0]);
+        m_stereoSystem->setRightCamera(m_camList[1]);
 
         m_stereoSystem->stereoRectify();
 

@@ -38,7 +38,7 @@ struct ParallelFringeProcessingImpl
         : stereoSystem(system)
         , m_undistortedRays(stereoSystem->m_undistortedRays)
         , m_cloud(cloudPtr)
-        , cloudPoints(m_cloud->points)
+        , m_cloudPoints(m_cloud->points)
         , m_atomicInteger(i2)
         , intensityImg(image)
         , m_maxValidDistanceThreshold(maxValidDistanceThreshold)
@@ -54,24 +54,24 @@ struct ParallelFringeProcessingImpl
         orderedPoints.resize(fringePoints.size());
 
         /// k == camera index
-        for (size_t k=0; k<fringePoints.size(); ++k) {
-            const std::vector<cv::Vec2f> &fringePointsVector = *fringePoints[k];
+        for (size_t k=0, size=fringePoints.size(); k<size; ++k) {
+            const auto &fringePointsVector = *fringePoints[k];
 
-            std::vector< std::pair<float, cv::Vec2f> > &orderedFringePoints = orderedPoints[k];
+            auto &orderedFringePoints = orderedPoints[k];
             orderedFringePoints.resize(fringePointsVector.size());
 
-            const std::vector<cv::Vec3d> &undistortedRays = m_undistortedRays[k];
+            const auto &undistortedRays = m_undistortedRays[k];
 
             /// insert points using the "y" coordinates of the images projected on the epipolar plane
-            std::vector< std::pair<float, cv::Vec2f> >::iterator oit = orderedFringePoints.begin();
-            for (std::vector<cv::Vec2f>::const_iterator lit = fringePointsVector.begin();
-                 lit != fringePointsVector.end();
+            auto oit = orderedFringePoints.begin();
+            for (auto lit = fringePointsVector.begin(), litEnd = fringePointsVector.end();
+                 lit != litEnd;
                  ++lit, ++oit) {
-                const cv::Vec2f &point = *lit;
+                const auto &point = *lit;
                 const int &x = point[0];
                 const int &y = point[1];
-                const cv::Vec3f &rectifiedPoint = undistortedRays[ stereoSystem->indexForPixel(x, y) ];
-                std::pair<float, cv::Vec2f> &pair = *oit;
+                const auto &rectifiedPoint = undistortedRays[ stereoSystem->indexForPixel(x, y) ];
+                auto &pair = *oit;
                 pair.first = rectifiedPoint[1]; /// y coordinate
                 pair.second = point;
             }
@@ -86,23 +86,25 @@ struct ParallelFringeProcessingImpl
                 firstRayOrigin, firstRayDirection,
                 secondRayOrigin, secondRayDirection;
 
-        std::vector< std::pair<float, cv::Vec2f> > &orderedLeftPoints = orderedPoints[0];
-        std::vector< std::pair<float, cv::Vec2f> > &orderedRightPoints = orderedPoints[1];
+        auto &orderedLeftPoints = orderedPoints[0];
+        auto &orderedRightPoints = orderedPoints[1];
 
-        std::vector< std::pair<float, cv::Vec2f> >::iterator lNextIterator = orderedLeftPoints.begin();
-        std::vector< std::pair<float, cv::Vec2f> >::iterator lIterator = lNextIterator++;
-        std::vector< std::pair<float, cv::Vec2f> >::iterator rNextIterator = orderedRightPoints.begin();
-        std::vector< std::pair<float, cv::Vec2f> >::iterator rIterator = rNextIterator++;
-        while (lNextIterator != orderedLeftPoints.end() && rNextIterator != orderedRightPoints.end()) {
-            const std::pair<float, cv::Vec2f> &lPair = *lIterator;
-            const std::pair<float, cv::Vec2f> &rPair = *rIterator;
-            const std::pair<float, cv::Vec2f> &lNextPair = *lNextIterator;
-            const std::pair<float, cv::Vec2f> &rNextPair = *rNextIterator;
+        auto lNextIterator = orderedLeftPoints.cbegin();
+        auto lIterator = lNextIterator++;
+        auto lEnd = orderedLeftPoints.cend();
+        auto rNextIterator = orderedRightPoints.cbegin();
+        auto rIterator = rNextIterator++;
+        auto rEnd = orderedRightPoints.cend();
+        while (lNextIterator != lEnd && rNextIterator != rEnd) {
+            const auto &lPair = *lIterator;
+            const auto &rPair = *rIterator;
+            const auto &lNextPair = *lNextIterator;
+            const auto &rNextPair = *rNextIterator;
 
-            const float &lY = lPair.first;
-            const float &rY = rPair.first;
-            const float &lNextY = lNextPair.first;
-            const float &rNextY = rNextPair.first;
+            const auto &lY = lPair.first;
+            const auto &rY = rPair.first;
+            const auto &lNextY = lNextPair.first;
+            const auto &rNextY = rNextPair.first;
 
             /// we go in ascending order
             if (lNextY < rNextY) {
@@ -129,9 +131,9 @@ struct ParallelFringeProcessingImpl
                     alpha = 1. - beta;
 
                     /// valid points, intersect and add point
-                    const cv::Vec2f &realPoint = rPair.second;
-                    const cv::Vec2f &firstMeanPoint = lPair.second;
-                    const cv::Vec2f &secondMeanPoint = lNextPair.second;
+                    const auto &realPoint = rPair.second;
+                    const auto &firstMeanPoint = lPair.second;
+                    const auto &secondMeanPoint = lNextPair.second;
 
                     /// "world" rays are already in common coordinate space (i.e. rotated, traslated, normalized)
                     if (useSubPixel) {
@@ -155,9 +157,9 @@ struct ParallelFringeProcessingImpl
                     alpha = 1. - beta;
 
                     /// valid points, intersect and add point
-                    const cv::Vec2f &realPoint = lPair.second;
-                    const cv::Vec2f &firstMeanPoint = rPair.second;
-                    const cv::Vec2f &secondMeanPoint = rNextPair.second;
+                    const auto &realPoint = lPair.second;
+                    const auto &firstMeanPoint = rPair.second;
+                    const auto &secondMeanPoint = rNextPair.second;
 
                     /// "world" rays are already in common coordinate space (i.e. rotated, traslated, normalized)
                     if (useSubPixel) {
@@ -191,7 +193,7 @@ struct ParallelFringeProcessingImpl
                 /// use atomicint to atomically get current value and increment
                 const int currentIndex = m_atomicInteger.fetchAndAddAcquire(1);
 
-                PointType &currentPoint = cloudPoints[currentIndex];
+                auto &currentPoint = m_cloudPoints[currentIndex];
 
                 /// use the point
                 currentPoint[0] = intersection[0];
@@ -200,7 +202,7 @@ struct ParallelFringeProcessingImpl
 
                 /// point color. we use an intensity image from the left camera
                 /// this point is not exactly the intersection point, but it's close enough
-                const cv::Vec2f &intensityImgPoint = lPair.second;
+                const auto &intensityImgPoint = lPair.second;
                 const int x = (int)intensityImgPoint[0];
                 const int y = (int)intensityImgPoint[1];
                 if (intensityImg.channels() == 1) {
@@ -215,8 +217,8 @@ struct ParallelFringeProcessingImpl
                     /// RGB colors
                     cv::Vec3b intensity = intensityImg.at<cv::Vec3b>(y, x);
                     uint32_t rgb = (static_cast<uint32_t>(intensity.val[0]) << 16 |
-                                                                               static_cast<uint32_t>(intensity.val[1]) <<  8 |
-                                                                                                                           static_cast<uint32_t>(intensity.val[2]));
+                                    static_cast<uint32_t>(intensity.val[1]) <<  8 |
+                                    static_cast<uint32_t>(intensity.val[2]));
                     currentPoint[3] /*rgb*/ = *reinterpret_cast<float*>(&rgb);
                 }
 
@@ -228,10 +230,9 @@ struct ParallelFringeProcessingImpl
     Z3D::ZCameraCalibration *camLcal;
     Z3D::ZCameraCalibration *camRcal;
     const std::vector< std::vector<cv::Vec3d> > &m_undistortedRays;
-    //const std::vector< std::vector<cv::Vec3d> > &m_undistortedWorldRays = stereoSystem->m_undistortedWorldRays;
-    QAtomicInt &m_atomicInteger;
     Z3D::ZSimplePointCloud::Ptr m_cloud;
-    std::vector<PointType> &cloudPoints;
+    std::vector<PointType> &m_cloudPoints;
+    QAtomicInt &m_atomicInteger;
     cv::Mat intensityImg;
     float m_maxValidDistanceThreshold;
 };
@@ -259,23 +260,11 @@ StereoSystem::~StereoSystem()
 }
 
 
-Z3D::ZCalibratedCamera::Ptr StereoSystem::camera1()
-{
-    return mCam[0];
-}
-
-
-Z3D::ZCalibratedCamera::Ptr StereoSystem::camera2()
-{
-    return mCam[1];
-}
-
-
-void StereoSystem::setCamera1(Z3D::ZCalibratedCamera::Ptr camera)
+void StereoSystem::setLeftCamera(Z3D::ZCalibratedCamera::Ptr camera)
 {
     if (mCam[0] != camera) {
         /// check first! this only works for pinhole cameras!
-        Z3D::ZPinholeCameraCalibration *calibration = static_cast<Z3D::ZPinholeCameraCalibration*>(camera->calibration().data());
+        auto *calibration = static_cast<Z3D::ZPinholeCameraCalibration*>(camera->calibration().data());
 
         if (!calibration) {
             qWarning() << "invalid calibration! this only works for pinhole cameras!";
@@ -297,11 +286,11 @@ void StereoSystem::setCamera1(Z3D::ZCalibratedCamera::Ptr camera)
 }
 
 
-void StereoSystem::setCamera2(Z3D::ZCalibratedCamera::Ptr camera)
+void StereoSystem::setRightCamera(Z3D::ZCalibratedCamera::Ptr camera)
 {
     if (mCam[1] != camera) {
         /// check first! this only works for pinhole cameras!
-        Z3D::ZPinholeCameraCalibration *calibration = static_cast<Z3D::ZPinholeCameraCalibration*>(camera->calibration().data());
+        auto *calibration = static_cast<Z3D::ZPinholeCameraCalibration*>(camera->calibration().data());
 
         if (!calibration) {
             qWarning() << "invalid calibration! this only works for pinhole cameras!";
@@ -335,7 +324,7 @@ void StereoSystem::stereoRectify(double alpha)
     setReady(false);
 
     for (int i=0; i<2; ++i) {
-        Z3D::ZCameraCalibration *cal = mCal[i];
+        Z3D::ZPinholeCameraCalibration *cal = mCal[i];
         if (!cal) {
             qWarning() << "the calibration for camera" << i << "isn't valid. Returning...";
             return;
@@ -491,12 +480,12 @@ Z3D::ZSimplePointCloud::Ptr StereoSystem::getRectifiedSnapshot3D(int cameraIndex
         return cloud;
     }
 
-    Z3D::ZCameraInterface::Ptr pCamera = mCam[cameraIndex]->camera();
+    auto pCamera = mCam[cameraIndex]->camera();
     //Z3D::CameraCalibrationInterface::Ptr calibration = mCam[cameraIndex]->calibration();
 
     qDebug() << "taking snapshot...";
-    Z3D::ZImageGrayscale::Ptr snapshot = pCamera->getSnapshot();
-    cv::Mat intensityImg = snapshot->cvMat().clone();
+    auto snapshot = pCamera->getSnapshot();
+    auto intensityImg = snapshot->cvMat().clone();
 
     qDebug() << "creating point cloud...";
 
@@ -515,12 +504,12 @@ Z3D::ZSimplePointCloud::Ptr StereoSystem::getRectifiedSnapshot3D(int cameraIndex
     qDebug() << "filling point cloud...";
 
     //std::vector< cv::Vec3d > &m_undistortedWorldRays_cameraIndex = m_undistortedWorldRays[cameraIndex];
-    std::vector< cv::Vec3d > &m_undistortedWorldRays_cameraIndex = m_undistortedRays[cameraIndex];
+    const auto &m_undistortedWorldRays_cameraIndex = m_undistortedRays[cameraIndex];
 
     for (int x = 0; x < width; x += lod_step) {
         for (int y = 0; y < height; y += lod_step) {
 
-            cv::Vec3f point = m_undistortedWorldRays_cameraIndex[indexForPixel(xOffset+x, yOffset+y)];
+            auto point = m_undistortedWorldRays_cameraIndex[indexForPixel(xOffset+x, yOffset+y)];
 
             // rotate
             point = mCal[cameraIndex]->rotation() * cv::Matx33d(m_R[cameraIndex]).t() * point;
@@ -603,23 +592,23 @@ Z3D::ZSimplePointCloud::Ptr StereoSystem::triangulateOptimized(const cv::Mat &in
     parallellData.resize(leftFringePoints.size());
 
     int currentIndex = -1;
-    for (std::map<int, std::vector<cv::Vec2f> >::const_iterator it = leftFringePoints.begin();
-         it != leftFringePoints.end();
+    for (auto it = leftFringePoints.cbegin(), itEnd = leftFringePoints.cend();
+         it != itEnd;
          ++it) {
 
         const int fringeID = it->first;
 
         /// skip if fringe is only present in one camera
-        const std::vector<cv::Vec2f> &rightPointsVector = rightFringePoints[fringeID];
+        const auto &rightPointsVector = rightFringePoints[fringeID];
         if (rightPointsVector.empty()) {
             //qDebug() << "skipping fringe" << fringeID;
             continue;
         }
 
-        const std::vector<cv::Vec2f> &leftPointsVector = it->second;
+        const auto &leftPointsVector = it->second;
 
         currentIndex++;
-        std::vector<const std::vector<cv::Vec2f>*> &fringePoints = parallellData[currentIndex];
+        auto &fringePoints = parallellData[currentIndex];
         fringePoints.push_back( &leftPointsVector );
         fringePoints.push_back( &rightPointsVector );
     }
@@ -655,7 +644,7 @@ void StereoSystem::setCamera1Calibration(Z3D::ZCameraCalibration::Ptr cameraCali
 {
     qDebug() << Q_FUNC_INFO;
 
-    Z3D::ZPinholeCameraCalibration *calibration = static_cast<Z3D::ZPinholeCameraCalibration*>(cameraCalibration.data());
+    auto *calibration = static_cast<Z3D::ZPinholeCameraCalibration*>(cameraCalibration.data());
 
     if (!calibration) {
         qWarning() << "invalid calibration! this only works for pinhole cameras!";
@@ -679,7 +668,7 @@ void StereoSystem::setCamera2Calibration(Z3D::ZCameraCalibration::Ptr cameraCali
 {
     qDebug() << Q_FUNC_INFO;
 
-    Z3D::ZPinholeCameraCalibration *calibration = static_cast<Z3D::ZPinholeCameraCalibration*>(cameraCalibration.data());
+    auto *calibration = static_cast<Z3D::ZPinholeCameraCalibration*>(cameraCalibration.data());
 
     if (!calibration) {
         qWarning() << "invalid calibration! this only works for pinhole cameras!";
@@ -732,7 +721,7 @@ void StereoSystem::precomputeOptimizations()
         cv::undistortPoints(points, undistortedPoints, mCal[k]->cvCameraMatrix(), mCal[k]->cvDistortionCoeffs(), m_R[k]/*, m_P[k]*/);
         //cv::undistortPoints(points, undistortedPoints, mCal[k]->cvCameraMatrix(), mCal[k]->cvDistortionCoeffs(), m_R[k].t());
 
-        std::vector<cv::Vec3d> &m_undistortedRays_k = m_undistortedRays[k];
+        auto &m_undistortedRays_k = m_undistortedRays[k];
         //std::vector<cv::Vec3d> &m_undistortedWorldRays_k = m_undistortedWorldRays[k];
 
         m_undistortedRays_k.resize( pixelCount );
@@ -745,9 +734,9 @@ void StereoSystem::precomputeOptimizations()
             for (int ix = 0; ix < width; ++ix) {
                 const int index = indexForPixel(ix, iy);
 
-                const cv::Point2d &undistortedPoint = undistortedPoints[index];
+                const auto &undistortedPoint = undistortedPoints[index];
 
-                cv::Vec3d &ray = m_undistortedRays_k[index];
+                auto &ray = m_undistortedRays_k[index];
                 ray[0] = undistortedPoint.x;
                 ray[1] = undistortedPoint.y;
                 ray[2] = 1.;

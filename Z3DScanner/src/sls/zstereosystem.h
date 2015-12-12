@@ -25,11 +25,8 @@ public:
     explicit StereoSystem(QObject *parent = 0);
     ~StereoSystem();
 
-    Z3D::ZCalibratedCamera::Ptr camera1();
-    Z3D::ZCalibratedCamera::Ptr camera2();
-
-    void setCamera1(Z3D::ZCalibratedCamera::Ptr camera);
-    void setCamera2(Z3D::ZCalibratedCamera::Ptr camera);
+    void setLeftCamera(Z3D::ZCalibratedCamera::Ptr camera);
+    void setRightCamera(Z3D::ZCalibratedCamera::Ptr camera);
 
     bool ready() const;
 
