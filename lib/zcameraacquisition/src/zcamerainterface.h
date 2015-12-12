@@ -85,6 +85,7 @@ signals:
     void attributeChanged(QString name, QVariant value);
 
 public slots:
+    virtual bool requestSnapshot() = 0;
     virtual ZImageGrayscale::Ptr getSnapshot() = 0;
 
     /// acquisition control
