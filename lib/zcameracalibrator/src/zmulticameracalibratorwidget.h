@@ -31,7 +31,7 @@ class Z3D_CAMERACALIBRATOR_SHARED_EXPORT ZMultiCameraCalibratorWidget : public Q
     Q_OBJECT
 
 public:
-    explicit ZMultiCameraCalibratorWidget(QList<Z3D::ZCalibratedCamera::Ptr> cameras, QWidget *parent = 0);
+    explicit ZMultiCameraCalibratorWidget(std::vector<ZCalibratedCamera::Ptr> cameras, QWidget *parent = 0);
     ~ZMultiCameraCalibratorWidget();
 
 private slots:
@@ -80,10 +80,10 @@ private:
 
     Z3D::ZMultiCameraCalibratorWorker *m_calibratorWorker;
 
-    QList<Z3D::ZCalibratedCamera::Ptr> m_cameras;
+    std::vector<Z3D::ZCalibratedCamera::Ptr> m_cameras;
 
-    QList<Z3D::ZImageViewer *> m_cameraImageViewer;
-    QList<Z3D::ZCalibrationImageViewer *> m_imageViewer;
+    std::vector<Z3D::ZImageViewer *> m_cameraImageViewer;
+    std::vector<Z3D::ZCalibrationImageViewer *> m_imageViewer;
 
     QThread *m_workerThread;
 };

@@ -24,7 +24,7 @@
 namespace Z3D
 {
 
-ZMultiCameraCalibratorWidget::ZMultiCameraCalibratorWidget(QList<ZCalibratedCamera::Ptr> cameras, QWidget *parent)
+ZMultiCameraCalibratorWidget::ZMultiCameraCalibratorWidget(std::vector<ZCalibratedCamera::Ptr> cameras, QWidget *parent)
     : QWidget(parent)
     , ui(new Ui::ZMultiCameraCalibratorWidget)
     , m_model(new ZMultiCalibrationImageModel(this))
@@ -35,11 +35,11 @@ ZMultiCameraCalibratorWidget::ZMultiCameraCalibratorWidget(QList<ZCalibratedCame
 
     updateWindowTitle();
 
-    foreach(Z3D::ZCalibratedCamera::Ptr camera, m_cameras) {
+    for (auto camera : m_cameras) {
         /// camera views
         ZImageViewer *cameraImageViewer = new ZImageViewer(ui->cameraViewsLayout->widget());
         ui->cameraViewsLayout->addWidget(cameraImageViewer, 1);
-        m_cameraImageViewer << cameraImageViewer;
+        m_cameraImageViewer.push_back(cameraImageViewer);
 
         /// set up camera image preview
         if (camera) {
@@ -50,7 +50,7 @@ ZMultiCameraCalibratorWidget::ZMultiCameraCalibratorWidget(QList<ZCalibratedCame
         /// image views
         ZCalibrationImageViewer *imageViewer = new ZCalibrationImageViewer(ui->imageViewsLayout->widget());
         ui->imageViewsLayout->addWidget(imageViewer, 1);
-        m_imageViewer << imageViewer;
+        m_imageViewer.push_back(imageViewer);
     }
 
     /// create and add progress bar used in the statusbar
@@ -125,7 +125,7 @@ ZMultiCameraCalibratorWidget::~ZMultiCameraCalibratorWidget()
 {
     m_workerThread->terminate();
 
-    foreach(Z3D::ZCalibratedCamera::Ptr camera, m_cameras) {
+    for (auto camera : m_cameras) {
         if (camera && ui->stackedWidget->currentIndex() == CAMERA_VIEW)
             camera->camera()->stopAcquisition();
     }
@@ -153,7 +153,7 @@ void ZMultiCameraCalibratorWidget::setCurrentView(int newView)
     if (ui->stackedWidget->currentIndex() == newView)
         return;
 
-    foreach(Z3D::ZCalibratedCamera::Ptr camera, m_cameras) {
+    for (auto camera : m_cameras) {
         if (camera && ui->stackedWidget->currentIndex() == CAMERA_VIEW && newView != CAMERA_VIEW)
             camera->camera()->stopAcquisition();
     }
@@ -168,7 +168,7 @@ void ZMultiCameraCalibratorWidget::setCurrentView(int newView)
         break;
     case CAMERA_VIEW:
         ui->stackedWidget->setCurrentIndex(newView);
-        foreach(Z3D::ZCalibratedCamera::Ptr camera, m_cameras) {
+        for (auto camera : m_cameras) {
             if (camera)
                 camera->camera()->startAcquisition();
         }
@@ -354,7 +354,7 @@ void ZMultiCameraCalibratorWidget::on_runCalibrationButton_clicked()
     ui->runCalibrationButton->setEnabled(false);
 
     std::vector<Z3D::ZCameraCalibration::Ptr> currentCalibrations;
-    foreach (Z3D::ZCalibratedCamera::Ptr camera, m_cameras) {
+    for (auto camera : m_cameras) {
         currentCalibrations.push_back(camera->calibration());
     }
 
@@ -380,7 +380,7 @@ void ZMultiCameraCalibratorWidget::on_saveCameraImageButton_clicked()
     QList<ZImageGrayscale::Ptr> imagesList;
     QList<ZCalibrationImage::Ptr> calibrationImagesList;
 
-    foreach(Z3D::ZCalibratedCamera::Ptr camera, m_cameras) {
+    for (auto camera : m_cameras) {
         imagesList << camera->camera()->getSnapshot();
     }
 
@@ -435,7 +435,7 @@ void ZMultiCameraCalibratorWidget::on_saveCameraImageButton_clicked()
 
 void ZMultiCameraCalibratorWidget::on_cameraSettingsButton_clicked()
 {
-    foreach(Z3D::ZCalibratedCamera::Ptr camera, m_cameras) {
+    for (auto camera : m_cameras) {
         if (camera)
             camera->camera()->showSettingsDialog();
     }
