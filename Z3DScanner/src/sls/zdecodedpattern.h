@@ -10,12 +10,12 @@
 namespace Z3D
 {
 
-class DecodedPattern
+class ZDecodedPattern
 {
 public:
-    typedef QSharedPointer<DecodedPattern> Ptr;
+    typedef QSharedPointer<ZDecodedPattern> Ptr;
 
-    explicit DecodedPattern(int numOfCameras);
+    explicit ZDecodedPattern(int numOfCameras);
 
     std::vector< std::map<int, std::vector<cv::Vec2f> > > fringePointsList;
     cv::Mat intensityImg;

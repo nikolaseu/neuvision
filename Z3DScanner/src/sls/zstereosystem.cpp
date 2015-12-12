@@ -1,6 +1,6 @@
-#include "stereosystem.h"
+#include "zstereosystem.h"
 
-#include "geometryutils.h"
+#include "zgeometryutils.h"
 
 #include <QAtomicInt>
 #include <QDateTime>
@@ -34,7 +34,7 @@ bool compareFirstPairElement(std::pair<float, cv::Vec2f> arg1, std::pair<float, 
 
 struct ParallelFringeProcessingImpl
 {
-    ParallelFringeProcessingImpl(StereoSystem *system, PointCloudPCLPtr cloudPtr, QAtomicInt &i2, const cv::Mat &image, float maxValidDistanceThreshold)
+    ParallelFringeProcessingImpl(StereoSystem *system, Z3D::ZSimplePointCloud::Ptr cloudPtr, QAtomicInt &i2, const cv::Mat &image, float maxValidDistanceThreshold)
         : stereoSystem(system)
         , m_undistortedRays(stereoSystem->m_undistortedRays)
         , m_cloud(cloudPtr)
@@ -194,9 +194,9 @@ struct ParallelFringeProcessingImpl
                 PointType &currentPoint = cloudPoints[currentIndex];
 
                 /// use the point
-                currentPoint.x = intersection[0];
-                currentPoint.y = intersection[1];
-                currentPoint.z = intersection[2];
+                currentPoint[0] = intersection[0];
+                currentPoint[1] = intersection[1];
+                currentPoint[2] = intersection[2];
 
                 /// point color. we use an intensity image from the left camera
                 /// this point is not exactly the intersection point, but it's close enough
@@ -205,7 +205,7 @@ struct ParallelFringeProcessingImpl
                 const int y = (int)intensityImgPoint[1];
                 if (intensityImg.channels() == 1) {
                     /// black and white
-                    currentPoint.intensity = intensityImg.at<unsigned char>(y, x);
+                    currentPoint[3] = intensityImg.at<unsigned char>(y, x);
                     /*unsigned int iB = intensityImg.at<unsigned char>(y, x);
                     uint32_t rgb = (static_cast<uint32_t>(iB) << 16 |
                                     static_cast<uint32_t>(iB) <<  8 |
@@ -217,8 +217,9 @@ struct ParallelFringeProcessingImpl
                     uint32_t rgb = (static_cast<uint32_t>(intensity.val[0]) << 16 |
                                                                                static_cast<uint32_t>(intensity.val[1]) <<  8 |
                                                                                                                            static_cast<uint32_t>(intensity.val[2]));
-                    currentPoint.intensity /*rgb*/ = *reinterpret_cast<float*>(&rgb);
+                    currentPoint[3] /*rgb*/ = *reinterpret_cast<float*>(&rgb);
                 }
+
             }
         }
     }
@@ -229,8 +230,8 @@ struct ParallelFringeProcessingImpl
     const std::vector< std::vector<cv::Vec3d> > &m_undistortedRays;
     //const std::vector< std::vector<cv::Vec3d> > &m_undistortedWorldRays = stereoSystem->m_undistortedWorldRays;
     QAtomicInt &m_atomicInteger;
-    PointCloudPCLPtr m_cloud;
-    std::vector<PointType, Eigen::aligned_allocator<PointType> > &cloudPoints;
+    Z3D::ZSimplePointCloud::Ptr m_cloud;
+    std::vector<PointType> &cloudPoints;
     cv::Mat intensityImg;
     float m_maxValidDistanceThreshold;
 };
@@ -481,9 +482,9 @@ void StereoSystem::stereoRectify(double alpha)
 //}
 
 
-PointCloudPCLPtr StereoSystem::getRectifiedSnapshot3D(int cameraIndex, float imageScale, int lod_step)
+Z3D::ZSimplePointCloud::Ptr StereoSystem::getRectifiedSnapshot3D(int cameraIndex, float imageScale, int lod_step)
 {
-    PointCloudPCLPtr cloud(new PointCloudPCL);
+    Z3D::ZSimplePointCloud::Ptr cloud(new Z3D::ZSimplePointCloud());
 
     if (cameraIndex < 0 || cameraIndex > 1) {
         qWarning() << "invalid cameraIndex. must be 0 or 1";
@@ -531,13 +532,13 @@ PointCloudPCLPtr StereoSystem::getRectifiedSnapshot3D(int cameraIndex, float ima
             // translate
             point += mCal[cameraIndex]->translation();
 
-            cloud->points[i].x = point[0];
-            cloud->points[i].y = point[1];
-            cloud->points[i].z = point[2];
+            cloud->points[i][0] = point[0];
+            cloud->points[i][1] = point[1];
+            cloud->points[i][2] = point[2];
 
             // color
             if (intensityImg.channels() == 1) {
-                cloud->points[i].intensity  = intensityImg.at<unsigned char>(y, x);
+                cloud->points[i][3]  = intensityImg.at<unsigned char>(y, x);
                 /*unsigned int iB = intensityImg.at<unsigned char>(y, x);
                 uint32_t rgb = (static_cast<uint32_t>(iB) << 16 |
                                 static_cast<uint32_t>(iB) <<  8 |
@@ -551,7 +552,7 @@ PointCloudPCLPtr StereoSystem::getRectifiedSnapshot3D(int cameraIndex, float ima
                 uint32_t rgb = (static_cast<uint32_t>(intensity.val[0]) << 16 |
                                 static_cast<uint32_t>(intensity.val[1]) <<  8 |
                                 static_cast<uint32_t>(intensity.val[2]));
-                cloud->points[i].intensity /*rgb*/ = *reinterpret_cast<float*>(&rgb);
+                cloud->points[i][3] /*rgb*/ = *reinterpret_cast<float*>(&rgb);
             }
 
             ++i;
@@ -567,7 +568,7 @@ PointCloudPCLPtr StereoSystem::getRectifiedSnapshot3D(int cameraIndex, float ima
 }
 
 
-PointCloudPCLPtr StereoSystem::triangulateOptimized(const cv::Mat &intensityImg,
+Z3D::ZSimplePointCloud::Ptr StereoSystem::triangulateOptimized(const cv::Mat &intensityImg,
                                                  std::map<int, std::vector<cv::Vec2f> > &leftFringePoints,
                                                  std::map<int, std::vector<cv::Vec2f> > &rightFringePoints,
                                                  int maxPosibleCloudPoints,
@@ -582,10 +583,10 @@ PointCloudPCLPtr StereoSystem::triangulateOptimized(const cv::Mat &intensityImg,
     /// we need calibrated cameras!
     if (!camLcal || !camRcal) {
         qWarning() << "invalid calibration! this only works for calibrated cameras!";
-        return PointCloudPCLPtr();
+        return Z3D::ZSimplePointCloud::Ptr(nullptr);
     }
 
-    PointCloudPCLPtr cloud(new PointCloudPCL);
+    Z3D::ZSimplePointCloud::Ptr cloud(new Z3D::ZSimplePointCloud());
 
     qDebug() << "maximum posible points in the cloud:" << maxPosibleCloudPoints;
 
@@ -647,7 +648,7 @@ PointCloudPCLPtr StereoSystem::triangulateOptimized(const cv::Mat &intensityImg,
 
     /// user of this function must check if it is valid
     qWarning() << "The point cloud could not be calculated, it's empty! Returning invalid cloud.";
-    return PointCloudPCLPtr();
+    return Z3D::ZSimplePointCloud::Ptr(nullptr);
 }
 
 void StereoSystem::setCamera1Calibration(Z3D::ZCameraCalibration::Ptr cameraCalibration)

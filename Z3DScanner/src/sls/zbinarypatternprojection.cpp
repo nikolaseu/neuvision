@@ -1,6 +1,6 @@
-#include "binarypatternprojection.h"
+#include "zbinarypatternprojection.h"
 
-#include "binarypatternprojectionconfigwidget.h"
+#include "zbinarypatternprojectionconfigwidget.h"
 
 #include <Z3DCameraAcquisition>
 
@@ -45,7 +45,8 @@ public:
 
 
 
-
+namespace Z3D
+{
 
 unsigned int binaryToGray(unsigned int num)
 {
@@ -333,8 +334,8 @@ cv::Mat simplifyBinaryPatternData(cv::Mat image, cv::Mat maskImg, std::map<int, 
 
 
 
-BinaryPatternProjection::BinaryPatternProjection(QObject *parent)
-    : QObject(parent)
+ZBinaryPatternProjection::ZBinaryPatternProjection(QObject *parent)
+    : ZPatternProjection(parent)
     , m_dlpview(0)
     , m_configWidget(0)
     , m_delayMs(400)
@@ -381,26 +382,27 @@ BinaryPatternProjection::BinaryPatternProjection(QObject *parent)
     m_dlpview->rootContext()->setContextProperty("window", m_dlpview);
 }
 
-BinaryPatternProjection::~BinaryPatternProjection()
+ZBinaryPatternProjection::~ZBinaryPatternProjection()
 {
     qDebug() << "deleting projector window...";
     if (m_dlpview)
         m_dlpview->deleteLater();
 }
 
-void BinaryPatternProjection::showProjectionWindow()
+void ZBinaryPatternProjection::showProjectionWindow()
 {
     m_dlpview->showFullScreen();
 }
 
-void BinaryPatternProjection::hideProjectionWindow()
+void ZBinaryPatternProjection::hideProjectionWindow()
 {
     m_dlpview->hide();
 }
 
-void BinaryPatternProjection::setProjectionWindowGeometry(const QRect &geometry)
+void ZBinaryPatternProjection::setProjectionWindowGeometry(const QRect &geometry)
 {
     m_dlpview->setGeometry(geometry);
+    //m_dlpview->setGeometry(geometry.center().x()-60, geometry.center().y()-60, 120, 120);
 
     /// to skip useless patterns
     /// log2(number) == log(number)/log(2)
@@ -411,15 +413,15 @@ void BinaryPatternProjection::setProjectionWindowGeometry(const QRect &geometry)
     setAutomaticPatternCount(m_automaticPatternCount);
 }
 
-QWidget *BinaryPatternProjection::configWidget()
+QWidget *ZBinaryPatternProjection::configWidget()
 {
     if (!m_configWidget)
-        m_configWidget = new BinaryPatternProjectionConfigWidget(this);
+        m_configWidget = new ZBinaryPatternProjectionConfigWidget(this);
 
     return m_configWidget;
 }
 
-void BinaryPatternProjection::scan()
+void ZBinaryPatternProjection::beginScan()
 {
     bool previewWasEnabled = setPreviewEnabled(true);
 
@@ -434,56 +436,25 @@ void BinaryPatternProjection::scan()
     qDebug() << "maxUsefulPatterns:" << m_maxUsefulPatterns;
     qDebug() << "numPatterns:" << m_numPatterns << "firstPatternToShow:" << firstPatternToShow;
 
-    int numPatterns = qMax(m_numPatterns, m_maxUsefulPatterns) - firstPatternToShow + 1;
+    //int numPatterns = qMax(m_numPatterns, m_maxUsefulPatterns) - firstPatternToShow + 1;
 
-    Z3D::DecodedPattern::Ptr decodedPattern(new Z3D::DecodedPattern(m_camList.size()));
+    QString scanTmpFolder = QString("tmp/dlpscans/%1").arg(QDateTime::currentDateTime().toString("yyyy.MM.dd_hh.mm.ss"));
 
-    decodedPattern->scanTmpFolder = QString("tmp/dlpscans/%1").arg(QDateTime::currentDateTime().toString("yyyy.MM.dd_hh.mm.ss"));
-
-    foreach (Z3D::ZCalibratedCamera::Ptr calibratedCam, m_camList) {
-        Z3D::ZCameraInterface::Ptr cam = calibratedCam->camera();
-
-        if (m_debugMode) {
-            QString cameraFolder = QString("%1/%2").arg(decodedPattern->scanTmpFolder).arg(cam->uuid());
-            if (!QDir::current().mkpath(cameraFolder)) {
-                qWarning() << "Unable to create folder:" << cameraFolder;
-                return;
-            }
-        }
-
-        /// start acquisition
-        cam->startAcquisition();
-    }
-
-    /// 1st index: camera
-    /// 2nd index: normal/inverted
-    /// 3rd index: image number
-    std::vector< std::vector< std::vector<cv::Mat> > > allImages;
+    emit prepareAcquisition(scanTmpFolder);
 
     setVertical(m_vertical);
 
-    /// 1st index: camera
-    /// 2nd index: normal/inverted
-    /// 3rd index: image number
-    allImages.resize(m_camList.size());
-    for (int iCam=0; iCam<m_camList.size(); ++iCam) {
-        allImages[iCam].resize(2);
-        allImages[iCam][0].resize(numPatterns); // images
-        allImages[iCam][1].resize(numPatterns); // inverted images
-    }
+
 
     /// acquisition time
     QTime acquisitionTime;
     acquisitionTime.start();
 
-    int realIndex = -1;
     for (int iPattern=0; iPattern <= m_maxUsefulPatterns; ++iPattern) {
         /// always show first (all white, used to stablish the noise threshold)
         /// but skip all up to firstPatternToShow
         if (iPattern && iPattern<=firstPatternToShow)
             continue;
-
-        realIndex++;
 
         setCurrentPattern(iPattern);
 
@@ -502,76 +473,65 @@ void BinaryPatternProjection::scan()
             QCoreApplication::processEvents();
             QCoreApplication::processEvents();
 
-            for (int iCam=0; iCam<m_camList.size(); ++iCam) {
-                Z3D::ZCameraInterface::Ptr cam = m_camList[iCam]->camera();
+            QString fileName = QString("%1_%2%3.png")
+                    .arg(m_useGrayBinary?"gray":"binary")
+                    .arg(iPattern, 2, 10, QLatin1Char('0'))
+                    .arg(inverted?"_inv":"");
 
-                QString fileName = QString("%1_%2%3.png")
-                        .arg(m_useGrayBinary?"gray":"binary")
-                        .arg(iPattern, 2, 10, QLatin1Char('0'))
-                        .arg(inverted?"_inv":"");
-
-                /// if the camera is simulated, set which image should use now
-                if (cam->uuid().startsWith("ZSIMULATED")) {
-                    qDebug() << "camera is simulated. using image" << fileName;
-                    cam->setAttribute("CurrentFile", fileName);
-                    QCoreApplication::processEvents();
-                    QCoreApplication::processEvents();
-                }
-
-                /// Retrieve an image
-                Z3D::ZImageGrayscale::Ptr imptr = cam->getSnapshot();
-
-                if (!imptr) {
-                    qCritical() << "error obtaining snapshot for camera" << cam->uuid();
-                    return;
-                }
-
-                cv::Mat image = imptr->cvMat().clone();
-
-                if (decodedPattern->intensityImg.empty()) {
-                    decodedPattern->intensityImg = image;
-                }
-
-                allImages[iCam][inverted][realIndex] = image;
-
-                if (m_debugMode) {
-                    /// save image
-                    cv::imwrite(qPrintable(QString("%1/%2/%3")
-                                           .arg(decodedPattern->scanTmpFolder)
-                                           .arg(cam->uuid())
-                                           .arg(fileName)),
-                                image);
-                }
-            }
+            emit acquireSingle(fileName);
         }
     }
 
     qDebug() << "acquisition finished in" << acquisitionTime.elapsed() << "msecs";
 
+    emit finishAcquisition();
 
-    /// FIXME esto es por las dudas pero deberia solucionarlo antes
-    for (int iCam=0; iCam<m_camList.size(); ++iCam) {
-        allImages[iCam][0].resize(realIndex+1); // images
-        allImages[iCam][1].resize(realIndex+1); // inverted images
-    }
+    /// return previous state
+    setPreviewEnabled(previewWasEnabled);
+}
 
+void ZBinaryPatternProjection::processImages(std::vector< std::vector<Z3D::ZImageGrayscale::Ptr> > acquiredImages, QString scanTmpFolder)
+{
+    /// acquiredImages indexing
+    ///     1st index: image number / order
+    ///     2nd index: camera index
+    auto numImages = acquiredImages.size();
+    auto numPatterns = numImages / 2;
+    auto numCameras = acquiredImages.front().size();
 
-    /// stop acquisition
-    foreach (Z3D::ZCalibratedCamera::Ptr calibratedCam, m_camList) {
-        Z3D::ZCameraInterface::Ptr cam = calibratedCam->camera();
-        cam->stopAcquisition();
+    /// allImages indexing
+    ///     1st index: camera
+    ///     2nd index: normal/inverted
+    ///     3rd index: image number
+    std::vector< std::vector< std::vector<cv::Mat> > > allImages;
+
+    allImages.resize(numCameras);
+    for (unsigned int iCam=0; iCam<numCameras; ++iCam) {
+        allImages[iCam].resize(2);
+        allImages[iCam][0].resize(numPatterns); // images
+        allImages[iCam][1].resize(numPatterns); // inverted images
+
+        for (unsigned int iPattern=0; iPattern<numPatterns; ++iPattern) {
+            int imageIndex = 2 * iPattern;
+            allImages[iCam][0][iPattern] = acquiredImages[imageIndex  ][iCam]->cvMat();
+            allImages[iCam][1][iPattern] = acquiredImages[imageIndex+1][iCam]->cvMat();
+        }
     }
 
     /// decodification time
     QTime decodeTime;
     decodeTime.start();
 
-    for (int iCam=0; iCam<m_camList.size(); ++iCam) {
+    Z3D::ZDecodedPattern::Ptr decodedPattern(new Z3D::ZDecodedPattern(numCameras));
+    decodedPattern->scanTmpFolder = scanTmpFolder;
+    decodedPattern->intensityImg = allImages.front().front().front();
+
+    for (unsigned int iCam=0; iCam<numCameras; ++iCam) {
         /// decode images
 
-        std::vector< std::vector<cv::Mat> > &cameraImages = allImages[iCam];
-        std::vector<cv::Mat> &whiteImages = cameraImages[0];
-        std::vector<cv::Mat> &inverseImages = cameraImages[1];
+        auto &cameraImages = allImages[iCam];
+        auto &whiteImages = cameraImages[0];
+        auto &inverseImages = cameraImages[1];
 
         /// the first images are the all white, all black
         /// they are used to create the mask of valid pixels
@@ -590,9 +550,9 @@ void BinaryPatternProjection::scan()
         cv::Mat decoded = decodeBinaryPatternImages(whiteImages, inverseImages, maskImg, m_useGrayBinary);
 
         if (m_debugMode) {
-            cv::imwrite(qPrintable(QString("%1/%2/decoded.tiff")
-                                   .arg(decodedPattern->scanTmpFolder)
-                                   .arg(m_camList[iCam]->camera()->uuid())),
+            cv::imwrite(qPrintable(QString("%1/decoded_%2.tiff")
+                                   .arg(scanTmpFolder)
+                                   .arg(iCam)),
                         decoded);
 
 //            /// test
@@ -629,7 +589,7 @@ void BinaryPatternProjection::scan()
 
         /// to know how many point we could have (to reserve memory)
         int totalPoints = 0;
-        for (std::map<int, std::vector<cv::Vec2f> >::iterator it = fringePoints.begin(); it != fringePoints.end(); ++it) {
+        for (auto it = fringePoints.cbegin(); it != fringePoints.cend(); ++it) {
             totalPoints += it->second.size();
         }
         decodedPattern->estimatedCloudPoints += totalPoints;
@@ -644,22 +604,14 @@ void BinaryPatternProjection::scan()
 
     /// notify result
     emit patternDecoded(decodedPattern);
-
-    /// return previous state
-    setPreviewEnabled(previewWasEnabled);
 }
 
-void BinaryPatternProjection::setCameras(QList<Z3D::ZCalibratedCamera::Ptr> cameraList)
-{
-    m_camList = cameraList;
-}
-
-double BinaryPatternProjection::intensity()
+double ZBinaryPatternProjection::intensity()
 {
     return m_intensity;
 }
 
-void BinaryPatternProjection::setIntensity(double arg)
+void ZBinaryPatternProjection::setIntensity(double arg)
 {
     if (m_intensity != arg) {
         m_intensity = arg;
@@ -667,12 +619,12 @@ void BinaryPatternProjection::setIntensity(double arg)
     }
 }
 
-int BinaryPatternProjection::currentPattern()
+int ZBinaryPatternProjection::currentPattern()
 {
     return m_currentPattern;
 }
 
-void BinaryPatternProjection::setCurrentPattern(int arg)
+void ZBinaryPatternProjection::setCurrentPattern(int arg)
 {
     if (m_currentPattern != arg) {
         m_currentPattern = arg;
@@ -680,12 +632,12 @@ void BinaryPatternProjection::setCurrentPattern(int arg)
     }
 }
 
-bool BinaryPatternProjection::inverted()
+bool ZBinaryPatternProjection::inverted()
 {
     return m_inverted;
 }
 
-void BinaryPatternProjection::setInverted(bool arg)
+void ZBinaryPatternProjection::setInverted(bool arg)
 {
     if (m_inverted != arg) {
         m_inverted = arg;
@@ -693,12 +645,12 @@ void BinaryPatternProjection::setInverted(bool arg)
     }
 }
 
-bool BinaryPatternProjection::vertical()
+bool ZBinaryPatternProjection::vertical()
 {
     return m_vertical;
 }
 
-void BinaryPatternProjection::setVertical(bool arg)
+void ZBinaryPatternProjection::setVertical(bool arg)
 {
     if (m_vertical != arg) {
         m_vertical = arg;
@@ -706,12 +658,12 @@ void BinaryPatternProjection::setVertical(bool arg)
     }
 }
 
-bool BinaryPatternProjection::useGrayBinary()
+bool ZBinaryPatternProjection::useGrayBinary()
 {
     return m_useGrayBinary;
 }
 
-void BinaryPatternProjection::setUseGrayBinary(bool arg)
+void ZBinaryPatternProjection::setUseGrayBinary(bool arg)
 {
     if (m_useGrayBinary != arg) {
         m_useGrayBinary = arg;
@@ -719,12 +671,12 @@ void BinaryPatternProjection::setUseGrayBinary(bool arg)
     }
 }
 
-int BinaryPatternProjection::delayMs() const
+int ZBinaryPatternProjection::delayMs() const
 {
     return m_delayMs;
 }
 
-void BinaryPatternProjection::setDelayMs(int arg)
+void ZBinaryPatternProjection::setDelayMs(int arg)
 {
     if (m_delayMs != arg) {
         m_delayMs = arg;
@@ -732,12 +684,12 @@ void BinaryPatternProjection::setDelayMs(int arg)
     }
 }
 
-int BinaryPatternProjection::noiseThreshold() const
+int ZBinaryPatternProjection::noiseThreshold() const
 {
     return m_noiseThreshold;
 }
 
-void BinaryPatternProjection::setNoiseThreshold(int arg)
+void ZBinaryPatternProjection::setNoiseThreshold(int arg)
 {
     if (m_noiseThreshold != arg) {
         m_noiseThreshold = arg;
@@ -745,12 +697,12 @@ void BinaryPatternProjection::setNoiseThreshold(int arg)
     }
 }
 
-int BinaryPatternProjection::numPatterns() const
+int ZBinaryPatternProjection::numPatterns() const
 {
     return m_numPatterns;
 }
 
-void BinaryPatternProjection::setNumPatterns(int arg)
+void ZBinaryPatternProjection::setNumPatterns(int arg)
 {
     if (m_numPatterns != arg) {
         m_numPatterns = arg;
@@ -764,12 +716,12 @@ void BinaryPatternProjection::setNumPatterns(int arg)
     }
 }
 
-bool BinaryPatternProjection::debugMode() const
+bool ZBinaryPatternProjection::debugMode() const
 {
     return m_debugMode;
 }
 
-void BinaryPatternProjection::setDebugMode(bool arg)
+void ZBinaryPatternProjection::setDebugMode(bool arg)
 {
     if (m_debugMode != arg) {
         m_debugMode = arg;
@@ -777,12 +729,12 @@ void BinaryPatternProjection::setDebugMode(bool arg)
     }
 }
 
-bool BinaryPatternProjection::previewEnabled() const
+bool ZBinaryPatternProjection::previewEnabled() const
 {
     return m_previewEnabled;
 }
 
-bool BinaryPatternProjection::setPreviewEnabled(bool arg)
+bool ZBinaryPatternProjection::setPreviewEnabled(bool arg)
 {
     bool previousPreviewState = m_previewEnabled;
 
@@ -799,12 +751,12 @@ bool BinaryPatternProjection::setPreviewEnabled(bool arg)
     return previousPreviewState;
 }
 
-bool BinaryPatternProjection::automaticPatternCount() const
+bool ZBinaryPatternProjection::automaticPatternCount() const
 {
     return m_automaticPatternCount;
 }
 
-void BinaryPatternProjection::setAutomaticPatternCount(bool arg)
+void ZBinaryPatternProjection::setAutomaticPatternCount(bool arg)
 {
     if (m_automaticPatternCount != arg) {
         m_automaticPatternCount = arg;
@@ -816,4 +768,4 @@ void BinaryPatternProjection::setAutomaticPatternCount(bool arg)
     }
 }
 
-
+} // namespace Z3D

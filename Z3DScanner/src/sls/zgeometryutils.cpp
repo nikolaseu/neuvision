@@ -1,4 +1,4 @@
-#include "geometryutils.h"
+#include "zgeometryutils.h"
 
 cv::Vec3d GeometryUtils::intersectLineWithLine3D(const cv::Vec3d &q1, const cv::Vec3d &v1, const cv::Vec3d &q2, const cv::Vec3d &v2, double *distance)
 {

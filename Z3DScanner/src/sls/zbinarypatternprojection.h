@@ -1,11 +1,9 @@
 #ifndef BINARYPATTERNPROJECTION_H
 #define BINARYPATTERNPROJECTION_H
 
-#include "decodedpattern.h"
+#include "zpatternprojection.h"
 
 #include <Z3DCalibratedCamera>
-
-#include <QObject>
 
 #if QT_VERSION < 0x050000
 class QDeclarativeView;
@@ -13,10 +11,12 @@ class QDeclarativeView;
 class QQuickView;
 #endif
 
-class BinaryPatternProjectionConfigWidget;
+namespace Z3D
+{
 
+class ZBinaryPatternProjectionConfigWidget;
 
-class BinaryPatternProjection : public QObject
+class ZBinaryPatternProjection : public ZPatternProjection
 {
     Q_OBJECT
 
@@ -33,12 +33,10 @@ class BinaryPatternProjection : public QObject
     Q_PROPERTY(bool previewEnabled READ previewEnabled WRITE setPreviewEnabled NOTIFY previewEnabledChanged)
 
 public:
-    explicit BinaryPatternProjection(QObject *parent = 0);
-    ~BinaryPatternProjection();
+    explicit ZBinaryPatternProjection(QObject *parent = 0);
+    ~ZBinaryPatternProjection();
 
 signals:
-    void patternDecoded(Z3D::DecodedPattern::Ptr pattern);
-
     void intensityChanged(double);
     void currentPatternChanged(int);
     void invertedChanged(bool);
@@ -52,15 +50,14 @@ signals:
     void automaticPatternCountChanged(bool arg);
 
 public slots:
+    // from ZPatternProjection
+    virtual QWidget *configWidget() override;
+    virtual void beginScan() override;
+    virtual void processImages(std::vector< std::vector<Z3D::ZImageGrayscale::Ptr> > acquiredImages, QString scanTmpFolder) override;
+
     void showProjectionWindow();
     void hideProjectionWindow();
     void setProjectionWindowGeometry(const QRect &geometry);
-
-    QWidget *configWidget();
-
-    void scan();
-
-    void setCameras(QList<Z3D::ZCalibratedCamera::Ptr> cameraList);
 
     double intensity();
     void setIntensity(double arg);
@@ -102,9 +99,7 @@ protected:
     QQuickView *m_dlpview;
 #endif
 
-    BinaryPatternProjectionConfigWidget *m_configWidget;
-
-    QList<Z3D::ZCalibratedCamera::Ptr> m_camList;
+    ZBinaryPatternProjectionConfigWidget *m_configWidget;
 
     int m_delayMs;
     int m_noiseThreshold;
@@ -121,5 +116,7 @@ protected:
 
     int m_maxUsefulPatterns;
 };
+
+} // namespace Z3D
 
 #endif // BINARYPATTERNPROJECTION_H

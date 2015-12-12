@@ -4,15 +4,12 @@
 #include <Z3DCalibratedCamera>
 #include <Z3DCameraAcquisition>
 
-#include "zcameracalibratorwidget.h"
-#include "zmulticameracalibratorwidget.h"
-
-#include "zcloudview.h"
-#include "src/sls/threephase.h"
-#include "src/sls/stereosystem.h"
+#include "src/sls/zstereostructuredlightsystem.h"
+//#include "zcloudview.h"
+#include "src/sls/zbinarypatternprojection.h"
 
 
-#include <pcl/io/pcd_io.h>
+//#include <pcl/io/pcd_io.h>
 
 #include <QDateTime>
 #include <QDebug>
@@ -28,10 +25,9 @@
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
-    , m_currentPatternProjection(0)
-    , m_stereoSystem(0)
-    , m_cloudViewer(0)
-    , m_calibrationWindow(0)
+    , m_currentPatternProjection(nullptr)
+    , m_structuredLightSystem(nullptr)
+    /// FIXME , m_cloudViewer(nullptr)
 {
     ui->setupUi(this);
 
@@ -67,7 +63,7 @@ MainWindow::MainWindow(QWidget *parent)
                      this, SLOT(take3dCameraSnapshot(int)));
 
     /// disable all until ready
-    ui->centralwidget->setEnabled(false);
+    //ui->centralwidget->setEnabled(false);
 
     /// finish initialization
     QTimer::singleShot(0, this, SLOT(init()));
@@ -76,26 +72,14 @@ MainWindow::MainWindow(QWidget *parent)
 MainWindow::~MainWindow()
 {
     qDebug() << "deleting pattern projection instances...";
-    foreach(BinaryPatternProjection *patternProjection, m_patternProjectionList) {
+    foreach(Z3D::ZPatternProjection *patternProjection, m_patternProjectionList) {
         delete patternProjection;
     }
 
-    qDebug() << "deleting stereo system...";
-    if (m_stereoSystem)
-        delete m_stereoSystem;
-
-    qDebug() << "deleting cameras...";
-//    foreach(Z3D::CalibratedCamera::Ptr camera, m_camList)
-//        delete camera.data();
-    m_camList.clear();
-
     qDebug() << "deleting cloud viewer...";
-    if (m_cloudViewer)
-        m_cloudViewer->deleteLater();
-
-    qDebug() << "deleting calibration window...";
-    if (m_calibrationWindow)
-        m_calibrationWindow->deleteLater();
+    /// FIXME
+    /// if (m_cloudViewer)
+    ///     m_cloudViewer->deleteLater();
 
     qDebug() << "deleting ui...";
     delete ui;
@@ -105,53 +89,38 @@ MainWindow::~MainWindow()
 
 void MainWindow::init()
 {
+    m_structuredLightSystem = new Z3D::ZStereoStructuredLightSystem();
+    connect(m_structuredLightSystem, &Z3D::ZStructuredLightSystem::scanFinished,
+            this, &MainWindow::onScanFinished);
+    connect(ui->startAcquisitionButton, &QCommandLinkButton::clicked,
+            m_structuredLightSystem, &Z3D::ZStructuredLightSystem::start);
+
     /// connect combobox to slot
-    QObject::connect(ui->patternTypeComboBox, SIGNAL(currentIndexChanged(int)),
-                     this, SLOT(onPatternProjectionTypeChanged(int)));
+    connect(ui->patternTypeComboBox, SIGNAL(currentIndexChanged(int)),
+            this, SLOT(onPatternProjectionTypeChanged(int)));
 
     /// add types of pattern projection
-    m_patternProjectionList << new BinaryPatternProjection();
+    m_patternProjectionList << new Z3D::ZBinaryPatternProjection();
     ui->patternTypeComboBox->addItem("Binary");
-
-    foreach(BinaryPatternProjection *patternProjection, m_patternProjectionList) {
-        /// this are common events, connect all
-        QObject::connect(this, SIGNAL(cameraListChanged(QList<Z3D::ZCalibratedCamera::Ptr>)),
-                         patternProjection, SLOT(setCameras(QList<Z3D::ZCalibratedCamera::Ptr>)));
-        QObject::connect(patternProjection, SIGNAL(patternDecoded(Z3D::DecodedPattern::Ptr)),
-                         this, SLOT(onPatternDecoded(Z3D::DecodedPattern::Ptr)));
-    }
-
-    /// add configured cameras
-    addCameras( Z3D::CalibratedCameraProvider::loadCameras() );
 }
 
 void MainWindow::closeEvent(QCloseEvent * /*event*/)
 {
-    /// closing the main window causes to quit the program
+    /// closing the main window causes the program to quit
     qApp->quit();
 }
 
-Z3D::ZCloudView *MainWindow::getCloudViewer()
-{
-    if (!m_cloudViewer) {
-        m_cloudViewer = new Z3D::ZCloudView();
-    }
+/// FIXME
+//Z3D::ZCloudView *MainWindow::getCloudViewer()
+//{
+//    if (!m_cloudViewer) {
+//        m_cloudViewer = new Z3D::ZCloudView();
+//    }
 
-    m_cloudViewer->show();
+//    m_cloudViewer->show();
 
-    return m_cloudViewer;
-}
-
-QWidget *MainWindow::getCalibrationWindow()
-{
-    if (!m_calibrationWindow) {
-        m_calibrationWindow = new Z3D::ZMultiCameraCalibratorWidget(m_camList);
-    }
-
-    m_calibrationWindow->show();
-
-    return m_calibrationWindow;
-}
+//    return m_cloudViewer;
+//}
 
 void MainWindow::onPatternProjectionTypeChanged(int index)
 {
@@ -164,18 +133,12 @@ void MainWindow::onPatternProjectionTypeChanged(int index)
         QObject::disconnect(ui->startAcquisitionButton, SIGNAL(clicked()),
                             m_currentPatternProjection, SLOT(showProjectionWindow()));
         QObject::disconnect(ui->startAcquisitionButton, SIGNAL(clicked()),
-                            m_currentPatternProjection, SLOT(scan()));
+                            m_currentPatternProjection, SLOT(beginScan()));
     }
 
     /// update current pattern finder
     m_currentPatternProjection = m_patternProjectionList[index];
-
-    /// connect events
-    /// this is with direct connection because we need to execute this from the gui thread, otherwise sometimes it crashes
-    QObject::connect(ui->startAcquisitionButton, SIGNAL(clicked()),
-                     m_currentPatternProjection, SLOT(showProjectionWindow()), Qt::DirectConnection);
-    QObject::connect(ui->startAcquisitionButton, SIGNAL(clicked()),
-                     m_currentPatternProjection, SLOT(scan()));
+    m_structuredLightSystem->setPatternProjection(m_currentPatternProjection);
 
     /// add config widget
     QWidget *currentWidget = m_currentPatternProjection->configWidget();
@@ -186,7 +149,7 @@ void MainWindow::onPatternProjectionTypeChanged(int index)
 #endif
 }
 
-void MainWindow::addCameras(QList<Z3D::ZCalibratedCamera::Ptr> cameras)
+/*void MainWindow::addCameras(QList<Z3D::ZCalibratedCamera::Ptr> cameras)
 {
     /// get starting index for the new cameras
     const QList<QAction*> &actionsList = ui->menuCameras->actions();
@@ -242,53 +205,33 @@ void MainWindow::addCameras(QList<Z3D::ZCalibratedCamera::Ptr> cameras)
         ui->menuCameras->insertMenu(insertBeforeThisAction, camSubmenu);
     }
 
-    if (m_camList.size() >= 2 && !m_stereoSystem) {
-        m_stereoSystem = new StereoSystem();
-
-        m_stereoSystem->setCamera1(m_camList[0]);
-        m_stereoSystem->setCamera2(m_camList[1]);
-
-        m_stereoSystem->stereoRectify();
-
-        /// activate menu and connect actions
-        ui->menu3dReconstruction->setEnabled(true);
-
-        QObject::connect(m_stereoSystem, SIGNAL(readyChanged(bool)),
-                         ui->centralwidget, SLOT(setEnabled(bool)));
-
-        QObject::connect(ui->actionUpdateCalibration, SIGNAL(triggered()),
-                         m_stereoSystem, SLOT(stereoRectify()));
-    } else {
-        ui->statusbar->showMessage(tr("3D reconstruction will not be available. Not enough cameras"));
-    }
-
     emit cameraListChanged(m_camList);
-}
+}*/
 
 void MainWindow::openCameraPreview(int camIndex)
 {
-    Z3D::ZCameraInterface::Ptr pCamera = m_camList[camIndex]->camera();
+    /*Z3D::ZCameraInterface::Ptr pCamera = m_camList[camIndex]->camera();
     Z3D::ZCameraPreviewer *previewDialog = new Z3D::ZCameraPreviewer();
     previewDialog->setCamera(pCamera);
-    previewDialog->show();
+    previewDialog->show();*/
 }
 
 void MainWindow::openCameraSettingsDialog(int camIndex)
 {
-    Z3D::ZCameraInterface::Ptr pCamera = m_camList[camIndex]->camera();
-    pCamera->showSettingsDialog();
+    /*Z3D::ZCameraInterface::Ptr pCamera = m_camList[camIndex]->camera();
+    pCamera->showSettingsDialog();*/
 }
 
 void MainWindow::openCameraCalibrationWindow(int camIndex)
 {
-    Z3D::ZCalibratedCamera::Ptr camera = m_camList[camIndex];
+    /*Z3D::ZCalibratedCamera::Ptr camera = m_camList[camIndex];
     Z3D::ZCameraCalibratorWidget *calibrator = new Z3D::ZCameraCalibratorWidget(camera);
-    calibrator->show();
+    calibrator->show();*/
 }
 
 void MainWindow::loadCameraCalibrationFile(int camIndex)
 {
-    Z3D::ZCameraCalibration::Ptr calibration = m_camList[camIndex]->calibration();
+    /*Z3D::ZCameraCalibration::Ptr calibration = m_camList[camIndex]->calibration();
 
     QString fileName = QFileDialog::getOpenFileName(this,
                                                     tr("Select camera calibration file"),
@@ -299,132 +242,74 @@ void MainWindow::loadCameraCalibrationFile(int camIndex)
         if (!calibration->loadFromFile(fileName))
             qCritical() << "calibration could not be loaded";
         //! TODO agregar cartel con mensaje de error
-    }
+    }*/
 }
 
 void MainWindow::take3dCameraSnapshot(int camIndex)
 {
-    getCloudViewer()->showCameraSnapshot(m_camList[camIndex]);
+    //getCloudViewer()->showCameraSnapshot(m_camList[camIndex]);
 }
 
-void MainWindow::onPatternDecoded(Z3D::DecodedPattern::Ptr decodedPattern)
+void MainWindow::onScanFinished(Z3D::ZSimplePointCloud::Ptr cloud)
 {
-    /// is there something to process?
-    if (decodedPattern->estimatedCloudPoints < 1)
-        return;
-
-    //! TODO: add debug option to enable saving fringe points to file?
-    if (false) {
-        for (unsigned int iCam=0; iCam<decodedPattern->fringePointsList.size(); iCam++) {
-
-            std::map<int, std::vector<cv::Vec2f> > &fringePoints = decodedPattern->fringePointsList[iCam];
-            QFile file(QString("%1/%2.fringePoints.txt").arg(decodedPattern->scanTmpFolder).arg(iCam));
-            if (file.open(QIODevice::WriteOnly | QIODevice::Text)) {
-                QTextStream fileTextStream(&file);
-                fileTextStream << "FringeID PixelX PixelY\n";
-                int totalPoints = 0;
-                for(std::map<int, std::vector<cv::Vec2f> >::iterator it = fringePoints.begin(); it != fringePoints.end(); ++it) {
-                    const std::vector<cv::Vec2f> &pointsVector = it->second;
-                    int pointsAmount = pointsVector.size();
-                    for (int index = 0; index<pointsAmount; ++index) {
-                        const cv::Vec2f &point = pointsVector[index];
-                        fileTextStream << it->first << " " << point[0] << " " << point[1] << "\n";
-                    }
-                }
-                fileTextStream.flush();
-                file.flush();
-                file.close();
-                qDebug() << "TOTAL POINTS:" << totalPoints;
-            } else {
-                qCritical() << "cant open file to write fringePoints" << file.fileName();
-            }
-        }
-    }
-
-    if (ui->debugShowDecodedImagesCheckBox->isChecked() || ui->debugShowFringesCheckBox->isChecked()) {
-        double minVal,
-               maxVal,
-               absMinVal = DBL_MAX,
-               absMaxVal = DBL_MIN;
-
-        /// only to show in the window, we need to change image "range" to improve visibility
-        for (unsigned int iCam=0; iCam<decodedPattern->fringePointsList.size(); iCam++) {
-            cv::Mat &decoded = decodedPattern->decodedImage[iCam];
-
-            ///find minimum and maximum intensities
-            minMaxLoc(decoded, &minVal, &maxVal);
-
-            /// minimum will always be zero, we need to find the minimum != 0
-            /// we set maxVal where value is zero
-            cv::Mat mask = decoded == 0;
-            decoded.setTo(cv::Scalar(maxVal), mask);
-
-            /// find correct minimum and maximum intensities (skipping zeros)
-            minMaxLoc(decoded, &minVal, &maxVal);
-
-            /// return back to original
-            decoded.setTo(cv::Scalar(0), mask);
-
-            if (absMinVal > minVal)
-                absMinVal = minVal;
-            if (absMaxVal < maxVal)
-                absMaxVal = maxVal;
-        }
-
-        /// range of values
-        double range = (absMaxVal - absMinVal);
-
-        if (ui->debugShowDecodedImagesCheckBox->isChecked()) {
-            for (unsigned int iCam=0; iCam<decodedPattern->fringePointsList.size(); iCam++) {
-                cv::Mat &decodedImage = decodedPattern->decodedImage[iCam];
-
-                /// convert to "visible" image to show in window
-                cv::Mat decodedVisibleImage;
-                decodedImage.convertTo(decodedVisibleImage, CV_8U, 255.0/range, -absMinVal * 255.0/range);
-
-                Z3D::ZImageViewer *imageWidget = new Z3D::ZImageViewer();
-                imageWidget->setDeleteOnClose(true);
-                imageWidget->setWindowTitle(QString("Decoded image [Camera %1]").arg(iCam));
-                imageWidget->updateImage(decodedVisibleImage);
-                imageWidget->show();
-            }
-        }
-
-        if (ui->debugShowFringesCheckBox->isChecked()) {
-            for (unsigned int iCam=0; iCam<decodedPattern->fringePointsList.size(); iCam++) {
-                cv::Mat &decodedBorders = decodedPattern->fringeImage[iCam];
-
-                /// convert to "visible" image to show in window
-                cv::Mat decodedVisibleBorders;
-                decodedBorders.convertTo(decodedVisibleBorders, CV_8U, 255.0/range, -absMinVal * 255.0/range);
-
-                Z3D::ZImageViewer *imageWidget = new Z3D::ZImageViewer();
-                imageWidget->setDeleteOnClose(true);
-                imageWidget->setWindowTitle(QString("Fringe borders [Camera %1]").arg(iCam));
-                imageWidget->updateImage(decodedVisibleBorders);
-                imageWidget->show();
-            }
-        }
-    }
-
-    /// we need at least two cameras to continue
-    if (!m_stereoSystem)
-        return;
-
-    PointCloudPCLPtr cloud = m_stereoSystem->triangulateOptimized(
-                decodedPattern->intensityImg,
-                decodedPattern->fringePointsList[0],
-            decodedPattern->fringePointsList[1],
-            decodedPattern->estimatedCloudPoints,
-            ui->maxValidDistanceSpinBox->value());
-
     if (cloud) {
+        QDir folder = QDir::current();
+#if defined(Q_OS_MAC)
+        if (folder.dirName() == "MacOS") {
+            folder.cdUp();
+            folder.cdUp();
+            folder.cdUp();
+        }
+#endif
+        QString format = "asc";
+        //QString format = "pcd";
+        QString fileName = folder.absoluteFilePath(QString("%1_pointCloud.%2")
+                                                   .arg(QDateTime::currentMSecsSinceEpoch())
+                                                   .arg(format));
+        QFile file(fileName);
+        if (file.open(QIODevice::WriteOnly | QIODevice::Text)) {
+            QTextStream fileTextStream(&file);
+            if (format == "pcd") {
+                /// if trying to save to PCD format
+                fileTextStream << QString(
+                                  "# .PCD v.7 - Point Cloud Data file format\n"
+                                  "VERSION .7\n"
+                                  "FIELDS x y z rgb\n"
+                                  "SIZE 4 4 4 4\n"
+                                  "TYPE F F F F\n"
+                                  "COUNT 1 1 1 1\n"
+                                  "WIDTH %1\n"
+                                  "HEIGHT 1\n"
+                                  "VIEWPOINT 0 0 0 1 0 0 0\n"
+                                  "POINTS %1\n"
+                                  "DATA ascii\n")
+                                  .arg(cloud->points.size());
+                for (const auto &point : cloud->points) {
+                    fileTextStream << point[0] << " " << point[1] << " " << point[2] << " " << point[3] << "\n";
+                }
+            } else if (format == "asc") {
+                /// ASCII file format
+                for (const auto &point : cloud->points) {
+                    fileTextStream << point[0] << " " << point[1] << " " << point[2] << " " << point[3] << "\n";
+                }
+            }
+            fileTextStream.flush();
+            file.flush();
+            file.close();
+            qDebug() << "point cloud written to" << file.fileName();
+        } else {
+            qCritical() << "cant open file to write fringePoints" << file.fileName();
+        }
+
+
+
         /*
         QString filename = QString("%1/pointCloud.pcd").arg(decodedPattern->scanTmpFolder);
         qDebug() << "saving point cloud data to" << filename;
         pcl::io::savePCDFile(qPrintable(filename), *cloud);
         */
-        getCloudViewer()->addPointCloud(cloud);
+        /// FIXME
+        /// getCloudViewer()->addPointCloud(cloud);
     }
 }
 
@@ -512,7 +397,7 @@ void MainWindow::getThreePhasePatternPhotos()
 
 void MainWindow::on_actionCloudViewer_triggered()
 {
-    getCloudViewer()->raise();
+    /// FIXME getCloudViewer()->raise();
 }
 
 void MainWindow::on_actionQuit_triggered()
@@ -520,15 +405,10 @@ void MainWindow::on_actionQuit_triggered()
     qApp->quit();
 }
 
-void MainWindow::on_actionCalibrateSystem_triggered()
-{
-    getCalibrationWindow()->raise();
-}
-
 void MainWindow::on_actionShowSnapshot3D_triggered()
 {
     //! TODO esto no deberia estar funcionando asi, tengo que organizarlo mejor
-    for (int k=0; k<2; k++) {
+    /*for (int k=0; k<2; k++) {
         qDebug() << "obtaining rectified snapshot for camera" << k << "...";
         PointCloudPCLPtr cloud = m_stereoSystem->getRectifiedSnapshot3D(k, 80, 4);
         qDebug() << "removing previous cloud for rectified snapshot for camera" << k << "...";
@@ -539,5 +419,5 @@ void MainWindow::on_actionShowSnapshot3D_triggered()
         getCloudViewer()->getViewer()->addPointCloud<PointType>(cloud, rgb, qPrintable(QString("rectifiedSnapshot_%1").arg(k)) );
         qDebug() << "drawing frustrum for camera" << k << "...";
         getCloudViewer()->drawCameraFrustrum(m_camList[k], 500);
-    }
+    }*/
 }

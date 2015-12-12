@@ -23,28 +23,38 @@ win32:DEFINES += _USE_MATH_DEFINES # pcl-1.7 lo define, pero 1.6 no
 SOURCES += \
     src/main.cpp \
     src/ui/mainwindow.cpp \
-    src/sls/geometryutils.cpp \
-    src/sls/stereosystem.cpp \
-    src/sls/threephase.cpp \
-    src/sls/binarypatternprojection.cpp \
-    src/sls/decodedpattern.cpp \
-    src/sls/binarypatternprojectionconfigwidget.cpp \
-    zscannerinitialconfigwizard.cpp
+    src/zscannerinitialconfigwizard.cpp \
+    src/sls/zcameraacquisitionmanager.cpp \
+    src/sls/zpatternprojection.cpp \
+    src/sls/zstructuredlightsystem.cpp \
+    src/sls/zstereostructuredlightsystem.cpp \
+    src/sls/zsimplepointcloud.cpp \
+    src/sls/zbinarypatternprojection.cpp \
+    src/sls/zbinarypatternprojectionconfigwidget.cpp \
+    src/sls/zdecodedpattern.cpp \
+    src/sls/zstereosystem.cpp \
+    src/sls/zgeometryutils.cpp \
+    src/sls/zthreephase.cpp
 
 HEADERS += \
     src/ui/mainwindow.h \
-    src/sls/geometryutils.h \
-    src/sls/stereosystem.h \
-    src/sls/threephase.h \
-    src/sls/binarypatternprojection.h \
-    src/sls/decodedpattern.h \
-    src/sls/binarypatternprojectionconfigwidget.h \
-    zscannerinitialconfigwizard.h
+    src/zscannerinitialconfigwizard.h \
+    src/sls/zcameraacquisitionmanager.h \
+    src/sls/zpatternprojection.h \
+    src/sls/zstructuredlightsystem.h \
+    src/sls/zstereostructuredlightsystem.h \
+    src/sls/zsimplepointcloud.h \
+    src/sls/zbinarypatternprojection.h \
+    src/sls/zbinarypatternprojectionconfigwidget.h \
+    src/sls/zdecodedpattern.h \
+    src/sls/zstereosystem.h \
+    src/sls/zgeometryutils.h \
+    src/sls/zthreephase.h
 
 FORMS += \
     src/ui/mainwindow.ui \
-    src/sls/binarypatternprojectionconfigwidget.ui \
-    zscannerinitialconfigwizard.ui
+    src/zscannerinitialconfigwizard.ui \
+    src/sls/zbinarypatternprojectionconfigwidget.ui
 
 RESOURCES += \
     resources.qrc
@@ -57,7 +67,7 @@ include($$PWD/../3rdparty/opencv.pri)
 
 ###############################################################################
 # PCL, VTK, etc etc
-include($$PWD/../3rdparty/pcl.pri)
+#include($$PWD/../3rdparty/pcl.pri)
 
 ###############################################################################
 # Qt Solutions - Property Browser
@@ -85,7 +95,7 @@ include($$PWD/../lib/zcalibratedcamera/zcalibratedcamera.pri)
 
 ###############################################################################
 # Points clouds
-include($$PWD/../lib/zpointcloud/zpointcloud.pri)
+#include($$PWD/../lib/zpointcloud/zpointcloud.pri)
 
 ###############################################################################
 # Camera calibrator

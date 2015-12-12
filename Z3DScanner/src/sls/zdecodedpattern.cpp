@@ -1,13 +1,13 @@
-#include "decodedpattern.h"
+#include "zdecodedpattern.h"
 
 #include <QMetaType>
 
 namespace Z3D
 {
 
-static int z3dDecodedPatternPtrTypeId = qRegisterMetaType<Z3D::DecodedPattern::Ptr>("Z3D::DecodedPattern::Ptr");
+static int z3dDecodedPatternPtrTypeId = qRegisterMetaType<Z3D::ZDecodedPattern::Ptr>("Z3D::DecodedPattern::Ptr");
 
-DecodedPattern::DecodedPattern(int numOfCameras) :
+ZDecodedPattern::ZDecodedPattern(int numOfCameras) :
     estimatedCloudPoints(0)
 {
     fringePointsList.resize(numOfCameras);

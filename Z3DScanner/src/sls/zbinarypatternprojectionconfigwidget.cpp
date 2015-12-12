@@ -1,14 +1,17 @@
-#include "binarypatternprojectionconfigwidget.h"
-#include "ui_binarypatternprojectionconfigwidget.h"
+#include "zbinarypatternprojectionconfigwidget.h"
+#include "ui_zbinarypatternprojectionconfigwidget.h"
 
-#include "binarypatternprojection.h"
+#include "zbinarypatternprojection.h"
 
 #include <QDesktopWidget>
 
-BinaryPatternProjectionConfigWidget::BinaryPatternProjectionConfigWidget(
-        BinaryPatternProjection *binaryPatternProjection, QWidget *parent) :
+namespace Z3D
+{
+
+ZBinaryPatternProjectionConfigWidget::ZBinaryPatternProjectionConfigWidget(
+        ZBinaryPatternProjection *binaryPatternProjection, QWidget *parent) :
     QWidget(parent),
-    ui(new Ui::BinaryPatternProjectionConfigWidget),
+    ui(new Ui::ZBinaryPatternProjectionConfigWidget),
     m_binaryPatternProjection(binaryPatternProjection)
 {
     ui->setupUi(this);
@@ -114,19 +117,19 @@ BinaryPatternProjectionConfigWidget::BinaryPatternProjectionConfigWidget(
     ui->debugModeCheckBox->setChecked(m_binaryPatternProjection->debugMode());
 }
 
-BinaryPatternProjectionConfigWidget::~BinaryPatternProjectionConfigWidget()
+ZBinaryPatternProjectionConfigWidget::~ZBinaryPatternProjectionConfigWidget()
 {
     delete ui;
 }
 
-void BinaryPatternProjectionConfigWidget::onSelectedScreenChanged(int index)
+void ZBinaryPatternProjectionConfigWidget::onSelectedScreenChanged(int index)
 {
     QDesktopWidget *desktop = QApplication::desktop();
     const QRect screenGeometry = desktop->screenGeometry(index);
     m_binaryPatternProjection->setProjectionWindowGeometry(screenGeometry);
 }
 
-void BinaryPatternProjectionConfigWidget::updateScreens()
+void ZBinaryPatternProjectionConfigWidget::updateScreens()
 {
     ui->patternScreenComboBox->blockSignals(true);
 
@@ -161,3 +164,5 @@ void BinaryPatternProjectionConfigWidget::updateScreens()
         ui->patternScreenComboBox->setCurrentIndex(i);
     }
 }
+
+} // namespace Z3D

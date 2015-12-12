@@ -1,8 +1,8 @@
 #ifndef STEREOSYSTEM_H
 #define STEREOSYSTEM_H
 
-#include <Z3DCalibratedCamera>
-#include <Z3DPointCloud>
+#include "zcalibratedcamera.h"
+#include "zsimplepointcloud.h"
 
 #include "zpinhole/zpinholecameracalibration.h"
 
@@ -40,9 +40,9 @@ public slots:
     void stereoRectify(double alpha = -1);
 
 //    cv::Mat getRectifiedSnapshot2D();
-    PointCloudPCLPtr getRectifiedSnapshot3D(int cameraIndex, float imageScale = 50, int lod_step = 4);
+    Z3D::ZSimplePointCloud::Ptr getRectifiedSnapshot3D(int cameraIndex, float imageScale = 50, int lod_step = 4);
 
-    PointCloudPCLPtr triangulateOptimized(const cv::Mat &intensityImg,
+    Z3D::ZSimplePointCloud::Ptr triangulateOptimized(const cv::Mat &intensityImg,
                                           std::map<int, std::vector<cv::Vec2f> > &leftPoints,
                                           std::map<int, std::vector<cv::Vec2f> > &rightPoints,
                                           int maxPosibleCloudPoints,
