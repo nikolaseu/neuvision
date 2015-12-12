@@ -37,7 +37,7 @@ private:
 
     QList<Z3D::ZCalibratedCamera::Ptr> m_camList;
 
-    double m_maxValidDistance = 0.002;
+    double m_maxValidDistance;
 
     bool m_debugSaveFringePoints;
     bool m_debugShowDecodedImages;

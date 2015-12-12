@@ -13,7 +13,11 @@ namespace Z3D
 
 ZStereoStructuredLightSystem::ZStereoStructuredLightSystem(QObject *parent)
     : ZStructuredLightSystem(parent)
-    , m_stereoSystem(0)
+    , m_stereoSystem(nullptr)
+    , m_maxValidDistance(0.001)
+    , m_debugSaveFringePoints(false)
+    , m_debugShowDecodedImages(false)
+    , m_debugShowFringes(false)
 {
     /// finish initialization
     QTimer::singleShot(0, this, &ZStereoStructuredLightSystem::init);
@@ -182,11 +186,6 @@ void ZStereoStructuredLightSystem::onPatternDecoded(ZDecodedPattern::Ptr decoded
             m_maxValidDistance);
 
     if (cloud) {
-        /*
-        QString filename = QString("%1/pointCloud.pcd").arg(decodedPattern->scanTmpFolder);
-        qDebug() << "saving point cloud data to" << filename;
-        pcl::io::savePCDFile(qPrintable(filename), *cloud);
-        */
         emit scanFinished(cloud);
     }
 }
