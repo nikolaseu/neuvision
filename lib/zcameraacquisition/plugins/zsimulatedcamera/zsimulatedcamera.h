@@ -4,6 +4,7 @@
 #include "zcamerainterface_p.h"
 
 #include <QCache>
+#include <QDir>
 
 namespace Z3D
 {
@@ -36,6 +37,8 @@ protected slots:
 private:
     QString m_folder;
     QString m_currentFile;
+
+    QDir m_dir;
 
     int m_currentImageNumber;
 

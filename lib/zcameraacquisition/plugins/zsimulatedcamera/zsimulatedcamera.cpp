@@ -1,7 +1,6 @@
 #include "zsimulatedcamera.h"
 
 #include <QDebug>
-#include <QDir>
 #include <QTimer>
 
 namespace Z3D
@@ -14,6 +13,23 @@ SimulatedCamera::SimulatedCamera(QVariantMap options, QObject *parent)
 {
     m_uuid = QString("ZSIMULATED-%1").arg(options["Name"].toString());
     m_folder = options["Folder"].toString();
+
+    m_dir = QDir::current();
+    if (m_dir.exists(m_folder)) {
+        m_dir.cd(m_folder);
+    } else {
+#if defined(Q_OS_MAC)
+        if (m_dir.dirName() == "MacOS") {
+            m_dir.cdUp();
+            m_dir.cdUp();
+            m_dir.cdUp();
+        }
+        if (m_dir.exists(m_folder)) {
+            m_dir.cd(m_folder);
+        } else
+#endif
+            qWarning() << "Folder" << m_folder << "not found in" << m_dir.absolutePath();
+    }
 
     loadImageFromFilename("gray_00_inv.png");
 
@@ -72,7 +88,7 @@ void SimulatedCamera::loadImageFromFilename(QString fileName)
 {
     m_currentFile = fileName;
 
-    QString file = QDir(m_folder).absoluteFilePath(m_currentFile);
+    QString file = m_dir.absoluteFilePath(m_currentFile);
 
     if (!m_imageCache.contains(file)) {
         qDebug() << "image not found in cache:" << file;
