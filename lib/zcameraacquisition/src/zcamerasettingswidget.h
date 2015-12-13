@@ -9,12 +9,12 @@
 
 #include <QWidget>
 
-namespace Ui {
-class CameraSettingsWidget;
-}
-
 namespace Z3D
 {
+
+namespace Ui {
+class ZCameraSettingsWidget;
+}
 
 class Z3D_CAMERAACQUISITION_SHARED_EXPORT ZCameraSettingsWidget : public QWidget
 {
@@ -31,7 +31,7 @@ protected slots:
     void onCameraAttributeChanged(QString name, QVariant value);
 
 private:
-    Ui::CameraSettingsWidget *ui;
+    Ui::ZCameraSettingsWidget *ui;
 
     ZCameraInterface::WeakPtr m_camera;
 

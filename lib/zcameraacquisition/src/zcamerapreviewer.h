@@ -6,12 +6,13 @@
 
 #include <QWidget>
 
-namespace Ui {
-class CameraPreviewer;
-}
 
 namespace Z3D
 {
+
+namespace Ui {
+class ZCameraPreviewer;
+}
 
 class Z3D_CAMERAACQUISITION_SHARED_EXPORT ZCameraPreviewer : public QWidget
 {
@@ -19,6 +20,7 @@ class Z3D_CAMERAACQUISITION_SHARED_EXPORT ZCameraPreviewer : public QWidget
     
 public:
     explicit ZCameraPreviewer(QWidget *parent = 0);
+    explicit ZCameraPreviewer(Z3D::ZCameraInterface::Ptr camera, QWidget *parent = 0);
     ~ZCameraPreviewer();
 
 public slots:
@@ -35,7 +37,7 @@ private slots:
     void on_snapshotButton_clicked();
 
 private:
-    Ui::CameraPreviewer *ui;
+    Ui::ZCameraPreviewer *ui;
 
     Z3D::ZCameraInterface::Ptr m_camera;
 };

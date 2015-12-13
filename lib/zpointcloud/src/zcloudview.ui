@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>ZCloudView</class>
- <widget class="QMainWindow" name="ZCloudView">
+ <class>Z3D::ZCloudView</class>
+ <widget class="QMainWindow" name="Z3D::ZCloudView">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -38,7 +38,7 @@
      <x>0</x>
      <y>0</y>
      <width>640</width>
-     <height>21</height>
+     <height>22</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">

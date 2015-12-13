@@ -6,13 +6,13 @@
 
 #include <QWidget>
 
+namespace Z3D
+{
+
 namespace Ui
 {
 class ZCameraSelectorWidget;
 }
-
-namespace Z3D
-{
 
 class ZCameraInfo;
 class ZCameraPluginInterface;

@@ -6,12 +6,12 @@
 
 #include <QMainWindow>
 
-namespace Ui {
-class LTSCameraPreviewer;
-}
-
 namespace Z3D
 {
+
+namespace Ui {
+class ZLTSCameraPreviewer;
+}
 
 class LTSProfilePlot;
 
@@ -49,7 +49,7 @@ private slots:
     void on_scanViewDisplayModeComboBox_currentIndexChanged(int index);
 
 private:
-    Ui::LTSCameraPreviewer *ui;
+    Ui::ZLTSCameraPreviewer *ui;
 
     LTSProfilePlot *m_plot;
     QVector<QPointF> m_samples;

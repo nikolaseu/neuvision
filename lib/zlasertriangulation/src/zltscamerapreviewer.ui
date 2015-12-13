@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>LTSCameraPreviewer</class>
- <widget class="QMainWindow" name="LTSCameraPreviewer">
+ <class>Z3D::ZLTSCameraPreviewer</class>
+ <widget class="QMainWindow" name="Z3D::ZLTSCameraPreviewer">
   <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>640</width>
+    <width>793</width>
     <height>480</height>
    </rect>
   </property>
@@ -161,8 +161,8 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>640</width>
-     <height>21</height>
+     <width>793</width>
+     <height>22</height>
     </rect>
    </property>
   </widget>

@@ -6,12 +6,12 @@
 
 #include <QDialog>
 
+namespace Z3D
+{
+
 namespace Ui {
 class ZCameraSelectorDialog;
 }
-
-namespace Z3D
-{
 
 class Z3D_CAMERAACQUISITION_SHARED_EXPORT ZCameraSelectorDialog : public QDialog
 {

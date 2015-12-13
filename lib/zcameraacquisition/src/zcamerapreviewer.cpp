@@ -10,13 +10,19 @@ namespace Z3D
 
 ZCameraPreviewer::ZCameraPreviewer(QWidget *parent) :
     QWidget(parent),
-    ui(new Ui::CameraPreviewer)
+    ui(new Ui::ZCameraPreviewer)
 {
     qDebug() << Q_FUNC_INFO;
 
     ui->setupUi(this);
 
     setCamera(Z3D::ZCameraInterface::Ptr(0));
+}
+
+ZCameraPreviewer::ZCameraPreviewer(ZCameraInterface::Ptr camera, QWidget *parent)
+    : ZCameraPreviewer(parent)
+{
+    setCamera(camera);
 }
 
 ZCameraPreviewer::~ZCameraPreviewer()

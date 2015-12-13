@@ -11,12 +11,12 @@
 #include <pcl/visualization/pcl_visualizer.h>
 #endif // Q_MOC_RUN
 
+namespace Z3D
+{
+
 namespace Ui {
 class ZCloudView;
 }
-
-namespace Z3D
-{
 
 class Z3D_ZPOINTCLOUD_SHARED_EXPORT ZCloudView : public QMainWindow
 {

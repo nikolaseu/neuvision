@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>ZCameraCalibratorWidget</class>
- <widget class="QWidget" name="ZCameraCalibratorWidget">
+ <class>Z3D::ZCameraCalibratorWidget</class>
+ <widget class="QWidget" name="Z3D::ZCameraCalibratorWidget">
   <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>713</width>
+    <width>760</width>
     <height>616</height>
    </rect>
   </property>
@@ -550,14 +550,14 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>Z3D::ZCalibrationImageViewer</class>
-   <extends>QGraphicsView</extends>
-   <header>zcalibrationimageviewer.h</header>
-  </customwidget>
-  <customwidget>
    <class>Z3D::ZImageViewer</class>
    <extends>QGraphicsView</extends>
    <header>zimageviewer.h</header>
+  </customwidget>
+  <customwidget>
+   <class>Z3D::ZCalibrationImageViewer</class>
+   <extends>QGraphicsView</extends>
+   <header>zcalibrationimageviewer.h</header>
   </customwidget>
  </customwidgets>
  <resources/>
