@@ -10,14 +10,14 @@
 #include <QWidget>
 #include <QModelIndex>
 
-namespace Ui {
-class ZMultiCameraCalibratorWidget;
-}
-
 class QProgressBar;
 
 namespace Z3D
 {
+
+namespace Ui {
+class ZMultiCameraCalibratorWidget;
+}
 
 class ZCalibrationDistortionPlot;
 class ZImageViewer;

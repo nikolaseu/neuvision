@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>ZMultiCameraCalibratorWidget</class>
- <widget class="QWidget" name="ZMultiCameraCalibratorWidget">
+ <class>Z3D::ZMultiCameraCalibratorWidget</class>
+ <widget class="QWidget" name="Z3D::ZMultiCameraCalibratorWidget">
   <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>729</width>
+    <width>760</width>
     <height>616</height>
    </rect>
   </property>
