@@ -28,6 +28,9 @@ public:
 
     QWidget *getCalibrationWindow();
 
+    Z3D::ZCalibratedCamera::Ptr leftCamera() const;
+    Z3D::ZCalibratedCamera::Ptr rightCamera() const;
+
     double maxValidDistance() const;
     bool debugSaveFringePoints() const;
     bool debugShowDecodedImages() const;

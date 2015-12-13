@@ -58,6 +58,16 @@ QWidget *ZStereoSLS::getCalibrationWindow()
     return m_calibrationWindow;
 }
 
+ZCalibratedCamera::Ptr ZStereoSLS::leftCamera() const
+{
+    return m_cameras[0];
+}
+
+ZCalibratedCamera::Ptr ZStereoSLS::rightCamera() const
+{
+    return m_cameras[1];
+}
+
 double ZStereoSLS::maxValidDistance() const
 {
     return m_maxValidDistance;
