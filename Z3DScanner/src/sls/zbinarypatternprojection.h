@@ -36,6 +36,8 @@ public:
     explicit ZBinaryPatternProjection(QObject *parent = 0);
     ~ZBinaryPatternProjection();
 
+    virtual QString displayName() override;
+
 signals:
     void intensityChanged(double);
     void currentPatternChanged(int);
@@ -53,7 +55,7 @@ public slots:
     // from ZPatternProjection
     virtual QWidget *configWidget() override;
     virtual void beginScan() override;
-    virtual void processImages(std::vector< std::vector<Z3D::ZImageGrayscale::Ptr> > acquiredImages, QString scanTmpFolder) override;
+    virtual void processImages(std::vector< std::vector<Z3D::ZImageGrayscale::Ptr> > acquiredImages, QString scanId) override;
 
     void showProjectionWindow();
     void hideProjectionWindow();

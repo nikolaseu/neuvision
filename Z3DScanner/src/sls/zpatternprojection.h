@@ -16,12 +16,14 @@ class ZPatternProjection : public QObject
 public:
     explicit ZPatternProjection(QObject *parent = 0);
 
+    virtual QString displayName() = 0;
+
 signals:
     void prepareAcquisition(QString acquisitionId);
     void acquireSingle(QString id);
     void finishAcquisition();
 
-    void patternDecoded(Z3D::ZDecodedPattern::Ptr pattern);
+    void patternsDecoded(std::vector<Z3D::ZDecodedPattern::Ptr> pattern);
 
 public slots:
     virtual QWidget *configWidget() = 0;

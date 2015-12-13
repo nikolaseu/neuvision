@@ -7,13 +7,15 @@
 #include "zpinhole/zpinholecameracalibration.h"
 
 #include <QObject>
-#include <QMap>
 
-#include <opencv2/core/core.hpp>
+#include "opencv2/core/types.hpp"
+
+namespace Z3D
+{
 
 struct ParallelFringeProcessingImpl;
 
-class StereoSystem : public QObject
+class ZStereoSystemImpl : public QObject
 {
     Q_OBJECT
 
@@ -22,11 +24,8 @@ class StereoSystem : public QObject
 public:
     friend struct ParallelFringeProcessingImpl;
 
-    explicit StereoSystem(QObject *parent = 0);
-    ~StereoSystem();
-
-    void setLeftCamera(Z3D::ZCalibratedCamera::Ptr camera);
-    void setRightCamera(Z3D::ZCalibratedCamera::Ptr camera);
+    explicit ZStereoSystemImpl(QObject *parent = 0);
+    ~ZStereoSystemImpl();
 
     bool ready() const;
 
@@ -37,18 +36,19 @@ public slots:
     void stereoRectify(double alpha = -1);
 
 //    cv::Mat getRectifiedSnapshot2D();
-    Z3D::ZSimplePointCloud::Ptr getRectifiedSnapshot3D(int cameraIndex, float imageScale = 50, int lod_step = 4);
+    //Z3D::ZSimplePointCloud::Ptr getRectifiedSnapshot3D(int cameraIndex, float imageScale = 50, int lod_step = 4);
 
-    Z3D::ZSimplePointCloud::Ptr triangulateOptimized(const cv::Mat &intensityImg,
-                                          std::map<int, std::vector<cv::Vec2f> > &leftPoints,
-                                          std::map<int, std::vector<cv::Vec2f> > &rightPoints,
-                                          int maxPosibleCloudPoints,
-                                          float maxValidDistanceThreshold);
+    Z3D::ZSimplePointCloud::Ptr triangulateOptimized(
+            const cv::Mat &intensityImg,
+            std::map<int, std::vector<cv::Vec2f> > &leftPoints,
+            std::map<int, std::vector<cv::Vec2f> > &rightPoints,
+            int maxPosibleCloudPoints,
+            float maxValidDistanceThreshold);
+
+    void setLeftCameraCalibration(Z3D::ZCameraCalibration::Ptr cameraCalibration);
+    void setRightCameraCalibration(Z3D::ZCameraCalibration::Ptr cameraCalibration);
 
 protected slots:
-    void setCamera1Calibration(Z3D::ZCameraCalibration::Ptr cameraCalibration);
-    void setCamera2Calibration(Z3D::ZCameraCalibration::Ptr cameraCalibration);
-
     void precomputeOptimizations();
 
     inline int indexForPixel(int x, int y) const { return x + y * m_imageSize.width; }
@@ -56,7 +56,6 @@ protected slots:
     void setReady(bool arg);
 
 protected:
-    std::vector<Z3D::ZCalibratedCamera::Ptr> mCam;
     std::vector<QPointer<Z3D::ZPinholeCameraCalibration> > mCal;
 
     std::vector< std::vector<cv::Vec3d> > m_undistortedRays;
@@ -71,5 +70,7 @@ protected:
 private:
     bool m_ready;
 };
+
+} // namespace Z3D
 
 #endif // STEREOSYSTEM_H

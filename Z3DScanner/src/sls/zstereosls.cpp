@@ -1,6 +1,7 @@
-#include "zstereostructuredlightsystem.h"
+#include "zstereosls.h"
 
-#include "zstereosystem.h"
+#include "zstereoslsconfigwidget.h"
+#include "zstereosystemimpl.h"
 #include "zimageviewer.h"
 #include "zcalibratedcameraprovider.h"
 #include "zmulticameracalibratorwidget.h"
@@ -11,19 +12,21 @@
 namespace Z3D
 {
 
-ZStereoStructuredLightSystem::ZStereoStructuredLightSystem(QObject *parent)
+ZStereoSLS::ZStereoSLS(QObject *parent)
     : ZStructuredLightSystem(parent)
     , m_stereoSystem(nullptr)
     , m_maxValidDistance(0.001)
     , m_debugSaveFringePoints(false)
     , m_debugShowDecodedImages(false)
     , m_debugShowFringes(false)
+    , m_calibrationWindow(nullptr)
+    , m_configWidget(nullptr)
 {
     /// finish initialization
-    QTimer::singleShot(0, this, &ZStereoStructuredLightSystem::init);
+    QTimer::singleShot(0, this, &ZStereoSLS::init);
 }
 
-ZStereoStructuredLightSystem::~ZStereoStructuredLightSystem()
+ZStereoSLS::~ZStereoSLS()
 {
     qDebug() << "deleting calibration window...";
     if (m_calibrationWindow)
@@ -36,13 +39,18 @@ ZStereoStructuredLightSystem::~ZStereoStructuredLightSystem()
     qDebug() << "deleting cameras...";
 //    foreach(Z3D::CalibratedCamera::Ptr camera, m_camList)
 //        delete camera.data();
-    m_camList.clear();
+    m_cameras.clear();
 }
 
-QWidget *ZStereoStructuredLightSystem::getCalibrationWindow()
+QString ZStereoSLS::displayName()
+{
+    return QString("Stereo");
+}
+
+QWidget *ZStereoSLS::getCalibrationWindow()
 {
     if (!m_calibrationWindow) {
-        m_calibrationWindow = new Z3D::ZMultiCameraCalibratorWidget(m_camList);
+        m_calibrationWindow = new Z3D::ZMultiCameraCalibratorWidget(m_cameras);
     }
 
     m_calibrationWindow->show();
@@ -50,62 +58,87 @@ QWidget *ZStereoStructuredLightSystem::getCalibrationWindow()
     return m_calibrationWindow;
 }
 
-void ZStereoStructuredLightSystem::init()
+double ZStereoSLS::maxValidDistance() const
 {
-    /// add configured cameras
-    addCameras( Z3D::CalibratedCameraProvider::loadCameras() );
+    return m_maxValidDistance;
 }
 
-void ZStereoStructuredLightSystem::setAcquisitionManager(ZCameraAcquisitionManager *acquisitionManager)
+bool ZStereoSLS::debugSaveFringePoints() const
 {
-    ZStructuredLightSystem::setAcquisitionManager(acquisitionManager);
-
-    setReady(false);
-
-    if (m_camList.size() >= 2 && !m_stereoSystem) {
-        m_stereoSystem = new StereoSystem();
-
-        m_stereoSystem->setLeftCamera(m_camList[0]);
-        m_stereoSystem->setRightCamera(m_camList[1]);
-
-        m_stereoSystem->stereoRectify();
-
-        connect(m_stereoSystem, &StereoSystem::readyChanged,
-                this, &ZStereoStructuredLightSystem::setReady);
-    }
+    return m_debugSaveFringePoints;
 }
 
-void ZStereoStructuredLightSystem::onPatternDecoded(ZDecodedPattern::Ptr decodedPattern)
+bool ZStereoSLS::debugShowDecodedImages() const
 {
-    /// is there something to process?
-    if (decodedPattern->estimatedCloudPoints < 1)
+    return m_debugShowDecodedImages;
+}
+
+bool ZStereoSLS::debugShowFringes() const
+{
+    return m_debugShowFringes;
+}
+
+void ZStereoSLS::setMaxValidDistance(double maxValidDistance)
+{
+    if (m_maxValidDistance == maxValidDistance)
         return;
 
-    if (m_debugSaveFringePoints) {
-        for (unsigned int iCam=0; iCam<decodedPattern->fringePointsList.size(); iCam++) {
+    m_maxValidDistance = maxValidDistance;
+    emit maxValidDistanceChanged(maxValidDistance);
+}
 
-            std::map<int, std::vector<cv::Vec2f> > &fringePoints = decodedPattern->fringePointsList[iCam];
-            QFile file(QString("%1/%2.fringePoints.txt").arg(decodedPattern->scanTmpFolder).arg(iCam));
-            if (file.open(QIODevice::WriteOnly | QIODevice::Text)) {
-                QTextStream fileTextStream(&file);
-                fileTextStream << "FringeID PixelX PixelY\n";
-                int totalPoints = 0;
-                for(std::map<int, std::vector<cv::Vec2f> >::iterator it = fringePoints.begin(); it != fringePoints.end(); ++it) {
-                    const std::vector<cv::Vec2f> &pointsVector = it->second;
-                    int pointsAmount = pointsVector.size();
-                    for (int index = 0; index<pointsAmount; ++index) {
-                        const cv::Vec2f &point = pointsVector[index];
-                        fileTextStream << it->first << " " << point[0] << " " << point[1] << "\n";
-                    }
-                }
-                fileTextStream.flush();
-                file.flush();
-                file.close();
-                qDebug() << "TOTAL POINTS:" << totalPoints;
-            } else {
-                qCritical() << "cant open file to write fringePoints" << file.fileName();
-            }
-        }
+void ZStereoSLS::setDebugSaveFringePoints(bool debugSaveFringePoints)
+{
+    if (m_debugSaveFringePoints == debugSaveFringePoints)
+        return;
+
+    m_debugSaveFringePoints = debugSaveFringePoints;
+    emit debugSaveFringePointsChanged(debugSaveFringePoints);
+}
+
+void ZStereoSLS::setDebugShowDecodedImages(bool debugShowDecodedImages)
+{
+    if (m_debugShowDecodedImages == debugShowDecodedImages)
+        return;
+
+    m_debugShowDecodedImages = debugShowDecodedImages;
+    emit debugShowDecodedImagesChanged(debugShowDecodedImages);
+}
+
+void ZStereoSLS::setDebugShowFringes(bool debugShowFringes)
+{
+    if (m_debugShowFringes == debugShowFringes)
+        return;
+
+    m_debugShowFringes = debugShowFringes;
+    emit debugShowFringesChanged(debugShowFringes);
+}
+
+QWidget *ZStereoSLS::configWidget()
+{
+    if (!m_configWidget)
+        m_configWidget = new ZStereoSLSConfigWidget(this);
+
+    return m_configWidget;
+}
+
+void ZStereoSLS::init()
+{
+    m_stereoSystem = new ZStereoSystemImpl();
+
+    connect(m_stereoSystem, &ZStereoSystemImpl::readyChanged,
+            this, &ZStereoSLS::setReady);
+
+    /// add configured cameras
+    addCameras( CalibratedCameraProvider::loadCameras() );
+}
+
+void ZStereoSLS::onPatternsDecoded(std::vector<ZDecodedPattern::Ptr> decodedPatterns)
+{
+    /// is there something to process?
+    for (auto decodedPattern : decodedPatterns) {
+        if (decodedPattern->estimatedCloudPoints < 1)
+            return;
     }
 
     if (m_debugShowDecodedImages || m_debugShowFringes) {
@@ -115,8 +148,8 @@ void ZStereoStructuredLightSystem::onPatternDecoded(ZDecodedPattern::Ptr decoded
                absMaxVal = DBL_MIN;
 
         /// only to show in the window, we need to change image "range" to improve visibility
-        for (unsigned int iCam=0; iCam<decodedPattern->fringePointsList.size(); iCam++) {
-            cv::Mat &decoded = decodedPattern->decodedImage[iCam];
+        for (const auto &decodedPattern : decodedPatterns) {
+            cv::Mat &decoded = decodedPattern->decodedImage;
 
             ///find minimum and maximum intensities
             minMaxLoc(decoded, &minVal, &maxVal);
@@ -142,8 +175,9 @@ void ZStereoStructuredLightSystem::onPatternDecoded(ZDecodedPattern::Ptr decoded
         double range = (absMaxVal - absMinVal);
 
         if (m_debugShowDecodedImages) {
-            for (unsigned int iCam=0; iCam<decodedPattern->fringePointsList.size(); iCam++) {
-                cv::Mat &decodedImage = decodedPattern->decodedImage[iCam];
+            int iCam = 0;
+            for (const auto &decodedPattern : decodedPatterns) {
+                cv::Mat &decodedImage = decodedPattern->decodedImage;
 
                 /// convert to "visible" image to show in window
                 cv::Mat decodedVisibleImage;
@@ -151,15 +185,16 @@ void ZStereoStructuredLightSystem::onPatternDecoded(ZDecodedPattern::Ptr decoded
 
                 Z3D::ZImageViewer *imageWidget = new Z3D::ZImageViewer();
                 imageWidget->setDeleteOnClose(true);
-                imageWidget->setWindowTitle(QString("Decoded image [Camera %1]").arg(iCam));
+                imageWidget->setWindowTitle(QString("Decoded image [Camera %1]").arg(iCam++));
                 imageWidget->updateImage(decodedVisibleImage);
                 imageWidget->show();
             }
         }
 
         if (m_debugShowFringes) {
-            for (unsigned int iCam=0; iCam<decodedPattern->fringePointsList.size(); iCam++) {
-                cv::Mat &decodedBorders = decodedPattern->fringeImage[iCam];
+            int iCam = 0;
+            for (const auto &decodedPattern : decodedPatterns) {
+                cv::Mat &decodedBorders = decodedPattern->fringeImage;
 
                 /// convert to "visible" image to show in window
                 cv::Mat decodedVisibleBorders;
@@ -167,7 +202,7 @@ void ZStereoStructuredLightSystem::onPatternDecoded(ZDecodedPattern::Ptr decoded
 
                 Z3D::ZImageViewer *imageWidget = new Z3D::ZImageViewer();
                 imageWidget->setDeleteOnClose(true);
-                imageWidget->setWindowTitle(QString("Fringe borders [Camera %1]").arg(iCam));
+                imageWidget->setWindowTitle(QString("Fringe borders [Camera %1]").arg(iCam++));
                 imageWidget->updateImage(decodedVisibleBorders);
                 imageWidget->show();
             }
@@ -178,11 +213,15 @@ void ZStereoStructuredLightSystem::onPatternDecoded(ZDecodedPattern::Ptr decoded
     if (!m_stereoSystem)
         return;
 
+    int estimatedCloudPoints = 0;
+    for (const auto &decodedPattern : decodedPatterns)
+        estimatedCloudPoints += decodedPattern->estimatedCloudPoints;
+
     Z3D::ZSimplePointCloud::Ptr cloud = m_stereoSystem->triangulateOptimized(
-                decodedPattern->intensityImg,
-                decodedPattern->fringePointsList[0],
-            decodedPattern->fringePointsList[1],
-            decodedPattern->estimatedCloudPoints,
+                decodedPatterns[0]->intensityImg,
+                decodedPatterns[0]->fringePointsList,
+            decodedPatterns[1]->fringePointsList,
+            estimatedCloudPoints,
             m_maxValidDistance);
 
     if (cloud) {
@@ -190,7 +229,7 @@ void ZStereoStructuredLightSystem::onPatternDecoded(ZDecodedPattern::Ptr decoded
     }
 }
 
-void ZStereoStructuredLightSystem::addCameras(QList<Z3D::ZCalibratedCamera::Ptr> cameras)
+void ZStereoSLS::addCameras(QList<Z3D::ZCalibratedCamera::Ptr> cameras)
 {
     /*
     /// get starting index for the new cameras
@@ -206,15 +245,20 @@ void ZStereoStructuredLightSystem::addCameras(QList<Z3D::ZCalibratedCamera::Ptr>
     QAction *insertBeforeThisAction = actionsList[iCam];
 */
 
-    std::vector<ZCameraInterface::Ptr> camerasVector;
+    setReady(false);
 
     /// add cameras to list
-    m_camList.clear();
-    for (auto cam : cameras) {
-        m_camList.push_back(cam);
-        camerasVector.push_back(cam->camera());
+    m_cameras.clear();
+
+    if (cameras.size() >= 2) {
+        m_cameras.resize(2);
+        setLeftCamera(cameras[0]);
+        setRightCamera(cameras[1]);
     }
 
+    std::vector<Z3D::ZCameraInterface::Ptr> camerasVector;
+    for (auto cam : cameras)
+        camerasVector.push_back(cam->camera());
     setAcquisitionManager(new ZCameraAcquisitionManager(camerasVector));
 
 /*
@@ -259,6 +303,56 @@ void ZStereoStructuredLightSystem::addCameras(QList<Z3D::ZCalibratedCamera::Ptr>
 
     emit cameraListChanged(m_camList);
     */
+}
+
+void ZStereoSLS::setLeftCamera(ZCalibratedCamera::Ptr camera)
+{
+    if (m_cameras[0] != camera) {
+        /// check first! this only works for pinhole cameras!
+        auto *calibration = static_cast<Z3D::ZPinholeCameraCalibration*>(camera->calibration().data());
+
+        if (!calibration) {
+            qWarning() << "invalid calibration! this only works for pinhole cameras!";
+            return;
+        }
+
+        if (m_cameras[0]) {
+            disconnect(m_cameras[0].data(), &Z3D::ZCalibratedCamera::calibrationChanged,
+                       m_stereoSystem, &ZStereoSystemImpl::setLeftCameraCalibration);
+        }
+
+        m_cameras[0] = camera;
+
+        connect(m_cameras[0].data(), &Z3D::ZCalibratedCamera::calibrationChanged,
+                m_stereoSystem, &ZStereoSystemImpl::setLeftCameraCalibration);
+
+        m_stereoSystem->setLeftCameraCalibration(camera->calibration());
+    }
+}
+
+void ZStereoSLS::setRightCamera(ZCalibratedCamera::Ptr camera)
+{
+    if (m_cameras[1] != camera) {
+        /// check first! this only works for pinhole cameras!
+        auto *calibration = static_cast<Z3D::ZPinholeCameraCalibration*>(camera->calibration().data());
+
+        if (!calibration) {
+            qWarning() << "invalid calibration! this only works for pinhole cameras!";
+            return;
+        }
+
+        if (m_cameras[1]) {
+            disconnect(m_cameras[1].data(), &Z3D::ZCalibratedCamera::calibrationChanged,
+                       m_stereoSystem, &ZStereoSystemImpl::setRightCameraCalibration);
+        }
+
+        m_cameras[1] = camera;
+
+        connect(m_cameras[1].data(), &Z3D::ZCalibratedCamera::calibrationChanged,
+                m_stereoSystem, &ZStereoSystemImpl::setRightCameraCalibration);
+
+        m_stereoSystem->setRightCameraCalibration(camera->calibration());
+    }
 }
 
 } // namespace Z3D

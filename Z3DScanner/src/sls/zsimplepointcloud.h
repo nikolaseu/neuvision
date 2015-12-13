@@ -5,8 +5,6 @@
 
 #include <QObject>
 
-typedef cv::Vec4f PointType;
-
 namespace Z3D
 {
 
@@ -15,6 +13,8 @@ class ZSimplePointCloud : public QObject
     Q_OBJECT
 
 public:
+    typedef cv::Vec4f PointType;
+    typedef std::vector<PointType> PointVector;
     typedef QSharedPointer<Z3D::ZSimplePointCloud> Ptr;
 
     explicit ZSimplePointCloud(QObject *parent = 0);
@@ -24,7 +24,7 @@ signals:
 public slots:
 
 public:
-    std::vector<PointType> points;
+    PointVector points;
     int width;
     int height;
 };

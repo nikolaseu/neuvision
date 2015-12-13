@@ -15,15 +15,16 @@ class ZDecodedPattern
 public:
     typedef QSharedPointer<ZDecodedPattern> Ptr;
 
-    explicit ZDecodedPattern(int numOfCameras);
+    explicit ZDecodedPattern();
 
-    std::vector< std::map<int, std::vector<cv::Vec2f> > > fringePointsList;
+    void updatePointCount();
+
+    std::map<int, std::vector<cv::Vec2f> > fringePointsList;
     cv::Mat intensityImg;
-    std::vector<cv::Mat> maskImg;
-    std::vector<cv::Mat> decodedImage;
-    std::vector<cv::Mat> fringeImage;
+    cv::Mat maskImg;
+    cv::Mat decodedImage;
+    cv::Mat fringeImage;
     int estimatedCloudPoints;
-    QString scanTmpFolder;
 };
 
 } // namespace Z3D

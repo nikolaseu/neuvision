@@ -74,8 +74,8 @@ void ZStructuredLightSystem::setupConnections()
     connect(m_acqManager, &ZCameraAcquisitionManager::acquisitionFinished,
             m_patternProjection, &ZPatternProjection::processImages);
 
-    connect(m_patternProjection, &ZPatternProjection::patternDecoded,
-            this, &ZStructuredLightSystem::onPatternDecoded);
+    connect(m_patternProjection, &ZPatternProjection::patternsDecoded,
+            this, &ZStructuredLightSystem::onPatternsDecoded);
 }
 
 void ZStructuredLightSystem::discardConnections()
@@ -93,8 +93,8 @@ void ZStructuredLightSystem::discardConnections()
     disconnect(m_acqManager, &ZCameraAcquisitionManager::acquisitionFinished,
                m_patternProjection, &ZPatternProjection::processImages);
 
-    disconnect(m_patternProjection, &ZPatternProjection::patternDecoded,
-               this, &ZStructuredLightSystem::onPatternDecoded);
+    disconnect(m_patternProjection, &ZPatternProjection::patternsDecoded,
+               this, &ZStructuredLightSystem::onPatternsDecoded);
 }
 
 } // namespace Z3D

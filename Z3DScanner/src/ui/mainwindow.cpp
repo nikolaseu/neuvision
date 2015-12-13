@@ -4,7 +4,7 @@
 #include <Z3DCalibratedCamera>
 #include <Z3DCameraAcquisition>
 
-#include "src/sls/zstereostructuredlightsystem.h"
+#include "src/sls/zstereosls.h"
 //#include "zcloudview.h"
 #include "src/sls/zbinarypatternprojection.h"
 
@@ -15,6 +15,7 @@
 #include <QDebug>
 #include <QDir>
 #include <QFileDialog>
+#include <QMessageBox>
 #include <QSignalMapper>
 #include <QTimer>
 
@@ -63,10 +64,10 @@ MainWindow::MainWindow(QWidget *parent)
                      this, SLOT(take3dCameraSnapshot(int)));
 
     /// disable all until ready
-    //ui->centralwidget->setEnabled(false);
+    ui->centralwidget->setEnabled(false);
 
     /// finish initialization
-    QTimer::singleShot(0, this, SLOT(init()));
+    QTimer::singleShot(0, this, &MainWindow::init);
 }
 
 MainWindow::~MainWindow()
@@ -89,19 +90,29 @@ MainWindow::~MainWindow()
 
 void MainWindow::init()
 {
-    m_structuredLightSystem = new Z3D::ZStereoStructuredLightSystem();
+    m_structuredLightSystem = new Z3D::ZStereoSLS();
+    connect(m_structuredLightSystem, &Z3D::ZStructuredLightSystem::readyChanged,
+            ui->centralwidget, &QWidget::setEnabled);
     connect(m_structuredLightSystem, &Z3D::ZStructuredLightSystem::scanFinished,
             this, &MainWindow::onScanFinished);
     connect(ui->startAcquisitionButton, &QCommandLinkButton::clicked,
             m_structuredLightSystem, &Z3D::ZStructuredLightSystem::start);
+
+    ui->structuredLightSystemComboBox->addItem(m_structuredLightSystem->displayName());
+
+    /// add config widget
+    QWidget *currentWidget = m_structuredLightSystem->configWidget();
+    ui->structuredLightSystemConfigLayout->addWidget(currentWidget);
+    currentWidget->setVisible(true);
 
     /// connect combobox to slot
     connect(ui->patternTypeComboBox, SIGNAL(currentIndexChanged(int)),
             this, SLOT(onPatternProjectionTypeChanged(int)));
 
     /// add types of pattern projection
-    m_patternProjectionList << new Z3D::ZBinaryPatternProjection();
-    ui->patternTypeComboBox->addItem("Binary");
+    Z3D::ZPatternProjection *binaryPatternProjection = new Z3D::ZBinaryPatternProjection();
+    m_patternProjectionList << binaryPatternProjection;
+    ui->patternTypeComboBox->addItem(binaryPatternProjection->displayName());
 }
 
 void MainWindow::closeEvent(QCloseEvent * /*event*/)
@@ -142,71 +153,9 @@ void MainWindow::onPatternProjectionTypeChanged(int index)
 
     /// add config widget
     QWidget *currentWidget = m_currentPatternProjection->configWidget();
-    currentWidget->setVisible(true);
-#ifndef Q_OS_MAC
-    /// FIXME somehow this messes up the menu bar in OSX
     ui->patternProjectionConfigLayout->addWidget(currentWidget);
-#endif
+    currentWidget->setVisible(true);
 }
-
-/*void MainWindow::addCameras(QList<Z3D::ZCalibratedCamera::Ptr> cameras)
-{
-    /// get starting index for the new cameras
-    const QList<QAction*> &actionsList = ui->menuCameras->actions();
-    int iCam = actionsList.size() - 2; // separator and "configure cameras" items
-
-    if (iCam != m_camList.size()) {
-        qCritical() << "something is wrong with the camera indexes";
-        return;
-    }
-
-    /// the new cameras menu should be inserted before the separator
-    QAction *insertBeforeThisAction = actionsList[iCam];
-
-    /// add cameras to list
-    m_camList.append(cameras);
-
-    for (int i = iCam; i<m_camList.size(); ++i) {
-        Z3D::ZCameraInterface::Ptr camera = m_camList[i]->camera();
-
-        /// add sub menu exclusive for this camera
-        QMenu *camSubmenu = new QMenu(camera->uuid(), this);
-
-        /// open preview
-        QAction *previewAction = new QAction("Preview...", this);
-        camSubmenu->addAction(previewAction);
-        QObject::connect(previewAction, SIGNAL(triggered()), m_previewSignalMapper, SLOT(map()));
-        m_previewSignalMapper->setMapping(previewAction, i);
-
-        /// open settings
-        QAction *settingsAction = new QAction("Settings...", this);
-        camSubmenu->addAction(settingsAction);
-        QObject::connect(settingsAction, SIGNAL(triggered()), m_settingsSignalMapper, SLOT(map()));
-        m_settingsSignalMapper->setMapping(settingsAction, i);
-
-        /// open camera calibration tool
-        QAction *openCameraCalibrationAction = new QAction("Calibrate camera...", this);
-        camSubmenu->addAction(openCameraCalibrationAction);
-        QObject::connect(openCameraCalibrationAction, SIGNAL(triggered()), m_calibrateCameraSignalMapper, SLOT(map()));
-        m_calibrateCameraSignalMapper->setMapping(openCameraCalibrationAction, i);
-
-        /// load calibration file
-        QAction *loadCalibrationAction = new QAction("Load calibration from file...", this);
-        camSubmenu->addAction(loadCalibrationAction);
-        QObject::connect(loadCalibrationAction, SIGNAL(triggered()), m_loadCalibrationSignalMapper, SLOT(map()));
-        m_loadCalibrationSignalMapper->setMapping(loadCalibrationAction, i);
-
-        /// take 3d snapshot
-        QAction *take3dSnapshotAction = new QAction("Show snapshot in 3D...", this);
-        camSubmenu->addAction(take3dSnapshotAction);
-        QObject::connect(take3dSnapshotAction, SIGNAL(triggered()), m_take3dSnapshotSignalMapper, SLOT(map()));
-        m_take3dSnapshotSignalMapper->setMapping(take3dSnapshotAction, i);
-
-        ui->menuCameras->insertMenu(insertBeforeThisAction, camSubmenu);
-    }
-
-    emit cameraListChanged(m_camList);
-}*/
 
 void MainWindow::openCameraPreview(int camIndex)
 {
@@ -252,64 +201,78 @@ void MainWindow::take3dCameraSnapshot(int camIndex)
 
 void MainWindow::onScanFinished(Z3D::ZSimplePointCloud::Ptr cloud)
 {
-    if (cloud) {
-        QDir folder = QDir::current();
+    if (!cloud) {
+        QMessageBox::warning(this, tr("Scan error"),
+                             tr("The point cloud is empty.\nIs everything configured correctly?\nIs there anything inside the scan volume?"));
+        return;
+    }
+
+    /*
+    QString filename = QString("%1/pointCloud.pcd").arg(decodedPattern->scanTmpFolder);
+    qDebug() << "saving point cloud data to" << filename;
+    pcl::io::savePCDFile(qPrintable(filename), *cloud);
+    */
+    /// FIXME
+    /// getCloudViewer()->addPointCloud(cloud);
+
+
+    QDir folder = QDir::current();
 #if defined(Q_OS_MAC)
-        if (folder.dirName() == "MacOS") {
-            folder.cdUp();
-            folder.cdUp();
-            folder.cdUp();
-        }
+    if (folder.dirName() == "MacOS") {
+        folder.cdUp();
+        folder.cdUp();
+        folder.cdUp();
+    }
 #endif
-        QString format = "asc";
-        //QString format = "pcd";
-        QString fileName = folder.absoluteFilePath(QString("%1_pointCloud.%2")
-                                                   .arg(QDateTime::currentMSecsSinceEpoch())
-                                                   .arg(format));
-        QFile file(fileName);
-        if (file.open(QIODevice::WriteOnly | QIODevice::Text)) {
-            QTextStream fileTextStream(&file);
-            if (format == "pcd") {
-                /// if trying to save to PCD format
-                fileTextStream << QString(
-                                  "# .PCD v.7 - Point Cloud Data file format\n"
-                                  "VERSION .7\n"
-                                  "FIELDS x y z rgb\n"
-                                  "SIZE 4 4 4 4\n"
-                                  "TYPE F F F F\n"
-                                  "COUNT 1 1 1 1\n"
-                                  "WIDTH %1\n"
-                                  "HEIGHT 1\n"
-                                  "VIEWPOINT 0 0 0 1 0 0 0\n"
-                                  "POINTS %1\n"
-                                  "DATA ascii\n")
-                                  .arg(cloud->points.size());
-                for (const auto &point : cloud->points) {
-                    fileTextStream << point[0] << " " << point[1] << " " << point[2] << " " << point[3] << "\n";
-                }
-            } else if (format == "asc") {
-                /// ASCII file format
-                for (const auto &point : cloud->points) {
-                    fileTextStream << point[0] << " " << point[1] << " " << point[2] << " " << point[3] << "\n";
-                }
+
+    QString fileName = QFileDialog::getSaveFileName(
+                this,
+                tr("Save point cloud"),
+                QString("%1/%2_pointCloud.asc")
+                    .arg(folder.absolutePath())
+                    .arg(QDateTime::currentDateTime().toString("yyyyMMddhhmmss")),
+                tr("ASCII file (*.asc);;Point Cloud Library file (*.pcd)"));
+
+    if (fileName.isEmpty() || fileName.isNull()) {
+        return;
+    }
+
+    QFile file(fileName);
+    if (file.open(QIODevice::WriteOnly | QIODevice::Text)) {
+        QTextStream fileTextStream(&file);
+        if (fileName.endsWith(".pcd", Qt::CaseInsensitive)) {
+            /// if trying to save to PCD format
+            fileTextStream << QString(
+                              "# .PCD v.7 - Point Cloud Data file format\n"
+                              "VERSION .7\n"
+                              "FIELDS x y z rgb\n"
+                              "SIZE 4 4 4 4\n"
+                              "TYPE F F F F\n"
+                              "COUNT 1 1 1 1\n"
+                              "WIDTH %1\n"
+                              "HEIGHT 1\n"
+                              "VIEWPOINT 0 0 0 1 0 0 0\n"
+                              "POINTS %1\n"
+                              "DATA ascii\n")
+                              .arg(cloud->points.size());
+            for (const auto &point : cloud->points) {
+                fileTextStream << point[0] << " " << point[1] << " " << point[2] << " " << point[3] << "\n";
             }
-            fileTextStream.flush();
-            file.flush();
-            file.close();
-            qDebug() << "point cloud written to" << file.fileName();
+        } else if (fileName.endsWith(".asc", Qt::CaseInsensitive)) {
+            /// ASCII file format
+            for (const auto &point : cloud->points) {
+                fileTextStream << point[0] << " " << point[1] << " " << point[2] << " " << point[3] << "\n";
+            }
         } else {
-            qCritical() << "cant open file to write fringePoints" << file.fileName();
+            QMessageBox::warning(this, tr("Error saving point cloud"),
+                                 tr("Invalid file %1\nNothing saved.").arg(fileName));
         }
-
-
-
-        /*
-        QString filename = QString("%1/pointCloud.pcd").arg(decodedPattern->scanTmpFolder);
-        qDebug() << "saving point cloud data to" << filename;
-        pcl::io::savePCDFile(qPrintable(filename), *cloud);
-        */
-        /// FIXME
-        /// getCloudViewer()->addPointCloud(cloud);
+        fileTextStream.flush();
+        file.flush();
+        file.close();
+        qDebug() << "point cloud written to" << file.fileName();
+    } else {
+        qCritical() << "cant open file to write fringePoints" << file.fileName();
     }
 }
 

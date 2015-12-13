@@ -1,4 +1,4 @@
-#include "zstereosystem.h"
+#include "zstereosystemimpl.h"
 
 #include "zgeometryutils.h"
 
@@ -25,6 +25,8 @@
 #  include "opencv2/calib3d.hpp"
 #endif
 
+namespace Z3D
+{
 
 bool compareFirstPairElement(std::pair<float, cv::Vec2f> arg1, std::pair<float, cv::Vec2f> arg2)   // comparison function
 {
@@ -34,7 +36,7 @@ bool compareFirstPairElement(std::pair<float, cv::Vec2f> arg1, std::pair<float, 
 
 struct ParallelFringeProcessingImpl
 {
-    ParallelFringeProcessingImpl(StereoSystem *system, Z3D::ZSimplePointCloud::Ptr cloudPtr, QAtomicInt &i2, const cv::Mat &image, float maxValidDistanceThreshold)
+    ParallelFringeProcessingImpl(ZStereoSystemImpl *system, Z3D::ZSimplePointCloud::Ptr cloudPtr, QAtomicInt &i2, const cv::Mat &image, float maxValidDistanceThreshold)
         : stereoSystem(system)
         , m_undistortedRays(stereoSystem->m_undistortedRays)
         , m_cloud(cloudPtr)
@@ -226,12 +228,12 @@ struct ParallelFringeProcessingImpl
         }
     }
 
-    StereoSystem *stereoSystem;
+    ZStereoSystemImpl *stereoSystem;
     Z3D::ZCameraCalibration *camLcal;
     Z3D::ZCameraCalibration *camRcal;
     const std::vector< std::vector<cv::Vec3d> > &m_undistortedRays;
     Z3D::ZSimplePointCloud::Ptr m_cloud;
-    std::vector<PointType> &m_cloudPoints;
+    Z3D::ZSimplePointCloud::PointVector &m_cloudPoints;
     QAtomicInt &m_atomicInteger;
     cv::Mat intensityImg;
     float m_maxValidDistanceThreshold;
@@ -240,12 +242,11 @@ struct ParallelFringeProcessingImpl
 
 
 
-StereoSystem::StereoSystem(QObject *parent)
+ZStereoSystemImpl::ZStereoSystemImpl(QObject *parent)
     : QObject(parent)
     , m_ready(false)
 {
     // resize vectors
-    mCam.resize(2);
     mCal.resize(2);
 
     m_undistortedRays.resize(2);
@@ -254,70 +255,19 @@ StereoSystem::StereoSystem(QObject *parent)
     m_P.resize(2);
 }
 
-StereoSystem::~StereoSystem()
+ZStereoSystemImpl::~ZStereoSystemImpl()
 {
 
 }
 
 
-void StereoSystem::setLeftCamera(Z3D::ZCalibratedCamera::Ptr camera)
-{
-    if (mCam[0] != camera) {
-        /// check first! this only works for pinhole cameras!
-        auto *calibration = static_cast<Z3D::ZPinholeCameraCalibration*>(camera->calibration().data());
-
-        if (!calibration) {
-            qWarning() << "invalid calibration! this only works for pinhole cameras!";
-            return;
-        }
-
-        if (mCam[0]) {
-            QObject::disconnect(mCam[0].data(), SIGNAL(calibrationChanged(Z3D::ZCameraCalibration::Ptr)),
-                                this, SLOT(setCamera1Calibration(Z3D::ZCameraCalibration::Ptr)));
-        }
-
-        mCam[0] = camera;
-
-        QObject::connect(mCam[0].data(), SIGNAL(calibrationChanged(Z3D::ZCameraCalibration::Ptr)),
-                         this, SLOT(setCamera1Calibration(Z3D::ZCameraCalibration::Ptr)));
-
-        setCamera1Calibration(camera->calibration());
-    }
-}
-
-
-void StereoSystem::setRightCamera(Z3D::ZCalibratedCamera::Ptr camera)
-{
-    if (mCam[1] != camera) {
-        /// check first! this only works for pinhole cameras!
-        auto *calibration = static_cast<Z3D::ZPinholeCameraCalibration*>(camera->calibration().data());
-
-        if (!calibration) {
-            qWarning() << "invalid calibration! this only works for pinhole cameras!";
-            return;
-        }
-
-        if (mCam[1]) {
-            QObject::disconnect(mCam[1].data(), SIGNAL(calibrationChanged(Z3D::ZCameraCalibration::Ptr)),
-                                this, SLOT(setCamera2Calibration(Z3D::ZCameraCalibration::Ptr)));
-        }
-
-        mCam[1] = camera;
-
-        QObject::connect(mCam[1].data(), SIGNAL(calibrationChanged(Z3D::ZCameraCalibration::Ptr)),
-                         this, SLOT(setCamera2Calibration(Z3D::ZCameraCalibration::Ptr)));
-
-        setCamera2Calibration(camera->calibration());
-    }
-}
-
-bool StereoSystem::ready() const
+bool ZStereoSystemImpl::ready() const
 {
     return m_ready;
 }
 
 
-void StereoSystem::stereoRectify(double alpha)
+void ZStereoSystemImpl::stereoRectify(double alpha)
 {
     qDebug() << Q_FUNC_INFO;
 
@@ -402,7 +352,7 @@ void StereoSystem::stereoRectify(double alpha)
         qCritical() << "Error: can not save the stereo rectification parameters";
     }*/
 
-    QtConcurrent::run(this, &StereoSystem::precomputeOptimizations);
+    QtConcurrent::run(this, &ZStereoSystemImpl::precomputeOptimizations);
 }
 
 
@@ -471,93 +421,94 @@ void StereoSystem::stereoRectify(double alpha)
 //}
 
 
-Z3D::ZSimplePointCloud::Ptr StereoSystem::getRectifiedSnapshot3D(int cameraIndex, float imageScale, int lod_step)
-{
-    Z3D::ZSimplePointCloud::Ptr cloud(new Z3D::ZSimplePointCloud());
+/// FIXME
+//Z3D::ZSimplePointCloud::Ptr StereoSystem::getRectifiedSnapshot3D(int cameraIndex, float imageScale, int lod_step)
+//{
+//    Z3D::ZSimplePointCloud::Ptr cloud(new Z3D::ZSimplePointCloud());
 
-    if (cameraIndex < 0 || cameraIndex > 1) {
-        qWarning() << "invalid cameraIndex. must be 0 or 1";
-        return cloud;
-    }
+//    if (cameraIndex < 0 || cameraIndex > 1) {
+//        qWarning() << "invalid cameraIndex. must be 0 or 1";
+//        return cloud;
+//    }
 
-    auto pCamera = mCam[cameraIndex]->camera();
-    //Z3D::CameraCalibrationInterface::Ptr calibration = mCam[cameraIndex]->calibration();
+//    auto pCamera = mCam[cameraIndex]->camera();
+//    //Z3D::CameraCalibrationInterface::Ptr calibration = mCam[cameraIndex]->calibration();
 
-    qDebug() << "taking snapshot...";
-    auto snapshot = pCamera->getSnapshot();
-    auto intensityImg = snapshot->cvMat().clone();
+//    qDebug() << "taking snapshot...";
+//    auto snapshot = pCamera->getSnapshot();
+//    auto intensityImg = snapshot->cvMat().clone();
 
-    qDebug() << "creating point cloud...";
+//    qDebug() << "creating point cloud...";
 
-    const int &width = snapshot->width();
-    const int &height = snapshot->height();
-    const int &xOffset = snapshot->xOffset();
-    const int &yOffset = snapshot->yOffset();
+//    const int &width = snapshot->width();
+//    const int &height = snapshot->height();
+//    const int &xOffset = snapshot->xOffset();
+//    const int &yOffset = snapshot->yOffset();
 
-    /// fill in the cloud data
-    cloud->width  = std::ceil(float(width)/lod_step) * std::ceil(float(height)/lod_step);
-    cloud->height = 1;
-    cloud->points.resize(cloud->width * cloud->height);
+//    /// fill in the cloud data
+//    cloud->width  = std::ceil(float(width)/lod_step) * std::ceil(float(height)/lod_step);
+//    cloud->height = 1;
+//    cloud->points.resize(cloud->width * cloud->height);
 
-    int i = 0;
+//    int i = 0;
 
-    qDebug() << "filling point cloud...";
+//    qDebug() << "filling point cloud...";
 
-    //std::vector< cv::Vec3d > &m_undistortedWorldRays_cameraIndex = m_undistortedWorldRays[cameraIndex];
-    const auto &m_undistortedWorldRays_cameraIndex = m_undistortedRays[cameraIndex];
+//    //std::vector< cv::Vec3d > &m_undistortedWorldRays_cameraIndex = m_undistortedWorldRays[cameraIndex];
+//    const auto &m_undistortedWorldRays_cameraIndex = m_undistortedRays[cameraIndex];
 
-    for (int x = 0; x < width; x += lod_step) {
-        for (int y = 0; y < height; y += lod_step) {
+//    for (int x = 0; x < width; x += lod_step) {
+//        for (int y = 0; y < height; y += lod_step) {
 
-            auto point = m_undistortedWorldRays_cameraIndex[indexForPixel(xOffset+x, yOffset+y)];
+//            auto point = m_undistortedWorldRays_cameraIndex[indexForPixel(xOffset+x, yOffset+y)];
 
-            // rotate
-            point = mCal[cameraIndex]->rotation() * cv::Matx33d(m_R[cameraIndex]).t() * point;
-            //point = cv::Matx33d(m_R[cameraIndex]) * point;
+//            // rotate
+//            point = mCal[cameraIndex]->rotation() * cv::Matx33d(m_R[cameraIndex]).t() * point;
+//            //point = cv::Matx33d(m_R[cameraIndex]) * point;
 
-            /// scale
-            point *= imageScale;
+//            /// scale
+//            point *= imageScale;
 
-            // translate
-            point += mCal[cameraIndex]->translation();
+//            // translate
+//            point += mCal[cameraIndex]->translation();
 
-            cloud->points[i][0] = point[0];
-            cloud->points[i][1] = point[1];
-            cloud->points[i][2] = point[2];
+//            cloud->points[i][0] = point[0];
+//            cloud->points[i][1] = point[1];
+//            cloud->points[i][2] = point[2];
 
-            // color
-            if (intensityImg.channels() == 1) {
-                cloud->points[i][3]  = intensityImg.at<unsigned char>(y, x);
-                /*unsigned int iB = intensityImg.at<unsigned char>(y, x);
-                uint32_t rgb = (static_cast<uint32_t>(iB) << 16 |
-                                static_cast<uint32_t>(iB) <<  8 |
-                                static_cast<uint32_t>(iB));
-                cloud->points[i].rgb = *reinterpret_cast<float*>(&rgb);*/
-            } else {
-                cv::Vec3b intensity = intensityImg.at<cv::Vec3b>(y, x);
-                /*uchar blue = intensity.val[0];
-                uchar green = intensity.val[1];
-                uchar red = intensity.val[2];*/
-                uint32_t rgb = (static_cast<uint32_t>(intensity.val[0]) << 16 |
-                                static_cast<uint32_t>(intensity.val[1]) <<  8 |
-                                static_cast<uint32_t>(intensity.val[2]));
-                cloud->points[i][3] /*rgb*/ = *reinterpret_cast<float*>(&rgb);
-            }
+//            // color
+//            if (intensityImg.channels() == 1) {
+//                cloud->points[i][3]  = intensityImg.at<unsigned char>(y, x);
+//                /*unsigned int iB = intensityImg.at<unsigned char>(y, x);
+//                uint32_t rgb = (static_cast<uint32_t>(iB) << 16 |
+//                                static_cast<uint32_t>(iB) <<  8 |
+//                                static_cast<uint32_t>(iB));
+//                cloud->points[i].rgb = *reinterpret_cast<float*>(&rgb);*/
+//            } else {
+//                cv::Vec3b intensity = intensityImg.at<cv::Vec3b>(y, x);
+//                /*uchar blue = intensity.val[0];
+//                uchar green = intensity.val[1];
+//                uchar red = intensity.val[2];*/
+//                uint32_t rgb = (static_cast<uint32_t>(intensity.val[0]) << 16 |
+//                                static_cast<uint32_t>(intensity.val[1]) <<  8 |
+//                                static_cast<uint32_t>(intensity.val[2]));
+//                cloud->points[i][3] /*rgb*/ = *reinterpret_cast<float*>(&rgb);
+//            }
 
-            ++i;
-        }
-    }
+//            ++i;
+//        }
+//    }
 
-    qDebug() << "resizing point cloud to actual size";
-    cloud->width  = i;
-    cloud->height = 1;
-    cloud->points.resize(cloud->width * cloud->height);
+//    qDebug() << "resizing point cloud to actual size";
+//    cloud->width  = i;
+//    cloud->height = 1;
+//    cloud->points.resize(cloud->width * cloud->height);
 
-    return cloud;
-}
+//    return cloud;
+//}
 
 
-Z3D::ZSimplePointCloud::Ptr StereoSystem::triangulateOptimized(const cv::Mat &intensityImg,
+Z3D::ZSimplePointCloud::Ptr ZStereoSystemImpl::triangulateOptimized(const cv::Mat &intensityImg,
                                                  std::map<int, std::vector<cv::Vec2f> > &leftFringePoints,
                                                  std::map<int, std::vector<cv::Vec2f> > &rightFringePoints,
                                                  int maxPosibleCloudPoints,
@@ -601,7 +552,6 @@ Z3D::ZSimplePointCloud::Ptr StereoSystem::triangulateOptimized(const cv::Mat &in
         /// skip if fringe is only present in one camera
         const auto &rightPointsVector = rightFringePoints[fringeID];
         if (rightPointsVector.empty()) {
-            //qDebug() << "skipping fringe" << fringeID;
             continue;
         }
 
@@ -640,7 +590,7 @@ Z3D::ZSimplePointCloud::Ptr StereoSystem::triangulateOptimized(const cv::Mat &in
     return Z3D::ZSimplePointCloud::Ptr(nullptr);
 }
 
-void StereoSystem::setCamera1Calibration(Z3D::ZCameraCalibration::Ptr cameraCalibration)
+void ZStereoSystemImpl::setLeftCameraCalibration(Z3D::ZCameraCalibration::Ptr cameraCalibration)
 {
     qDebug() << Q_FUNC_INFO;
 
@@ -652,19 +602,19 @@ void StereoSystem::setCamera1Calibration(Z3D::ZCameraCalibration::Ptr cameraCali
     }
 
     if (mCal[0]) {
-        QObject::disconnect(mCal[0], SIGNAL(calibrationReadyChanged(bool)),
-                            this, SLOT(stereoRectify()));
+        disconnect(mCal[0], &Z3D::ZCameraCalibration::calibrationReadyChanged,
+                this, &ZStereoSystemImpl::stereoRectify);
     }
 
     mCal[0] = calibration;
 
-    QObject::connect(mCal[0], SIGNAL(calibrationReadyChanged(bool)),
-            this, SLOT(stereoRectify()));
+    connect(mCal[0], &Z3D::ZCameraCalibration::calibrationReadyChanged,
+            this, &ZStereoSystemImpl::stereoRectify);
 
     stereoRectify();
 }
 
-void StereoSystem::setCamera2Calibration(Z3D::ZCameraCalibration::Ptr cameraCalibration)
+void ZStereoSystemImpl::setRightCameraCalibration(Z3D::ZCameraCalibration::Ptr cameraCalibration)
 {
     qDebug() << Q_FUNC_INFO;
 
@@ -676,20 +626,20 @@ void StereoSystem::setCamera2Calibration(Z3D::ZCameraCalibration::Ptr cameraCali
     }
 
     if (mCal[1]) {
-        QObject::disconnect(mCal[1], SIGNAL(calibrationReadyChanged(bool)),
-                            this, SLOT(stereoRectify()));
+        disconnect(mCal[1], &Z3D::ZCameraCalibration::calibrationReadyChanged,
+                this, &ZStereoSystemImpl::stereoRectify);
     }
 
     mCal[1] = calibration;
 
-    QObject::connect(mCal[1], SIGNAL(calibrationReadyChanged(bool)),
-            this, SLOT(stereoRectify()));
+    connect(mCal[1], &Z3D::ZCameraCalibration::calibrationReadyChanged,
+            this, &ZStereoSystemImpl::stereoRectify);
 
     stereoRectify();
 }
 
 
-void StereoSystem::precomputeOptimizations()
+void ZStereoSystemImpl::precomputeOptimizations()
 {
     qDebug() << "precomputing optimizations...";
 
@@ -759,7 +709,7 @@ void StereoSystem::precomputeOptimizations()
     setReady(true);
 }
 
-void StereoSystem::setReady(bool arg)
+void ZStereoSystemImpl::setReady(bool arg)
 {
     if (m_ready == arg)
         return;
@@ -767,3 +717,5 @@ void StereoSystem::setReady(bool arg)
     m_ready = arg;
     emit readyChanged(arg);
 }
+
+} // namespace Z3D
