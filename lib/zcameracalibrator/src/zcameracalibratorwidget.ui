@@ -196,7 +196,7 @@
      <item>
       <widget class="QStackedWidget" name="stackedWidget">
        <property name="currentIndex">
-        <number>2</number>
+        <number>0</number>
        </property>
        <widget class="QWidget" name="calibrationPage">
         <layout class="QGridLayout" name="gridLayout_4">
@@ -232,15 +232,8 @@
              <property name="title">
               <string>Camera model</string>
              </property>
-             <layout class="QFormLayout" name="formLayout_2">
+             <layout class="QGridLayout" name="gridLayout_2">
               <item row="0" column="0">
-               <widget class="QLabel" name="label_2">
-                <property name="text">
-                 <string>Type</string>
-                </property>
-               </widget>
-              </item>
-              <item row="0" column="1">
                <widget class="QComboBox" name="cameraModelTypeComboBox"/>
               </item>
              </layout>
@@ -301,18 +294,8 @@
              <property name="title">
               <string>Calibration pattern</string>
              </property>
-             <layout class="QFormLayout" name="formLayout_4">
-              <property name="fieldGrowthPolicy">
-               <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
-              </property>
+             <layout class="QGridLayout" name="gridLayout">
               <item row="0" column="0">
-               <widget class="QLabel" name="label_4">
-                <property name="text">
-                 <string>Type</string>
-                </property>
-               </widget>
-              </item>
-              <item row="0" column="1">
                <widget class="QComboBox" name="calibrationPatternTypeComboBox"/>
               </item>
              </layout>

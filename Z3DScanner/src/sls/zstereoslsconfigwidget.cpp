@@ -16,6 +16,7 @@ ZStereoSLSConfigWidget::ZStereoSLSConfigWidget(ZStereoSLS *stereoSLS, QWidget *p
 {
     ui->setupUi(this);
 
+    /// Update UI
     connect(ui->calibrateSystemButton, &QPushButton::clicked,
             [&](){ m_stereoSLS->getCalibrationWindow()->show(); });
 
