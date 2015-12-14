@@ -3,7 +3,8 @@
 namespace Z3D
 {
 
-ZPatternProjection::ZPatternProjection(QObject *parent) : QObject(parent)
+ZPatternProjection::ZPatternProjection(QObject *parent)
+    : QObject(parent)
 {
 
 }

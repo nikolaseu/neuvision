@@ -7,6 +7,9 @@ namespace Z3D
 
 ZStructuredLightSystem::ZStructuredLightSystem(QObject *parent)
     : QObject(parent)
+    , m_acqManager(nullptr)
+    , m_patternProjection(nullptr)
+    , m_ready(false)
 {
 
 }
