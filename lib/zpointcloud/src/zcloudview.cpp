@@ -60,8 +60,8 @@ bool writeData(QString fileName, const std::vector<T> &errorsInliers) {
     QFile file(fileName);
     if (file.open(QIODevice::WriteOnly | QIODevice::Text)) {
         QTextStream out(&file);
-        for (int i=0; i<errorsInliers.size(); ++i)
-            out << errorsInliers[i] << "\n";
+        for (const auto &err : errorsInliers)
+            out << err << "\n";
         out.flush();
         file.close();
         return true;
@@ -140,6 +140,7 @@ void ZCloudView::showCameraSnapshot(Z3D::ZCalibratedCamera::Ptr pCamera)
     cloud->width  = std::ceil(float(width)/lod_step) * std::ceil(float(height)/lod_step);
     cloud->height = 1;
     cloud->points.resize(cloud->width * cloud->height);
+    auto &points = cloud->points;
 
     int i = 0;
 
@@ -157,13 +158,15 @@ void ZCloudView::showCameraSnapshot(Z3D::ZCalibratedCamera::Ptr pCamera)
             /// translate
             point += origin;
 
-            cloud->points[i].x = point[0];
-            cloud->points[i].y = point[1];
-            cloud->points[i].z = point[2];
+            auto &cloudPoint = points[i];
+
+            cloudPoint.x = point[0];
+            cloudPoint.y = point[1];
+            cloudPoint.z = point[2];
 
             /// color
             if (intensityImg.channels() == 1) {
-                cloud->points[i].intensity = intensityImg.at<unsigned char>(y,x);
+                cloudPoint.intensity = intensityImg.at<unsigned char>(y,x);
                 /*unsigned int iB = intensityImg.at<unsigned char>(y,x);
                 uint32_t rgb = (static_cast<uint32_t>(iB) << 16 |
                                 static_cast<uint32_t>(iB) << 8 | static_cast<uint32_t>(iB));
@@ -176,7 +179,7 @@ void ZCloudView::showCameraSnapshot(Z3D::ZCalibratedCamera::Ptr pCamera)
                 uint32_t rgb = (static_cast<uint32_t>(intensity.val[0]) << 16 |
                                 static_cast<uint32_t>(intensity.val[1]) <<  8 |
                                 static_cast<uint32_t>(intensity.val[2]));
-                cloud->points[i].intensity /*rgb*/ = *reinterpret_cast<float*>(&rgb);
+                cloudPoint.intensity /*rgb*/ = *reinterpret_cast<float*>(&rgb);
             }
 
             ++i;
@@ -859,8 +862,8 @@ void ZCloudView::on_actionToolsFitCylinder_triggered()
 
     std::vector<float> errorsInliers;
     errorsInliers.reserve(cylinderInlierIndices->indices.size());
-    for (std::vector<int>::const_iterator it = cylinderInlierIndices->indices.begin();
-            it != cylinderInlierIndices->indices.end();
+    for (auto it = cylinderInlierIndices->indices.cbegin(), itEnd = cylinderInlierIndices->indices.cend();
+            it != itEnd;
             ++it) {
         /// cloud point
         cv::Vec3f pointVector(
@@ -999,14 +1002,15 @@ void ZCloudView::on_actionToolsFitCylinder_triggered()
         //float rangeError = maxError - minError;
         //uint32_t pointColor;
 
-        for (size_t i=0; i<m_pointCloud->pclPointCloud()->points.size(); ++i)
-            m_pointCloud->pclPointCloud()->points[i].intensity = maxError;
+        auto &points = m_pointCloud->pclPointCloud()->points;
+        for (auto &point : points) {
+            point.intensity = maxError;
+        }
 
         int i = 0;
-        for (std::vector<int>::const_iterator it = cylinderInlierIndices->indices.begin();
-                it != cylinderInlierIndices->indices.end();
+        for (auto it = cylinderInlierIndices->indices.cbegin(), itEnd = cylinderInlierIndices->indices.cend();
+                it != itEnd;
                 ++it, ++i) {
-
 
             float error = qMax(minError, qMin(maxError, errorsInliers[i]));
 
@@ -1015,7 +1019,7 @@ void ZCloudView::on_actionToolsFitCylinder_triggered()
                      << "cylinderRadious" << cylinderRadious
                      << "error" << error;*/
 
-            m_pointCloud->pclPointCloud()->points[*it].intensity = error;
+            points[*it].intensity = error;
 
             /*
             float value = (error - minError) / rangeError;
@@ -1160,16 +1164,18 @@ void ZCloudView::on_actionToolsFitPlane_triggered()
             planeCoefficients->values[1],
             planeCoefficients->values[2]);
 
+    auto &points = m_pointCloud->pclPointCloud()->points;
+
     std::vector<float> errorsInliers;
     errorsInliers.reserve(planeInlierIndices->indices.size());
-    for (std::vector<int>::const_iterator it = planeInlierIndices->indices.begin();
-            it != planeInlierIndices->indices.end();
+    for (auto it = planeInlierIndices->indices.cbegin(), itEnd = planeInlierIndices->indices.cend();
+            it != itEnd;
             ++it) {
         /// cloud point
         cv::Vec3f pointVector(
-                m_pointCloud->pclPointCloud()->points[*it].x,
-                m_pointCloud->pclPointCloud()->points[*it].y,
-                m_pointCloud->pclPointCloud()->points[*it].z);
+                points[*it].x,
+                points[*it].y,
+                points[*it].z);
 
         float proj = pointVector.dot(planeNormalVector);
 
@@ -1276,12 +1282,15 @@ void ZCloudView::on_actionToolsFitPlane_triggered()
         //float rangeError = maxError - minError;
         //uint32_t pointColor;
 
-        for (size_t i=0; i<m_pointCloud->pclPointCloud()->points.size(); ++i)
-            m_pointCloud->pclPointCloud()->points[i].intensity = maxError;
+        auto &points = m_pointCloud->pclPointCloud()->points;
+
+        for (auto &point : points) {
+            point.intensity = maxError;
+        }
 
         int i = 0;
-        for (std::vector<int>::const_iterator it = planeInlierIndices->indices.begin();
-                it != planeInlierIndices->indices.end();
+        for (auto it = planeInlierIndices->indices.cbegin(), itEnd = planeInlierIndices->indices.cend();
+                it != itEnd;
                 ++it, ++i) {
 
             float error = qMax(minError, qMin(maxError, errorsInliers[i]));
@@ -1290,7 +1299,7 @@ void ZCloudView::on_actionToolsFitPlane_triggered()
                      << "planeDistance" << planeDistance
                      << "error" << error;*/
 
-            m_pointCloud->pclPointCloud()->points[*it].intensity = error;
+            points[*it].intensity = error;
 
             /*
             float value = (error - minError) / rangeError;
