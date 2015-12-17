@@ -6,7 +6,7 @@
 namespace Z3D
 {
 
-SimulatedCamera::SimulatedCamera(QVariantMap options, QObject *parent)
+ZSimulatedCamera::ZSimulatedCamera(QVariantMap options, QObject *parent)
     : ZCameraBase(parent)
     , m_currentImageNumber(0)
     , m_imageCache(200000000) /// 200mb max
@@ -36,12 +36,12 @@ SimulatedCamera::SimulatedCamera(QVariantMap options, QObject *parent)
 //    qDebug() << Q_FUNC_INFO << uuid();
 }
 
-SimulatedCamera::~SimulatedCamera()
+ZSimulatedCamera::~ZSimulatedCamera()
 {
 //    qDebug() << Q_FUNC_INFO << uuid();
 }
 
-bool SimulatedCamera::startAcquisition()
+bool ZSimulatedCamera::startAcquisition()
 {
     if (!ZCameraBase::startAcquisition())
         return false;
@@ -51,12 +51,12 @@ bool SimulatedCamera::startAcquisition()
     return true;
 }
 
-bool SimulatedCamera::stopAcquisition()
+bool ZSimulatedCamera::stopAcquisition()
 {
     return ZCameraBase::stopAcquisition();
 }
 
-QList<ZCameraInterface::ZCameraAttribute> SimulatedCamera::getAllAttributes()
+QList<ZCameraInterface::ZCameraAttribute> ZSimulatedCamera::getAllAttributes()
 {
     QList<ZCameraInterface::ZCameraAttribute> attributes;
 
@@ -78,13 +78,13 @@ QList<ZCameraInterface::ZCameraAttribute> SimulatedCamera::getAllAttributes()
     return attributes;
 }
 
-QVariant SimulatedCamera::getAttribute(const QString &name) const
+QVariant ZSimulatedCamera::getAttribute(const QString &name) const
 {
     Q_UNUSED(name)
     return QString("INVALID");
 }
 
-void SimulatedCamera::loadImageFromFilename(QString fileName)
+void ZSimulatedCamera::loadImageFromFilename(QString fileName)
 {
     m_currentFile = fileName;
 
@@ -114,7 +114,7 @@ void SimulatedCamera::loadImageFromFilename(QString fileName)
         emit newImageReceived(*m_lastRetrievedImage);
 }
 
-bool SimulatedCamera::setAttribute(const QString &name, const QVariant &value, bool notify)
+bool ZSimulatedCamera::setAttribute(const QString &name, const QVariant &value, bool notify)
 {
     if (name == "CurrentFile") {
         loadImageFromFilename(value.toString());
@@ -128,7 +128,7 @@ bool SimulatedCamera::setAttribute(const QString &name, const QVariant &value, b
     return false;
 }
 
-void SimulatedCamera::emitNewImage()
+void ZSimulatedCamera::emitNewImage()
 {
     if (isRunning()) {
         emit newImageReceived(*m_lastRetrievedImage);
