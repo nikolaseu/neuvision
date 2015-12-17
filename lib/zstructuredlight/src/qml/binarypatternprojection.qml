@@ -22,8 +22,8 @@ Rectangle {
             x: -(config.currentPattern*4+1) * root.size
             //anchors.verticalCenter: parent.verticalCenter
             source: config.inverted
-                    ? (config.useGrayBinary ? "qrc:///pattern/gray.2048.inv.bmp" : "qrc:///pattern/binary.2048.inv.bmp")
-                    : (config.useGrayBinary ? "qrc:///pattern/gray.2048.bmp"     : "qrc:///pattern/binary.2048.bmp")
+                    ? (config.useGrayBinary ? "qrc:///zstructuredlight/pattern/gray.2048.inv.bmp" : "qrc:///zstructuredlight/pattern/binary.2048.inv.bmp")
+                    : (config.useGrayBinary ? "qrc:///zstructuredlight/pattern/gray.2048.bmp"     : "qrc:///zstructuredlight/pattern/binary.2048.bmp")
         }
     }
 
@@ -43,8 +43,8 @@ Rectangle {
             y: -height
             //anchors.verticalCenter: parent.verticalCenter
             source: config.inverted
-                    ? (config.useGrayBinary ? "qrc:///pattern/gray.2048.inv.bmp" : "qrc:///pattern/binary.2048.inv.bmp")
-                    : (config.useGrayBinary ? "qrc:///pattern/gray.2048.bmp"     : "qrc:///pattern/binary.2048.bmp")
+                    ? (config.useGrayBinary ? "qrc:///zstructuredlight/pattern/gray.2048.inv.bmp" : "qrc:///zstructuredlight/pattern/binary.2048.inv.bmp")
+                    : (config.useGrayBinary ? "qrc:///zstructuredlight/pattern/gray.2048.bmp"     : "qrc:///zstructuredlight/pattern/binary.2048.bmp")
         }
     }
 

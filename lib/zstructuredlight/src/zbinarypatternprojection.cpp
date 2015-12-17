@@ -49,7 +49,7 @@ ZBinaryPatternProjection::ZBinaryPatternProjection(QObject *parent)
     //! Para poder maximizar y manejar esas cosas desde qml
     m_dlpview->rootContext()->setContextProperty("window", m_dlpview);
 
-    m_dlpview->setSource(QUrl("qrc:///qml/binarypatternprojection.qml"));
+    m_dlpview->setSource(QUrl("qrc:///zstructuredlight/qml/binarypatternprojection.qml"));
     m_dlpview->setResizeMode(QQuickView::SizeRootObjectToView);
 }
 
@@ -67,6 +67,7 @@ QString ZBinaryPatternProjection::displayName()
 
 void ZBinaryPatternProjection::showProjectionWindow()
 {
+    m_dlpview->showNormal();
     m_dlpview->showFullScreen();
 }
 
