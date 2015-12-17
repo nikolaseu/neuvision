@@ -49,6 +49,9 @@ FORMS        += \
     zcamerasettingswidget.ui \
     zcameraselectordialog.ui
 
+RESOURCES += \
+    resources.qrc
+
 ###############################################################################
 # OpenCV
 include($$PWD/../../../3rdparty/opencv.pri)

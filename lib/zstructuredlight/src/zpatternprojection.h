@@ -1,6 +1,7 @@
-#ifndef ZPATTERNPROJECTION_H
-#define ZPATTERNPROJECTION_H
+#ifndef Z3D_STRUCTUREDLIGHT___ZPATTERNPROJECTION_H
+#define Z3D_STRUCTUREDLIGHT___ZPATTERNPROJECTION_H
 
+#include "zstructuredlight_global.h"
 #include "zcameraimage.h"
 #include "zdecodedpattern.h"
 
@@ -9,7 +10,7 @@
 namespace Z3D
 {
 
-class ZPatternProjection : public QObject
+class Z3D_STRUCTUREDLIGHT_SHARED_EXPORT ZPatternProjection : public QObject
 {
     Q_OBJECT
 
@@ -33,4 +34,4 @@ public slots:
 
 } // namespace Z3D
 
-#endif // ZPATTERNPROJECTION_H
+#endif // Z3D_STRUCTUREDLIGHT___ZPATTERNPROJECTION_H

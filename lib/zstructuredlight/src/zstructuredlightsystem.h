@@ -1,6 +1,7 @@
-#ifndef ZSTRUCTUREDLIGHTSYSTEM_H
-#define ZSTRUCTUREDLIGHTSYSTEM_H
+#ifndef Z3D_STRUCTUREDLIGHT___ZSTRUCTUREDLIGHTSYSTEM_H
+#define Z3D_STRUCTUREDLIGHT___ZSTRUCTUREDLIGHTSYSTEM_H
 
+#include "zstructuredlight_global.h"
 #include "zcameraacquisitionmanager.h"
 #include "zdecodedpattern.h"
 #include "zpatternprojection.h"
@@ -11,7 +12,7 @@
 namespace Z3D
 {
 
-class ZStructuredLightSystem : public QObject
+class Z3D_STRUCTUREDLIGHT_SHARED_EXPORT ZStructuredLightSystem : public QObject
 {
     Q_OBJECT
 
@@ -53,4 +54,4 @@ private:
 
 }
 
-#endif // ZSTRUCTUREDLIGHTSYSTEM_H
+#endif // Z3D_STRUCTUREDLIGHT___ZSTRUCTUREDLIGHTSYSTEM_H

@@ -1,0 +1,13 @@
+#ifndef Z3D_STRUCTUREDLIGHT___ZPATTERNPROJECTIONPROVIDER_H
+#define Z3D_STRUCTUREDLIGHT___ZPATTERNPROJECTIONPROVIDER_H
+
+#include "zstructuredlight_global.h"
+
+class Z3D_STRUCTUREDLIGHT_SHARED_EXPORT ZPatternProjectionProvider
+{
+
+public:
+    ZPatternProjectionProvider();
+};
+
+#endif // Z3D_STRUCTUREDLIGHT___ZPATTERNPROJECTIONPROVIDER_H

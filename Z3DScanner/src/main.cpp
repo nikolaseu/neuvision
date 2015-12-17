@@ -10,9 +10,6 @@
 #include "zscannerinitialconfigwizard.h"
 
 
-
-
-
 int main(int argc, char* argv[])
 {
     /// to print out diagnostic information about each plugin it (Qt) tries to load
@@ -24,7 +21,7 @@ int main(int argc, char* argv[])
     int result;
 
     {
-        QPixmap pixmap(":/splash.png");
+        QPixmap pixmap(":/splash");
         QSplashScreen splash(pixmap);
         splash.show();
 

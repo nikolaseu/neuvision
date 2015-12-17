@@ -87,7 +87,7 @@ ZImageViewer::ZImageViewer(QWidget *parent) :
     m_contextMenu->addAction(saveImageAction);
 
     /// add pixmap item
-    QPixmap image(":/empty.png");
+    QPixmap image(":/zcameraacquisition/empty.png");
     m_pixmapItem->setPixmap(image);
     m_scene->addItem(m_pixmapItem);
 }

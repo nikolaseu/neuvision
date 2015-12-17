@@ -1,7 +1,7 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
-#include "src/sls/zsimplepointcloud.h"
+#include "zsimplepointcloud.h"
 
 #include <QMainWindow>
 #include <QPointer>

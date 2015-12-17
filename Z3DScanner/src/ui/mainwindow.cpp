@@ -4,9 +4,9 @@
 #include <Z3DCalibratedCamera>
 #include <Z3DCameraAcquisition>
 
-#include "src/sls/zstereosls.h"
+#include "zstereosls.h"
 //#include "zcloudview.h"
-#include "src/sls/zbinarypatternprojection.h"
+#include "zbinarypatternprojection.h"
 
 
 //#include <pcl/io/pcd_io.h>

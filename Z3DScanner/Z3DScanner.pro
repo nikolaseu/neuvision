@@ -23,43 +23,15 @@ win32:DEFINES += _USE_MATH_DEFINES # pcl-1.7 lo define, pero 1.6 no
 SOURCES += \
     src/main.cpp \
     src/ui/mainwindow.cpp \
-    src/zscannerinitialconfigwizard.cpp \
-    src/sls/zcameraacquisitionmanager.cpp \
-    src/sls/zpatternprojection.cpp \
-    src/sls/zstructuredlightsystem.cpp \
-    src/sls/zsimplepointcloud.cpp \
-    src/sls/zbinarypatternprojection.cpp \
-    src/sls/zbinarypatternprojectionconfigwidget.cpp \
-    src/sls/zdecodedpattern.cpp \
-    src/sls/zgeometryutils.cpp \
-    src/sls/zthreephase.cpp \
-    src/sls/zbinarypatterndecoder.cpp \
-    src/sls/zstereoslsconfigwidget.cpp \
-    src/sls/zstereosls.cpp \
-    src/sls/zstereosystemimpl.cpp
+    src/zscannerinitialconfigwizard.cpp
 
 HEADERS += \
     src/ui/mainwindow.h \
-    src/zscannerinitialconfigwizard.h \
-    src/sls/zcameraacquisitionmanager.h \
-    src/sls/zpatternprojection.h \
-    src/sls/zstructuredlightsystem.h \
-    src/sls/zsimplepointcloud.h \
-    src/sls/zbinarypatternprojection.h \
-    src/sls/zbinarypatternprojectionconfigwidget.h \
-    src/sls/zdecodedpattern.h \
-    src/sls/zgeometryutils.h \
-    src/sls/zthreephase.h \
-    src/sls/zbinarypatterndecoder.h \
-    src/sls/zstereoslsconfigwidget.h \
-    src/sls/zstereosls.h \
-    src/sls/zstereosystemimpl.h
+    src/zscannerinitialconfigwizard.h
 
 FORMS += \
     src/ui/mainwindow.ui \
-    src/zscannerinitialconfigwizard.ui \
-    src/sls/zbinarypatternprojectionconfigwidget.ui \
-    src/sls/zstereoslsconfigwidget.ui
+    src/zscannerinitialconfigwizard.ui
 
 RESOURCES += \
     resources.qrc
@@ -72,7 +44,7 @@ include($$PWD/../3rdparty/opencv.pri)
 
 ###############################################################################
 # PCL, VTK, etc etc
-#include($$PWD/../3rdparty/pcl.pri)
+include($$PWD/../3rdparty/pcl.pri)
 
 ###############################################################################
 # Qt Solutions - Property Browser
@@ -99,8 +71,12 @@ include($$PWD/../lib/zcameracalibration/zcameracalibration.pri)
 include($$PWD/../lib/zcalibratedcamera/zcalibratedcamera.pri)
 
 ###############################################################################
+# Structured Light
+include($$PWD/../lib/zstructuredlight/zstructuredlight.pri)
+
+###############################################################################
 # Points clouds
-#include($$PWD/../lib/zpointcloud/zpointcloud.pri)
+include($$PWD/../lib/zpointcloud/zpointcloud.pri)
 
 ###############################################################################
 # Camera calibrator

@@ -1,5 +1,5 @@
-#ifndef THREEPHASE_H
-#define THREEPHASE_H
+#ifndef Z3D_STRUCTUREDLIGHT___THREEPHASE_H
+#define Z3D_STRUCTUREDLIGHT___THREEPHASE_H
 
 #include <set>
 
@@ -79,4 +79,4 @@ private:
     //    Eigen::Matrix<float, 3, 4> m_dlpMatrix;
 };
 
-#endif // THREEPHASE_H
+#endif // Z3D_STRUCTUREDLIGHT___THREEPHASE_H

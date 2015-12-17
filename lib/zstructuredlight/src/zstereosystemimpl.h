@@ -1,5 +1,5 @@
-#ifndef STEREOSYSTEM_H
-#define STEREOSYSTEM_H
+#ifndef Z3D_STRUCTUREDLIGHT___ZSTEREOSYSTEMIMPL_H
+#define Z3D_STRUCTUREDLIGHT___ZSTEREOSYSTEMIMPL_H
 
 #include "zcalibratedcamera.h"
 #include "zsimplepointcloud.h"
@@ -73,4 +73,4 @@ private:
 
 } // namespace Z3D
 
-#endif // STEREOSYSTEM_H
+#endif // Z3D_STRUCTUREDLIGHT___ZSTEREOSYSTEMIMPL_H

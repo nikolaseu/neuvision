@@ -1,6 +1,7 @@
-#ifndef BINARYPATTERNPROJECTION_H
-#define BINARYPATTERNPROJECTION_H
+#ifndef Z3D_STRUCTUREDLIGHT___ZBINARYPATTERNPROJECTION_H
+#define Z3D_STRUCTUREDLIGHT___ZBINARYPATTERNPROJECTION_H
 
+#include "zstructuredlight_global.h"
 #include "zpatternprojection.h"
 
 #include <Z3DCalibratedCamera>
@@ -16,7 +17,7 @@ namespace Z3D
 
 class ZBinaryPatternProjectionConfigWidget;
 
-class ZBinaryPatternProjection : public ZPatternProjection
+class Z3D_STRUCTUREDLIGHT_SHARED_EXPORT ZBinaryPatternProjection : public ZPatternProjection
 {
     Q_OBJECT
 
@@ -121,4 +122,4 @@ protected:
 
 } // namespace Z3D
 
-#endif // BINARYPATTERNPROJECTION_H
+#endif // Z3D_STRUCTUREDLIGHT___ZBINARYPATTERNPROJECTION_H

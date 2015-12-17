@@ -1,6 +1,7 @@
 #ifndef ZSIMPLEPOINTCLOUD_H
 #define ZSIMPLEPOINTCLOUD_H
 
+#include "zstructuredlight_global.h"
 #include "opencv2/core/types.hpp"
 
 #include <QObject>
@@ -8,7 +9,7 @@
 namespace Z3D
 {
 
-class ZSimplePointCloud : public QObject
+class Z3D_STRUCTUREDLIGHT_SHARED_EXPORT ZSimplePointCloud : public QObject
 {
     Q_OBJECT
 

@@ -1,5 +1,5 @@
-#ifndef GEOMETRYUTILS_H
-#define GEOMETRYUTILS_H
+#ifndef Z3D_STRUCTUREDLIGHT___ZGEOMETRYUTILS_H
+#define Z3D_STRUCTUREDLIGHT___ZGEOMETRYUTILS_H
 
 #include <opencv2/core/core.hpp>
 
@@ -28,4 +28,4 @@ cv::Vec3d intersectLineWithLine3D(const cv::Vec3d &q1,
 
 } // namespace GeometryUtils
 
-#endif // GEOMETRYUTILS_H
+#endif // Z3D_STRUCTUREDLIGHT___ZGEOMETRYUTILS_H
