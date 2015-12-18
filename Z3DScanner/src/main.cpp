@@ -27,6 +27,10 @@ int main(int argc, char* argv[])
         QSplashScreen splash(pixmap);
         splash.show();
 
+        splash.showMessage("Loading plugins...");
+        app.processEvents();
+        app.loadPlugins();
+
         splash.showMessage("Loading camera acquisition plugins...");
         app.processEvents();
         Z3D::ZCameraProvider::loadPlugins();

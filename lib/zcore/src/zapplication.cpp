@@ -133,7 +133,10 @@ ZApplication::ZApplication(int &argc, char **argv)
 #ifdef Z3D_THREAD_COUNT_LIMIT
     QThreadPool::globalInstance()->setMaxThreadCount(Z3D_THREAD_COUNT_LIMIT);
 #endif
+}
 
+void ZApplication::loadPlugins()
+{
     ZPluginLoader::loadPlugins();
 }
 
