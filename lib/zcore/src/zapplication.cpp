@@ -1,5 +1,7 @@
 #include "zapplication.h"
 
+#include "zpluginloader.h"
+
 #include <stdio.h> //stdout
 
 #include <QDateTime>
@@ -131,6 +133,8 @@ ZApplication::ZApplication(int &argc, char **argv)
 #ifdef Z3D_THREAD_COUNT_LIMIT
     QThreadPool::globalInstance()->setMaxThreadCount(Z3D_THREAD_COUNT_LIMIT);
 #endif
+
+    ZPluginLoader::loadPlugins();
 }
 
 } // namespace Z3D

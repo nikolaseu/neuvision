@@ -11,6 +11,10 @@ VERSION       = $$Z3D_VERSION
 DEFINES      += Z3D_CORE_LIBRARY
 HEADERS += \
     zcore_global.h \
-    zapplication.h
+    zapplication.h \
+    zpluginloader.h \
+    zcoreplugin.h
 SOURCES += \
-    zapplication.cpp
+    zapplication.cpp \
+    zpluginloader.cpp \
+    zcoreplugin.cpp
