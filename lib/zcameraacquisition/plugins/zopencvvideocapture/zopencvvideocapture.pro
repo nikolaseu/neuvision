@@ -16,6 +16,10 @@ OTHER_FILES += \
     zopencvvideocapture.json
 
 ###############################################################################
+# Core
+include($$PWD/../../../zcore/zcore.pri)
+
+###############################################################################
 # Camera acquisition
 include(../../zcameraacquisition.pri)
 

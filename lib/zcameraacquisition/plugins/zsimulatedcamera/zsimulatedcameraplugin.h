@@ -6,7 +6,7 @@
 namespace Z3D
 {
 
-class ZSimulatedCameraPlugin : public QObject, ZCameraPluginInterface
+class ZSimulatedCameraPlugin : public ZCameraPluginInterface
 {
     Q_OBJECT
 

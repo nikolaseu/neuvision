@@ -6,20 +6,15 @@
 #include "zcameracalibrator.h"
 #include "zmulticameracalibrator.h"
 
-#include <QtPlugin>
-#include <QVariantMap>
+#include "zcoreplugin.h"
 
 namespace Z3D
 {
 
-class Z3D_CAMERACALIBRATION_SHARED_EXPORT ZCameraCalibrationPluginInterface
+class Z3D_CAMERACALIBRATION_SHARED_EXPORT ZCameraCalibrationPluginInterface : public ZCorePlugin
 {
 public:
     virtual ~ZCameraCalibrationPluginInterface() {}
-
-    /// plugin information
-    virtual QString name() = 0;
-    virtual QString version() = 0;
 
     /// calibration utilities
     virtual ZCameraCalibration::Ptr getCalibration(QVariantMap options) = 0;

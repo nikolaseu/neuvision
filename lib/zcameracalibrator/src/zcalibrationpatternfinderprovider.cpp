@@ -1,63 +1,27 @@
 #include "zcalibrationpatternfinderprovider.h"
 
 #include "zcalibrationpatternfinderplugininterface.h"
+#include "zpluginloader.h"
 
 #include <QDebug>
-#include <QDir>
-#include <QPluginLoader>
 
 namespace Z3D
 {
 
 QMap< QString, ZCalibrationPatternFinderPluginInterface *> ZCalibrationPatternFinderProvider::m_plugins;
 
-void ZCalibrationPatternFinderProvider::loadPlugins(QString folder)
+void ZCalibrationPatternFinderProvider::loadPlugins()
 {
-    QDir pluginsDir = QDir(folder);
+    auto list = ZPluginLoader::plugins("calibrationpatternfinder");
 
-    /// if no folder is indicated, use current running folder and standard search path
-    if (folder.isEmpty()) {
-        pluginsDir = QDir::current();
-
-    #if defined(Q_OS_WIN)
-//        if (pluginsDir.dirName().toLower() == "debug" || pluginsDir.dirName().toLower() == "release")
-//            pluginsDir.cdUp();
-    #elif defined(Q_OS_MAC)
-        if (pluginsDir.dirName() == "MacOS") {
-            pluginsDir.cdUp();
-            pluginsDir.cdUp();
-            pluginsDir.cdUp();
-        }
-    #endif
-
-        if (!(pluginsDir.cd("plugins") && pluginsDir.cd("calibrationpatternfinder"))) {
-            qWarning() << "standard calibration pattern finder plugin folder 'plugins/calibrationpatternfinder' not found in" << pluginsDir.absolutePath();
-            return;
-        }
-    }
-
-    qDebug() << "searching for calibration pattern finder plugins in" << pluginsDir.absolutePath();
-
-    QStringList filters;
-    filters << "*.dll" << "*.so" << "*.dylib";
-    pluginsDir.setNameFilters(filters);
-
-    foreach (QString fileName, pluginsDir.entryList(QDir::Files)) {
-        QPluginLoader loader(pluginsDir.absoluteFilePath(fileName));
-        QObject *pluginInstance = loader.instance();
-        if (pluginInstance) {
-            ZCalibrationPatternFinderPluginInterface *plugin = qobject_cast<ZCalibrationPatternFinderPluginInterface *>(pluginInstance);
-            if (plugin) {
-                qDebug() << "calibration pattern finder plugin loaded:" << plugin->name()
-                         << "version:" << plugin->version()
-                         << "filename:" << fileName;
-
-                m_plugins.insert(plugin->name(), plugin);
-            } else {
-                qWarning() << "invalid calibration pattern finder plugin:" << fileName;
-            }
+    for (auto pluginInstance : list) {
+        auto *plugin = qobject_cast<ZCalibrationPatternFinderPluginInterface *>(pluginInstance);
+        if (plugin) {
+            qDebug() << "pattern finder plugin loaded. type:" << plugin->id()
+                     << "version:" << plugin->version();
+            m_plugins.insert(plugin->id(), plugin);
         } else {
-            qWarning() << "error loading calibration pattern finder plugin" << fileName << "->" << loader.errorString();
+            qWarning() << "invalid pattern finder plugin:" << plugin;
         }
     }
 }

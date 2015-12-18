@@ -7,7 +7,7 @@
 
 namespace Z3D {
 
-class ZIncompleteCircleGridPatternFinderPlugin : public QObject, ZCalibrationPatternFinderPluginInterface
+class ZIncompleteCircleGridPatternFinderPlugin : public ZCalibrationPatternFinderPluginInterface
 {
     Q_OBJECT
 
@@ -17,10 +17,15 @@ class ZIncompleteCircleGridPatternFinderPlugin : public QObject, ZCalibrationPat
 
     Q_INTERFACES(Z3D::ZCalibrationPatternFinderPluginInterface)
 
+    // ZCorePlugin interface
 public:
-    virtual QString name();
-    virtual QString version();
-    virtual QList<ZCalibrationPatternFinder::Ptr> getPatternFinders();
+    virtual QString id() override;
+    virtual QString name() override;
+    virtual QString version() override;
+
+    // ZCalibrationPatternFinderPluginInterface interface
+public:
+    virtual QList<ZCalibrationPatternFinder::Ptr> getPatternFinders() override;
 };
 
 } // namespace Z3D

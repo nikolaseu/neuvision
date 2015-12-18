@@ -9,7 +9,7 @@
 namespace Z3D
 {
 
-class ZPinholeCameraCalibrationPlugin : public QObject, public ZCameraCalibrationPluginInterface
+class ZPinholeCameraCalibrationPlugin : public ZCameraCalibrationPluginInterface
 {
     Q_OBJECT
 /*
@@ -19,15 +19,18 @@ class ZPinholeCameraCalibrationPlugin : public QObject, public ZCameraCalibratio
 
     Q_INTERFACES(Z3D::ZCameraCalibrationPluginInterface)
 */
-public:
-    /// plugin information
-    virtual QString name();
-    virtual QString version();
 
-    /// calibration utilities
-    virtual ZCameraCalibration::Ptr getCalibration(QVariantMap options);
-    virtual QList<ZCameraCalibrator *> getCameraCalibrators();
-    virtual QList<ZMultiCameraCalibrator *> getMultiCameraCalibrators();
+    // ZCorePlugin interface
+public:
+    virtual QString id() override;
+    virtual QString name() override;
+    virtual QString version() override;
+
+    // ZCameraCalibrationPluginInterface interface
+public:
+    virtual ZCameraCalibration::Ptr getCalibration(QVariantMap options) override;
+    virtual QList<ZCameraCalibrator *> getCameraCalibrators() override;
+    virtual QList<ZMultiCameraCalibrator *> getMultiCameraCalibrators() override;
 };
 
 } // namespace Z3D

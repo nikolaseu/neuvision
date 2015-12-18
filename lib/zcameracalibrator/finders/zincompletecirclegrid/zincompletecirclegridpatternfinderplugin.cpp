@@ -4,6 +4,11 @@
 
 namespace Z3D {
 
+QString ZIncompleteCircleGridPatternFinderPlugin::id()
+{
+    return QString(metaObject()->className());
+}
+
 QString ZIncompleteCircleGridPatternFinderPlugin::name()
 {
     return QString(metaObject()->className());

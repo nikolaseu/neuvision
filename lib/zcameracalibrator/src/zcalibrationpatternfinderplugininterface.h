@@ -3,21 +3,17 @@
 
 #include "zcameracalibrator_global.h"
 #include "zcalibrationpatternfinder.h"
-
-#include <QtPlugin>
-#include <QVariantMap>
+#include "zcoreplugin.h"
 
 namespace Z3D
 {
 
-class Z3D_CAMERACALIBRATOR_SHARED_EXPORT ZCalibrationPatternFinderPluginInterface
+class Z3D_CAMERACALIBRATOR_SHARED_EXPORT ZCalibrationPatternFinderPluginInterface : public ZCorePlugin
 {
+    Q_OBJECT
+
 public:
     virtual ~ZCalibrationPatternFinderPluginInterface() {}
-
-    /// plugin information
-    virtual QString name() = 0;
-    virtual QString version() = 0;
 
     /// calibration utilities
     virtual QList<ZCalibrationPatternFinder::Ptr> getPatternFinders() = 0;

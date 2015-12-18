@@ -9,6 +9,11 @@
 namespace Z3D
 {
 
+QString ZPinholeCameraCalibrationPlugin::id()
+{
+    return QString(PINHOLE_CALIB_NAME);
+}
+
 QString ZPinholeCameraCalibrationPlugin::name()
 {
     return QString(PINHOLE_CALIB_NAME);

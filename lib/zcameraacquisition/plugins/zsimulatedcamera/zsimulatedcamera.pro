@@ -16,8 +16,12 @@ OTHER_FILES += \
     zsimulatedcamera.json
 
 ###############################################################################
+# Core
+include($$PWD/../../../zcore/zcore.pri)
+
+###############################################################################
 # Camera acquisition
-include(../../zcameraacquisition.pri)
+include($$PWD/../../zcameraacquisition.pri)
 
 ###############################################################################
 # OpenCV

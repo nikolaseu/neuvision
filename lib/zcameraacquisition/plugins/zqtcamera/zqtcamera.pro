@@ -15,6 +15,10 @@ SOURCES      += \
     zqtcameraplugin.cpp
 
 ###############################################################################
+# Core
+include($$PWD/../../../zcore/zcore.pri)
+
+###############################################################################
 # Camera acquisition
 include(../../zcameraacquisition.pri)
 

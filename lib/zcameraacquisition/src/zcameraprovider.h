@@ -18,7 +18,7 @@ class Z3D_CAMERAACQUISITION_SHARED_EXPORT ZCameraProvider
 {
 
 public:
-    static void loadPlugins(QString folder = QString());
+    static void loadPlugins();
     static void unloadPlugins();
 
     static ZCameraInterface::Ptr getCamera(QString pluginName, QVariantMap options);

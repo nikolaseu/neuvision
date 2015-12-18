@@ -17,7 +17,7 @@ class Z3D_CAMERACALIBRATOR_SHARED_EXPORT ZCalibrationPatternFinderProvider
 {
 
 public:
-    static void loadPlugins(QString folder = QString());
+    static void loadPlugins();
     static void unloadPlugins();
 
     static QList<ZCalibrationPatternFinder::Ptr> getAll();

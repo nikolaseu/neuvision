@@ -5,6 +5,11 @@
 
 namespace Z3D {
 
+QString ZOpenCVStandardPatternFinderPlugin::id()
+{
+    return QString(metaObject()->className());
+}
+
 QString ZOpenCVStandardPatternFinderPlugin::name()
 {
     return QString(metaObject()->className());

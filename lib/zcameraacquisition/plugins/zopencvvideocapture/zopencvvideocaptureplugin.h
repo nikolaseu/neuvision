@@ -9,7 +9,7 @@
 namespace Z3D
 {
 
-class ZOpenCVVideoCapturePlugin : public QObject, ZCameraPluginInterface
+class ZOpenCVVideoCapturePlugin : public ZCameraPluginInterface
 {
     Q_OBJECT
 
