@@ -40,6 +40,7 @@ private slots:
 
     //
     void onPatternProjectionTypeChanged(int index);
+    void onStructuredLightSystemTypeChanged(int index);
 
     // each camera's submenu items
     void openCameraPreview(int camIndex);
@@ -61,7 +62,8 @@ private:
     QList<Z3D::ZPatternProjection *> m_patternProjectionList;
     Z3D::ZPatternProjection *m_currentPatternProjection;
 
-    Z3D::ZStructuredLightSystem *m_structuredLightSystem;
+    QList<Z3D::ZStructuredLightSystem *> m_structuredLightList;
+    Z3D::ZStructuredLightSystem *m_currentStructuredLightSystem;
 
     /// 3D view window (created on demand)
     /// FIXME QPointer<Z3D::ZCloudView> m_cloudViewer;

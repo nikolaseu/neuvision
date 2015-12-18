@@ -6,6 +6,8 @@
 #include <Z3DCameraProvider>
 #include <Z3DCameraCalibrationProvider>
 #include "zcalibrationpatternfinderprovider.h"
+#include "zpatternprojectionprovider.h"
+#include "zstructuredlightsystemprovider.h"
 
 #include "zscannerinitialconfigwizard.h"
 
@@ -36,6 +38,14 @@ int main(int argc, char* argv[])
         splash.showMessage("Loading calibration pattern finder plugins...");
         app.processEvents();
         Z3D::ZCalibrationPatternFinderProvider::loadPlugins();
+
+        splash.showMessage("Loading structured light system plugins...");
+        app.processEvents();
+        Z3D::ZStructuredLightSystemProvider::loadPlugins();
+
+        splash.showMessage("Loading pattern projection plugins...");
+        app.processEvents();
+        Z3D::ZPatternProjectionProvider::loadPlugins();
 
         splash.showMessage("Loading main window...");
         app.processEvents();

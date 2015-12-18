@@ -4,8 +4,6 @@
 #include "zstructuredlight_global.h"
 #include "zpatternprojection.h"
 
-#include <Z3DCalibratedCamera>
-
 #if QT_VERSION < 0x050000
 class QDeclarativeView;
 #else
