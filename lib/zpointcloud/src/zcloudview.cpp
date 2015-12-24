@@ -166,11 +166,14 @@ void ZCloudView::showCameraSnapshot(Z3D::ZCalibratedCamera::Ptr pCamera)
 
             /// color
             if (intensityImg.channels() == 1) {
+#if defined(CLOUD_INTENSITY_ONLY)
                 cloudPoint.intensity = intensityImg.at<unsigned char>(y,x);
-                /*unsigned int iB = intensityImg.at<unsigned char>(y,x);
+#else
+                unsigned int iB = intensityImg.at<unsigned char>(y,x);
                 uint32_t rgb = (static_cast<uint32_t>(iB) << 16 |
                                 static_cast<uint32_t>(iB) << 8 | static_cast<uint32_t>(iB));
-                cloud->points[i].rgb = *reinterpret_cast<float*>(&rgb);*/
+                cloudPoint.rgb = *reinterpret_cast<float*>(&rgb);
+#endif
             } else {
                 cv::Vec3b intensity = intensityImg.at<cv::Vec3b>(y, x);
                 /*uchar blue = intensity.val[0];
@@ -179,7 +182,11 @@ void ZCloudView::showCameraSnapshot(Z3D::ZCalibratedCamera::Ptr pCamera)
                 uint32_t rgb = (static_cast<uint32_t>(intensity.val[0]) << 16 |
                                 static_cast<uint32_t>(intensity.val[1]) <<  8 |
                                 static_cast<uint32_t>(intensity.val[2]));
-                cloudPoint.intensity /*rgb*/ = *reinterpret_cast<float*>(&rgb);
+#if defined(CLOUD_INTENSITY_ONLY)
+                cloudPoint.intensity = *reinterpret_cast<float*>(&rgb);
+#else
+                cloudPoint.rgb = *reinterpret_cast<float*>(&rgb);
+#endif
             }
 
             ++i;
@@ -1004,7 +1011,11 @@ void ZCloudView::on_actionToolsFitCylinder_triggered()
 
         auto &points = m_pointCloud->pclPointCloud()->points;
         for (auto &point : points) {
+#if defined(CLOUD_INTENSITY_ONLY)
             point.intensity = maxError;
+#else
+            point.rgb = maxError;
+#endif
         }
 
         int i = 0;
@@ -1019,7 +1030,11 @@ void ZCloudView::on_actionToolsFitCylinder_triggered()
                      << "cylinderRadious" << cylinderRadious
                      << "error" << error;*/
 
+#if defined(CLOUD_INTENSITY_ONLY)
             points[*it].intensity = error;
+#else
+            points[*it].rgb = error;
+#endif
 
             /*
             float value = (error - minError) / rangeError;
@@ -1285,7 +1300,11 @@ void ZCloudView::on_actionToolsFitPlane_triggered()
         auto &points = m_pointCloud->pclPointCloud()->points;
 
         for (auto &point : points) {
+#if defined(CLOUD_INTENSITY_ONLY)
             point.intensity = maxError;
+#else
+            point.rgb = maxError;
+#endif
         }
 
         int i = 0;
@@ -1299,7 +1318,11 @@ void ZCloudView::on_actionToolsFitPlane_triggered()
                      << "planeDistance" << planeDistance
                      << "error" << error;*/
 
+#if defined(CLOUD_INTENSITY_ONLY)
             points[*it].intensity = error;
+#else
+            points[*it].rgb = error;
+#endif
 
             /*
             float value = (error - minError) / rangeError;

@@ -388,7 +388,11 @@ void ZLaserTriangulationCalibrator::calibrateFunctionImpl()
                 laserLineCloud->points[i1].z = intersec.z;
 
                 /// black color
-                laserLineCloud->points[i1].intensity /*rgb*/ = *reinterpret_cast<float*>(&rgb_black);
+#if defined(CLOUD_INTENSITY_ONLY)
+                laserLineCloud->points[i1].intensity = *reinterpret_cast<float*>(&rgb_black);
+#else
+                laserLineCloud->points[i1].rgb = *reinterpret_cast<float*>(&rgb_black);
+#endif
             }
 
             /// segment a line from the laser points (to avoid outliers when fitting plane)
@@ -430,7 +434,11 @@ void ZLaserTriangulationCalibrator::calibrateFunctionImpl()
                 /// add line inliers to point cloud where we'll fit a plane
                 for (unsigned int i2 = 0; i2 < lineInliers->indices.size(); ++i2) {
                     cloud->points[i] = laserLineCloud->points[lineInliers->indices[i2]];
-                    cloud->points[i].intensity /*rgb*/ = *reinterpret_cast<float*>(&pointColor);
+#if defined(CLOUD_INTENSITY_ONLY)
+                    cloud->points[i].intensity = *reinterpret_cast<float*>(&pointColor);
+#else
+                    cloud->points[i].rgb = *reinterpret_cast<float*>(&pointColor);
+#endif
                     i++;
                 }
             }
@@ -471,7 +479,11 @@ void ZLaserTriangulationCalibrator::calibrateFunctionImpl()
                                 static_cast<uint32_t>(  0) <<  8 |
                                 static_cast<uint32_t>(  0)       );
         for (size_t i = 0; i < planeInliers->indices.size(); ++i)
-            cloud->points[planeInliers->indices[i]].intensity /*rgb*/ = *reinterpret_cast<float*>(&pointColor);
+#if defined(CLOUD_INTENSITY_ONLY)
+            cloud->points[planeInliers->indices[i]].intensity = *reinterpret_cast<float*>(&pointColor);
+#else
+            cloud->points[planeInliers->indices[i]].rgb = *reinterpret_cast<float*>(&pointColor);
+#endif
     }
 
     //pcl::visualization::PointCloudColorHandlerRGBField<PointType> rgb(cloud);
