@@ -8,7 +8,6 @@ QT += core gui opengl #declarative
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets quick qml concurrent
 
-CONFIG += c++11
 #CONFIG += console
 
 DESTDIR = $$Z3D_BUILD_DIR

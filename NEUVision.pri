@@ -1,5 +1,5 @@
 # app version
-Z3D_VERSION = 1.15.2.25
+Z3D_VERSION = 1.15.1225
 
 # define Z3D_VERSION_STR so we could use in main.cpp
 Z3D_VERSTR = '\\"$${Z3D_VERSION}\\"'  # place quotes around the version string

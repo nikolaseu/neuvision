@@ -6,7 +6,6 @@ greaterThan(QT_MAJOR_VERSION, 4) {
     QT += widgets
 }
 
-CONFIG += c++11
 #CONFIG += console
 
 DESTDIR = $$Z3D_BUILD_DIR
