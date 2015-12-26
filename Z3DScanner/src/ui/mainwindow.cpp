@@ -11,6 +11,7 @@
 #include "zstructuredlightsystem.h"
 #include "zstructuredlightsystemprovider.h"
 
+#include "src/zpointcloudwidget.h"
 
 //#include <pcl/io/pcd_io.h>
 
@@ -34,6 +35,9 @@ MainWindow::MainWindow(QWidget *parent)
     /// FIXME , m_cloudViewer(nullptr)
 {
     ui->setupUi(this);
+
+    m_pointCloudWidget = new ZPointCloudWidget(this);
+    ui->glLayout->addWidget(m_pointCloudWidget);
 
     /// start disabled. only enabled when we have at least 2 cameras
     ui->menu3dReconstruction->setEnabled(false);
@@ -233,6 +237,8 @@ void MainWindow::onScanFinished(Z3D::ZSimplePointCloud::Ptr cloud)
                              tr("The point cloud is empty.\nIs everything configured correctly?\nIs there anything inside the scan volume?"));
         return;
     }
+
+    m_pointCloudWidget->setPointCloudData(ZPointCloudData::Ptr(new ZPointCloudData(cloud)));
 
     /*
     QString filename = QString("%1/pointCloud.pcd").arg(decodedPattern->scanTmpFolder);

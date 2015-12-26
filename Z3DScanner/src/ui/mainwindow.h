@@ -18,6 +18,8 @@ class ZPatternProjection;
 class ZStructuredLightSystem;
 }
 
+class ZPointCloudWidget;
+
 class QSignalMapper;
 //class QThread;
 
@@ -64,6 +66,8 @@ private:
 
     QList<Z3D::ZStructuredLightSystem *> m_structuredLightList;
     Z3D::ZStructuredLightSystem *m_currentStructuredLightSystem;
+
+    ZPointCloudWidget *m_pointCloudWidget;
 
     /// 3D view window (created on demand)
     /// FIXME QPointer<Z3D::ZCloudView> m_cloudViewer;

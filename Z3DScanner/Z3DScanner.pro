@@ -22,11 +22,15 @@ win32:DEFINES += _USE_MATH_DEFINES # pcl-1.7 lo define, pero 1.6 no
 SOURCES += \
     src/main.cpp \
     src/ui/mainwindow.cpp \
-    src/zscannerinitialconfigwizard.cpp
+    src/zscannerinitialconfigwizard.cpp \
+    src/zpointcloudwidget.cpp \
+    src/zpointclouddata.cpp
 
 HEADERS += \
     src/ui/mainwindow.h \
-    src/zscannerinitialconfigwizard.h
+    src/zscannerinitialconfigwizard.h \
+    src/zpointcloudwidget.h \
+    src/zpointclouddata.h
 
 FORMS += \
     src/ui/mainwindow.ui \
