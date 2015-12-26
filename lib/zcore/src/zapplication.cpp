@@ -5,7 +5,9 @@
 #include <stdio.h> //stdout
 
 #include <QDateTime>
+#include <QDebug>
 #include <QPalette>
+#include <QSplashScreen>
 #include <QStyleFactory>
 #include <QThread>
 #include <QThreadPool>
@@ -99,6 +101,7 @@ void LogHandler(QtMsgType type, const QMessageLogContext &context, const QString
 
 ZApplication::ZApplication(int &argc, char **argv, ZApplicationStyle style)
     : QApplication(argc, argv)
+    , m_splash(nullptr)
 {
 
     /// set message handler for debug
@@ -152,7 +155,33 @@ ZApplication::ZApplication(int &argc, char **argv, ZApplicationStyle style)
 
 void ZApplication::loadPlugins()
 {
-    ZPluginLoader::loadPlugins();
+    ZPluginLoader::instance()->loadPlugins();
+}
+
+QSplashScreen * ZApplication::showSplashScreen()
+{
+    if (!m_splash) {
+        QPixmap pixmap(":/splash");
+        m_splash = new QSplashScreen(pixmap);
+        m_splash->show();
+
+        connect(ZPluginLoader::instance(), &ZPluginLoader::progressChanged,
+                [&](float progress, QString message) {
+                    qDebug() << "progress:" << progress << "message:" << message;
+                    m_splash->showMessage(message);
+                    processEvents();
+                }
+        );
+    }
+
+    return m_splash;
+}
+
+void ZApplication::finishSplashScreen(QWidget *widget)
+{
+    if (m_splash) {
+        m_splash->finish(widget);
+    }
 }
 
 } // namespace Z3D

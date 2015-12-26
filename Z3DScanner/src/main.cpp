@@ -35,9 +35,7 @@ int main(int argc, char* argv[])
     int result;
 
     {
-        QPixmap pixmap(":/splash");
-        QSplashScreen splash(pixmap);
-        splash.show();
+        QSplashScreen &splash = *app.showSplashScreen();
 
         splash.showMessage("Loading plugins...");
         app.processEvents();
@@ -73,7 +71,7 @@ int main(int argc, char* argv[])
         //ZScannerInitialConfigWizard window;
         MainWindow window;
 
-        splash.finish(&window);
+        app.finishSplashScreen(&window);
 
         window.show();
 

@@ -59,9 +59,11 @@ void ZPluginLoader::loadPlugins(QString folder)
     filters << "*.so";
 #endif
 
-    QStringList foldersList = pluginsDir.entryList(QDir::AllDirs | QDir::NoDot | QDir::NoDotDot);
-
-    foreach (QString folderName, foldersList) {
+    auto foldersList = pluginsDir.entryList(QDir::AllDirs | QDir::NoDot | QDir::NoDotDot);
+    auto folderCount = foldersList.size();
+    auto folderIndex = -1;
+    for (const auto &folderName : foldersList) {
+        folderIndex++;
         QString pluginsFolderName = pluginsDir.absoluteFilePath(folderName);
         qDebug() << "loading plugins from" << pluginsFolderName;
         QDir currentPluginsDir(pluginsFolderName);
@@ -69,8 +71,16 @@ void ZPluginLoader::loadPlugins(QString folder)
 
         QList<QObject *> pluginsList;
 
-        foreach (QString fileName, currentPluginsDir.entryList(QDir::Files)) {
+        auto fileList = currentPluginsDir.entryList(QDir::Files);
+        auto fileCount = fileList.size();
+        auto fileIndex = -1;
+        for (const auto &fileName : fileList) {
+            fileIndex++;
             QString pluginFileName = currentPluginsDir.absoluteFilePath(fileName);
+
+            float progress = (float(folderIndex) + float(fileIndex)/fileCount) / folderCount;
+            emit progressChanged(progress, tr("Loading %1").arg(fileName));
+
             QPluginLoader loader(pluginFileName);
             QObject *pluginInstance = loader.instance();
             ZCorePlugin *plugin = qobject_cast<ZCorePlugin *>(pluginInstance);
@@ -85,9 +95,10 @@ void ZPluginLoader::loadPlugins(QString folder)
             }
         }
 
-        auto &plugins = instance()->m_plugins;
-        plugins[folderName] = pluginsList;
+        m_plugins[folderName] = pluginsList;
     }
+
+    emit progressChanged(1.f, tr("Finished loading plugins"));
 }
 
 void ZPluginLoader::unloadPlugins()

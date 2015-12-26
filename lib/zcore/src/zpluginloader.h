@@ -15,12 +15,13 @@ class Z3D_CORE_SHARED_EXPORT ZPluginLoader : public QObject
 public:
     static ZPluginLoader *instance();
 
-    static void loadPlugins(QString folder = QString());
-    static void unloadPlugins();
+    void loadPlugins(QString folder = QString());
+    void unloadPlugins();
 
     static const QList<QObject *> plugins(const QString &pluginType);
 
 signals:
+    void progressChanged(float progress, QString message);
 
 public slots:
 
