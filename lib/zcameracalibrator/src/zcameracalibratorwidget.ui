@@ -43,7 +43,7 @@
      <item>
       <layout class="QVBoxLayout" name="verticalLayout_2">
        <item>
-        <widget class="QToolButton" name="calibrationPatternViewButton">
+        <widget class="QPushButton" name="calibrationPatternViewButton">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
            <horstretch>0</horstretch>
@@ -65,7 +65,7 @@
         </widget>
        </item>
        <item>
-        <widget class="QToolButton" name="imageViewPageButton">
+        <widget class="QPushButton" name="imageViewPageButton">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
            <horstretch>0</horstretch>
@@ -84,7 +84,7 @@
         </widget>
        </item>
        <item>
-        <widget class="QToolButton" name="cameraViewPageButton">
+        <widget class="QPushButton" name="cameraViewPageButton">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
            <horstretch>0</horstretch>
@@ -103,7 +103,7 @@
         </widget>
        </item>
        <item>
-        <widget class="QToolButton" name="calibrationPageButton">
+        <widget class="QPushButton" name="calibrationPageButton">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
            <horstretch>0</horstretch>
@@ -164,7 +164,7 @@
           <number>0</number>
          </property>
          <item>
-          <widget class="QToolButton" name="loadSessionButton">
+          <widget class="QPushButton" name="loadSessionButton">
            <property name="sizePolicy">
             <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
              <horstretch>0</horstretch>
@@ -177,7 +177,7 @@
           </widget>
          </item>
          <item>
-          <widget class="QToolButton" name="newSessionButton">
+          <widget class="QPushButton" name="newSessionButton">
            <property name="sizePolicy">
             <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
              <horstretch>0</horstretch>
@@ -273,7 +273,7 @@
             </spacer>
            </item>
            <item>
-            <widget class="QToolButton" name="runCalibrationButton">
+            <widget class="QPushButton" name="runCalibrationButton">
              <property name="text">
               <string>Run calibration</string>
              </property>
@@ -384,7 +384,7 @@
          <item>
           <layout class="QHBoxLayout" name="horizontalLayout_2">
            <item>
-            <widget class="QToolButton" name="cameraSettingsButton">
+            <widget class="QPushButton" name="cameraSettingsButton">
              <property name="text">
               <string>Camera settings...</string>
              </property>
@@ -411,7 +411,7 @@
             </widget>
            </item>
            <item>
-            <widget class="QToolButton" name="saveCameraImageButton">
+            <widget class="QPushButton" name="saveCameraImageButton">
              <property name="text">
               <string>Save image</string>
              </property>
@@ -500,14 +500,14 @@
                  </spacer>
                 </item>
                 <item>
-                 <widget class="QToolButton" name="updateCameraCalibrationButton">
+                 <widget class="QPushButton" name="updateCameraCalibrationButton">
                   <property name="text">
-                   <string>Update camera calibration</string>
+                   <string>Update camera</string>
                   </property>
                  </widget>
                 </item>
                 <item>
-                 <widget class="QToolButton" name="saveCalibrationToFileButton">
+                 <widget class="QPushButton" name="saveCalibrationToFileButton">
                   <property name="text">
                    <string>Save to file...</string>
                   </property>
