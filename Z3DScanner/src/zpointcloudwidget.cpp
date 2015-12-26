@@ -55,7 +55,7 @@ ZPointCloudWidget::ZPointCloudWidget(QWidget *parent)
       m_pointCloud(nullptr),
       m_program(0)
 {
-    m_core = true; //QCoreApplication::arguments().contains(QStringLiteral("--coreprofile"));
+    m_core = QCoreApplication::arguments().contains(QStringLiteral("--coreprofile"));
 
     setFocusPolicy(Qt::StrongFocus);
 }
@@ -67,7 +67,7 @@ ZPointCloudWidget::~ZPointCloudWidget()
 
 QSize ZPointCloudWidget::minimumSizeHint() const
 {
-    return QSize(50, 50);
+    return QSize(360, 240);
 }
 
 QSize ZPointCloudWidget::sizeHint() const
@@ -309,8 +309,7 @@ void ZPointCloudWidget::setupVertexAttribs()
     QOpenGLVertexArrayObject::Binder vaoBinder(&m_vao);
 
     // Setup our vertex buffer object.
-    if (m_pointCloudVbo.create()) {
-        m_pointCloudVbo.bind();
+    if (m_pointCloudVbo.create() && m_pointCloudVbo.bind()) {
         m_pointCloudVbo.allocate(m_pointCloud->constData(), m_pointCloud->count() * sizeof(GLfloat));
 
         // Store the vertex attribute bindings for the program.
@@ -322,7 +321,7 @@ void ZPointCloudWidget::setupVertexAttribs()
         f->glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(GLfloat), reinterpret_cast<void *>(3 * sizeof(GLfloat)));
         m_pointCloudVbo.release();
     } else {
-        qWarning() << "Unable to create VBO";
+        qWarning() << "Unable to create/bind VBO";
     }
 }
 
@@ -349,6 +348,7 @@ void ZPointCloudWidget::paintGL()
     m_program->setUniformValue(m_normalMatrixLoc, normalMatrix);
 
     if (m_pointCloud) {
+        qDebug() << "drawing point cloud";
         //glDrawArrays(GL_TRIANGLES, 0, m_logo.vertexCount());
         glPointSize(devicePixelRatio() * m_pointSize);
         glDrawArrays(GL_POINTS, 0, m_pointCloud->vertexCount());
