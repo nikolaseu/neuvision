@@ -296,7 +296,7 @@ void ZPointCloudWidget::initializeGL()
 
     // Our camera never changes in this example.
     m_camera.setToIdentity();
-    m_camera.translate(0, 0, -100);
+    m_camera.translate(0, 0, -1);
 
     // Light position is fixed.
     m_program->setUniformValue(m_lightPosLoc, QVector3D(0, 0, 700));
@@ -337,7 +337,7 @@ void ZPointCloudWidget::paintGL()
     m_world.rotate(m_zRot / 16.0f, 0, 0, 1);
 
     m_camera.setToIdentity();
-    m_camera.translate(0, 0, -1);
+    m_camera.translate(0, 0, -1000);
     m_camera.scale(m_scale);
 
     QOpenGLVertexArrayObject::Binder vaoBinder(&m_vao);
@@ -366,9 +366,9 @@ void ZPointCloudWidget::resizeGL(int w, int h)
     m_proj.setToIdentity();
     GLfloat aspectRatio = GLfloat(w) / h;
     if (m_perspectiveProjection)
-        m_proj.perspective(45.0f, aspectRatio, 0.01f, 100.0f);
+        m_proj.perspective(45.0f, aspectRatio, 0.01f, 10000.0f);
     else
-        m_proj.ortho(-aspectRatio, aspectRatio, -1.f, 1.f, 0.01f, 100.0f);
+        m_proj.ortho(-aspectRatio, aspectRatio, -1.f, 1.f, 0.01f, 10000.0f);
 }
 
 void ZPointCloudWidget::mousePressEvent(QMouseEvent *event)
