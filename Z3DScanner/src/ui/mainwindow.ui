@@ -32,8 +32,14 @@
       <property name="orientation">
        <enum>Qt::Horizontal</enum>
       </property>
+      <property name="handleWidth">
+       <number>1</number>
+      </property>
       <widget class="QWidget" name="horizontalLayoutWidget">
-       <layout class="QHBoxLayout" name="horizontalLayout_2">
+       <layout class="QVBoxLayout" name="verticalLayout_5">
+        <property name="sizeConstraint">
+         <enum>QLayout::SetMinimumSize</enum>
+        </property>
         <property name="leftMargin">
          <number>12</number>
         </property>
@@ -47,169 +53,128 @@
          <number>12</number>
         </property>
         <item>
-         <layout class="QVBoxLayout" name="verticalLayout">
-          <item>
-           <widget class="QGroupBox" name="groupBox">
-            <property name="title">
-             <string>Pattern type</string>
-            </property>
-            <layout class="QGridLayout" name="gridLayout_4">
-             <item row="0" column="0">
-              <widget class="QComboBox" name="patternTypeComboBox"/>
-             </item>
-            </layout>
-           </widget>
-          </item>
-          <item>
-           <layout class="QVBoxLayout" name="patternProjectionConfigLayout"/>
-          </item>
-          <item>
-           <spacer name="verticalSpacer">
-            <property name="orientation">
-             <enum>Qt::Vertical</enum>
-            </property>
-            <property name="sizeHint" stdset="0">
-             <size>
-              <width>20</width>
-              <height>40</height>
-             </size>
-            </property>
-           </spacer>
-          </item>
-         </layout>
+         <widget class="QPushButton" name="startAcquisitionButton">
+          <property name="font">
+           <font>
+            <weight>75</weight>
+            <bold>true</bold>
+           </font>
+          </property>
+          <property name="styleSheet">
+           <string notr="true">background-color: rgb(0, 255, 0);
+color: rgb(0, 0, 0);
+text-align: left;
+padding: 8px;</string>
+          </property>
+          <property name="text">
+           <string>SCAN</string>
+          </property>
+         </widget>
         </item>
         <item>
-         <layout class="QVBoxLayout" name="verticalLayout_2">
-          <item>
-           <widget class="QGroupBox" name="groupBox_2">
-            <property name="title">
-             <string>Structured Light System type</string>
-            </property>
-            <layout class="QGridLayout" name="gridLayout_2">
-             <item row="0" column="0">
-              <widget class="QComboBox" name="structuredLightSystemComboBox"/>
-             </item>
-            </layout>
-           </widget>
-          </item>
-          <item>
-           <layout class="QVBoxLayout" name="structuredLightSystemConfigLayout"/>
-          </item>
-          <item>
-           <spacer name="verticalSpacer_2">
-            <property name="orientation">
-             <enum>Qt::Vertical</enum>
-            </property>
-            <property name="sizeHint" stdset="0">
-             <size>
-              <width>20</width>
-              <height>40</height>
-             </size>
-            </property>
-           </spacer>
-          </item>
-          <item>
-           <widget class="QCommandLinkButton" name="startAcquisitionButton">
-            <property name="text">
-             <string>Scan</string>
-            </property>
-           </widget>
-          </item>
-         </layout>
+         <widget class="QTabWidget" name="tabWidget">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Minimum" vsizetype="Expanding">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="currentIndex">
+           <number>0</number>
+          </property>
+          <widget class="QWidget" name="tab">
+           <attribute name="title">
+            <string>Projection</string>
+           </attribute>
+           <layout class="QVBoxLayout" name="verticalLayout_3">
+            <item>
+             <layout class="QVBoxLayout" name="verticalLayout">
+              <item>
+               <widget class="QGroupBox" name="groupBox">
+                <property name="title">
+                 <string>Type</string>
+                </property>
+                <layout class="QGridLayout" name="gridLayout_4">
+                 <item row="0" column="0">
+                  <widget class="QComboBox" name="patternTypeComboBox"/>
+                 </item>
+                </layout>
+               </widget>
+              </item>
+              <item>
+               <layout class="QVBoxLayout" name="patternProjectionConfigLayout"/>
+              </item>
+              <item>
+               <spacer name="verticalSpacer">
+                <property name="orientation">
+                 <enum>Qt::Vertical</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>20</width>
+                  <height>40</height>
+                 </size>
+                </property>
+               </spacer>
+              </item>
+             </layout>
+            </item>
+           </layout>
+          </widget>
+          <widget class="QWidget" name="tab_2">
+           <attribute name="title">
+            <string>Structured Light</string>
+           </attribute>
+           <layout class="QVBoxLayout" name="verticalLayout_4">
+            <item>
+             <layout class="QVBoxLayout" name="verticalLayout_2">
+              <item>
+               <widget class="QGroupBox" name="groupBox_2">
+                <property name="title">
+                 <string>Type</string>
+                </property>
+                <layout class="QGridLayout" name="gridLayout_2">
+                 <item row="0" column="0">
+                  <widget class="QComboBox" name="structuredLightSystemComboBox"/>
+                 </item>
+                </layout>
+               </widget>
+              </item>
+              <item>
+               <layout class="QVBoxLayout" name="structuredLightSystemConfigLayout"/>
+              </item>
+              <item>
+               <spacer name="verticalSpacer_2">
+                <property name="orientation">
+                 <enum>Qt::Vertical</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>20</width>
+                  <height>40</height>
+                 </size>
+                </property>
+               </spacer>
+              </item>
+             </layout>
+            </item>
+           </layout>
+          </widget>
+         </widget>
         </item>
        </layout>
       </widget>
       <widget class="QWidget" name="horizontalLayoutWidget_2">
-       <layout class="QHBoxLayout" name="glLayout" stretch=""/>
+       <layout class="QHBoxLayout" name="glLayout">
+        <property name="sizeConstraint">
+         <enum>QLayout::SetMaximumSize</enum>
+        </property>
+       </layout>
       </widget>
      </widget>
     </item>
    </layout>
   </widget>
-  <widget class="QMenuBar" name="menubar">
-   <property name="geometry">
-    <rect>
-     <x>0</x>
-     <y>0</y>
-     <width>571</width>
-     <height>22</height>
-    </rect>
-   </property>
-   <widget class="QMenu" name="menuFile">
-    <property name="title">
-     <string>&amp;File</string>
-    </property>
-    <addaction name="actionQuit"/>
-   </widget>
-   <widget class="QMenu" name="menuCameras">
-    <property name="title">
-     <string>&amp;Cameras</string>
-    </property>
-   </widget>
-   <widget class="QMenu" name="menuTools">
-    <property name="title">
-     <string>&amp;Tools</string>
-    </property>
-    <addaction name="actionCloudViewer"/>
-   </widget>
-   <widget class="QMenu" name="menuHelp">
-    <property name="title">
-     <string>&amp;Help</string>
-    </property>
-    <addaction name="actionAbout"/>
-    <addaction name="actionAboutPlugins"/>
-   </widget>
-   <widget class="QMenu" name="menu3dReconstruction">
-    <property name="title">
-     <string>3D reconstruction</string>
-    </property>
-    <addaction name="actionCalibrateSystem"/>
-    <addaction name="actionUpdateCalibration"/>
-    <addaction name="separator"/>
-    <addaction name="actionShowSnapshot3D"/>
-   </widget>
-   <addaction name="menuFile"/>
-   <addaction name="menuCameras"/>
-   <addaction name="menu3dReconstruction"/>
-   <addaction name="menuTools"/>
-   <addaction name="menuHelp"/>
-  </widget>
-  <widget class="QStatusBar" name="statusbar"/>
-  <action name="actionQuit">
-   <property name="text">
-    <string>&amp;Quit</string>
-   </property>
-  </action>
-  <action name="actionCalibrateSystem">
-   <property name="text">
-    <string>Calibrate system...</string>
-   </property>
-  </action>
-  <action name="actionAbout">
-   <property name="text">
-    <string>About Z3D Scanner...</string>
-   </property>
-  </action>
-  <action name="actionCloudViewer">
-   <property name="text">
-    <string>&amp;Point cloud viewer...</string>
-   </property>
-  </action>
-  <action name="actionUpdateCalibration">
-   <property name="text">
-    <string>Update calibration</string>
-   </property>
-  </action>
-  <action name="actionShowSnapshot3D">
-   <property name="text">
-    <string>Show snapshot in 3D...</string>
-   </property>
-  </action>
-  <action name="actionAboutPlugins">
-   <property name="text">
-    <string>About plugins...</string>
-   </property>
-  </action>
  </widget>
  <resources/>
  <connections/>

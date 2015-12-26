@@ -39,16 +39,6 @@ MainWindow::MainWindow(QWidget *parent)
     m_pointCloudWidget = new ZPointCloudWidget(this);
     ui->glLayout->addWidget(m_pointCloudWidget);
 
-    /// start disabled. only enabled when we have at least 2 cameras
-    ui->menu3dReconstruction->setEnabled(false);
-
-    /// camera menu
-    QAction *configureCamerasAction = new QAction("Configure cameras...", this);
-    configureCamerasAction->setEnabled(false);
-    //QObject::connect(configureCamerasAction, SIGNAL(triggered()), this, SLOT());
-    ui->menuCameras->addSeparator();
-    ui->menuCameras->addAction(configureCamerasAction);
-
     /// signal mappers to use only one function for each action, the camera will be obtained using the index
     m_previewSignalMapper = new QSignalMapper(this);
     QObject::connect(m_previewSignalMapper, SIGNAL(mapped(int)),
@@ -167,7 +157,7 @@ void MainWindow::onStructuredLightSystemTypeChanged(int index)
                    ui->centralwidget, &QWidget::setEnabled);
         disconnect(m_currentStructuredLightSystem, &Z3D::ZStructuredLightSystem::scanFinished,
                    this, &MainWindow::onScanFinished);
-        disconnect(ui->startAcquisitionButton, &QCommandLinkButton::clicked,
+        disconnect(ui->startAcquisitionButton, &QPushButton::clicked,
                    m_currentStructuredLightSystem, &Z3D::ZStructuredLightSystem::start);
     }
 
@@ -179,7 +169,7 @@ void MainWindow::onStructuredLightSystemTypeChanged(int index)
             ui->centralwidget, &QWidget::setEnabled);
     connect(m_currentStructuredLightSystem, &Z3D::ZStructuredLightSystem::scanFinished,
             this, &MainWindow::onScanFinished);
-    connect(ui->startAcquisitionButton, &QCommandLinkButton::clicked,
+    connect(ui->startAcquisitionButton, &QPushButton::clicked,
             m_currentStructuredLightSystem, &Z3D::ZStructuredLightSystem::start);
 
     /// add config widget
