@@ -15,7 +15,10 @@ namespace Z3D
 struct ZMultiCameraCalibratorWorkerParallelFindPatternImpl
 {
     explicit ZMultiCameraCalibratorWorkerParallelFindPatternImpl(Z3D::ZCalibrationPatternFinder::Ptr patternFinder)
-        : m_patternFinder(patternFinder.data()) { }
+        : m_patternFinder(patternFinder.data())
+    {
+        // empty
+    }
 
     void operator()(const Z3D::ZCalibrationImage::Ptr &image)
     {
@@ -25,21 +28,21 @@ struct ZMultiCameraCalibratorWorkerParallelFindPatternImpl
     Z3D::ZCalibrationPatternFinder::WeakPtr m_patternFinder;
 };
 
-ZMultiCameraCalibratorWorker::ZMultiCameraCalibratorWorker(QObject *parent) :
-    QObject(parent),
-    m_patternFinder(0),
-    m_cameraCalibrator(0),
-    m_progress(1.f)
+ZMultiCameraCalibratorWorker::ZMultiCameraCalibratorWorker(QObject *parent)
+    : QObject(parent)
+    , m_patternFinder(0)
+    , m_cameraCalibrator(0)
+    , m_progress(1.f)
 {
     /// connect future watcher signals to monitor progress
-    QObject::connect(&m_patternFinderFutureWatcher, SIGNAL(progressRangeChanged(int,int)),
-                     this, SLOT(setProgressRange(int,int)));
-    QObject::connect(&m_patternFinderFutureWatcher, SIGNAL(progressValueChanged(int)),
-                     this, SLOT(setProgressValue(int)));
+    QObject::connect(&m_patternFinderFutureWatcher, &QFutureWatcher<void>::progressRangeChanged,
+                     this, &ZMultiCameraCalibratorWorker::setProgressRange);
+    QObject::connect(&m_patternFinderFutureWatcher, &QFutureWatcher<void>::progressValueChanged,
+                     this, &ZMultiCameraCalibratorWorker::setProgressValue);
 
     /// start finding calibration patterns when the pattern finder changes
-    QObject::connect(this, SIGNAL(patternFinderChanged()),
-                     this, SLOT(findCalibrationPattern()));
+    QObject::connect(this, &ZMultiCameraCalibratorWorker::patternFinderChanged,
+                     this, &ZMultiCameraCalibratorWorker::findCalibrationPattern);
 }
 
 ZMultiCameraCalibratorWorker::~ZMultiCameraCalibratorWorker()
@@ -89,8 +92,8 @@ void ZMultiCameraCalibratorWorker::setImageModel(ZMultiCalibrationImageModel *im
 
         if (m_imageModel) {
             /// disconnect old signals
-            QObject::disconnect(m_imageModel.data(), SIGNAL(newImagesAdded()),
-                                this, SLOT(findCalibrationPattern()));
+            QObject::disconnect(m_imageModel.data(), &ZMultiCalibrationImageModel::newImagesAdded,
+                                this, &ZMultiCameraCalibratorWorker::findCalibrationPattern);
         }
 
         /// update
@@ -98,8 +101,8 @@ void ZMultiCameraCalibratorWorker::setImageModel(ZMultiCalibrationImageModel *im
 
         if (m_imageModel) {
             /// connect new signals
-            QObject::connect(m_imageModel.data(), SIGNAL(newImagesAdded()),
-                             this, SLOT(findCalibrationPattern()));
+            QObject::connect(m_imageModel.data(), &ZMultiCalibrationImageModel::newImagesAdded,
+                                this, &ZMultiCameraCalibratorWorker::findCalibrationPattern);
         }
 
         /// notify
@@ -112,8 +115,8 @@ void ZMultiCameraCalibratorWorker::setPatternFinder(ZCalibrationPatternFinder::P
     if (m_patternFinder != patternFinder) {
         if (m_patternFinder) {
             /// disconnect old signals
-            QObject::disconnect(m_patternFinder.data(), SIGNAL(configHashChanged(QString)),
-                                this, SLOT(findCalibrationPattern()));
+            QObject::disconnect(m_patternFinder.data(), &ZCalibrationPatternFinder::configHashChanged,
+                                this, &ZMultiCameraCalibratorWorker::findCalibrationPattern);
         }
 
         /// update
@@ -121,8 +124,8 @@ void ZMultiCameraCalibratorWorker::setPatternFinder(ZCalibrationPatternFinder::P
 
         if (m_patternFinder) {
             /// connect new signals
-            QObject::connect(m_patternFinder.data(), SIGNAL(configHashChanged(QString)),
-                             this, SLOT(findCalibrationPattern()));
+            QObject::connect(m_patternFinder.data(), &ZCalibrationPatternFinder::configHashChanged,
+                                this, &ZMultiCameraCalibratorWorker::findCalibrationPattern);
         }
 
         /// notify
@@ -285,9 +288,9 @@ void ZMultiCameraCalibratorWorker::calibrateFunctionImpl(std::vector<ZCameraCali
     std::vector<std::vector<std::vector<cv::Point3f> > > allRealWorldPoints(cameraCount);
 
     for (int i=0; i<cameraCount; ++i) {
-        std::vector<std::vector<cv::Point2f> > &imagePoints = allImagePoints[i];
+        auto &imagePoints = allImagePoints[i];
         imagePoints.resize(validImageCount);
-        std::vector<std::vector<cv::Point3f> > &realWorldPoints = allRealWorldPoints[i];
+        auto &realWorldPoints = allRealWorldPoints[i];
         realWorldPoints.resize(validImageCount);
     }
 
@@ -315,8 +318,10 @@ void ZMultiCameraCalibratorWorker::calibrateFunctionImpl(std::vector<ZCameraCali
     for (size_t i=0; i<newCalibrations.size(); ++i) {
         ZCameraCalibration::Ptr calibration = newCalibrations[i];
         if (calibration) {
-            while (!calibration->ready())
-                ;
+            while (!calibration->ready()) {
+                qDebug() << "waiting for calibration to be ready, index:" << i;
+                QThread::msleep(100);
+            }
             calibration->moveToThread(QCoreApplication::instance()->thread());
         }
     }
