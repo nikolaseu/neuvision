@@ -70,8 +70,8 @@ struct ParallelFringeProcessingImpl
                  lit != litEnd;
                  ++lit, ++oit) {
                 const auto &point = *lit;
-                const int &x = point[0];
-                const int &y = point[1];
+                const int &x = int(point[0]);
+                const int &y = int(point[1]);
                 const auto &rectifiedPoint = undistortedRays[ stereoSystem->indexForPixel(x, y) ];
                 auto &pair = *oit;
                 pair.first = rectifiedPoint[1]; /// y coordinate
@@ -118,10 +118,10 @@ struct ParallelFringeProcessingImpl
             }
 
             static const bool useSubPixel = false;
-            bool usePoint = false;
-            double alpha,
-                    beta,
-                    range;
+            auto usePoint = false;
+            auto alpha = 1.,
+                    beta = 0.,
+                    range = 0.;
 
             /// we go in ascending order
             if (lY < rY) {
@@ -205,25 +205,25 @@ struct ParallelFringeProcessingImpl
                 /// point color. we use an intensity image from the left camera
                 /// this point is not exactly the intersection point, but it's close enough
                 const auto &intensityImgPoint = lPair.second;
-                const int x = (int)intensityImgPoint[0];
-                const int y = (int)intensityImgPoint[1];
+                const int x = int(intensityImgPoint[0]);
+                const int y = int(intensityImgPoint[1]);
                 if (intensityImg.channels() == 1) {
                     /// black and white
-                    currentPoint[3] = intensityImg.at<unsigned char>(y, x);
-                    /*unsigned int iB = intensityImg.at<unsigned char>(y, x);
-                    uint32_t rgb = (static_cast<uint32_t>(iB) << 16 |
-                                    static_cast<uint32_t>(iB) <<  8 |
+                    const auto iB = intensityImg.at<unsigned char>(y, x);
+                    uint32_t rgb = (static_cast<uint32_t>(255) << 24 |
+                                    static_cast<uint32_t>(iB)  << 16 |
+                                    static_cast<uint32_t>(iB)  <<  8 |
                                     static_cast<uint32_t>(iB));
-                    cloud->points[i].rgb = *reinterpret_cast<float*>(&rgb);*/
+                    currentPoint[3] = *reinterpret_cast<float*>(&rgb);
                 } else {
                     /// RGB colors
                     cv::Vec3b intensity = intensityImg.at<cv::Vec3b>(y, x);
-                    uint32_t rgb = (static_cast<uint32_t>(intensity.val[0]) << 16 |
+                    uint32_t rgb = (static_cast<uint32_t>(255)              << 24 |
+                                    static_cast<uint32_t>(intensity.val[0]) << 16 |
                                     static_cast<uint32_t>(intensity.val[1]) <<  8 |
                                     static_cast<uint32_t>(intensity.val[2]));
-                    currentPoint[3] /*rgb*/ = *reinterpret_cast<float*>(&rgb);
+                    currentPoint[3] = *reinterpret_cast<float*>(&rgb);
                 }
-
             }
         }
     }
