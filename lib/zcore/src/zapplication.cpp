@@ -113,29 +113,32 @@ ZApplication::ZApplication(int &argc, char **argv, ZApplicationStyle style)
     QApplication::setStyle(QStyleFactory::create("Fusion"));
 
     QPalette p;
-    p = qApp->palette();
 
     switch(style) {
     case LightStyle:
+        p = qApp->palette();
         p.setColor(QPalette::Window, Qt::white);
         break;
     case DarkStyle:
-           p.setColor(QPalette::Window, QColor(53,53,53));
-           p.setColor(QPalette::WindowText, Qt::white);
-           p.setColor(QPalette::Base, QColor(25,25,25));
-           p.setColor(QPalette::AlternateBase, QColor(53,53,53));
-           p.setColor(QPalette::ToolTipBase, Qt::white);
-           p.setColor(QPalette::ToolTipText, Qt::white);
-           p.setColor(QPalette::Text, Qt::white);
-           p.setColor(QPalette::Button, QColor(53,53,53));
-           p.setColor(QPalette::ButtonText, Qt::white);
-           p.setColor(QPalette::BrightText, Qt::red);
-           p.setColor(QPalette::Link, QColor(42, 130, 218));
+        QColor textColor(236,236,236);
+        p.setColor(QPalette::Window, QColor(63,63,63));
+        p.setColor(QPalette::WindowText, textColor);
+        p.setColor(QPalette::Base, QColor(85,85,85)); // color de los edits por ej
+        p.setColor(QPalette::AlternateBase, QColor(93,93,93));
+        p.setColor(QPalette::ToolTipBase, Qt::white);
+        p.setColor(QPalette::ToolTipText, Qt::white);
+        p.setColor(QPalette::Text, textColor);
+        p.setColor(QPalette::Button, QColor(93, 93, 93));
+        p.setColor(QPalette::ButtonText, textColor);
+        p.setColor(QPalette::BrightText, Qt::red);
+        p.setColor(QPalette::Link, QColor(42, 130, 218));
 
-           p.setColor(QPalette::Highlight, QColor(42, 130, 218));
-           p.setColor(QPalette::HighlightedText, Qt::black);
+        p.setColor(QPalette::Highlight, QColor(255, 87, 34));// deep orange
+        //p.setColor(QPalette::Highlight, QColor(244, 67, 54)); // red
+        //p.setColor(QPalette::Highlight, QColor(0, 150, 136)); // teal
+        p.setColor(QPalette::HighlightedText, Qt::white);
 
-           qApp->setStyleSheet("QToolTip { color: #ffffff; background-color: #2a82da; border: 0px solid white; }");
+        qApp->setStyleSheet("QToolTip { color: #ffffff; background-color: #2a82da; border: 0px solid white; }");
         break;
     }
 
