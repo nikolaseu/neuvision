@@ -97,7 +97,7 @@ void LogHandler(QtMsgType type, const QMessageLogContext &context, const QString
 }
 
 
-ZApplication::ZApplication(int &argc, char **argv)
+ZApplication::ZApplication(int &argc, char **argv, ZApplicationStyle style)
     : QApplication(argc, argv)
 {
 
@@ -112,22 +112,34 @@ ZApplication::ZApplication(int &argc, char **argv)
     /// set custom style
     QApplication::setStyle(QStyleFactory::create("Fusion"));
 
-    /* White background */
     QPalette p;
     p = qApp->palette();
-    p.setColor(QPalette::Window, Qt::white);
-    qApp->setPalette(p);
 
-    /* DARK
-    QPalette p;
-    p = qApp->palette();
-    p.setColor(QPalette::Window, QColor(53,53,53));
-    p.setColor(QPalette::Button, QColor(53,53,53));
-    p.setColor(QPalette::Highlight, QColor(142,45,197));
-    p.setColor(QPalette::ButtonText, QColor(255,255,255));
-    p.setColor(QPalette::WindowText, QColor(255,255,255));
+    switch(style) {
+    case LightStyle:
+        p.setColor(QPalette::Window, Qt::white);
+        break;
+    case DarkStyle:
+           p.setColor(QPalette::Window, QColor(53,53,53));
+           p.setColor(QPalette::WindowText, Qt::white);
+           p.setColor(QPalette::Base, QColor(25,25,25));
+           p.setColor(QPalette::AlternateBase, QColor(53,53,53));
+           p.setColor(QPalette::ToolTipBase, Qt::white);
+           p.setColor(QPalette::ToolTipText, Qt::white);
+           p.setColor(QPalette::Text, Qt::white);
+           p.setColor(QPalette::Button, QColor(53,53,53));
+           p.setColor(QPalette::ButtonText, Qt::white);
+           p.setColor(QPalette::BrightText, Qt::red);
+           p.setColor(QPalette::Link, QColor(42, 130, 218));
+
+           p.setColor(QPalette::Highlight, QColor(42, 130, 218));
+           p.setColor(QPalette::HighlightedText, Qt::black);
+
+           qApp->setStyleSheet("QToolTip { color: #ffffff; background-color: #2a82da; border: 0px solid white; }");
+        break;
+    }
+
     qApp->setPalette(p);
-    */
 #endif
 
 #ifdef Z3D_THREAD_COUNT_LIMIT

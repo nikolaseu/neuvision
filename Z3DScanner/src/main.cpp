@@ -19,7 +19,7 @@ int main(int argc, char* argv[])
     //qputenv("QT_DEBUG_PLUGINS", "1");
 
     ///
-    Z3D::ZApplication app(argc,argv);
+    Z3D::ZApplication app(argc, argv, Z3D::ZApplication::DarkStyle);
 
     QSurfaceFormat fmt;
     fmt.setDepthBufferSize(24);
