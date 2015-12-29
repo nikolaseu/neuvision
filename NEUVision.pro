@@ -19,19 +19,3 @@ Z3DCloudViewer.depends = lib
 
 SUBDIRS  += Z3DScanner
 Z3DScanner.depends = lib
-
-greaterThan(QT_MAJOR_VERSION, 4) {
-    # Qt >= 5
-#    SUBDIRS  += CamAcquisition
-#    CamAcquisition.depends = lib
-} else {
-    # Qt 4
-
-#    SUBDIRS  += LTSAcquisition
-#    LTSAcquisition.depends = lib
-
-
-
-
-
-}

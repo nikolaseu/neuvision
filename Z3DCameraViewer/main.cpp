@@ -12,14 +12,13 @@ int main(int argc, char *argv[])
     //qputenv("QT_DEBUG_PLUGINS", "1");
 
     ///
-    Z3D::ZApplication app(argc,argv);
+    Z3D::ZApplication app(argc,argv, Z3D::ZApplication::DarkStyle);
 
     int result;
 
     {
-        QPixmap pixmap(":/splash.png");
-        QSplashScreen splash(pixmap);
-        splash.show();
+
+        QSplashScreen &splash = *app.showSplashScreen();
 
         splash.showMessage("Loading plugins...");
         app.processEvents();
