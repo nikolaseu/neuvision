@@ -12,12 +12,7 @@ namespace Z3D {
 class Z3D_CORE_SHARED_EXPORT ZApplication : public QApplication
 {
 public:
-    enum ZApplicationStyle {
-        LightStyle,
-        DarkStyle
-    };
-
-    ZApplication(int &argc, char **argv, ZApplicationStyle style = LightStyle);
+    ZApplication(int &argc, char **argv);
 
     void loadPlugins();
 

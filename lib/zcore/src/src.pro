@@ -13,8 +13,12 @@ HEADERS += \
     zcore_global.h \
     zapplication.h \
     zpluginloader.h \
-    zcoreplugin.h
+    zcoreplugin.h \
+    zloghandler_p.h \
+    zapplicationstyle.h
 SOURCES += \
     zapplication.cpp \
     zpluginloader.cpp \
-    zcoreplugin.cpp
+    zcoreplugin.cpp \
+    zloghandler_p.cpp \
+    zapplicationstyle.cpp

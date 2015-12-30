@@ -4,6 +4,7 @@
 #include <QSurfaceFormat>
 
 #include "zapplication.h"
+#include "zapplicationstyle.h"
 #include <Z3DCameraProvider>
 #include <Z3DCameraCalibrationProvider>
 #include "zcalibrationpatternfinderprovider.h"
@@ -19,7 +20,9 @@ int main(int argc, char* argv[])
     //qputenv("QT_DEBUG_PLUGINS", "1");
 
     ///
-    Z3D::ZApplication app(argc, argv, Z3D::ZApplication::DarkStyle);
+    Z3D::ZApplication app(argc, argv);
+
+    Z3D::ZApplicationStyle::applyStyle(Z3D::ZApplicationStyle::DarkStyle);
 
     QSurfaceFormat fmt;
     fmt.setDepthBufferSize(24);
