@@ -65,6 +65,7 @@ QList<ZCameraInterface::ZCameraAttribute> ZSimulatedCamera::getAllAttributes()
     folderAttr.value = m_folder;
     folderAttr.type = ZCameraInterface::CameraAttributeTypeString;
     folderAttr.readable = true;
+    folderAttr.writable = true;
     attributes << folderAttr;
 
     ZCameraInterface::ZCameraAttribute fileAttr;

@@ -27,6 +27,7 @@ QString ZSimulatedCameraPlugin::version()
 QList<ZCameraInfo*> ZSimulatedCameraPlugin::getConnectedCameras()
 {
     QList<ZCameraInfo*> list;
+    list << new ZCameraInfo(this, "NEW", QVariantMap());
     return list;
 }
 
