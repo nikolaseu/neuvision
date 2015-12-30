@@ -50,7 +50,7 @@ void applyStyle(ZStyle style)
         //p.setColor(QPalette::Highlight, QColor(0, 150, 136)); // teal
         p.setColor(QPalette::HighlightedText, Qt::white);
 
-        qApp->setStyleSheet("QToolTip { color: #ffffff; background-color: #2a528a; border: 1px solid white; padding: 1px; }");
+        qApp->setStyleSheet("QToolTip { border-radius: 2px; color: lightGray; background-color: black; border: 1px solid gray; padding: 2px; }");
         break;
     }
 
