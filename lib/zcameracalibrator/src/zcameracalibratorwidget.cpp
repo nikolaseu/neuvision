@@ -12,12 +12,15 @@
 #include <QDateTime>
 #include <QFileDialog>
 #include <QProgressBar>
+#include <QPropertyAnimation>
+#include <QParallelAnimationGroup>
 #include <QThread>
 
 #define CALIBRATION_PATTERN_VIEW 0
 #define IMAGE_VIEW 1
 #define CAMERA_VIEW 2
 #define CALIBRATION_VIEW 3
+#define RESULTS_VIEW 4
 
 namespace Z3D
 {
@@ -36,13 +39,13 @@ ZCameraCalibratorWidget::ZCameraCalibratorWidget(ZCalibratedCamera::Ptr camera, 
     updateWindowTitle();
 
     /// create and add progress bar used in the statusbar
-    m_statusProgressBar = new QProgressBar();
+    m_statusProgressBar = ui->progressBar;
     m_statusProgressBar->setVisible(false);
-    m_statusProgressBar->setMaximumWidth(300);
-    ui->statusbar->addPermanentWidget(m_statusProgressBar);
 
     /// always start with welcome page visible
     ui->stackedWidget->setCurrentIndex(0);
+    ui->topFrameStackedWidget->setCurrentIndex(0);
+    setImagesListVisible(false);
 
     /// connect ui events
     QObject::connect(ui->newSessionButton, SIGNAL(clicked()),
@@ -72,6 +75,8 @@ ZCameraCalibratorWidget::ZCameraCalibratorWidget(ZCalibratedCamera::Ptr camera, 
 
     /// configure image list view
     ui->listView->setModel(m_model);
+    QObject::connect(m_model, &ZCalibrationImageModel::newImagesAdded,
+                     [&](){ this->setImagesListVisible(true); });
     QObject::connect(ui->listView->selectionModel(), SIGNAL(currentChanged(QModelIndex,QModelIndex)),
                      this, SLOT(onCurrentSelectionChanged(QModelIndex,QModelIndex)));
     /// whenever someone clicks the list view, switch to image view
@@ -169,22 +174,62 @@ void ZCameraCalibratorWidget::setCurrentView(int newView)
 
     switch (newView) {
     case CALIBRATION_PATTERN_VIEW:
-        ui->stackedWidget->setCurrentIndex(newView);
+        setImagesListVisible(true);
         break;
     case IMAGE_VIEW:
+        setImagesListVisible(true);
         ui->imageViewPageButton->setChecked(true);
-        ui->stackedWidget->setCurrentIndex(newView);
         break;
     case CAMERA_VIEW:
-        ui->stackedWidget->setCurrentIndex(newView);
+        setImagesListVisible(true);
         if (m_camera)
             m_camera->camera()->startAcquisition();
         break;
     case CALIBRATION_VIEW:
-        ui->stackedWidget->setCurrentIndex(newView);
+        setImagesListVisible(false);
+        break;
+    case RESULTS_VIEW:
+        setImagesListVisible(false);
         break;
     default:
         break;
+    }
+
+    ui->stackedWidget->setCurrentIndex(newView);
+    ui->topFrameStackedWidget->setCurrentIndex(newView);
+}
+
+void ZCameraCalibratorWidget::setImagesListVisible(bool visible)
+{
+    /*QList<int> sizes;
+    if (visible && m_model->images().size() > 0)
+        sizes << 100 << 100;
+    else
+        sizes << 0 << 100;
+    ui->imageListSplitter->setSizes(sizes);*/
+
+    int startValue, endValue;
+    if (visible && m_model->images().size() > 0) {
+        startValue = ui->listView->maximumWidth();
+        endValue = 224;
+    } else {
+        startValue = ui->listView->maximumWidth();
+        endValue = 0;
+    }
+
+    if (startValue != endValue) {
+        QPropertyAnimation *animation1 = new QPropertyAnimation(ui->listView, "maximumWidth");
+        QPropertyAnimation *animation2 = new QPropertyAnimation(ui->listView, "minimumWidth");
+        animation1->setStartValue(startValue);
+        animation2->setStartValue(startValue);
+        animation1->setEndValue(endValue);
+        animation2->setEndValue(endValue);
+        animation1->setDuration(150);
+        animation2->setDuration(150);
+        QParallelAnimationGroup *group = new QParallelAnimationGroup();
+        group->addAnimation(animation1);
+        group->addAnimation(animation2);
+        group->start();
     }
 }
 
@@ -257,10 +302,11 @@ void ZCameraCalibratorWidget::onProgressChanged(float progress, QString message)
     m_statusProgressBar->setValue(100 * progress);
     m_statusProgressBar->setVisible(progress < 1.);
 
-    if (progress == 1 && message.isEmpty())
+    /*if (progress == 1 && message.isEmpty())
         ui->statusbar->showMessage(tr(""), 5000);
     else if (!message.isEmpty())
         ui->statusbar->showMessage(message, progress < 1 ? 0 : 10000);
+        */
 }
 
 void ZCameraCalibratorWidget::onCalibrationChanged(Z3D::ZCameraCalibration::Ptr newCalibration)
@@ -321,6 +367,11 @@ void ZCameraCalibratorWidget::newSession()
     updateWindowTitle();
 }
 
+void ZCameraCalibratorWidget::on_calibrationPatternViewButton_clicked()
+{
+    setCurrentView(CALIBRATION_PATTERN_VIEW);
+}
+
 void ZCameraCalibratorWidget::on_imageViewPageButton_clicked()
 {
     setCurrentView(IMAGE_VIEW);
@@ -336,6 +387,11 @@ void ZCameraCalibratorWidget::on_calibrationPageButton_clicked()
     setCurrentView(CALIBRATION_VIEW);
 }
 
+void ZCameraCalibratorWidget::on_resultsPageButton_clicked()
+{
+    setCurrentView(RESULTS_VIEW);
+}
+
 void ZCameraCalibratorWidget::on_runCalibrationButton_clicked()
 {
     /// disable button until calibration has finished
@@ -348,11 +404,6 @@ void ZCameraCalibratorWidget::on_imageViewTypeComboBox_currentIndexChanged(int i
 {
     ZCalibrationImageViewer::DisplayMode displayMode = (ZCalibrationImageViewer::DisplayMode) ui->imageViewTypeComboBox->itemData(index).toInt();
     ui->imageViewer->setDisplayMode(displayMode);
-}
-
-void ZCameraCalibratorWidget::on_calibrationPatternViewButton_clicked()
-{
-    setCurrentView(CALIBRATION_PATTERN_VIEW);
 }
 
 void ZCameraCalibratorWidget::on_saveCameraImageButton_clicked()
