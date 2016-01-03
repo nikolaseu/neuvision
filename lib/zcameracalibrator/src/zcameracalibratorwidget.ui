@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>760</width>
+    <width>842</width>
     <height>616</height>
    </rect>
   </property>
@@ -73,6 +73,9 @@
       </property>
       <item row="0" column="0">
        <layout class="QHBoxLayout" name="horizontalLayout_4">
+        <property name="spacing">
+         <number>0</number>
+        </property>
         <property name="leftMargin">
          <number>12</number>
         </property>
@@ -86,7 +89,7 @@
   border: 0px;
   color: gray;
   background-color: transparent;
-  margin: 6px;
+  padding: 6px;
 }
 QPushButton::hover {
   color: white;
@@ -97,7 +100,7 @@ QPushButton::checked {
 }</string>
           </property>
           <property name="text">
-           <string>  Pattern  </string>
+           <string>  Pattern  &gt;</string>
           </property>
           <property name="checkable">
            <bool>true</bool>
@@ -111,20 +114,13 @@ QPushButton::checked {
          </widget>
         </item>
         <item>
-         <widget class="QLabel" name="label">
-          <property name="text">
-           <string>&gt;</string>
-          </property>
-         </widget>
-        </item>
-        <item>
          <widget class="QPushButton" name="cameraViewPageButton">
           <property name="styleSheet">
            <string notr="true">QPushButton {
   border: 0px;
   color: gray;
   background-color: transparent;
-  margin: 6px;
+  padding: 6px;
 }
 QPushButton::hover {
   color: white;
@@ -135,20 +131,13 @@ QPushButton::checked {
 }</string>
           </property>
           <property name="text">
-           <string>  Camera view  </string>
+           <string>Camera view  &gt;</string>
           </property>
           <property name="checkable">
            <bool>true</bool>
           </property>
           <property name="autoExclusive">
            <bool>true</bool>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QLabel" name="label_2">
-          <property name="text">
-           <string>&gt;</string>
           </property>
          </widget>
         </item>
@@ -159,7 +148,7 @@ QPushButton::checked {
   border: 0px;
   color: gray;
   background-color: transparent;
-  margin: 6px;
+  padding: 6px;
 }
 QPushButton::hover {
   color: white;
@@ -170,20 +159,13 @@ QPushButton::checked {
 }</string>
           </property>
           <property name="text">
-           <string>  Images</string>
+           <string>Images  &gt;</string>
           </property>
           <property name="checkable">
            <bool>true</bool>
           </property>
           <property name="autoExclusive">
            <bool>true</bool>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QLabel" name="label_3">
-          <property name="text">
-           <string>&gt;</string>
           </property>
          </widget>
         </item>
@@ -194,7 +176,7 @@ QPushButton::checked {
   border: 0px;
   color: gray;
   background-color: transparent;
-  margin: 6px;
+  padding: 6px;
 }
 QPushButton::hover {
   color: white;
@@ -205,7 +187,7 @@ QPushButton::checked {
 }</string>
           </property>
           <property name="text">
-           <string>  Calibration  </string>
+           <string>Calibration  &gt;</string>
           </property>
           <property name="checkable">
            <bool>true</bool>
@@ -216,20 +198,13 @@ QPushButton::checked {
          </widget>
         </item>
         <item>
-         <widget class="QLabel" name="label_4">
-          <property name="text">
-           <string>&gt;</string>
-          </property>
-         </widget>
-        </item>
-        <item>
          <widget class="QPushButton" name="resultsPageButton">
           <property name="styleSheet">
            <string notr="true">QPushButton {
   border: 0px;
   color: gray;
   background-color: transparent;
-  margin: 6px;
+  padding: 6px;
 }
 QPushButton::hover {
   color: white;
@@ -240,7 +215,7 @@ QPushButton::checked {
 }</string>
           </property>
           <property name="text">
-           <string>  Results  </string>
+           <string>Results  </string>
           </property>
           <property name="checkable">
            <bool>true</bool>
@@ -261,7 +236,7 @@ QPushButton::checked {
          </sizepolicy>
         </property>
         <property name="currentIndex">
-         <number>0</number>
+         <number>1</number>
         </property>
         <widget class="QWidget" name="page_1"/>
         <widget class="QWidget" name="page_3">
@@ -347,7 +322,6 @@ QPushButton::checked {
            </widget>
           </item>
          </layout>
-         <zorder></zorder>
          <zorder>cameraSettingsButton</zorder>
          <zorder>saveCameraImageButton</zorder>
          <zorder>horizontalSpacer_2</zorder>
@@ -464,7 +438,13 @@ QPushButton::checked {
             </size>
            </property>
            <property name="styleSheet">
-            <string notr="true">border: 0px solid;</string>
+            <string notr="true">QProgressBar:horizontal {
+    border: 0px;
+    padding: 0px;
+}
+QProgressBar::chunk:horizontal {
+    
+}</string>
            </property>
            <property name="value">
             <number>100</number>
@@ -508,6 +488,9 @@ QPushButton::checked {
          <height>16777215</height>
         </size>
        </property>
+       <property name="styleSheet">
+        <string notr="true"/>
+       </property>
        <property name="frameShape">
         <enum>QFrame::NoFrame</enum>
        </property>
@@ -549,130 +532,72 @@ QPushButton::checked {
      <item>
       <widget class="QStackedWidget" name="stackedWidget">
        <property name="currentIndex">
-        <number>0</number>
+        <number>4</number>
        </property>
        <widget class="QWidget" name="calibrationPatternPage">
-        <layout class="QHBoxLayout" name="horizontalLayout_7">
-         <property name="spacing">
-          <number>0</number>
-         </property>
+        <layout class="QGridLayout" name="gridLayout_4">
          <property name="leftMargin">
-          <number>0</number>
+          <number>24</number>
          </property>
          <property name="topMargin">
-          <number>0</number>
+          <number>24</number>
          </property>
          <property name="rightMargin">
-          <number>0</number>
+          <number>24</number>
          </property>
          <property name="bottomMargin">
-          <number>0</number>
+          <number>24</number>
          </property>
-         <item>
-          <layout class="QGridLayout" name="gridLayout">
-           <property name="leftMargin">
-            <number>24</number>
-           </property>
-           <property name="topMargin">
-            <number>24</number>
-           </property>
-           <property name="rightMargin">
-            <number>12</number>
-           </property>
-           <property name="bottomMargin">
-            <number>24</number>
-           </property>
-           <item row="0" column="0">
-            <widget class="QGroupBox" name="groupBox">
-             <property name="title">
-              <string>Calibration pattern</string>
-             </property>
-             <layout class="QVBoxLayout" name="verticalLayout_3">
-              <item>
-               <widget class="QComboBox" name="calibrationPatternTypeComboBox">
-                <property name="sizePolicy">
-                 <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-                  <horstretch>0</horstretch>
-                  <verstretch>0</verstretch>
-                 </sizepolicy>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <spacer name="verticalSpacer_2">
-                <property name="orientation">
-                 <enum>Qt::Vertical</enum>
-                </property>
-                <property name="sizeHint" stdset="0">
-                 <size>
-                  <width>20</width>
-                  <height>452</height>
-                 </size>
-                </property>
-               </spacer>
-              </item>
-             </layout>
-            </widget>
-           </item>
-          </layout>
+         <property name="spacing">
+          <number>24</number>
+         </property>
+         <item row="0" column="1">
+          <layout class="QVBoxLayout" name="calibrationPatternConfigLayout"/>
          </item>
-         <item>
-          <widget class="QFrame" name="frame_2">
-           <property name="minimumSize">
-            <size>
-             <width>320</width>
-             <height>0</height>
-            </size>
+         <item row="0" column="0" rowspan="2">
+          <widget class="QGroupBox" name="groupBox">
+           <property name="title">
+            <string>Calibration pattern</string>
            </property>
-           <property name="maximumSize">
-            <size>
-             <width>320</width>
-             <height>16777215</height>
-            </size>
-           </property>
-           <property name="styleSheet">
-            <string notr="true"/>
-           </property>
-           <property name="frameShape">
-            <enum>QFrame::NoFrame</enum>
-           </property>
-           <property name="frameShadow">
-            <enum>QFrame::Plain</enum>
-           </property>
-           <property name="lineWidth">
-            <number>0</number>
-           </property>
-           <layout class="QGridLayout" name="gridLayout_7">
-            <property name="leftMargin">
-             <number>12</number>
-            </property>
-            <property name="topMargin">
-             <number>24</number>
-            </property>
-            <property name="rightMargin">
-             <number>24</number>
-            </property>
-            <property name="bottomMargin">
-             <number>24</number>
-            </property>
-            <item row="0" column="0">
-             <layout class="QVBoxLayout" name="calibrationPatternConfigLayout"/>
+           <layout class="QVBoxLayout" name="verticalLayout_3">
+            <item>
+             <widget class="QComboBox" name="calibrationPatternTypeComboBox">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+             </widget>
             </item>
-            <item row="1" column="0">
-             <spacer name="verticalSpacer_3">
+            <item>
+             <spacer name="verticalSpacer_2">
               <property name="orientation">
                <enum>Qt::Vertical</enum>
               </property>
               <property name="sizeHint" stdset="0">
                <size>
                 <width>20</width>
-                <height>40</height>
+                <height>452</height>
                </size>
               </property>
              </spacer>
             </item>
            </layout>
           </widget>
+         </item>
+         <item row="1" column="1">
+          <spacer name="verticalSpacer_3">
+           <property name="orientation">
+            <enum>Qt::Vertical</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>20</width>
+             <height>40</height>
+            </size>
+           </property>
+          </spacer>
          </item>
         </layout>
        </widget>
@@ -748,52 +673,13 @@ QPushButton::checked {
          <property name="bottomMargin">
           <number>24</number>
          </property>
-         <item row="0" column="0">
-          <layout class="QVBoxLayout" name="verticalLayout">
-           <item>
-            <widget class="QGroupBox" name="groupBox_5">
-             <property name="title">
-              <string>Camera model</string>
-             </property>
-             <layout class="QGridLayout" name="gridLayout_2">
-              <item row="0" column="0">
-               <widget class="QComboBox" name="cameraModelTypeComboBox"/>
-              </item>
-             </layout>
-            </widget>
-           </item>
-           <item>
-            <layout class="QVBoxLayout" name="cameraModelConfigLayout"/>
-           </item>
-           <item>
-            <spacer name="verticalSpacer">
-             <property name="orientation">
-              <enum>Qt::Vertical</enum>
-             </property>
-             <property name="sizeHint" stdset="0">
-              <size>
-               <width>20</width>
-               <height>40</height>
-              </size>
-             </property>
-            </spacer>
-           </item>
-          </layout>
-         </item>
+         <property name="spacing">
+          <number>24</number>
+         </property>
          <item row="0" column="1">
-          <spacer name="horizontalSpacer_8">
-           <property name="orientation">
-            <enum>Qt::Horizontal</enum>
-           </property>
-           <property name="sizeHint" stdset="0">
-            <size>
-             <width>40</width>
-             <height>20</height>
-            </size>
-           </property>
-          </spacer>
+          <layout class="QVBoxLayout" name="cameraModelConfigLayout"/>
          </item>
-         <item row="1" column="0">
+         <item row="1" column="1">
           <spacer name="verticalSpacer_4">
            <property name="orientation">
             <enum>Qt::Vertical</enum>
@@ -805,6 +691,41 @@ QPushButton::checked {
             </size>
            </property>
           </spacer>
+         </item>
+         <item row="0" column="0" rowspan="2">
+          <layout class="QVBoxLayout" name="verticalLayout">
+           <item>
+            <widget class="QGroupBox" name="groupBox_5">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="title">
+              <string>Camera model</string>
+             </property>
+             <layout class="QGridLayout" name="gridLayout_2">
+              <item row="0" column="0">
+               <widget class="QComboBox" name="cameraModelTypeComboBox"/>
+              </item>
+              <item row="1" column="0">
+               <spacer name="verticalSpacer">
+                <property name="orientation">
+                 <enum>Qt::Vertical</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>20</width>
+                  <height>40</height>
+                 </size>
+                </property>
+               </spacer>
+              </item>
+             </layout>
+            </widget>
+           </item>
+          </layout>
          </item>
         </layout>
        </widget>
@@ -833,8 +754,8 @@ QPushButton::checked {
            <property name="handleWidth">
             <number>1</number>
            </property>
-           <widget class="QWidget" name="">
-            <layout class="QVBoxLayout" name="distortionPlotLayout" stretch="">
+           <widget class="QWidget" name="layoutWidget">
+            <layout class="QVBoxLayout" name="distortionPlotLayout">
              <property name="leftMargin">
               <number>12</number>
              </property>
@@ -849,8 +770,8 @@ QPushButton::checked {
              </property>
             </layout>
            </widget>
-           <widget class="QWidget" name="">
-            <layout class="QVBoxLayout" name="calibrationParamsLayout" stretch=""/>
+           <widget class="QWidget" name="layoutWidget">
+            <layout class="QVBoxLayout" name="calibrationParamsLayout"/>
            </widget>
           </widget>
          </item>

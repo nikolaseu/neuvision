@@ -48,28 +48,29 @@ ZCameraCalibratorWidget::ZCameraCalibratorWidget(ZCalibratedCamera::Ptr camera, 
     setImagesListVisible(false);
 
     /// connect ui events
-    QObject::connect(ui->newSessionButton, SIGNAL(clicked()),
-                     this, SLOT(newSession()));
-    QObject::connect(ui->loadSessionButton, SIGNAL(clicked()),
-                     this, SLOT(loadSession()));
+    QObject::connect(ui->newSessionButton, &QPushButton::clicked,
+                     this, &ZCameraCalibratorWidget::newSession);
+    QObject::connect(ui->loadSessionButton, &QPushButton::clicked,
+                     this, &ZCameraCalibratorWidget::loadSession);
 
     /// to update current camera calibration model
-    QObject::connect(ui->cameraModelTypeComboBox, SIGNAL(currentIndexChanged(int)),
-                     this, SLOT(onCameraModelTypeChanged(int)));
+    QObject::connect(ui->cameraModelTypeComboBox, static_cast<void (QComboBox::*)(int)>(&QComboBox::currentIndexChanged),
+                     this, &ZCameraCalibratorWidget::onCameraModelTypeChanged);
 
     /// available camera models
     m_cameraCalibratorList << ZCameraCalibrationProvider::getCameraCalibrators();
 
-    foreach (ZCameraCalibrator *calibrator, m_cameraCalibratorList)
+    for (ZCameraCalibrator *calibrator : m_cameraCalibratorList) {
         ui->cameraModelTypeComboBox->addItem(calibrator->name());
+    }
 
     /// to update current pattern finder
-    QObject::connect(ui->calibrationPatternTypeComboBox, SIGNAL(currentIndexChanged(int)),
-                     this, SLOT(onCalibrationPatternTypeChanged(int)));
+    QObject::connect(ui->calibrationPatternTypeComboBox, static_cast<void (QComboBox::*)(int)>(&QComboBox::currentIndexChanged),
+                     this, &ZCameraCalibratorWidget::onCalibrationPatternTypeChanged);
 
     /// load different calibration pattern finder types
     m_patternFinderList = ZCalibrationPatternFinderProvider::getAll();
-    foreach (ZCalibrationPatternFinder::Ptr finder, m_patternFinderList) {
+    for (ZCalibrationPatternFinder::Ptr finder : m_patternFinderList) {
         ui->calibrationPatternTypeComboBox->addItem(finder->name());
     }
 
@@ -77,11 +78,11 @@ ZCameraCalibratorWidget::ZCameraCalibratorWidget(ZCalibratedCamera::Ptr camera, 
     ui->listView->setModel(m_model);
     QObject::connect(m_model, &ZCalibrationImageModel::newImagesAdded,
                      [&](){ this->setImagesListVisible(true); });
-    QObject::connect(ui->listView->selectionModel(), SIGNAL(currentChanged(QModelIndex,QModelIndex)),
-                     this, SLOT(onCurrentSelectionChanged(QModelIndex,QModelIndex)));
+    QObject::connect(ui->listView->selectionModel(), &QItemSelectionModel::currentChanged,
+                     this, &ZCameraCalibratorWidget::onCurrentSelectionChanged);
     /// whenever someone clicks the list view, switch to image view
-    QObject::connect(ui->listView, SIGNAL(clicked(QModelIndex)),
-                     this, SLOT(on_imageViewPageButton_clicked()));
+    QObject::connect(ui->listView, &QListView::clicked,
+                     this, &ZCameraCalibratorWidget::on_imageViewPageButton_clicked);
 
     /// set up image view type
     ui->imageViewTypeComboBox->addItem(tr("View calibration pattern"), ZCalibrationImageViewer::ShowMarkers);
@@ -91,19 +92,19 @@ ZCameraCalibratorWidget::ZCameraCalibratorWidget(ZCalibratedCamera::Ptr camera, 
     m_calibratorWorker->setImageModel(m_model);
 
     /// calibrator signals
-    QObject::connect(m_calibratorWorker, SIGNAL(progressChanged(float,QString)),
-                     this, SLOT(onProgressChanged(float,QString)));
-    QObject::connect(m_calibratorWorker, SIGNAL(calibrationChanged(Z3D::ZCameraCalibration::Ptr)),
-                     this, SLOT(onCalibrationChanged(Z3D::ZCameraCalibration::Ptr)));
+    QObject::connect(m_calibratorWorker, &ZCameraCalibratorWorker::progressChanged,
+                     this, &ZCameraCalibratorWidget::onProgressChanged);
+    QObject::connect(m_calibratorWorker, &ZCameraCalibratorWorker::calibrationChanged,
+                     this, &ZCameraCalibratorWidget::onCalibrationChanged);
 
     /// move to worker thread
     m_workerThread = new QThread(this);
     m_calibratorWorker->moveToThread(m_workerThread);
 
     //! TODO esto es necesario?
-    foreach (ZCameraCalibrator *cameraCalibrator, m_cameraCalibratorList)
+    for (auto cameraCalibrator : m_cameraCalibratorList)
         cameraCalibrator->moveToThread(m_workerThread);
-    foreach (ZCalibrationPatternFinder::Ptr patternFinder, m_patternFinderList)
+    for (auto patternFinder : m_patternFinderList)
         patternFinder->moveToThread(m_workerThread);
 
     m_workerThread->start();
@@ -115,8 +116,8 @@ ZCameraCalibratorWidget::ZCameraCalibratorWidget(ZCalibratedCamera::Ptr camera, 
     /// if camera is present
     if (m_camera) {
         /// set up camera image preview
-        QObject::connect(m_camera->camera().data(), SIGNAL(newImageReceived(Z3D::ZImageGrayscale::Ptr)),
-                         ui->cameraImageViewer, SLOT(updateImage(Z3D::ZImageGrayscale::Ptr)));
+        QObject::connect(m_camera->camera().data(), &ZCameraInterface::newImageReceived,
+                         ui->cameraImageViewer, static_cast<void (ZImageViewer::*)(ZImageGrayscale::Ptr)>(&ZImageViewer::updateImage));
 
         /// show current calibration, but a copy of it
         /// we don't want to change anything from the original, unless the user
