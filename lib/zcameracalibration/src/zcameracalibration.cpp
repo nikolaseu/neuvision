@@ -38,9 +38,9 @@ bool ZCameraCalibration::getCalibratedSubPixel(float x, float y, float *calibrat
     /// we do a bilinear interpolation for subpixel values
     /// http://en.wikipedia.org/wiki/Bilinear_interpolation
 
-    int x1 = floor(x);
+    int x1 = int(floorf(x));
     int x2 = x1 + 1;
-    int y1 = floor(y);
+    int y1 = int(floorf(y));
     int y2 = y1 + 1;
 
     float cx11, cy11, cx12, cy12, cx21, cy21, cx22, cy22;
@@ -84,14 +84,14 @@ bool ZCameraCalibration::getWorldRayForSubPixel(float x, float y, cv::Vec3d &ori
     /// we do a bilinear interpolation for subpixel values
     /// http://en.wikipedia.org/wiki/Bilinear_interpolation
 
-    float x1 = floor(x);
+    float x1 = floorf(x);
     float x2 = x1 + 1;
-    float y1 = floor(y);
+    float y1 = floorf(y);
     float y2 = y1 + 1;
 
     /// check if the subpixel is inside the calibrated range
     if (x1 < 0 || x2 >= m_sensorWidth || y1 < 0 || y2 >= m_sensorHeight) {
-        return getWorldRayForPixel((int)x1, (int)y1, origin, direction);
+        return getWorldRayForPixel(int(x1), int(y1), origin, direction);
     }
 
     cv::Vec3d origin11, direction11
@@ -99,10 +99,10 @@ bool ZCameraCalibration::getWorldRayForSubPixel(float x, float y, cv::Vec3d &ori
             , origin21, direction21
             , origin22, direction22;
 
-    getWorldRayForPixel((int)x1, (int)y1, origin11, direction11);
-    getWorldRayForPixel((int)x1, (int)y2, origin12, direction12);
-    getWorldRayForPixel((int)x2, (int)y1, origin21, direction21);
-    getWorldRayForPixel((int)x2, (int)y2, origin22, direction22);
+    getWorldRayForPixel(int(x1), int(y1), origin11, direction11);
+    getWorldRayForPixel(int(x1), int(y2), origin12, direction12);
+    getWorldRayForPixel(int(x2), int(y1), origin21, direction21);
+    getWorldRayForPixel(int(x2), int(y2), origin22, direction22);
 
     /// first term is always one in our case
     /// 1 / ((x2-x1)*(y2-y1))
