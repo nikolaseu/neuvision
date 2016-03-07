@@ -46,10 +46,6 @@ RESOURCES += \
 include($$PWD/../3rdparty/opencv.pri)
 
 ###############################################################################
-# PCL, VTK, etc etc
-include($$PWD/../3rdparty/pcl.pri)
-
-###############################################################################
 # Qt Solutions - Property Browser
 include($$PWD/../3rdparty/qtpropertybrowser/src/qtpropertybrowser.pri)
 
@@ -76,10 +72,6 @@ include($$PWD/../lib/zcalibratedcamera/zcalibratedcamera.pri)
 ###############################################################################
 # Structured Light
 include($$PWD/../lib/zstructuredlight/zstructuredlight.pri)
-
-###############################################################################
-# Points clouds
-include($$PWD/../lib/zpointcloud/zpointcloud.pri)
 
 ###############################################################################
 # Camera calibrator
