@@ -18,7 +18,7 @@ CalibratedCameraProvider::CalibratedCameraProvider()
 
 QList<Z3D::ZCalibratedCamera::Ptr> CalibratedCameraProvider::loadCameras(QString folder)
 {
-    QDir configDir = QDir(folder);
+    auto configDir = QDir(folder);
 
     /// if no folder is indicated, use current running folder and standard search path
     if (folder.isEmpty()) {

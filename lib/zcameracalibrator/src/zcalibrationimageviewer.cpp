@@ -1,6 +1,9 @@
 #include "zcalibrationimageviewer.h"
 
 #include <QDebug>
+#include <QGraphicsEllipseItem>
+#include <QGraphicsItem>
+#include <QGraphicsPolygonItem>
 
 namespace Z3D
 {
