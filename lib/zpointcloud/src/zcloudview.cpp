@@ -4,6 +4,10 @@
 #include <Z3DCameraAcquisition>
 #include <Z3DCameraCalibration>
 
+#ifdef Q_OS_OSX
+#include "osx/osxhelper.h"
+#endif
+
 #include "pcl/io/pcd_io.h"
 #include "pcl/io/ply_io.h"
 
@@ -78,6 +82,11 @@ ZCloudView::ZCloudView(QWidget *parent) :
     m_pclViewer(new pcl::visualization::PCLVisualizer("3D", false))
 {
     ui->setupUi(this);
+
+#ifdef Q_OS_OSX
+    /// Fix retina display + VTK bug that causes only a quarter of the screen to be used
+    disableGLHiDPI(ui->qvtkWidget->winId());
+#endif
 
     /// setup QVTKWidget
     vtkSmartPointer<vtkRenderWindow> renderWindow = m_pclViewer->getRenderWindow();
