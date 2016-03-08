@@ -1,5 +1,4 @@
-#ifndef Z3D_ZPOINTCLOUD___ZPOINTCLOUD_H
-#define Z3D_ZPOINTCLOUD___ZPOINTCLOUD_H
+#pragma once
 
 #include "zpointcloud_global.h"
 #include "zpointcloud_typedefs.h"
@@ -63,5 +62,3 @@ private:
 };
 
 } // namespace Z3D
-
-#endif // Z3D_ZPOINTCLOUD___ZPOINTCLOUD_H

@@ -1,5 +1,4 @@
-#ifndef Z3D_ZPOINTCLOUD___TYPEDEFS_H
-#define Z3D_ZPOINTCLOUD___TYPEDEFS_H
+#pragma once
 
 #include <pcl/point_types.h>
 #include <pcl/point_cloud.h>
@@ -44,5 +43,3 @@ typedef pcl::PointCloud<GlobalDescriptorT> GlobalDescriptors;
 typedef pcl::PointCloud<GlobalDescriptorT>::Ptr GlobalDescriptorsPtr;
 typedef pcl::PointCloud<GlobalDescriptorT>::ConstPtr GlobalDescriptorsConstPtr;
 */
-
-#endif // Z3D_ZPOINTCLOUD___TYPEDEFS_H

@@ -1,5 +1,4 @@
-#ifndef Z3D_ZPOINTCLOUD___CLOUDVIEW_H
-#define Z3D_ZPOINTCLOUD___CLOUDVIEW_H
+#pragma once
 
 #include <QMainWindow>
 
@@ -87,5 +86,3 @@ private:
 };
 
 } // namespace Z3D
-
-#endif // Z3D_ZPOINTCLOUD___CLOUDVIEW_H
