@@ -1,5 +1,4 @@
-#ifndef Z3D_STRUCTUREDLIGHT___ZSTRUCTUREDLIGHTSYSTEMPLUGIN_H
-#define Z3D_STRUCTUREDLIGHT___ZSTRUCTUREDLIGHTSYSTEMPLUGIN_H
+#pragma once
 
 #include "zstructuredlight_global.h"
 #include "zcoreplugin.h"
@@ -24,5 +23,3 @@ public:
 #define ZStructuredLightSystemPlugin_iid "z3d.zstructuredlight.zstructuredlightsystemplugin"
 
 Q_DECLARE_INTERFACE(Z3D::ZStructuredLightSystemPlugin, ZStructuredLightSystemPlugin_iid)
-
-#endif // Z3D_STRUCTUREDLIGHT___ZSTRUCTUREDLIGHTSYSTEMPLUGIN_H

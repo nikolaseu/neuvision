@@ -1,5 +1,4 @@
-#ifndef Z3D_STRUCTUREDLIGHT___THREEPHASE_H
-#define Z3D_STRUCTUREDLIGHT___THREEPHASE_H
+#pragma once
 
 #include <set>
 
@@ -78,5 +77,3 @@ private:
     //    Eigen::Matrix<float, 3, 4> m_dlpExtrinsicParam;
     //    Eigen::Matrix<float, 3, 4> m_dlpMatrix;
 };
-
-#endif // Z3D_STRUCTUREDLIGHT___THREEPHASE_H

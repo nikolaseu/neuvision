@@ -1,5 +1,4 @@
-#ifndef Z3D_ZSTRUCTUREDLIGHTSYSTEMPROVIDER_H
-#define Z3D_ZSTRUCTUREDLIGHTSYSTEMPROVIDER_H
+#pragma once
 
 #include "zstructuredlight_global.h"
 
@@ -24,5 +23,3 @@ private:
 };
 
 } // namespace Z3D
-
-#endif // Z3D_ZSTRUCTUREDLIGHTSYSTEMPROVIDER_H

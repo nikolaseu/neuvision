@@ -1,5 +1,4 @@
-#ifndef Z3D_STRUCTUREDLIGHT___ZPATTERNPROJECTION_H
-#define Z3D_STRUCTUREDLIGHT___ZPATTERNPROJECTION_H
+#pragma once
 
 #include "zstructuredlight_global.h"
 #include "zcameraimage.h"
@@ -33,5 +32,3 @@ public slots:
 };
 
 } // namespace Z3D
-
-#endif // Z3D_STRUCTUREDLIGHT___ZPATTERNPROJECTION_H

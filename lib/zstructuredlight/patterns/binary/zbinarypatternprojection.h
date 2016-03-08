@@ -1,5 +1,4 @@
-#ifndef Z3D_STRUCTUREDLIGHT___ZBINARYPATTERNPROJECTION_H
-#define Z3D_STRUCTUREDLIGHT___ZBINARYPATTERNPROJECTION_H
+#pragma once
 
 #include "zstructuredlight_global.h"
 #include "zpatternprojection.h"
@@ -119,5 +118,3 @@ protected:
 };
 
 } // namespace Z3D
-
-#endif // Z3D_STRUCTUREDLIGHT___ZBINARYPATTERNPROJECTION_H

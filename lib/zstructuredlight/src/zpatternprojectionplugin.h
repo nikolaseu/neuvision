@@ -1,5 +1,4 @@
-#ifndef Z3D_STRUCTUREDLIGHT___ZPATTERNPROJECTIONPLUGIN_H
-#define Z3D_STRUCTUREDLIGHT___ZPATTERNPROJECTIONPLUGIN_H
+#pragma once
 
 #include "zstructuredlight_global.h"
 #include "zcoreplugin.h"
@@ -24,5 +23,3 @@ public:
 #define ZPatternProjectionPlugin_iid "z3d.zstructuredlight.zpatternprojectionplugin"
 
 Q_DECLARE_INTERFACE(Z3D::ZPatternProjectionPlugin, ZPatternProjectionPlugin_iid)
-
-#endif // Z3D_STRUCTUREDLIGHT___ZPATTERNPROJECTIONPLUGIN_H

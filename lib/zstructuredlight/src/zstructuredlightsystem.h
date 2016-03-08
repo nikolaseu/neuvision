@@ -1,5 +1,4 @@
-#ifndef Z3D_STRUCTUREDLIGHT___ZSTRUCTUREDLIGHTSYSTEM_H
-#define Z3D_STRUCTUREDLIGHT___ZSTRUCTUREDLIGHTSYSTEM_H
+#pragma once
 
 #include "zstructuredlight_global.h"
 #include "zcameraacquisitionmanager.h"
@@ -53,5 +52,3 @@ private:
 };
 
 }
-
-#endif // Z3D_STRUCTUREDLIGHT___ZSTRUCTUREDLIGHTSYSTEM_H

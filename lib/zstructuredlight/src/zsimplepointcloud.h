@@ -1,5 +1,4 @@
-#ifndef ZSIMPLEPOINTCLOUD_H
-#define ZSIMPLEPOINTCLOUD_H
+#pragma once
 
 #include "zstructuredlight_global.h"
 #include "opencv2/core/types.hpp"
@@ -32,5 +31,3 @@ public:
 };
 
 } // namespace Z3D
-
-#endif // ZSIMPLEPOINTCLOUD_H

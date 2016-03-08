@@ -1,5 +1,4 @@
-#ifndef ZBINARYPATTERNPROJECTIONPLUGIN_H
-#define ZBINARYPATTERNPROJECTIONPLUGIN_H
+#pragma once
 
 #include <zpatternprojectionplugin.h>
 
@@ -27,5 +26,3 @@ public:
 };
 
 } // namespace Z3D
-
-#endif // ZBINARYPATTERNPROJECTIONPLUGIN_H

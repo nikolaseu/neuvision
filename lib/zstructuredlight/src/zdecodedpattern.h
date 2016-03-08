@@ -1,5 +1,4 @@
-#ifndef Z3D_STRUCTUREDLIGHT___ZDECODEDPATTERN_H
-#define Z3D_STRUCTUREDLIGHT___ZDECODEDPATTERN_H
+#pragma once
 
 #include "opencv2/core/core.hpp"
 
@@ -28,5 +27,3 @@ public:
 };
 
 } // namespace Z3D
-
-#endif // Z3D_STRUCTUREDLIGHT___ZDECODEDPATTERN_H

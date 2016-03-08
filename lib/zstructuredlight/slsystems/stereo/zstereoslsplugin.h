@@ -1,5 +1,4 @@
-#ifndef Z3D_ZSTEREOSLSPLUGIN_H
-#define Z3D_ZSTEREOSLSPLUGIN_H
+#pragma once
 
 #include "zstructuredlightsystemplugin.h"
 
@@ -27,5 +26,3 @@ public:
 };
 
 } // namespace Z3D
-
-#endif // Z3D_ZSTEREOSLSPLUGIN_H

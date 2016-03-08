@@ -1,5 +1,4 @@
-#ifndef Z3D_STRUCTUREDLIGHT___ZSTEREOSLSCONFIGWIDGET_H
-#define Z3D_STRUCTUREDLIGHT___ZSTEREOSLSCONFIGWIDGET_H
+#pragma once
 
 #include <QWidget>
 
@@ -25,6 +24,4 @@ private:
     ZStereoSLS *m_stereoSLS;
 };
 
-
 } // namespace Z3D
-#endif // Z3D_STRUCTUREDLIGHT___ZSTEREOSLSCONFIGWIDGET_H

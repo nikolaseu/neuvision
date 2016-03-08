@@ -1,5 +1,4 @@
-#ifndef Z3D_STRUCTUREDLIGHT___ZBINARYPATTERNDECODER_H
-#define Z3D_STRUCTUREDLIGHT___ZBINARYPATTERNDECODER_H
+#pragma once
 
 #include "opencv2/core/types.hpp"
 #include <map>
@@ -17,5 +16,3 @@ cv::Mat simplifyBinaryPatternData(cv::Mat image, cv::Mat maskImg, std::map<int, 
 } // namespace ZBinaryPatternDecoder
 
 }// namespace Z3D
-
-#endif // Z3D_STRUCTUREDLIGHT___ZBINARYPATTERNDECODER_H
