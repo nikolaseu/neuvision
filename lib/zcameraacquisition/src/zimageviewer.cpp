@@ -67,7 +67,7 @@ ZImageViewer::ZImageViewer(QWidget *parent) :
     m_colormapsMenu->setEnabled(false);
     m_colormapSignalMapper = new QSignalMapper(this);
     for (int i = 0; i<colormaps.size(); ++i) {
-        QAction *colormapAction = new QAction(colormaps[i].second, this);
+        auto colormapAction = new QAction(colormaps[i].second, this);
         colormapAction->setCheckable(true);
         if (colormaps[i].first == m_colormap) {
             colormapAction->setChecked(true);
@@ -81,7 +81,7 @@ ZImageViewer::ZImageViewer(QWidget *parent) :
                      this, SLOT(changeColormap(int)));
 
     /// save image action
-    QAction *saveImageAction = new QAction(tr("Save image as..."), m_contextMenu);
+    auto saveImageAction = new QAction(tr("Save image as..."), m_contextMenu);
     QObject::connect(saveImageAction, SIGNAL(triggered()),
                      this, SLOT(saveImage()));
     m_contextMenu->addSeparator();
@@ -129,14 +129,14 @@ void ZImageViewer::changeColormap(int colormapId)
         return;
 
     /// uncheck previous
-    QAction *colormapAction = (QAction*) m_colormapSignalMapper->mapping(m_colormap);
+    auto colormapAction = static_cast<QAction*>(m_colormapSignalMapper->mapping(m_colormap));
     colormapAction->setChecked(false);
 
     /// update current
     m_colormap = colormapId;
 
     /// check current
-    colormapAction = (QAction*) m_colormapSignalMapper->mapping(m_colormap);
+    colormapAction = static_cast<QAction*>(m_colormapSignalMapper->mapping(m_colormap));
     colormapAction->setChecked(true);
 
     /// if we were displaying an image, update to view current colormap
@@ -147,10 +147,10 @@ void ZImageViewer::changeColormap(int colormapId)
 void ZImageViewer::saveImage()
 {
     /// get file name
-    QString fileName = QFileDialog::getSaveFileName(this,
-                                                    tr("Save image as..."),
-                                                    "image.png",
-                                                    tr("Images (*.png *.jpg *.jpeg *.bmp)"));
+    auto fileName = QFileDialog::getSaveFileName(this,
+                                                 tr("Save image as..."),
+                                                 "image.png",
+                                                 tr("Images (*.png *.jpg *.jpeg *.bmp)"));
 
     if (fileName.isEmpty() || fileName.isNull())
         return;
@@ -279,7 +279,7 @@ void ZImageViewer::updateImage(QImage image)
 {
     m_image = image;
 
-    QPixmap pixmap = QPixmap::fromImage(m_image);
+    auto pixmap = QPixmap::fromImage(m_image);
 
     m_pixmapItem->setPixmap(pixmap);
 }

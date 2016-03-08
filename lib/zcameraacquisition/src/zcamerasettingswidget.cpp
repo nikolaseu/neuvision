@@ -11,10 +11,10 @@
 namespace Z3D
 {
 
-ZCameraSettingsWidget::ZCameraSettingsWidget(ZCameraInterface::WeakPtr camera, QWidget *parent) :
-    QWidget(parent),
-    ui(new Ui::ZCameraSettingsWidget),
-    m_camera(camera)
+ZCameraSettingsWidget::ZCameraSettingsWidget(ZCameraInterface::WeakPtr camera, QWidget *parent)
+    : QWidget(parent)
+    , ui(new Ui::ZCameraSettingsWidget)
+    , m_camera(camera)
 {
     ui->setupUi(this);
 
@@ -25,31 +25,31 @@ ZCameraSettingsWidget::ZCameraSettingsWidget(ZCameraInterface::WeakPtr camera, Q
     m_groupManager = new QtGroupPropertyManager(this);
 
     m_boolPropertyManager = new QtBoolPropertyManager(this);
-    QtCheckBoxFactory *checkBoxFactory = new QtCheckBoxFactory(this);
+    auto checkBoxFactory = new QtCheckBoxFactory(this);
     m_propertyBrowser->setFactoryForManager(m_boolPropertyManager, checkBoxFactory);
 
     m_stringPropertyManager = new QtStringPropertyManager(this);
-    QtLineEditFactory *lineEditFactory = new QtLineEditFactory(this);
+    auto lineEditFactory = new QtLineEditFactory(this);
     m_propertyBrowser->setFactoryForManager(m_stringPropertyManager, lineEditFactory);
 
     m_intPropertyManager = new QtIntPropertyManager(this);
-    QtSpinBoxFactory *spinBoxFactory = new QtSpinBoxFactory(this);
+    auto spinBoxFactory = new QtSpinBoxFactory(this);
     m_propertyBrowser->setFactoryForManager(m_intPropertyManager, spinBoxFactory);
 
     m_longPropertyManager = new QtStringPropertyManager(this);
-    QtLineEditFactory *longEditFactory = new QtLineEditFactory(this);
+    auto longEditFactory = new QtLineEditFactory(this);
     m_propertyBrowser->setFactoryForManager(m_longPropertyManager, longEditFactory);
 
     m_floatPropertyManager = new QtDoublePropertyManager(this);
-    QtDoubleSpinBoxFactory *doubleSpinBoxFactory = new QtDoubleSpinBoxFactory(this);
+    auto doubleSpinBoxFactory = new QtDoubleSpinBoxFactory(this);
     m_propertyBrowser->setFactoryForManager(m_floatPropertyManager, doubleSpinBoxFactory);
 
     m_enumPropertyManager = new QtEnumPropertyManager(this);
-    QtEnumEditorFactory *enumEditorFactory = new QtEnumEditorFactory(this);
+    auto enumEditorFactory = new QtEnumEditorFactory(this);
     m_propertyBrowser->setFactoryForManager(m_enumPropertyManager, enumEditorFactory);
 
     m_commandPropertyManager = new QtBoolPropertyManager(this);
-    QtCheckBoxFactory *commandCheckBoxFactory = new QtCheckBoxFactory(this);
+    auto commandCheckBoxFactory = new QtCheckBoxFactory(this);
     m_propertyBrowser->setFactoryForManager(m_commandPropertyManager, commandCheckBoxFactory);
 
     ui->propertyBrowserLayout->addWidget(m_propertyBrowser);
@@ -73,14 +73,14 @@ void ZCameraSettingsWidget::propertyChanged(QtProperty *property)
     if (!m_camera)
         return;
 
-    bool found = false;
+    auto found = false;
 
     foreach (const QString &attrName, m_propertiesList.keys()) {
-        QtProperty *mapProperty = m_propertiesList[attrName];
+        auto mapProperty = m_propertiesList[attrName];
         if (mapProperty == property) {
             found = true;
 
-            const QtAbstractPropertyManager *manager = property->propertyManager();
+            const auto manager = property->propertyManager();
 
             if (manager == m_boolPropertyManager) {
                 m_camera->setAttribute(attrName, m_boolPropertyManager->value( property ));
@@ -134,7 +134,7 @@ void ZCameraSettingsWidget::updateProperties()
             property->setEnabled(false);
     }
 
-    QList<Z3D::ZCameraInterface::ZCameraAttribute> attributes = m_camera->getAllAttributes();
+    auto attributes = m_camera->getAllAttributes();
 
     foreach(Z3D::ZCameraInterface::ZCameraAttribute attribute, attributes) {
 
@@ -145,7 +145,7 @@ void ZCameraSettingsWidget::updateProperties()
         } else {
             /// new property
             QtProperty *parentCategory = 0;
-            QStringList categoriesList = attribute.name.split("::");
+            auto categoriesList = attribute.name.split("::");
             QString attrName;
             if (categoriesList.size() > 1) {
                 /// its a sub property, got to find/create the category
@@ -311,6 +311,7 @@ void ZCameraSettingsWidget::updateProperties()
 
 void ZCameraSettingsWidget::onCameraAttributeChanged(QString name, QVariant value)
 {
+    Q_UNUSED(value)
     QtProperty *m_currentProperty;
     if (m_propertiesList.contains(name)) {
         /// already existed
