@@ -1,5 +1,4 @@
-#ifndef Z3D_CORE___ZCOREPLUGIN_H
-#define Z3D_CORE___ZCOREPLUGIN_H
+#pragma once
 
 #include "zcore_global.h"
 
@@ -26,5 +25,3 @@ public slots:
 };
 
 } // namespace Z3D
-
-#endif // Z3D_CORE___ZCOREPLUGIN_H

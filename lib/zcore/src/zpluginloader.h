@@ -1,5 +1,4 @@
-#ifndef Z3D_CORE___ZPLUGINLOADER_H
-#define Z3D_CORE___ZPLUGINLOADER_H
+#pragma once
 
 #include "zcore_global.h"
 
@@ -34,5 +33,3 @@ private:
 };
 
 } // namespace Z3D
-
-#endif // Z3D_CORE___ZPLUGINLOADER_H

@@ -1,5 +1,4 @@
-#ifndef Z3D_CORE___ZAPPLICATIONSTYLE_H
-#define Z3D_CORE___ZAPPLICATIONSTYLE_H
+#pragma once
 
 namespace Z3D
 {
@@ -17,5 +16,3 @@ namespace ZApplicationStyle
 } // namespace ZApplicationStyle
 
 } // namespace Z3D
-
-#endif // Z3D_CORE___ZAPPLICATIONSTYLE_H
