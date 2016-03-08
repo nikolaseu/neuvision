@@ -1,5 +1,4 @@
-#ifndef Z3D_CAMERAACQUISITION___ZCAMERAPLUGININTERFACE_H
-#define Z3D_CAMERAACQUISITION___ZCAMERAPLUGININTERFACE_H
+#pragma once
 
 #include "zcameraacquisition_global.h"
 #include "zcamerainfo.h"
@@ -29,5 +28,3 @@ public:
 #define ZCameraPluginInterface_iid "z3d.cameraacquisition.cameraplugininterface"
 
 Q_DECLARE_INTERFACE(Z3D::ZCameraPluginInterface, ZCameraPluginInterface_iid)
-
-#endif // Z3D_CAMERAACQUISITION___ZCAMERAPLUGININTERFACE_H

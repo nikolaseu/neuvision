@@ -7,6 +7,7 @@
 #include <QDebug>
 #include <QScrollBar>
 #include <QSignalMapper>
+#include <QGraphicsPixmapItem>
 
 #include <qmath.h>
 

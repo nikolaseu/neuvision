@@ -1,5 +1,4 @@
-#ifndef Z3D_CAMERAACQUISITION___ZCAMERASELECTORDIALOG_H
-#define Z3D_CAMERAACQUISITION___ZCAMERASELECTORDIALOG_H
+#pragma once
 
 #include "zcameraacquisition_global.h"
 #include "zcamerainterface.h"
@@ -35,5 +34,3 @@ private:
 };
 
 } // namespace Z3D
-
-#endif // Z3D_CAMERAACQUISITION___ZCAMERASELECTORDIALOG_H

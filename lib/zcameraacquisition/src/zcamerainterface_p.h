@@ -1,5 +1,4 @@
-#ifndef Z3D_CAMERAACQUISITION___ZCAMERABASE_H
-#define Z3D_CAMERAACQUISITION___ZCAMERABASE_H
+#pragma once
 
 #define CAMERA_MESSAGE(str) QString("[%1] %2").arg(uuid()).arg(str)
 #define CAMERA_DEBUG(str)   qDebug()    << CAMERA_MESSAGE(str); emit message( CAMERA_MESSAGE(str) );
@@ -72,5 +71,3 @@ private:
 };
 
 } // namespace Z3D
-
-#endif // Z3D_CAMERAACQUISITION___ZCAMERABASE_H

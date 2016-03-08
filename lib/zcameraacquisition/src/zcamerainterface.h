@@ -1,5 +1,4 @@
-#ifndef Z3D_CAMERAACQUISITION___ZCAMERAINTERFACE_H
-#define Z3D_CAMERAACQUISITION___ZCAMERAINTERFACE_H
+#pragma once
 
 #include "zcameraacquisition_global.h"
 #include "zcameraimage.h"
@@ -111,5 +110,3 @@ public slots:
 };
 
 } // namespace Z3D
-
-#endif // Z3D_CAMERAACQUISITION___ZCAMERAINTERFACE_H
