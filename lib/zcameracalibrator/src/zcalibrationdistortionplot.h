@@ -1,5 +1,4 @@
-#ifndef Z3D_CAMERACALIBRATOR___ZCALIBRATIONDISTORTIONPLOT_H
-#define Z3D_CAMERACALIBRATOR___ZCALIBRATIONDISTORTIONPLOT_H
+#pragma once
 
 #include <qwt_plot.h>
 #include <qwt_plot_spectrogram.h>
@@ -35,5 +34,3 @@ private:
 };
 
 } // namespace Z3D
-
-#endif // Z3D_CAMERACALIBRATOR___ZCALIBRATIONDISTORTIONPLOT_H

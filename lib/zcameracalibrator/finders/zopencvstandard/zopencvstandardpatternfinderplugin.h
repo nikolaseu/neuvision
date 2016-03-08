@@ -1,5 +1,4 @@
-#ifndef Z3D_ZOPENCVSTANDARDPATTERNFINDERPLUGIN_H
-#define Z3D_ZOPENCVSTANDARDPATTERNFINDERPLUGIN_H
+#pragma once
 
 #include <QObject>
 
@@ -29,5 +28,3 @@ public:
 };
 
 } // namespace Z3D
-
-#endif // Z3D_ZOPENCVSTANDARDPATTERNFINDERPLUGIN_H

@@ -1,5 +1,4 @@
-#ifndef Z3D_CAMERACALIBRATOR___ZCAMERACALIBRATORWORKER_H
-#define Z3D_CAMERACALIBRATOR___ZCAMERACALIBRATORWORKER_H
+#pragma once
 
 #include "zcalibrationimagemodel.h"
 #include "zcalibrationpatternfinder.h"
@@ -65,5 +64,3 @@ protected:
 };
 
 } // namespace Z3D
-
-#endif // Z3D_CAMERACALIBRATOR___ZCAMERACALIBRATORWORKER_H

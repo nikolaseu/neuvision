@@ -1,5 +1,4 @@
-#ifndef Z3D_CAMERACALIBRATOR___GLOBAL_H
-#define Z3D_CAMERACALIBRATOR___GLOBAL_H
+#pragma once
 
 #include <QtCore/qglobal.h>
 
@@ -8,5 +7,3 @@
 #else
 #  define Z3D_CAMERACALIBRATOR_SHARED_EXPORT Q_DECL_IMPORT
 #endif
-
-#endif // Z3D_CAMERACALIBRATOR___GLOBAL_H

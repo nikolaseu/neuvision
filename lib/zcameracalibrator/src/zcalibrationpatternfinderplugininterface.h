@@ -1,5 +1,4 @@
-#ifndef Z3D_CAMERACALIBRATOR___ZCALIBRATIONPATTERNFINDERPLUGININTERFACE_H
-#define Z3D_CAMERACALIBRATOR___ZCALIBRATIONPATTERNFINDERPLUGININTERFACE_H
+#pragma once
 
 #include "zcameracalibrator_global.h"
 #include "zcalibrationpatternfinder.h"
@@ -24,5 +23,3 @@ public:
 #define ZCalibrationPatternFinderPluginInterface_iid "z3d.zcameracalibrator.zcalibrationpatternfinderplugininterface"
 
 Q_DECLARE_INTERFACE(Z3D::ZCalibrationPatternFinderPluginInterface, ZCalibrationPatternFinderPluginInterface_iid)
-
-#endif // Z3D_CAMERACALIBRATOR___ZCALIBRATIONPATTERNFINDERPLUGININTERFACE_H

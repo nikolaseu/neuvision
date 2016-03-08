@@ -1,5 +1,4 @@
-#ifndef Z3D_CAMERACALIBRATOR___ZMULTICALIBRATIONIMAGEMODEL_H
-#define Z3D_CAMERACALIBRATOR___ZMULTICALIBRATIONIMAGEMODEL_H
+#pragma once
 
 #include "zmulticalibrationimage.h"
 
@@ -63,5 +62,3 @@ private:
 };
 
 } // namespace Z3D
-
-#endif // Z3D_CAMERACALIBRATOR___ZMULTICALIBRATIONIMAGEMODEL_H

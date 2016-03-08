@@ -1,12 +1,10 @@
-#ifndef Z3D_CAMERACALIBRATOR___ZCALIBRATIONIMAGEMODEL_H
-#define Z3D_CAMERACALIBRATOR___ZCALIBRATIONIMAGEMODEL_H
+#pragma once
 
 #include "zcalibrationimage.h"
 
 #include <QAbstractListModel>
 #include <QFutureWatcher>
 #include <QList>
-//#include <QSharedPointer>
 
 namespace Z3D
 {
@@ -72,5 +70,3 @@ private:
 };
 
 } // namespace Z3D
-
-#endif // Z3D_CAMERACALIBRATOR___ZCALIBRATIONIMAGEMODEL_H

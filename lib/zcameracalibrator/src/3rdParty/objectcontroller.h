@@ -38,8 +38,7 @@
 **
 ****************************************************************************/
 
-#ifndef OBJECTCONTROLLER_H
-#define OBJECTCONTROLLER_H
+#pragma once
 
 #include <QWidget>
 
@@ -61,5 +60,3 @@ private:
     Q_DISABLE_COPY(ObjectController)
     Q_PRIVATE_SLOT(d_func(), void slotValueChanged(QtProperty *, const QVariant &))
 };
-
-#endif
