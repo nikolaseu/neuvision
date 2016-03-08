@@ -1,5 +1,4 @@
-#ifndef Z3D_LASERTRIANGULATION___LTSCAMERA3D_H
-#define Z3D_LASERTRIANGULATION___LTSCAMERA3D_H
+#pragma once
 
 #include "zlasertriangulation_global.h"
 #include "zcamera3dinterface.h"
@@ -80,5 +79,3 @@ private:
 };
 
 } // namespace Z3D
-
-#endif // Z3D_LASERTRIANGULATION___LTSCAMERA3D_H

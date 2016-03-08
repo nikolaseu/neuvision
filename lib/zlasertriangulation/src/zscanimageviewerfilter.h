@@ -1,5 +1,4 @@
-#ifndef SCANIMAGEVIEWERFILTER_H
-#define SCANIMAGEVIEWERFILTER_H
+#pragma once
 
 #include <Z3DCameraAcquisition>
 
@@ -78,5 +77,3 @@ public slots:
 
 
 } // namespace Z3D
-
-#endif // SCANIMAGEVIEWERFILTER_H
