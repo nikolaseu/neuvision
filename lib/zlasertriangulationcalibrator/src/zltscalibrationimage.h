@@ -1,5 +1,4 @@
-#ifndef Z3D_LASERTRIANGULATIONCALIBRATOR___ZLTSCALIBRATIONIMAGE_H
-#define Z3D_LASERTRIANGULATIONCALIBRATOR___ZLTSCALIBRATIONIMAGE_H
+#pragma once
 
 #include "zcalibrationimage.h"
 
@@ -41,5 +40,3 @@ protected:
 } // namespace Z3D
 
 Q_DECLARE_METATYPE(Z3D::ZLTSCalibrationImage::Ptr) /// to use in QVariant
-
-#endif // Z3D_LASERTRIANGULATIONCALIBRATOR___ZLTSCALIBRATIONIMAGE_H
