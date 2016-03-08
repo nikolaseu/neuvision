@@ -1,5 +1,4 @@
-#ifndef Z3D_CAMERACALIBRATION___ZCAMERACALIBRATIONPLUGININTERFACE_H
-#define Z3D_CAMERACALIBRATION___ZCAMERACALIBRATIONPLUGININTERFACE_H
+#pragma once
 
 #include "zcameracalibration_global.h"
 #include "zcameracalibration.h"
@@ -29,5 +28,3 @@ public:
 #define ZCameraCalibrationPluginInterface_iid "z3d.zcameracalibration.zcameracalibrationplugininterface"
 
 Q_DECLARE_INTERFACE(Z3D::ZCameraCalibrationPluginInterface, ZCameraCalibrationPluginInterface_iid)
-
-#endif // Z3D_CAMERACALIBRATION___ZCAMERACALIBRATIONPLUGININTERFACE_H

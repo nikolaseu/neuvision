@@ -1,5 +1,4 @@
-#ifndef Z3D_CAMERACALIBRATOR___ZPINHOLECAMERACALIBRATOR_H
-#define Z3D_CAMERACALIBRATOR___ZPINHOLECAMERACALIBRATOR_H
+#pragma once
 
 #include "zcameracalibrator.h"
 
@@ -146,5 +145,3 @@ protected:
 };
 
 } // namespace Z3D
-
-#endif // Z3D_CAMERACALIBRATOR___ZPINHOLECAMERACALIBRATOR_H

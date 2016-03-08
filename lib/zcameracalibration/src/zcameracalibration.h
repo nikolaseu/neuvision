@@ -1,5 +1,4 @@
-#ifndef Z3D_CAMERACALIBRATION___ZCAMERACALIBRATION_H
-#define Z3D_CAMERACALIBRATION___ZCAMERACALIBRATION_H
+#pragma once
 
 #include "zcameracalibration_global.h"
 
@@ -163,5 +162,3 @@ private:
 };
 
 } // namespace Z3D
-
-#endif // Z3D_CAMERACALIBRATION___ZCAMERACALIBRATION_H

@@ -1,5 +1,4 @@
-#ifndef Z3D_CAMERACALIBRATION___ZPINHOLECAMERACALIBRATIONPLUGIN_H
-#define Z3D_CAMERACALIBRATION___ZPINHOLECAMERACALIBRATIONPLUGIN_H
+#pragma once
 
 #include <QObject>
 #include <QVariantMap>
@@ -12,13 +11,6 @@ namespace Z3D
 class ZPinholeCameraCalibrationPlugin : public ZCameraCalibrationPluginInterface
 {
     Q_OBJECT
-/*
-#if QT_VERSION >= 0x050000
-    Q_PLUGIN_METADATA(IID "z3d.cameracalibration.cameracalibrationplugininterface" FILE "pinhole.json")
-#endif // QT_VERSION >= 0x050000
-
-    Q_INTERFACES(Z3D::ZCameraCalibrationPluginInterface)
-*/
 
     // ZCorePlugin interface
 public:
@@ -34,5 +26,3 @@ public:
 };
 
 } // namespace Z3D
-
-#endif // Z3D_CAMERACALIBRATION___ZPINHOLECAMERACALIBRATIONPLUGIN_H
