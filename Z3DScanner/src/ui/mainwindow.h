@@ -13,15 +13,11 @@ class MainWindow;
 }
 
 namespace Z3D {
-class ZCloudView;
 class ZPatternProjection;
 class ZStructuredLightSystem;
 }
 
 class ZPointCloudWidget;
-
-class QSignalMapper;
-//class QThread;
 
 class MainWindow : public QMainWindow
 {
@@ -38,25 +34,11 @@ private slots:
 
     virtual void closeEvent(QCloseEvent *event);
 
-    /// FIXME Z3D::ZCloudView *getCloudViewer();
-
     //
     void onPatternProjectionTypeChanged(int index);
     void onStructuredLightSystemTypeChanged(int index);
 
-    // each camera's submenu items
-    void openCameraPreview(int camIndex);
-    void openCameraSettingsDialog(int camIndex);
-    void openCameraCalibrationWindow(int camIndex);
-    void loadCameraCalibrationFile(int camIndex);
-    void take3dCameraSnapshot(int camIndex);
-
     void onScanFinished(Z3D::ZSimplePointCloud::Ptr cloud);
-    void getThreePhasePatternPhotos();
-
-    void on_actionCloudViewer_triggered();
-    void on_actionQuit_triggered();
-    void on_actionShowSnapshot3D_triggered();
 
 private:
     Ui::MainWindow *ui;
@@ -68,15 +50,6 @@ private:
     Z3D::ZStructuredLightSystem *m_currentStructuredLightSystem;
 
     ZPointCloudWidget *m_pointCloudWidget;
-
-    /// 3D view window (created on demand)
-    /// FIXME QPointer<Z3D::ZCloudView> m_cloudViewer;
-
-    QSignalMapper *m_previewSignalMapper;
-    QSignalMapper *m_settingsSignalMapper;
-    QSignalMapper *m_calibrateCameraSignalMapper;
-    QSignalMapper *m_loadCalibrationSignalMapper;
-    QSignalMapper *m_take3dSnapshotSignalMapper;
 };
 
 #endif // MAINWINDOW_H
