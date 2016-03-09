@@ -1,5 +1,5 @@
-#include "zcloudview.h"
-#include "ui_zcloudview.h"
+#include "zcloudviewwindow.h"
+#include "ui_zcloudviewwindow.h"
 
 #include <Z3DCameraAcquisition>
 #include <Z3DCameraCalibration>
@@ -76,9 +76,9 @@ bool writeData(QString fileName, const std::vector<T> &errorsInliers) {
 namespace Z3D
 {
 
-ZCloudView::ZCloudView(QWidget *parent) :
+ZCloudViewWindow::ZCloudViewWindow(QWidget *parent) :
     QMainWindow(parent),
-    ui(new Ui::ZCloudView),
+    ui(new Ui::ZCloudViewWindow),
     m_pclViewer(new pcl::visualization::PCLVisualizer("3D", false))
 {
     ui->setupUi(this);
@@ -126,12 +126,12 @@ ZCloudView::ZCloudView(QWidget *parent) :
     renderer->AddViewProp (grid_actor_);*/
 }
 
-ZCloudView::~ZCloudView()
+ZCloudViewWindow::~ZCloudViewWindow()
 {
     delete ui;
 }
 
-void ZCloudView::showCameraSnapshot(Z3D::ZCalibratedCamera::Ptr pCamera)
+void ZCloudViewWindow::showCameraSnapshot(Z3D::ZCalibratedCamera::Ptr pCamera)
 {
     Z3D::ZCameraCalibration::Ptr calibration = pCamera->calibration();
 
@@ -214,7 +214,7 @@ void ZCloudView::showCameraSnapshot(Z3D::ZCalibratedCamera::Ptr pCamera)
     drawCameraFrustrum(pCamera, imageScale);
 }
 
-void ZCloudView::drawCameraFrustrum(Z3D::ZCalibratedCamera::Ptr cam, float scale)
+void ZCloudViewWindow::drawCameraFrustrum(Z3D::ZCalibratedCamera::Ptr cam, float scale)
 {
     Z3D::ZCameraCalibration::Ptr calibration = cam->calibration();
 
@@ -252,7 +252,7 @@ void ZCloudView::drawCameraFrustrum(Z3D::ZCalibratedCamera::Ptr cam, float scale
     }
 }
 
-void ZCloudView::addPointCloud(PointCloudPCLPtr cloud, const QString &id)
+void ZCloudViewWindow::addPointCloud(PointCloudPCLPtr cloud, const QString &id)
 {
     m_pointCloud = Z3D::ZPointCloud::Ptr(new Z3D::ZPointCloud(cloud));
     m_pointCloud->setId(id);
@@ -262,12 +262,12 @@ void ZCloudView::addPointCloud(PointCloudPCLPtr cloud, const QString &id)
     ui->actionViewPoints->setChecked(true);
 }
 
-boost::shared_ptr<pcl::visualization::PCLVisualizer> ZCloudView::getViewer()
+boost::shared_ptr<pcl::visualization::PCLVisualizer> ZCloudViewWindow::getViewer()
 {
     return m_pclViewer;
 }
 
-void ZCloudView::on_actionLoadPointCloud_triggered()
+void ZCloudViewWindow::on_actionLoadPointCloud_triggered()
 {
     QString fileName = QFileDialog::getOpenFileName(this,
                                                     tr("Load point cloud"),
@@ -298,7 +298,7 @@ void ZCloudView::on_actionLoadPointCloud_triggered()
         addPointCloud(cloud, fileName);
 }
 
-void ZCloudView::on_actionSavePointCloudAs_triggered()
+void ZCloudViewWindow::on_actionSavePointCloudAs_triggered()
 {
     QString fileName = QFileDialog::getSaveFileName(this,
                                                     tr("Save point cloud as..."),
@@ -326,7 +326,7 @@ void ZCloudView::on_actionSavePointCloudAs_triggered()
         qWarning() << "Unable to save cloud to file:" << fileName;
 }
 
-void ZCloudView::on_actionCloseAllPointClouds_triggered()
+void ZCloudViewWindow::on_actionCloseAllPointClouds_triggered()
 {
     m_pclViewer->removeAllShapes();
     m_pclViewer->removeAllPointClouds(); //! TODO: averiguar si hacen falta los dos?
@@ -334,7 +334,7 @@ void ZCloudView::on_actionCloseAllPointClouds_triggered()
     m_pclViewer->getRenderWindow()->Render();
 }
 
-void ZCloudView::on_actionToolsStatisticalOutlierRemoval_triggered()
+void ZCloudViewWindow::on_actionToolsStatisticalOutlierRemoval_triggered()
 {
     QDialog dialog(this);
     dialog.setWindowTitle(tr("Statistical Outlier removal"));
@@ -393,7 +393,7 @@ void ZCloudView::on_actionToolsStatisticalOutlierRemoval_triggered()
                                           qPrintable(m_pointCloud->id()));
 }
 
-void ZCloudView::on_actionToolsMovingLeastSquares_triggered()
+void ZCloudViewWindow::on_actionToolsMovingLeastSquares_triggered()
 {
     pcl::MovingLeastSquares<pcl::PointXYZ, pcl::PointNormal> mls;
     //pcl::MovingLeastSquaresOMP<pcl::PointXYZ, pcl::PointNormal> mls;
@@ -569,7 +569,7 @@ void ZCloudView::on_actionToolsMovingLeastSquares_triggered()
     }
 }
 
-void ZCloudView::on_actionToolsGreedyTriangulation_triggered()
+void ZCloudViewWindow::on_actionToolsGreedyTriangulation_triggered()
 {
     QDialog paramsDialog(this);
     paramsDialog.setWindowTitle(tr("Greedy triangulation"));
@@ -664,7 +664,7 @@ void ZCloudView::on_actionToolsGreedyTriangulation_triggered()
     ui->actionViewSurface->setChecked(true);
 }
 
-void ZCloudView::on_actionToolsGridProjection_triggered()
+void ZCloudViewWindow::on_actionToolsGridProjection_triggered()
 {
     /// Create search tree*
     pcl::search::KdTree<SurfelType>::Ptr tree2(new pcl::search::KdTree<SurfelType>);
@@ -689,7 +689,7 @@ void ZCloudView::on_actionToolsGridProjection_triggered()
     ui->actionViewSurface->setChecked(true);
 }
 
-void ZCloudView::on_actionDownsample_triggered()
+void ZCloudViewWindow::on_actionDownsample_triggered()
 {
     QDialog paramsDialog(this);
     paramsDialog.setWindowTitle(tr("Downsample cloud"));
@@ -743,7 +743,7 @@ void ZCloudView::on_actionDownsample_triggered()
     }
 }
 
-void ZCloudView::on_actionViewCoordinateSystem_toggled(bool arg1)
+void ZCloudViewWindow::on_actionViewCoordinateSystem_toggled(bool arg1)
 {
     if (arg1) {
         m_pclViewer->addCoordinateSystem(25);
@@ -764,7 +764,7 @@ void ZCloudView::on_actionViewCoordinateSystem_toggled(bool arg1)
     ui->qvtkWidget->update();
 }
 
-void ZCloudView::on_actionToolsFitCylinder_triggered()
+void ZCloudViewWindow::on_actionToolsFitCylinder_triggered()
 {
     QDialog paramsDialog(this);
     paramsDialog.setWindowTitle(tr("Fit cylinder"));
@@ -1100,7 +1100,7 @@ void ZCloudView::on_actionToolsFitCylinder_triggered()
     }
 }
 
-void ZCloudView::on_actionToolsFitPlane_triggered()
+void ZCloudViewWindow::on_actionToolsFitPlane_triggered()
 {
     QDialog paramsDialog(this);
     paramsDialog.setWindowTitle(tr("Fit plane"));
@@ -1379,7 +1379,7 @@ void ZCloudView::on_actionToolsFitPlane_triggered()
     }
 }
 
-void ZCloudView::on_actionViewNormals_toggled(bool arg1)
+void ZCloudViewWindow::on_actionViewNormals_toggled(bool arg1)
 {
     QString id = QString("%1__%2").arg(m_pointCloud->id()).arg("normals");
     if (arg1) {
@@ -1392,7 +1392,7 @@ void ZCloudView::on_actionViewNormals_toggled(bool arg1)
     ui->qvtkWidget->update();
 }
 
-void ZCloudView::on_actionViewPoints_toggled(bool arg1)
+void ZCloudViewWindow::on_actionViewPoints_toggled(bool arg1)
 {
     if (arg1) {
         m_pclViewer->addPointCloud<PointType>(m_pointCloud->pclPointCloud(),
@@ -1405,7 +1405,7 @@ void ZCloudView::on_actionViewPoints_toggled(bool arg1)
     ui->qvtkWidget->update();
 }
 
-void ZCloudView::on_actionViewSurface_toggled(bool arg1)
+void ZCloudViewWindow::on_actionViewSurface_toggled(bool arg1)
 {
     QString id = QString("%1__%2").arg(m_pointCloud->id()).arg("surface");
     if (arg1) {
@@ -1418,7 +1418,7 @@ void ZCloudView::on_actionViewSurface_toggled(bool arg1)
     ui->qvtkWidget->update();
 }
 
-void ZCloudView::on_actionChangeBackgroundColor_triggered()
+void ZCloudViewWindow::on_actionChangeBackgroundColor_triggered()
 {
     QColor color = QColorDialog::getColor(m_currentBackgroundColor, this, "Select background color");
     if (color.isValid()) {
@@ -1429,7 +1429,7 @@ void ZCloudView::on_actionChangeBackgroundColor_triggered()
     }
 }
 
-void ZCloudView::on_actionRenderShadingFlat_triggered()
+void ZCloudViewWindow::on_actionRenderShadingFlat_triggered()
 {
     ui->actionRenderShadingFlat->setChecked(true);
     ui->actionRenderShadingGouraud->setChecked(false);
@@ -1445,7 +1445,7 @@ void ZCloudView::on_actionRenderShadingFlat_triggered()
 #endif
 }
 
-void ZCloudView::on_actionRenderShadingGouraud_triggered()
+void ZCloudViewWindow::on_actionRenderShadingGouraud_triggered()
 {
     ui->actionRenderShadingFlat->setChecked(false);
     ui->actionRenderShadingGouraud->setChecked(true);
@@ -1461,7 +1461,7 @@ void ZCloudView::on_actionRenderShadingGouraud_triggered()
 #endif
 }
 
-void ZCloudView::on_actionRenderShadingPhong_triggered()
+void ZCloudViewWindow::on_actionRenderShadingPhong_triggered()
 {
     ui->actionRenderShadingFlat->setChecked(false);
     ui->actionRenderShadingGouraud->setChecked(false);
@@ -1477,7 +1477,7 @@ void ZCloudView::on_actionRenderShadingPhong_triggered()
 #endif
 }
 
-void ZCloudView::on_actionRenderToFile_triggered()
+void ZCloudViewWindow::on_actionRenderToFile_triggered()
 {
     QString fileName = QFileDialog::getSaveFileName(this,
                                                     tr("Save screenshot as..."),
@@ -1490,7 +1490,7 @@ void ZCloudView::on_actionRenderToFile_triggered()
     m_pclViewer->saveScreenshot(qPrintable(fileName));
 }
 
-void ZCloudView::on_actionToolsDelaunay2D_triggered()
+void ZCloudViewWindow::on_actionToolsDelaunay2D_triggered()
 {
     try {
         QTime time;

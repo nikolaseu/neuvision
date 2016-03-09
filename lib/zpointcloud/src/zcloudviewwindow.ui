@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>Z3D::ZCloudView</class>
- <widget class="QMainWindow" name="Z3D::ZCloudView">
+ <class>Z3D::ZCloudViewWindow</class>
+ <widget class="QMainWindow" name="Z3D::ZCloudViewWindow">
   <property name="geometry">
    <rect>
     <x>0</x>

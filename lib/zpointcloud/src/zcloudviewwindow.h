@@ -14,16 +14,16 @@ namespace Z3D
 {
 
 namespace Ui {
-class ZCloudView;
+class ZCloudViewWindow;
 }
 
-class Z3D_ZPOINTCLOUD_SHARED_EXPORT ZCloudView : public QMainWindow
+class Z3D_ZPOINTCLOUD_SHARED_EXPORT ZCloudViewWindow : public QMainWindow
 {
     Q_OBJECT
 
 public:
-    explicit ZCloudView(QWidget *parent = 0);
-    ~ZCloudView();
+    explicit ZCloudViewWindow(QWidget *parent = 0);
+    ~ZCloudViewWindow();
 
     void showCameraSnapshot(Z3D::ZCalibratedCamera::Ptr pCamera);
 
@@ -75,7 +75,7 @@ private slots:
     void on_actionToolsDelaunay2D_triggered();
 
 private:
-    Ui::ZCloudView *ui;
+    Ui::ZCloudViewWindow *ui;
 
     boost::shared_ptr<pcl::visualization::PCLVisualizer> m_pclViewer;
 
