@@ -1,5 +1,4 @@
-#ifndef Z3D_LASERTRIANGULATION___CAMERA3DINTERFACE_H
-#define Z3D_LASERTRIANGULATION___CAMERA3DINTERFACE_H
+#pragma once
 
 #include <Z3DCalibratedCamera>
 #include <Z3DCameraAcquisition>
@@ -50,5 +49,3 @@ protected:
 };
 
 } // namespace Z3D
-
-#endif // Z3D_LASERTRIANGULATION___CAMERA3DINTERFACE_H

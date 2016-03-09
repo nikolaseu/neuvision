@@ -1,17 +1,16 @@
-#ifndef Z3D_CAMERAACQUISITION___ZCAMERASELECTORDIALOG_H
-#define Z3D_CAMERAACQUISITION___ZCAMERASELECTORDIALOG_H
+#pragma once
 
 #include "zcameraacquisition_global.h"
 #include "zcamerainterface.h"
 
 #include <QDialog>
 
+namespace Z3D
+{
+
 namespace Ui {
 class ZCameraSelectorDialog;
 }
-
-namespace Z3D
-{
 
 class Z3D_CAMERAACQUISITION_SHARED_EXPORT ZCameraSelectorDialog : public QDialog
 {
@@ -35,5 +34,3 @@ private:
 };
 
 } // namespace Z3D
-
-#endif // Z3D_CAMERAACQUISITION___ZCAMERASELECTORDIALOG_H

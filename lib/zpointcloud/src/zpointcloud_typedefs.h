@@ -1,12 +1,16 @@
-#ifndef Z3D_ZPOINTCLOUD___TYPEDEFS_H
-#define Z3D_ZPOINTCLOUD___TYPEDEFS_H
+#pragma once
 
 #include <pcl/point_types.h>
 #include <pcl/point_cloud.h>
 
+#define CLOUD_INTENSITY_ONLY
 
 // Define "PointCloud" to be a pcl::PointCloud of pcl::PointXYZRGB points
-typedef pcl::PointXYZI PointType; //typedef pcl::PointXYZRGB PointType;
+#if defined(CLOUD_INTENSITY_ONLY)
+typedef pcl::PointXYZI PointType;
+#else
+typedef pcl::PointXYZRGB PointType;
+#endif
 typedef pcl::PointCloud<PointType> PointCloudPCL;
 typedef pcl::PointCloud<PointType>::Ptr PointCloudPCLPtr;
 typedef pcl::PointCloud<PointType>::ConstPtr PointCloudConstPtr;
@@ -18,7 +22,11 @@ typedef pcl::PointCloud<NormalType>::Ptr SurfaceNormalsPtr;
 typedef pcl::PointCloud<NormalType>::ConstPtr SurfaceNormalsConstPtr;
 
 // Define "SurfaceElements" to be a pcl::PointCloud of pcl::PointNormal points
-typedef pcl::PointXYZINormal SurfelType; //typedef pcl::PointXYZRGBNormal SurfelType;
+#if defined(CLOUD_INTENSITY_ONLY)
+typedef pcl::PointXYZINormal SurfelType;
+#else
+typedef pcl::PointXYZRGBNormal SurfelType;
+#endif
 typedef pcl::PointCloud<SurfelType> SurfaceElements;
 typedef pcl::PointCloud<SurfelType>::Ptr SurfaceElementsPtr;
 typedef pcl::PointCloud<SurfelType>::ConstPtr SurfaceElementsConstPtr;
@@ -35,5 +43,3 @@ typedef pcl::PointCloud<GlobalDescriptorT> GlobalDescriptors;
 typedef pcl::PointCloud<GlobalDescriptorT>::Ptr GlobalDescriptorsPtr;
 typedef pcl::PointCloud<GlobalDescriptorT>::ConstPtr GlobalDescriptorsConstPtr;
 */
-
-#endif // Z3D_ZPOINTCLOUD___TYPEDEFS_H

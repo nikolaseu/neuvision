@@ -1,5 +1,4 @@
-#ifndef Z3D_CAMERAACQUISITION___ZCAMERAFRAMESRECORDER_H
-#define Z3D_CAMERAACQUISITION___ZCAMERAFRAMESRECORDER_H
+#pragma once
 
 #include "zcameraacquisition_global.h"
 
@@ -43,5 +42,3 @@ private:
 };
 
 } // namespace Z3D
-
-#endif // Z3D_CAMERAACQUISITION___ZCAMERAFRAMESRECORDER_H

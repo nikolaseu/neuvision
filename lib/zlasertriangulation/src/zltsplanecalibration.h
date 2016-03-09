@@ -1,5 +1,4 @@
-#ifndef Z3D_LASERTRIANGULATION___LTSPLANECALIBRATION_H
-#define Z3D_LASERTRIANGULATION___LTSPLANECALIBRATION_H
+#pragma once
 
 #include "zlasertriangulation_global.h"
 #include "zltscamera3dcalibrationinterface.h"
@@ -45,5 +44,3 @@ private:
 };
 
 } // namespace Z3D
-
-#endif // Z3D_LASERTRIANGULATION___LTSPLANECALIBRATION_H

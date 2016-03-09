@@ -1,12 +1,12 @@
-#ifndef Z3D_CAMERAACQUISITION_PLUGIN___SIMULATEDCAMERAPLUGIN_H
-#define Z3D_CAMERAACQUISITION_PLUGIN___SIMULATEDCAMERAPLUGIN_H
+#ifndef Z3D_CAMERAACQUISITION_PLUGIN___ZSIMULATEDCAMERAPLUGIN_H
+#define Z3D_CAMERAACQUISITION_PLUGIN___ZSIMULATEDCAMERAPLUGIN_H
 
 #include "zcameraplugininterface.h"
 
 namespace Z3D
 {
 
-class SimulatedCameraPlugin : public QObject, ZCameraPluginInterface
+class ZSimulatedCameraPlugin : public ZCameraPluginInterface
 {
     Q_OBJECT
 
@@ -17,7 +17,7 @@ class SimulatedCameraPlugin : public QObject, ZCameraPluginInterface
     Q_INTERFACES(Z3D::ZCameraPluginInterface)
 
 public:
-    SimulatedCameraPlugin();
+    ZSimulatedCameraPlugin();
 
     /// plugin information
     virtual QString id();
@@ -31,4 +31,4 @@ public:
 
 } // namespace Z3D
 
-#endif // Z3D_CAMERAACQUISITION_PLUGIN___SIMULATEDCAMERAPLUGIN_H
+#endif // Z3D_CAMERAACQUISITION_PLUGIN___ZSIMULATEDCAMERAPLUGIN_H

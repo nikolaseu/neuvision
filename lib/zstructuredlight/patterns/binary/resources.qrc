@@ -1,0 +1,17 @@
+<RCC>
+    <qresource prefix="/zstructuredlight/qml">
+        <file alias="binarypatternprojection.qml">qml/binarypatternprojection.qml</file>
+    </qresource>
+    <qresource prefix="/zstructuredlight/pattern">
+        <file alias="binary.1024.bmp">res/pattern/binary.1024.bmp</file>
+        <file alias="binary.1024.inv.bmp">res/pattern/binary.1024.inv.bmp</file>
+        <file alias="binary.2048.bmp">res/pattern/binary.2048.bmp</file>
+        <file alias="binary.2048.inv.bmp">res/pattern/binary.2048.inv.bmp</file>
+        <file alias="gray.1024.bmp">res/pattern/gray.1024.bmp</file>
+        <file alias="gray.1024.inv.bmp">res/pattern/gray.1024.inv.bmp</file>
+        <file alias="gray.2048.bmp">res/pattern/gray.2048.bmp</file>
+        <file alias="gray.2048.inv.bmp">res/pattern/gray.2048.inv.bmp</file>
+        <file alias="sin.1024.png">res/pattern/sin.1024.png</file>
+        <file alias="sin.2048.png">res/pattern/sin.2048.png</file>
+    </qresource>
+</RCC>

@@ -1,5 +1,4 @@
-#ifndef Z3D_CAMERAACQUISITION___ZCAMERAINTERFACE_H
-#define Z3D_CAMERAACQUISITION___ZCAMERAINTERFACE_H
+#pragma once
 
 #include "zcameraacquisition_global.h"
 #include "zcameraimage.h"
@@ -85,6 +84,7 @@ signals:
     void attributeChanged(QString name, QVariant value);
 
 public slots:
+    virtual bool requestSnapshot() = 0;
     virtual ZImageGrayscale::Ptr getSnapshot() = 0;
 
     /// acquisition control
@@ -110,5 +110,3 @@ public slots:
 };
 
 } // namespace Z3D
-
-#endif // Z3D_CAMERAACQUISITION___ZCAMERAINTERFACE_H

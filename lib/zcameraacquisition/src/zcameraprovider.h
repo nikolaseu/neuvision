@@ -1,5 +1,4 @@
-#ifndef Z3D_CAMERAACQUISITION___ZCAMERAPROVIDER_H
-#define Z3D_CAMERAACQUISITION___ZCAMERAPROVIDER_H
+#pragma once
 
 #include "zcameraacquisition_global.h"
 #include "zcamerainterface.h"
@@ -18,7 +17,7 @@ class Z3D_CAMERAACQUISITION_SHARED_EXPORT ZCameraProvider
 {
 
 public:
-    static void loadPlugins(QString folder = QString());
+    static void loadPlugins();
     static void unloadPlugins();
 
     static ZCameraInterface::Ptr getCamera(QString pluginName, QVariantMap options);
@@ -40,5 +39,3 @@ private:
 };
 
 } // namespace Z3D
-
-#endif // Z3D_CAMERAACQUISITION___ZCAMERAPROVIDER_H

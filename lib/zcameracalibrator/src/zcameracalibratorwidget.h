@@ -1,5 +1,4 @@
-#ifndef Z3D_CAMERACALIBRATOR___ZCAMERACALIBRATORWIDGET_H
-#define Z3D_CAMERACALIBRATOR___ZCAMERACALIBRATORWIDGET_H
+#pragma once
 
 #include "zcameracalibrator_global.h"
 
@@ -10,10 +9,6 @@
 #include <QWidget>
 #include <QModelIndex>
 
-namespace Ui {
-class ZCameraCalibratorWidget;
-}
-
 class QProgressBar;
 class QThread;
 
@@ -21,6 +16,10 @@ class ObjectController;
 
 namespace Z3D
 {
+
+namespace Ui {
+class ZCameraCalibratorWidget;
+}
 
 class ZCalibrationDistortionPlot;
 class ZCalibrationImageModel;
@@ -42,6 +41,8 @@ private slots:
 
     void setCurrentView(int newView);
 
+    void setImagesListVisible(bool visible);
+
     void onCurrentSelectionChanged(QModelIndex current, QModelIndex previous);
 
     void onCameraModelTypeChanged(int index);
@@ -53,17 +54,15 @@ private slots:
     void loadSession();
     void newSession();
 
+    void on_calibrationPatternViewButton_clicked();
     void on_imageViewPageButton_clicked();
-
     void on_cameraViewPageButton_clicked();
-
     void on_calibrationPageButton_clicked();
+    void on_resultsPageButton_clicked();
 
     void on_runCalibrationButton_clicked();
 
     void on_imageViewTypeComboBox_currentIndexChanged(int index);
-
-    void on_calibrationPatternViewButton_clicked();
 
     void on_saveCameraImageButton_clicked();
 
@@ -96,5 +95,3 @@ private:
 };
 
 } // namespace Z3D
-
-#endif // Z3D_CAMERACALIBRATOR___ZCAMERACALIBRATORWINDOW_H

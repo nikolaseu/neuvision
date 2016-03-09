@@ -1,6 +1,7 @@
 TEMPLATE  = subdirs
 
-SUBDIRS  += zcore
+SUBDIRS  += zcore \
+    zstructuredlight
 
 SUBDIRS  += zcalibratedcamera
 zcalibratedcamera.depends = zcameraacquisition zcameracalibration

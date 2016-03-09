@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>ZMultiCameraCalibratorWidget</class>
- <widget class="QWidget" name="ZMultiCameraCalibratorWidget">
+ <class>Z3D::ZMultiCameraCalibratorWidget</class>
+ <widget class="QWidget" name="Z3D::ZMultiCameraCalibratorWidget">
   <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>729</width>
+    <width>760</width>
     <height>616</height>
    </rect>
   </property>
@@ -40,7 +40,7 @@
      <item>
       <layout class="QVBoxLayout" name="verticalLayout_2">
        <item>
-        <widget class="QToolButton" name="calibrationPatternViewButton">
+        <widget class="QPushButton" name="calibrationPatternViewButton">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
            <horstretch>0</horstretch>
@@ -62,7 +62,7 @@
         </widget>
        </item>
        <item>
-        <widget class="QToolButton" name="imageViewPageButton">
+        <widget class="QPushButton" name="imageViewPageButton">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
            <horstretch>0</horstretch>
@@ -81,7 +81,7 @@
         </widget>
        </item>
        <item>
-        <widget class="QToolButton" name="cameraViewPageButton">
+        <widget class="QPushButton" name="cameraViewPageButton">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
            <horstretch>0</horstretch>
@@ -100,7 +100,7 @@
         </widget>
        </item>
        <item>
-        <widget class="QToolButton" name="calibrationPageButton">
+        <widget class="QPushButton" name="calibrationPageButton">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
            <horstretch>0</horstretch>
@@ -161,7 +161,7 @@
           <number>0</number>
          </property>
          <item>
-          <widget class="QToolButton" name="loadSessionButton">
+          <widget class="QPushButton" name="loadSessionButton">
            <property name="sizePolicy">
             <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
              <horstretch>0</horstretch>
@@ -174,7 +174,7 @@
           </widget>
          </item>
          <item>
-          <widget class="QToolButton" name="newSessionButton">
+          <widget class="QPushButton" name="newSessionButton">
            <property name="sizePolicy">
             <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
              <horstretch>0</horstretch>
@@ -193,7 +193,7 @@
      <item>
       <widget class="QStackedWidget" name="stackedWidget">
        <property name="currentIndex">
-        <number>1</number>
+        <number>0</number>
        </property>
        <widget class="QWidget" name="calibrationPage">
         <layout class="QGridLayout" name="gridLayout_4">
@@ -229,15 +229,8 @@
              <property name="title">
               <string>Camera model</string>
              </property>
-             <layout class="QFormLayout" name="formLayout_2">
+             <layout class="QGridLayout" name="gridLayout">
               <item row="0" column="0">
-               <widget class="QLabel" name="label_2">
-                <property name="text">
-                 <string>Type</string>
-                </property>
-               </widget>
-              </item>
-              <item row="0" column="1">
                <widget class="QComboBox" name="cameraModelTypeComboBox"/>
               </item>
              </layout>
@@ -277,7 +270,7 @@
             </spacer>
            </item>
            <item>
-            <widget class="QToolButton" name="runCalibrationButton">
+            <widget class="QPushButton" name="runCalibrationButton">
              <property name="text">
               <string>Run calibration</string>
              </property>
@@ -298,18 +291,8 @@
              <property name="title">
               <string>Calibration pattern</string>
              </property>
-             <layout class="QFormLayout" name="formLayout_4">
-              <property name="fieldGrowthPolicy">
-               <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
-              </property>
+             <layout class="QGridLayout" name="gridLayout_2">
               <item row="0" column="0">
-               <widget class="QLabel" name="label_4">
-                <property name="text">
-                 <string>Type</string>
-                </property>
-               </widget>
-              </item>
-              <item row="0" column="1">
                <widget class="QComboBox" name="calibrationPatternTypeComboBox"/>
               </item>
              </layout>
@@ -398,7 +381,7 @@
          <item>
           <layout class="QHBoxLayout" name="horizontalLayout_2">
            <item>
-            <widget class="QToolButton" name="cameraSettingsButton">
+            <widget class="QPushButton" name="cameraSettingsButton">
              <property name="text">
               <string>Camera settings...</string>
              </property>
@@ -425,7 +408,7 @@
             </widget>
            </item>
            <item>
-            <widget class="QToolButton" name="saveCameraImageButton">
+            <widget class="QPushButton" name="saveCameraImageButton">
              <property name="text">
               <string>Save image</string>
              </property>
@@ -468,14 +451,14 @@
             </spacer>
            </item>
            <item>
-            <widget class="QToolButton" name="toolButton_2">
+            <widget class="QPushButton" name="pushButton_2">
              <property name="text">
               <string>Update camera calibration</string>
              </property>
             </widget>
            </item>
            <item>
-            <widget class="QToolButton" name="toolButton">
+            <widget class="QPushButton" name="pushButton">
              <property name="text">
               <string>Save to file...</string>
              </property>

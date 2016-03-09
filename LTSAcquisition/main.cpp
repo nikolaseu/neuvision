@@ -6,6 +6,8 @@ int main(int argc, char* argv[])
 {
     Z3D::ZApplication app(argc,argv);
 
+    app.loadPlugins();
+
     MainWindow window;
     window.show();
 

@@ -7,7 +7,6 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 TARGET = Z3DCloudViewer
 TEMPLATE = app
 
-CONFIG += c++11
 #CONFIG += console
 
 DESTDIR = $$Z3D_BUILD_DIR

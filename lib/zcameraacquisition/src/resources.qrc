@@ -1,0 +1,5 @@
+<RCC>
+    <qresource prefix="/zcameraacquisition">
+        <file alias="empty.png">res/empty.png</file>
+    </qresource>
+</RCC>

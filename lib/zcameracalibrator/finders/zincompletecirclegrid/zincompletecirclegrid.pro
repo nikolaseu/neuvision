@@ -24,8 +24,12 @@ FORMS += \
     zincompletecirclegridpatternfinderconfigwidget.ui
 
 ###############################################################################
+# Core
+include($$PWD/../../../zcore/zcore.pri)
+
+###############################################################################
 # Camera calibrator
-include(../../zcameracalibrator.pri)
+include($$PWD/../../zcameracalibrator.pri)
 
 ###############################################################################
 # OpenCV

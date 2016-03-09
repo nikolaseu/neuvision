@@ -9,7 +9,7 @@
 
 namespace Z3D {
 
-class ZQtCameraPlugin : public QObject, ZCameraPluginInterface
+class ZQtCameraPlugin : public ZCameraPluginInterface
 {
     Q_OBJECT
 

@@ -1,0 +1,5 @@
+<RCC>
+    <qresource prefix="/zstructuredlight/qml">
+        <file alias="sinusoidalpatternprojection.qml">qml/sinusoidalpatternprojection.qml</file>
+    </qresource>
+</RCC>

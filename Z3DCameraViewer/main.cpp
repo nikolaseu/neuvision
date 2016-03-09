@@ -2,6 +2,7 @@
 #include <QThreadPool>
 
 #include "zapplication.h"
+#include "zapplicationstyle.h"
 #include <Z3DCameraProvider>
 #include "zcameraselectorwidget.h"
 
@@ -14,12 +15,17 @@ int main(int argc, char *argv[])
     ///
     Z3D::ZApplication app(argc,argv);
 
+    Z3D::ZApplicationStyle::applyStyle(Z3D::ZApplicationStyle::DarkStyle);
+
     int result;
 
     {
-        QPixmap pixmap(":/splash.png");
-        QSplashScreen splash(pixmap);
-        splash.show();
+
+        QSplashScreen &splash = *app.showSplashScreen();
+
+        splash.showMessage("Loading plugins...");
+        app.processEvents();
+        app.loadPlugins();
 
         splash.showMessage("Loading camera acquisition plugins...");
         app.processEvents();

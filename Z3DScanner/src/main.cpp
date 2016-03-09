@@ -1,16 +1,17 @@
 #include "ui/mainwindow.h"
 
 #include <QSplashScreen>
+#include <QSurfaceFormat>
 
 #include "zapplication.h"
+#include "zapplicationstyle.h"
 #include <Z3DCameraProvider>
 #include <Z3DCameraCalibrationProvider>
 #include "zcalibrationpatternfinderprovider.h"
+#include "zpatternprojectionprovider.h"
+#include "zstructuredlightsystemprovider.h"
 
 #include "zscannerinitialconfigwizard.h"
-
-
-
 
 
 int main(int argc, char* argv[])
@@ -19,14 +20,29 @@ int main(int argc, char* argv[])
     //qputenv("QT_DEBUG_PLUGINS", "1");
 
     ///
-    Z3D::ZApplication app(argc,argv);
+    Z3D::ZApplication app(argc, argv);
+
+    Z3D::ZApplicationStyle::applyStyle(Z3D::ZApplicationStyle::DarkStyle);
+
+    QSurfaceFormat fmt;
+    fmt.setDepthBufferSize(24);
+    if (QCoreApplication::arguments().contains(QStringLiteral("--multisample")))
+        fmt.setSamples(4);
+    if (QCoreApplication::arguments().contains(QStringLiteral("--coreprofile"))) {
+        qDebug() << "using OpenGL 3.2 core profile";
+        fmt.setVersion(3, 2);
+        fmt.setProfile(QSurfaceFormat::CoreProfile);
+    }
+    QSurfaceFormat::setDefaultFormat(fmt);
 
     int result;
 
     {
-        QPixmap pixmap(":/splash.png");
-        QSplashScreen splash(pixmap);
-        splash.show();
+        QSplashScreen &splash = *app.showSplashScreen();
+
+        splash.showMessage("Loading plugins...");
+        app.processEvents();
+        app.loadPlugins();
 
         splash.showMessage("Loading camera acquisition plugins...");
         app.processEvents();
@@ -40,6 +56,14 @@ int main(int argc, char* argv[])
         app.processEvents();
         Z3D::ZCalibrationPatternFinderProvider::loadPlugins();
 
+        splash.showMessage("Loading structured light system plugins...");
+        app.processEvents();
+        Z3D::ZStructuredLightSystemProvider::loadPlugins();
+
+        splash.showMessage("Loading pattern projection plugins...");
+        app.processEvents();
+        Z3D::ZPatternProjectionProvider::loadPlugins();
+
         splash.showMessage("Loading main window...");
         app.processEvents();
 
@@ -50,7 +74,7 @@ int main(int argc, char* argv[])
         //ZScannerInitialConfigWizard window;
         MainWindow window;
 
-        splash.finish(&window);
+        app.finishSplashScreen(&window);
 
         window.show();
 

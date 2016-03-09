@@ -1,5 +1,4 @@
-#ifndef Z3D_CAMERACALIBRATOR___ZCALIBRATIONIMAGE_H
-#define Z3D_CAMERACALIBRATOR___ZCALIBRATIONIMAGE_H
+#pragma once
 
 #include "zcameracalibrator_global.h"
 
@@ -113,5 +112,3 @@ protected:
 } // namespace Z3D
 
 Q_DECLARE_METATYPE(Z3D::ZCalibrationImage::Ptr) /// to use in QVariant
-
-#endif // Z3D_CAMERACALIBRATOR___ZCALIBRATIONIMAGE_H

@@ -1,19 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>ZCameraCalibratorWidget</class>
- <widget class="QWidget" name="ZCameraCalibratorWidget">
+ <class>Z3D::ZCameraCalibratorWidget</class>
+ <widget class="QWidget" name="Z3D::ZCameraCalibratorWidget">
   <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>713</width>
+    <width>842</width>
     <height>616</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Camera calibration</string>
   </property>
-  <layout class="QVBoxLayout" name="verticalLayout_9">
+  <layout class="QVBoxLayout" name="verticalLayout_2">
+   <property name="spacing">
+    <number>0</number>
+   </property>
    <property name="leftMargin">
     <number>0</number>
    </property>
@@ -27,179 +30,387 @@
     <number>0</number>
    </property>
    <item>
-    <layout class="QHBoxLayout" name="horizontalLayout_4">
-     <property name="leftMargin">
-      <number>9</number>
+    <widget class="QFrame" name="topFrame">
+     <property name="minimumSize">
+      <size>
+       <width>0</width>
+       <height>48</height>
+      </size>
      </property>
-     <property name="topMargin">
-      <number>9</number>
+     <property name="maximumSize">
+      <size>
+       <width>16777215</width>
+       <height>48</height>
+      </size>
      </property>
-     <property name="rightMargin">
-      <number>9</number>
+     <property name="styleSheet">
+      <string notr="true">background-color: rgb(42, 42, 42);</string>
      </property>
-     <property name="bottomMargin">
+     <property name="frameShape">
+      <enum>QFrame::NoFrame</enum>
+     </property>
+     <property name="frameShadow">
+      <enum>QFrame::Plain</enum>
+     </property>
+     <property name="lineWidth">
       <number>0</number>
      </property>
-     <item>
-      <layout class="QVBoxLayout" name="verticalLayout_2">
-       <item>
-        <widget class="QToolButton" name="calibrationPatternViewButton">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
-         <property name="text">
-          <string>Calibration</string>
-         </property>
-         <property name="checkable">
-          <bool>true</bool>
-         </property>
-         <property name="checked">
-          <bool>true</bool>
-         </property>
-         <property name="autoExclusive">
-          <bool>true</bool>
-         </property>
+     <layout class="QGridLayout" name="gridLayout_5">
+      <property name="leftMargin">
+       <number>0</number>
+      </property>
+      <property name="topMargin">
+       <number>0</number>
+      </property>
+      <property name="rightMargin">
+       <number>0</number>
+      </property>
+      <property name="bottomMargin">
+       <number>0</number>
+      </property>
+      <property name="spacing">
+       <number>0</number>
+      </property>
+      <item row="0" column="0">
+       <layout class="QHBoxLayout" name="horizontalLayout_4">
+        <property name="spacing">
+         <number>0</number>
+        </property>
+        <property name="leftMargin">
+         <number>12</number>
+        </property>
+        <property name="topMargin">
+         <number>2</number>
+        </property>
+        <item>
+         <widget class="QPushButton" name="calibrationPatternViewButton">
+          <property name="styleSheet">
+           <string notr="true">QPushButton {
+  border: 0px;
+  color: gray;
+  background-color: transparent;
+  padding: 6px;
+}
+QPushButton::hover {
+  color: white;
+}
+QPushButton::checked {
+  color: white;
+  font-weight: bold;
+}</string>
+          </property>
+          <property name="text">
+           <string>  Pattern  &gt;</string>
+          </property>
+          <property name="checkable">
+           <bool>true</bool>
+          </property>
+          <property name="checked">
+           <bool>true</bool>
+          </property>
+          <property name="autoExclusive">
+           <bool>true</bool>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="cameraViewPageButton">
+          <property name="styleSheet">
+           <string notr="true">QPushButton {
+  border: 0px;
+  color: gray;
+  background-color: transparent;
+  padding: 6px;
+}
+QPushButton::hover {
+  color: white;
+}
+QPushButton::checked {
+  color: white;
+  font-weight: bold;
+}</string>
+          </property>
+          <property name="text">
+           <string>Camera view  &gt;</string>
+          </property>
+          <property name="checkable">
+           <bool>true</bool>
+          </property>
+          <property name="autoExclusive">
+           <bool>true</bool>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="imageViewPageButton">
+          <property name="styleSheet">
+           <string notr="true">QPushButton {
+  border: 0px;
+  color: gray;
+  background-color: transparent;
+  padding: 6px;
+}
+QPushButton::hover {
+  color: white;
+}
+QPushButton::checked {
+  color: white;
+  font-weight: bold;
+}</string>
+          </property>
+          <property name="text">
+           <string>Images  &gt;</string>
+          </property>
+          <property name="checkable">
+           <bool>true</bool>
+          </property>
+          <property name="autoExclusive">
+           <bool>true</bool>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="calibrationPageButton">
+          <property name="styleSheet">
+           <string notr="true">QPushButton {
+  border: 0px;
+  color: gray;
+  background-color: transparent;
+  padding: 6px;
+}
+QPushButton::hover {
+  color: white;
+}
+QPushButton::checked {
+  color: white;
+  font-weight: bold;
+}</string>
+          </property>
+          <property name="text">
+           <string>Calibration  &gt;</string>
+          </property>
+          <property name="checkable">
+           <bool>true</bool>
+          </property>
+          <property name="autoExclusive">
+           <bool>true</bool>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="resultsPageButton">
+          <property name="styleSheet">
+           <string notr="true">QPushButton {
+  border: 0px;
+  color: gray;
+  background-color: transparent;
+  padding: 6px;
+}
+QPushButton::hover {
+  color: white;
+}
+QPushButton::checked {
+  color: white;
+  font-weight: bold;
+}</string>
+          </property>
+          <property name="text">
+           <string>Results  </string>
+          </property>
+          <property name="checkable">
+           <bool>true</bool>
+          </property>
+          <property name="autoExclusive">
+           <bool>true</bool>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item row="0" column="1">
+       <widget class="QStackedWidget" name="topFrameStackedWidget">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="currentIndex">
+         <number>1</number>
+        </property>
+        <widget class="QWidget" name="page_1"/>
+        <widget class="QWidget" name="page_3">
+         <layout class="QHBoxLayout" name="horizontalLayout_2">
+          <item>
+           <spacer name="horizontalSpacer_4">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>40</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+          <item>
+           <widget class="QComboBox" name="imageViewTypeComboBox"/>
+          </item>
+          <item>
+           <widget class="QPushButton" name="newSessionButton">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="text">
+             <string>Reset</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="loadSessionButton">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="text">
+             <string>Load...</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
         </widget>
-       </item>
-       <item>
-        <widget class="QToolButton" name="imageViewPageButton">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
-         <property name="text">
-          <string>Image view</string>
-         </property>
-         <property name="checkable">
-          <bool>true</bool>
-         </property>
-         <property name="autoExclusive">
-          <bool>true</bool>
-         </property>
+        <widget class="QWidget" name="page_2">
+         <layout class="QHBoxLayout" name="horizontalLayout_3">
+          <item>
+           <spacer name="horizontalSpacer_2">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>40</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+          <item>
+           <widget class="QCheckBox" name="saveOnlyValidImagesCheckBox">
+            <property name="text">
+             <string>Only valid images</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="saveCameraImageButton">
+            <property name="text">
+             <string>Save</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="cameraSettingsButton">
+            <property name="text">
+             <string>Camera...</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+         <zorder>cameraSettingsButton</zorder>
+         <zorder>saveCameraImageButton</zorder>
+         <zorder>horizontalSpacer_2</zorder>
+         <zorder>saveOnlyValidImagesCheckBox</zorder>
         </widget>
-       </item>
-       <item>
-        <widget class="QToolButton" name="cameraViewPageButton">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
-         <property name="text">
-          <string>Camera view</string>
-         </property>
-         <property name="checkable">
-          <bool>true</bool>
-         </property>
-         <property name="autoExclusive">
-          <bool>true</bool>
-         </property>
+        <widget class="QWidget" name="page_4">
+         <layout class="QGridLayout" name="gridLayout_6">
+          <item row="0" column="1">
+           <widget class="QPushButton" name="runCalibrationButton">
+            <property name="text">
+             <string>Run calibration</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="0">
+           <spacer name="horizontalSpacer_3">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>40</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+         </layout>
         </widget>
-       </item>
-       <item>
-        <widget class="QToolButton" name="calibrationPageButton">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
-         <property name="text">
-          <string>Results</string>
-         </property>
-         <property name="checkable">
-          <bool>true</bool>
-         </property>
-         <property name="autoExclusive">
-          <bool>true</bool>
-         </property>
+        <widget class="QWidget" name="page_5">
+         <layout class="QHBoxLayout" name="horizontalLayout">
+          <item>
+           <spacer name="horizontalSpacer">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>85</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+          <item>
+           <widget class="QPushButton" name="updateCameraCalibrationButton">
+            <property name="text">
+             <string>Update camera</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="saveCalibrationToFileButton">
+            <property name="text">
+             <string>Save...</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
         </widget>
-       </item>
-       <item>
-        <widget class="QListView" name="listView">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
-         <property name="minimumSize">
-          <size>
-           <width>240</width>
-           <height>0</height>
-          </size>
-         </property>
-         <property name="maximumSize">
-          <size>
-           <width>240</width>
-           <height>16777215</height>
-          </size>
-         </property>
-         <property name="verticalScrollBarPolicy">
-          <enum>Qt::ScrollBarAlwaysOn</enum>
-         </property>
-         <property name="editTriggers">
-          <set>QAbstractItemView::NoEditTriggers</set>
-         </property>
-         <property name="viewMode">
-          <enum>QListView::IconMode</enum>
-         </property>
-         <property name="uniformItemSizes">
-          <bool>true</bool>
-         </property>
-         <property name="selectionRectVisible">
-          <bool>false</bool>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <layout class="QHBoxLayout" name="horizontalLayout">
-         <property name="bottomMargin">
+       </widget>
+      </item>
+      <item row="1" column="0" colspan="2">
+       <widget class="QFrame" name="frame">
+        <property name="minimumSize">
+         <size>
+          <width>0</width>
+          <height>3</height>
+         </size>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>16777215</width>
+          <height>3</height>
+         </size>
+        </property>
+        <property name="frameShape">
+         <enum>QFrame::NoFrame</enum>
+        </property>
+        <property name="frameShadow">
+         <enum>QFrame::Plain</enum>
+        </property>
+        <property name="lineWidth">
+         <number>0</number>
+        </property>
+        <layout class="QHBoxLayout" name="horizontalLayout_5">
+         <property name="spacing">
           <number>0</number>
          </property>
-         <item>
-          <widget class="QToolButton" name="loadSessionButton">
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-             <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
-           </property>
-           <property name="text">
-            <string>Load session...</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QToolButton" name="newSessionButton">
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-             <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
-           </property>
-           <property name="text">
-            <string>New session</string>
-           </property>
-          </widget>
-         </item>
-        </layout>
-       </item>
-      </layout>
-     </item>
-     <item>
-      <widget class="QStackedWidget" name="stackedWidget">
-       <property name="currentIndex">
-        <number>2</number>
-       </property>
-       <widget class="QWidget" name="calibrationPage">
-        <layout class="QGridLayout" name="gridLayout_4">
          <property name="leftMargin">
           <number>0</number>
          </property>
@@ -212,129 +423,181 @@
          <property name="bottomMargin">
           <number>0</number>
          </property>
-         <item row="1" column="2">
-          <spacer name="horizontalSpacer_5">
+         <item>
+          <widget class="QProgressBar" name="progressBar">
+           <property name="minimumSize">
+            <size>
+             <width>0</width>
+             <height>6</height>
+            </size>
+           </property>
+           <property name="maximumSize">
+            <size>
+             <width>16777215</width>
+             <height>6</height>
+            </size>
+           </property>
+           <property name="styleSheet">
+            <string notr="true">QProgressBar:horizontal {
+    border: 0px;
+    padding: 0px;
+}
+QProgressBar::chunk:horizontal {
+    
+}</string>
+           </property>
+           <property name="value">
+            <number>100</number>
+           </property>
+           <property name="textVisible">
+            <bool>false</bool>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
+    <layout class="QHBoxLayout" name="horizontalLayout_6">
+     <property name="spacing">
+      <number>0</number>
+     </property>
+     <property name="rightMargin">
+      <number>0</number>
+     </property>
+     <item>
+      <widget class="QListView" name="listView">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Fixed" vsizetype="Expanding">
+         <horstretch>0</horstretch>
+         <verstretch>1</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="minimumSize">
+        <size>
+         <width>224</width>
+         <height>0</height>
+        </size>
+       </property>
+       <property name="maximumSize">
+        <size>
+         <width>224</width>
+         <height>16777215</height>
+        </size>
+       </property>
+       <property name="styleSheet">
+        <string notr="true"/>
+       </property>
+       <property name="frameShape">
+        <enum>QFrame::NoFrame</enum>
+       </property>
+       <property name="frameShadow">
+        <enum>QFrame::Plain</enum>
+       </property>
+       <property name="lineWidth">
+        <number>1</number>
+       </property>
+       <property name="midLineWidth">
+        <number>1</number>
+       </property>
+       <property name="verticalScrollBarPolicy">
+        <enum>Qt::ScrollBarAlwaysOff</enum>
+       </property>
+       <property name="horizontalScrollBarPolicy">
+        <enum>Qt::ScrollBarAlwaysOff</enum>
+       </property>
+       <property name="editTriggers">
+        <set>QAbstractItemView::NoEditTriggers</set>
+       </property>
+       <property name="resizeMode">
+        <enum>QListView::Adjust</enum>
+       </property>
+       <property name="spacing">
+        <number>0</number>
+       </property>
+       <property name="viewMode">
+        <enum>QListView::IconMode</enum>
+       </property>
+       <property name="uniformItemSizes">
+        <bool>true</bool>
+       </property>
+       <property name="selectionRectVisible">
+        <bool>false</bool>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QStackedWidget" name="stackedWidget">
+       <property name="currentIndex">
+        <number>4</number>
+       </property>
+       <widget class="QWidget" name="calibrationPatternPage">
+        <layout class="QGridLayout" name="gridLayout_4">
+         <property name="leftMargin">
+          <number>24</number>
+         </property>
+         <property name="topMargin">
+          <number>24</number>
+         </property>
+         <property name="rightMargin">
+          <number>24</number>
+         </property>
+         <property name="bottomMargin">
+          <number>24</number>
+         </property>
+         <property name="spacing">
+          <number>24</number>
+         </property>
+         <item row="0" column="1">
+          <layout class="QVBoxLayout" name="calibrationPatternConfigLayout"/>
+         </item>
+         <item row="0" column="0" rowspan="2">
+          <widget class="QGroupBox" name="groupBox">
+           <property name="title">
+            <string>Calibration pattern</string>
+           </property>
+           <layout class="QVBoxLayout" name="verticalLayout_3">
+            <item>
+             <widget class="QComboBox" name="calibrationPatternTypeComboBox">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <spacer name="verticalSpacer_2">
+              <property name="orientation">
+               <enum>Qt::Vertical</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>20</width>
+                <height>452</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
+           </layout>
+          </widget>
+         </item>
+         <item row="1" column="1">
+          <spacer name="verticalSpacer_3">
            <property name="orientation">
-            <enum>Qt::Horizontal</enum>
+            <enum>Qt::Vertical</enum>
            </property>
            <property name="sizeHint" stdset="0">
             <size>
-             <width>1</width>
-             <height>20</height>
+             <width>20</width>
+             <height>40</height>
             </size>
            </property>
           </spacer>
-         </item>
-         <item row="1" column="1">
-          <layout class="QVBoxLayout" name="verticalLayout">
-           <item>
-            <widget class="QGroupBox" name="groupBox_5">
-             <property name="title">
-              <string>Camera model</string>
-             </property>
-             <layout class="QFormLayout" name="formLayout_2">
-              <item row="0" column="0">
-               <widget class="QLabel" name="label_2">
-                <property name="text">
-                 <string>Type</string>
-                </property>
-               </widget>
-              </item>
-              <item row="0" column="1">
-               <widget class="QComboBox" name="cameraModelTypeComboBox"/>
-              </item>
-             </layout>
-            </widget>
-           </item>
-           <item>
-            <layout class="QVBoxLayout" name="cameraModelConfigLayout"/>
-           </item>
-           <item>
-            <spacer name="verticalSpacer">
-             <property name="orientation">
-              <enum>Qt::Vertical</enum>
-             </property>
-             <property name="sizeHint" stdset="0">
-              <size>
-               <width>20</width>
-               <height>40</height>
-              </size>
-             </property>
-            </spacer>
-           </item>
-          </layout>
-         </item>
-         <item row="0" column="0" colspan="3">
-          <layout class="QHBoxLayout" name="horizontalLayout_5">
-           <item>
-            <spacer name="horizontalSpacer_3">
-             <property name="orientation">
-              <enum>Qt::Horizontal</enum>
-             </property>
-             <property name="sizeHint" stdset="0">
-              <size>
-               <width>40</width>
-               <height>20</height>
-              </size>
-             </property>
-            </spacer>
-           </item>
-           <item>
-            <widget class="QToolButton" name="runCalibrationButton">
-             <property name="text">
-              <string>Run calibration</string>
-             </property>
-            </widget>
-           </item>
-          </layout>
-         </item>
-         <item row="1" column="0">
-          <layout class="QVBoxLayout" name="verticalLayout_3">
-           <item>
-            <widget class="QGroupBox" name="groupBox_2">
-             <property name="minimumSize">
-              <size>
-               <width>300</width>
-               <height>0</height>
-              </size>
-             </property>
-             <property name="title">
-              <string>Calibration pattern</string>
-             </property>
-             <layout class="QFormLayout" name="formLayout_4">
-              <property name="fieldGrowthPolicy">
-               <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
-              </property>
-              <item row="0" column="0">
-               <widget class="QLabel" name="label_4">
-                <property name="text">
-                 <string>Type</string>
-                </property>
-               </widget>
-              </item>
-              <item row="0" column="1">
-               <widget class="QComboBox" name="calibrationPatternTypeComboBox"/>
-              </item>
-             </layout>
-            </widget>
-           </item>
-           <item>
-            <layout class="QVBoxLayout" name="calibrationPatternConfigLayout"/>
-           </item>
-           <item>
-            <spacer name="verticalSpacer_2">
-             <property name="orientation">
-              <enum>Qt::Vertical</enum>
-             </property>
-             <property name="sizeHint" stdset="0">
-              <size>
-               <width>20</width>
-               <height>40</height>
-              </size>
-             </property>
-            </spacer>
-           </item>
-          </layout>
          </item>
         </layout>
        </widget>
@@ -353,34 +616,17 @@
           <number>0</number>
          </property>
          <item>
-          <layout class="QHBoxLayout" name="horizontalLayout_3">
-           <item>
-            <spacer name="horizontalSpacer_2">
-             <property name="orientation">
-              <enum>Qt::Horizontal</enum>
-             </property>
-             <property name="sizeHint" stdset="0">
-              <size>
-               <width>40</width>
-               <height>20</height>
-              </size>
-             </property>
-            </spacer>
-           </item>
-           <item>
-            <widget class="QComboBox" name="imageViewTypeComboBox">
-             <property name="minimumSize">
-              <size>
-               <width>240</width>
-               <height>0</height>
-              </size>
-             </property>
-            </widget>
-           </item>
-          </layout>
-         </item>
-         <item>
-          <widget class="Z3D::ZCalibrationImageViewer" name="imageViewer"/>
+          <widget class="Z3D::ZCalibrationImageViewer" name="imageViewer">
+           <property name="frameShape">
+            <enum>QFrame::NoFrame</enum>
+           </property>
+           <property name="frameShadow">
+            <enum>QFrame::Plain</enum>
+           </property>
+           <property name="lineWidth">
+            <number>0</number>
+           </property>
+          </widget>
          </item>
         </layout>
        </widget>
@@ -399,50 +645,92 @@
           <number>0</number>
          </property>
          <item>
-          <layout class="QHBoxLayout" name="horizontalLayout_2">
+          <widget class="Z3D::ZImageViewer" name="cameraImageViewer">
+           <property name="frameShape">
+            <enum>QFrame::NoFrame</enum>
+           </property>
+           <property name="frameShadow">
+            <enum>QFrame::Plain</enum>
+           </property>
+           <property name="lineWidth">
+            <number>0</number>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </widget>
+       <widget class="QWidget" name="calibrationPage">
+        <layout class="QGridLayout" name="gridLayout_3">
+         <property name="leftMargin">
+          <number>24</number>
+         </property>
+         <property name="topMargin">
+          <number>24</number>
+         </property>
+         <property name="rightMargin">
+          <number>24</number>
+         </property>
+         <property name="bottomMargin">
+          <number>24</number>
+         </property>
+         <property name="spacing">
+          <number>24</number>
+         </property>
+         <item row="0" column="1">
+          <layout class="QVBoxLayout" name="cameraModelConfigLayout"/>
+         </item>
+         <item row="1" column="1">
+          <spacer name="verticalSpacer_4">
+           <property name="orientation">
+            <enum>Qt::Vertical</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>20</width>
+             <height>40</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+         <item row="0" column="0" rowspan="2">
+          <layout class="QVBoxLayout" name="verticalLayout">
            <item>
-            <widget class="QToolButton" name="cameraSettingsButton">
-             <property name="text">
-              <string>Camera settings...</string>
+            <widget class="QGroupBox" name="groupBox_5">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
              </property>
-            </widget>
-           </item>
-           <item>
-            <spacer name="horizontalSpacer">
-             <property name="orientation">
-              <enum>Qt::Horizontal</enum>
+             <property name="title">
+              <string>Camera model</string>
              </property>
-             <property name="sizeHint" stdset="0">
-              <size>
-               <width>40</width>
-               <height>20</height>
-              </size>
-             </property>
-            </spacer>
-           </item>
-           <item>
-            <widget class="QCheckBox" name="saveOnlyValidImagesCheckBox">
-             <property name="text">
-              <string>Save only valid images</string>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QToolButton" name="saveCameraImageButton">
-             <property name="text">
-              <string>Save image</string>
-             </property>
+             <layout class="QGridLayout" name="gridLayout_2">
+              <item row="0" column="0">
+               <widget class="QComboBox" name="cameraModelTypeComboBox"/>
+              </item>
+              <item row="1" column="0">
+               <spacer name="verticalSpacer">
+                <property name="orientation">
+                 <enum>Qt::Vertical</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>20</width>
+                  <height>40</height>
+                 </size>
+                </property>
+               </spacer>
+              </item>
+             </layout>
             </widget>
            </item>
           </layout>
          </item>
-         <item>
-          <widget class="Z3D::ZImageViewer" name="cameraImageViewer"/>
-         </item>
         </layout>
        </widget>
        <widget class="QWidget" name="calibrationResultsPage">
-        <layout class="QVBoxLayout" name="verticalLayout_4">
+        <layout class="QGridLayout" name="gridLayout_8">
          <property name="leftMargin">
           <number>0</number>
          </property>
@@ -455,87 +743,37 @@
          <property name="bottomMargin">
           <number>0</number>
          </property>
-         <item>
-          <layout class="QHBoxLayout" name="horizontalLayout_7">
-           <item>
-            <widget class="QGroupBox" name="groupBox_6">
-             <property name="title">
-              <string>Distortion view</string>
+         <property name="horizontalSpacing">
+          <number>0</number>
+         </property>
+         <item row="0" column="0">
+          <widget class="QSplitter" name="splitter_2">
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
+           </property>
+           <property name="handleWidth">
+            <number>1</number>
+           </property>
+           <widget class="QWidget" name="layoutWidget">
+            <layout class="QVBoxLayout" name="distortionPlotLayout">
+             <property name="leftMargin">
+              <number>12</number>
              </property>
-             <layout class="QVBoxLayout" name="verticalLayout_7">
-              <item>
-               <layout class="QVBoxLayout" name="distortionPlotLayout" stretch="0">
-                <property name="topMargin">
-                 <number>0</number>
-                </property>
-                <item>
-                 <spacer name="horizontalSpacer_4">
-                  <property name="orientation">
-                   <enum>Qt::Horizontal</enum>
-                  </property>
-                  <property name="sizeHint" stdset="0">
-                   <size>
-                    <width>40</width>
-                    <height>20</height>
-                   </size>
-                  </property>
-                 </spacer>
-                </item>
-               </layout>
-              </item>
-             </layout>
-            </widget>
-           </item>
-           <item>
-            <widget class="QGroupBox" name="calibrationParamsGroupBox">
-             <property name="maximumSize">
-              <size>
-               <width>240</width>
-               <height>16777215</height>
-              </size>
+             <property name="topMargin">
+              <number>12</number>
              </property>
-             <property name="title">
-              <string>Calibration params</string>
+             <property name="rightMargin">
+              <number>12</number>
              </property>
-             <layout class="QVBoxLayout" name="verticalLayout_8">
-              <item>
-               <layout class="QVBoxLayout" name="calibrationParamsLayout"/>
-              </item>
-              <item>
-               <layout class="QHBoxLayout" name="horizontalLayout_6">
-                <item>
-                 <spacer name="horizontalSpacer_6">
-                  <property name="orientation">
-                   <enum>Qt::Horizontal</enum>
-                  </property>
-                  <property name="sizeHint" stdset="0">
-                   <size>
-                    <width>40</width>
-                    <height>20</height>
-                   </size>
-                  </property>
-                 </spacer>
-                </item>
-                <item>
-                 <widget class="QToolButton" name="updateCameraCalibrationButton">
-                  <property name="text">
-                   <string>Update camera calibration</string>
-                  </property>
-                 </widget>
-                </item>
-                <item>
-                 <widget class="QToolButton" name="saveCalibrationToFileButton">
-                  <property name="text">
-                   <string>Save to file...</string>
-                  </property>
-                 </widget>
-                </item>
-               </layout>
-              </item>
-             </layout>
-            </widget>
-           </item>
-          </layout>
+             <property name="bottomMargin">
+              <number>12</number>
+             </property>
+            </layout>
+           </widget>
+           <widget class="QWidget" name="layoutWidget">
+            <layout class="QVBoxLayout" name="calibrationParamsLayout"/>
+           </widget>
+          </widget>
          </item>
         </layout>
        </widget>
@@ -543,21 +781,18 @@
      </item>
     </layout>
    </item>
-   <item>
-    <widget class="QStatusBar" name="statusbar"/>
-   </item>
   </layout>
  </widget>
  <customwidgets>
   <customwidget>
-   <class>Z3D::ZCalibrationImageViewer</class>
-   <extends>QGraphicsView</extends>
-   <header>zcalibrationimageviewer.h</header>
-  </customwidget>
-  <customwidget>
    <class>Z3D::ZImageViewer</class>
    <extends>QGraphicsView</extends>
    <header>zimageviewer.h</header>
+  </customwidget>
+  <customwidget>
+   <class>Z3D::ZCalibrationImageViewer</class>
+   <extends>QGraphicsView</extends>
+   <header>zcalibrationimageviewer.h</header>
   </customwidget>
  </customwidgets>
  <resources/>

@@ -15,7 +15,10 @@ namespace Z3D
 struct ZCameraCalibratorWorkerParallelFindPatternImpl
 {
     ZCameraCalibratorWorkerParallelFindPatternImpl(Z3D::ZCalibrationPatternFinder::Ptr patternFinder)
-        : m_patternFinder(patternFinder.data()) { }
+        : m_patternFinder(patternFinder.data())
+    {
+        // empty
+    }
 
     void operator()(const Z3D::ZCalibrationImage::Ptr &image)
     {
@@ -25,21 +28,21 @@ struct ZCameraCalibratorWorkerParallelFindPatternImpl
     Z3D::ZCalibrationPatternFinder::WeakPtr m_patternFinder;
 };
 
-ZCameraCalibratorWorker::ZCameraCalibratorWorker(QObject *parent) :
-    QObject(parent),
-    m_patternFinder(0),
-    m_cameraCalibrator(0),
-    m_progress(1.f)
+ZCameraCalibratorWorker::ZCameraCalibratorWorker(QObject *parent)
+    : QObject(parent)
+    , m_patternFinder(0)
+    , m_cameraCalibrator(0)
+    , m_progress(1.f)
 {
     /// connect future watcher signals to monitor progress
-    QObject::connect(&m_patternFinderFutureWatcher, SIGNAL(progressRangeChanged(int,int)),
-                     this, SLOT(setProgressRange(int,int)));
-    QObject::connect(&m_patternFinderFutureWatcher, SIGNAL(progressValueChanged(int)),
-                     this, SLOT(setProgressValue(int)));
+    QObject::connect(&m_patternFinderFutureWatcher, &QFutureWatcher<void>::progressRangeChanged,
+                     this, &ZCameraCalibratorWorker::setProgressRange);
+    QObject::connect(&m_patternFinderFutureWatcher, &QFutureWatcher<void>::progressValueChanged,
+                     this, &ZCameraCalibratorWorker::setProgressValue);
 
     /// start finding calibration patterns when the pattern finder changes
-    QObject::connect(this, SIGNAL(patternFinderChanged()),
-                     this, SLOT(findCalibrationPattern()));
+    QObject::connect(this, &ZCameraCalibratorWorker::patternFinderChanged,
+                     this, &ZCameraCalibratorWorker::findCalibrationPattern);
 }
 
 ZCameraCalibratorWorker::~ZCameraCalibratorWorker()
@@ -89,8 +92,8 @@ void ZCameraCalibratorWorker::setImageModel(ZCalibrationImageModel *imageModel)
 
         if (m_imageModel) {
             /// disconnect old signals
-            QObject::disconnect(m_imageModel.data(), SIGNAL(newImagesAdded()),
-                                this, SLOT(findCalibrationPattern()));
+            QObject::disconnect(m_imageModel.data(), &ZCalibrationImageModel::newImagesAdded,
+                                this, &ZCameraCalibratorWorker::findCalibrationPattern);
         }
 
         /// update
@@ -98,8 +101,8 @@ void ZCameraCalibratorWorker::setImageModel(ZCalibrationImageModel *imageModel)
 
         if (m_imageModel) {
             /// connect new signals
-            QObject::connect(m_imageModel.data(), SIGNAL(newImagesAdded()),
-                             this, SLOT(findCalibrationPattern()));
+            QObject::connect(m_imageModel.data(), &ZCalibrationImageModel::newImagesAdded,
+                                this, &ZCameraCalibratorWorker::findCalibrationPattern);
         }
 
         /// notify
@@ -112,8 +115,8 @@ void ZCameraCalibratorWorker::setPatternFinder(ZCalibrationPatternFinder::Ptr pa
     if (m_patternFinder != patternFinder) {
         if (m_patternFinder) {
             /// disconnect old signals
-            QObject::disconnect(m_patternFinder.data(), SIGNAL(configHashChanged(QString)),
-                                this, SLOT(findCalibrationPattern()));
+            QObject::disconnect(m_patternFinder.data(), &ZCalibrationPatternFinder::configHashChanged,
+                                this, &ZCameraCalibratorWorker::findCalibrationPattern);
         }
 
         /// update
@@ -121,8 +124,8 @@ void ZCameraCalibratorWorker::setPatternFinder(ZCalibrationPatternFinder::Ptr pa
 
         if (m_patternFinder) {
             /// connect new signals
-            QObject::connect(m_patternFinder.data(), SIGNAL(configHashChanged(QString)),
-                             this, SLOT(findCalibrationPattern()));
+            QObject::connect(m_patternFinder.data(), &ZCalibrationPatternFinder::configHashChanged,
+                                this, &ZCameraCalibratorWorker::findCalibrationPattern);
         }
 
         /// notify

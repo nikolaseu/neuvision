@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>210</width>
-    <height>399</height>
+    <width>281</width>
+    <height>491</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -31,10 +31,7 @@
      <property name="title">
       <string>Checkerboard size</string>
      </property>
-     <layout class="QFormLayout" name="formLayout_4">
-      <property name="fieldGrowthPolicy">
-       <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
-      </property>
+     <layout class="QGridLayout" name="gridLayout_2">
       <item row="0" column="0">
        <widget class="QLabel" name="label_15">
         <property name="text">
@@ -99,35 +96,32 @@
      <property name="title">
       <string>Checkerboard finder options</string>
      </property>
-     <layout class="QFormLayout" name="formLayout_3">
-      <property name="fieldGrowthPolicy">
-       <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
-      </property>
-      <item row="2" column="0">
+     <layout class="QGridLayout" name="gridLayout_3">
+      <item row="0" column="0">
+       <widget class="QCheckBox" name="findCornersAdaptiveThreshCheckBox">
+        <property name="text">
+         <string>Use adaptive threshold</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="0">
        <widget class="QCheckBox" name="findCornersNormalizeImageCheckBox">
         <property name="text">
          <string>Normalize image</string>
         </property>
        </widget>
       </item>
-      <item row="3" column="0">
+      <item row="2" column="0">
        <widget class="QCheckBox" name="findCornersFilterQuadsCheckBox">
         <property name="text">
          <string>Filter quads</string>
         </property>
        </widget>
       </item>
-      <item row="4" column="0">
+      <item row="3" column="0">
        <widget class="QCheckBox" name="findCornersFastCheckCheckBox">
         <property name="text">
          <string>Fast check</string>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="0">
-       <widget class="QCheckBox" name="findCornersAdaptiveThreshCheckBox">
-        <property name="text">
-         <string>Use adaptive threshold</string>
         </property>
        </widget>
       </item>

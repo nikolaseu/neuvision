@@ -1,17 +1,16 @@
-#ifndef Z3D_LASERTRIANGULATION___LTSCAMERAPREVIEWER_H
-#define Z3D_LASERTRIANGULATION___LTSCAMERAPREVIEWER_H
+#pragma once
 
 #include "zlasertriangulation_global.h"
 #include "zltscamera3d.h"
 
 #include <QMainWindow>
 
-namespace Ui {
-class LTSCameraPreviewer;
-}
-
 namespace Z3D
 {
+
+namespace Ui {
+class ZLTSCameraPreviewer;
+}
 
 class LTSProfilePlot;
 
@@ -49,7 +48,7 @@ private slots:
     void on_scanViewDisplayModeComboBox_currentIndexChanged(int index);
 
 private:
-    Ui::LTSCameraPreviewer *ui;
+    Ui::ZLTSCameraPreviewer *ui;
 
     LTSProfilePlot *m_plot;
     QVector<QPointF> m_samples;
@@ -58,5 +57,3 @@ private:
 };
 
 } // namespace Z3D
-
-#endif // Z3D_LASERTRIANGULATION___LTSCAMERAPREVIEWER_H

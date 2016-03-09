@@ -1,5 +1,4 @@
-#ifndef Z3D_CAMERACALIBRATOR___ZMULTICAMERACALIBRATORWINDOW_H
-#define Z3D_CAMERACALIBRATOR___ZMULTICAMERACALIBRATORWINDOW_H
+#pragma once
 
 #include "zcameracalibrator_global.h"
 
@@ -10,14 +9,14 @@
 #include <QWidget>
 #include <QModelIndex>
 
-namespace Ui {
-class ZMultiCameraCalibratorWidget;
-}
-
 class QProgressBar;
 
 namespace Z3D
 {
+
+namespace Ui {
+class ZMultiCameraCalibratorWidget;
+}
 
 class ZCalibrationDistortionPlot;
 class ZImageViewer;
@@ -31,7 +30,7 @@ class Z3D_CAMERACALIBRATOR_SHARED_EXPORT ZMultiCameraCalibratorWidget : public Q
     Q_OBJECT
 
 public:
-    explicit ZMultiCameraCalibratorWidget(QList<Z3D::ZCalibratedCamera::Ptr> cameras, QWidget *parent = 0);
+    explicit ZMultiCameraCalibratorWidget(std::vector<ZCalibratedCamera::Ptr> cameras, QWidget *parent = 0);
     ~ZMultiCameraCalibratorWidget();
 
 private slots:
@@ -80,14 +79,12 @@ private:
 
     Z3D::ZMultiCameraCalibratorWorker *m_calibratorWorker;
 
-    QList<Z3D::ZCalibratedCamera::Ptr> m_cameras;
+    std::vector<Z3D::ZCalibratedCamera::Ptr> m_cameras;
 
-    QList<Z3D::ZImageViewer *> m_cameraImageViewer;
-    QList<Z3D::ZCalibrationImageViewer *> m_imageViewer;
+    std::vector<Z3D::ZImageViewer *> m_cameraImageViewer;
+    std::vector<Z3D::ZCalibrationImageViewer *> m_imageViewer;
 
     QThread *m_workerThread;
 };
 
 } // namespace Z3D
-
-#endif // Z3D_CAMERACALIBRATOR___ZMULTICAMERACALIBRATORWINDOW_H

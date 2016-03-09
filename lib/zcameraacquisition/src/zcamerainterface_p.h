@@ -1,5 +1,4 @@
-#ifndef Z3D_CAMERAACQUISITION___ZCAMERABASE_H
-#define Z3D_CAMERAACQUISITION___ZCAMERABASE_H
+#pragma once
 
 #define CAMERA_MESSAGE(str) QString("[%1] %2").arg(uuid()).arg(str)
 #define CAMERA_DEBUG(str)   qDebug()    << CAMERA_MESSAGE(str); emit message( CAMERA_MESSAGE(str) );
@@ -19,34 +18,35 @@ class Z3D_CAMERAACQUISITION_SHARED_EXPORT ZCameraBase : public ZCameraInterface
 public:
     explicit ZCameraBase(QObject *parent = 0);
 
-    virtual QString uuid() { return m_uuid; }
+    virtual QString uuid() override { return m_uuid; }
 
-    virtual int bufferSize();
+    virtual int bufferSize() override;
 
 public slots:
     ///
-    virtual ZImageGrayscale::Ptr getSnapshot();
+    virtual bool requestSnapshot() override;
+    virtual ZImageGrayscale::Ptr getSnapshot() override;
 
     /// acquisition control
-    virtual bool startAcquisition();
-    virtual bool stopAcquisition();
-    virtual bool isRunning() { return m_simultaneousCapturesCount > 0; }
+    virtual bool startAcquisition() override;
+    virtual bool stopAcquisition() override;
+    virtual bool isRunning() override { return m_simultaneousCapturesCount > 0; }
 
     /// camera attributes (settings)
-    virtual QList<ZCameraAttribute> getAllAttributes() = 0;
-    virtual bool setAttribute(const QString &name, const QVariant &value);
-    virtual QVariant getAttribute(const QString &name) const = 0;
+    virtual QList<ZCameraAttribute> getAllAttributes() override = 0;
+    virtual bool setAttribute(const QString &name, const QVariant &value) override;
+    virtual QVariant getAttribute(const QString &name) const override = 0;
 
-    virtual void showSettingsDialog();
+    virtual void showSettingsDialog() override;
 
     /// camera configuration
-    virtual bool loadConfiguration(QString configFileName);
+    virtual bool loadConfiguration(QString configFileName) override;
 
     /// presets
-    virtual QStringList getPresets();
-    virtual bool loadPresetConfiguration(QString presetName);
+    virtual QStringList getPresets() override;
+    virtual bool loadPresetConfiguration(QString presetName) override;
 
-    virtual bool setBufferSize(int bufferSize);
+    virtual bool setBufferSize(int bufferSize) override;
 
 protected slots:
     virtual bool setAttribute(const QString &name, const QVariant &value, bool notify) = 0;
@@ -71,5 +71,3 @@ private:
 };
 
 } // namespace Z3D
-
-#endif // Z3D_CAMERAACQUISITION___ZCAMERABASE_H

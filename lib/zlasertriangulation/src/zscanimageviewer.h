@@ -1,5 +1,4 @@
-﻿#ifndef Z3D_LASERTRIANGULATION___SCANIMAGEVIEWER_H
-#define Z3D_LASERTRIANGULATION___SCANIMAGEVIEWER_H
+﻿#pragma once
 
 #include "zlasertriangulation_global.h"
 #include "zscanimageviewerfilter.h"
@@ -94,5 +93,3 @@ private:
 };
 
 } // namespace Z3D
-
-#endif // Z3D_LASERTRIANGULATION___SCANIMAGEVIEWER_H

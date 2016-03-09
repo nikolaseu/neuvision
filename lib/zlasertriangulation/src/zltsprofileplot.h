@@ -1,5 +1,4 @@
-#ifndef Z3D_LASERTRIANGULATION___ZLTSPROFILEPLOT_H
-#define Z3D_LASERTRIANGULATION___ZLTSPROFILEPLOT_H
+#pragma once
 
 #include "zlasertriangulation_global.h"
 
@@ -27,5 +26,3 @@ private:
 };
 
 } // namespace Z3D
-
-#endif // Z3D_LASERTRIANGULATION___ZLTSPROFILEPLOT_H

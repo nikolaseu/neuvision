@@ -49,6 +49,9 @@ FORMS        += \
     zcamerasettingswidget.ui \
     zcameraselectordialog.ui
 
+RESOURCES += \
+    resources.qrc
+
 ###############################################################################
 # OpenCV
 include($$PWD/../../../3rdparty/opencv.pri)
@@ -56,3 +59,7 @@ include($$PWD/../../../3rdparty/opencv.pri)
 ###############################################################################
 # Qt Solutions - Property Browser
 include($$PWD/../../../3rdparty/qtpropertybrowser.pri)
+
+###############################################################################
+# Core
+include($$PWD/../../zcore/zcore.pri)

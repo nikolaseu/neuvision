@@ -11,12 +11,12 @@
 namespace Z3D
 {
 
-ZCameraBase::ZCameraBase(QObject *parent) :
-    ZCameraInterface(parent),
-    m_currentImageBufferIndex(-1),
-    m_simultaneousCapturesCount(0),
-    m_settingsWidget(0),
-    m_lastRetrievedImage(0)
+ZCameraBase::ZCameraBase(QObject *parent)
+    : ZCameraInterface(parent)
+    , m_lastRetrievedImage(0)
+    , m_currentImageBufferIndex(-1)
+    , m_simultaneousCapturesCount(0)
+    , m_settingsWidget(0)
 {
     QObject::connect(this, SIGNAL(acquisitionStarted()),
                      this, SIGNAL(runningChanged()));
@@ -34,12 +34,23 @@ int ZCameraBase::bufferSize()
     return m_imagesBuffer.size();
 }
 
+bool ZCameraBase::requestSnapshot()
+{
+    /// TODO implement this
+    return true;
+}
+
 ZImageGrayscale::Ptr ZCameraBase::getSnapshot()
 {
-    if (isRunning())
-        return *m_lastRetrievedImage;
-    else {
-        //! create an event loop and stop it when a image is found
+    if (isRunning()) {
+        /// make a copy because after acquisition is stopped, buffer data _could_ be deleted
+        ZImageGrayscale::Ptr last = (*m_lastRetrievedImage);
+        ZImageGrayscale::Ptr snapshot(new ZImageGrayscale(last->width(), last->height(), last->xOffset(), last->yOffset(), last->bytesPerPixel()));
+        snapshot->setBuffer( last->buffer() );
+        snapshot->setNumber( last->number() );
+        return snapshot;
+    } else {
+        //! create an event loop and stop it when a image is received
         QEventLoop eventLoop;
 
         QObject::connect(this, SIGNAL(newImageReceived(Z3D::ZImageGrayscale::Ptr)),

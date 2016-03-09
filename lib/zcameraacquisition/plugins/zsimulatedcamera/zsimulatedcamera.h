@@ -1,5 +1,5 @@
-#ifndef Z3D_CAMERAACQUISITION_PLUGIN___SIMULATEDCAMERA_H
-#define Z3D_CAMERAACQUISITION_PLUGIN___SIMULATEDCAMERA_H
+#ifndef Z3D_CAMERAACQUISITION_PLUGIN___ZSIMULATEDCAMERA_H
+#define Z3D_CAMERAACQUISITION_PLUGIN___ZSIMULATEDCAMERA_H
 
 #include "zcamerainterface_p.h"
 
@@ -9,13 +9,13 @@
 namespace Z3D
 {
 
-class SimulatedCamera : public ZCameraBase
+class ZSimulatedCamera : public ZCameraBase
 {
     Q_OBJECT
 
 public:
-    explicit SimulatedCamera(QVariantMap options, QObject *parent = 0);
-    ~SimulatedCamera();
+    explicit ZSimulatedCamera(QVariantMap options, QObject *parent = 0);
+    ~ZSimulatedCamera();
 
 signals:
 
@@ -47,4 +47,4 @@ private:
 
 } // namespace Z3D
 
-#endif // Z3D_CAMERAACQUISITION_PLUGIN___SIMULATEDCAMERA_H
+#endif // Z3D_CAMERAACQUISITION_PLUGIN___ZSIMULATEDCAMERA_H

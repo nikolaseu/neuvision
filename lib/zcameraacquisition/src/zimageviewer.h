@@ -1,13 +1,12 @@
-﻿#ifndef Z3D_CAMERAACQUISITION___ZIMAGEVIEWER_H
-#define Z3D_CAMERAACQUISITION___ZIMAGEVIEWER_H
+﻿#pragma once
 
 #include "zcameraacquisition_global.h"
 #include "zcameraimage.h"
 
-#include <QGraphicsPixmapItem>
 #include <QGraphicsView>
 
-//class QMenu;
+class QGraphicsPixmapItem;
+class QMenu;
 class QSignalMapper;
 
 namespace Z3D
@@ -61,5 +60,3 @@ protected:
 };
 
 } // namespace Z3D
-
-#endif // Z3D_CAMERAACQUISITION___ZIMAGEVIEWER_H

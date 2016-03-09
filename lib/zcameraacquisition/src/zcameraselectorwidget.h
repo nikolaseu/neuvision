@@ -1,18 +1,17 @@
-#ifndef Z3D_CAMERAACQUISITION___ZCAMERASELECTORWIDGET_H
-#define Z3D_CAMERAACQUISITION___ZCAMERASELECTORWIDGET_H
+#pragma once
 
 #include "zcameraacquisition_global.h"
 #include "zcamerainterface.h"
 
 #include <QWidget>
 
+namespace Z3D
+{
+
 namespace Ui
 {
 class ZCameraSelectorWidget;
 }
-
-namespace Z3D
-{
 
 class ZCameraInfo;
 class ZCameraPluginInterface;
@@ -45,5 +44,3 @@ private:
 };
 
 } // namespace Z3D
-
-#endif // Z3D_CAMERAACQUISITION___ZCAMERASELECTORWIDGET_H

@@ -2,11 +2,10 @@
 
 #include "zcamerainterface.h"
 #include "zcameraplugininterface.h"
+#include "zpluginloader.h"
 
 #include <QDebug>
 #include <QDir>
-#include <QPluginLoader>
-#include <QThread>
 
 namespace Z3D
 {
@@ -14,59 +13,18 @@ namespace Z3D
 QMap< QString, ZCameraPluginInterface *> ZCameraProvider::m_plugins;
 Z3D::ZCameraListModel ZCameraProvider::m_model;
 
-void ZCameraProvider::loadPlugins(QString folder)
+void ZCameraProvider::loadPlugins()
 {
-    QDir pluginsDir = QDir(folder);
+    auto list = ZPluginLoader::plugins("cameraacquisition");
 
-    /// if no folder is indicated, use current running folder and standard search path
-    if (folder.isEmpty()) {
-        pluginsDir = QDir::current();
-
-    #if defined(Q_OS_WIN)
-//        if (pluginsDir.dirName().toLower() == "debug" || pluginsDir.dirName().toLower() == "release")
-//            pluginsDir.cdUp();
-    #elif defined(Q_OS_MAC)
-        if (pluginsDir.dirName() == "MacOS") {
-            pluginsDir.cdUp();
-            pluginsDir.cdUp();
-            pluginsDir.cdUp();
-        }
-    #endif
-
-        if (!(pluginsDir.cd("plugins") && pluginsDir.cd("cameraacquisition"))) {
-            qWarning() << "standard camera acquisition plugin folder 'plugins/cameraacquisition' not found in" << pluginsDir.absolutePath();
-            return;
-        }
-    }
-
-    qDebug() << "searching for camera acquisition plugins in" << pluginsDir.absolutePath();
-
-    QStringList filters;
-    filters << "*.dll" << "*.so" << "*.dylib";
-    pluginsDir.setNameFilters(filters);
-
-    foreach (QString fileName, pluginsDir.entryList(QDir::Files)) {
-        QPluginLoader loader(pluginsDir.absoluteFilePath(fileName));
-        QObject *pluginInstance = loader.instance();
-        if (pluginInstance) {
-            ZCameraPluginInterface *plugin = qobject_cast<ZCameraPluginInterface *>(pluginInstance);
-            if (plugin) {
-                qDebug() << "camera plugin loaded. type:" << plugin->id()
-                         << "version:" << plugin->version()
-                         << "filename:" << fileName;
-
-
-//                plugin->getConnectedCameras();
-
-//                    QObject::connect(cameraPlugin, SIGNAL(cameraConnected(QString)),
-//                                     this, SLOT(onCameraConnected(QString)));
-
-                m_plugins.insert(plugin->id(), plugin);
-            } else {
-                qWarning() << "invalid camera plugin:" << fileName;
-            }
+    for (auto pluginInstance : list) {
+        auto *plugin = qobject_cast<ZCameraPluginInterface *>(pluginInstance);
+        if (plugin) {
+            qDebug() << "camera plugin loaded. type:" << plugin->id()
+                     << "version:" << plugin->version();
+            m_plugins.insert(plugin->id(), plugin);
         } else {
-            qWarning() << "error loading camera plugin" << fileName << "->" << loader.errorString();
+            qWarning() << "invalid camera plugin:" << plugin;
         }
     }
 }

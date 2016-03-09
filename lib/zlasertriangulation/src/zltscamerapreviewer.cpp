@@ -11,7 +11,7 @@ namespace Z3D
 
 LTSCameraPreviewer::LTSCameraPreviewer(Z3D::LTSCamera3D::Ptr camera, QWidget *parent) :
     QMainWindow(parent),
-    ui(new Ui::LTSCameraPreviewer),
+    ui(new Ui::ZLTSCameraPreviewer),
     m_camera(camera)
 {
     ui->setupUi(this);

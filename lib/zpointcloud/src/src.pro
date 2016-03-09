@@ -8,15 +8,23 @@ TARGET        = $$qtLibraryTarget(zpointcloud)
 DESTDIR       = $$Z3D_BUILD_DIR
 DEFINES      += Z3D_ZPOINTCLOUD_LIBRARY
 HEADERS      += \
-    zcloudview.h \
     zpointcloud.h \
     zpointcloud_typedefs.h \
-    zpointcloud_global.h
+    zpointcloud_global.h \
+    zcloudviewwindow.h
 SOURCES      += \
-    zcloudview.cpp \
-    zpointcloud.cpp
+    zpointcloud.cpp \
+    zcloudviewwindow.cpp
 FORMS        += \
-    zcloudview.ui
+    zcloudviewwindow.ui
+
+mac {
+# to use the fix for QVTK widget and retina displays (this works at least for VTK7.0)
+# http://public.kitware.com/pipermail/vtkusers/2015-February/090117.html
+LIBS += -framework Foundation
+HEADERS += osx/osxhelper.h
+OBJECTIVE_SOURCES += osx/osxhelper.mm
+}
 
 ###############################################################################
 # Camera acquisition

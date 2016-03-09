@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>ZCameraSelectorDialog</class>
- <widget class="QDialog" name="ZCameraSelectorDialog">
+ <class>Z3D::ZCameraSelectorDialog</class>
+ <widget class="QDialog" name="Z3D::ZCameraSelectorDialog">
   <property name="geometry">
    <rect>
     <x>0</x>

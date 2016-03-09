@@ -1,25 +1,19 @@
-#ifndef Z3D_CAMERACALIBRATION___ZCAMERACALIBRATIONPLUGININTERFACE_H
-#define Z3D_CAMERACALIBRATION___ZCAMERACALIBRATIONPLUGININTERFACE_H
+#pragma once
 
 #include "zcameracalibration_global.h"
 #include "zcameracalibration.h"
 #include "zcameracalibrator.h"
 #include "zmulticameracalibrator.h"
 
-#include <QtPlugin>
-#include <QVariantMap>
+#include "zcoreplugin.h"
 
 namespace Z3D
 {
 
-class Z3D_CAMERACALIBRATION_SHARED_EXPORT ZCameraCalibrationPluginInterface
+class Z3D_CAMERACALIBRATION_SHARED_EXPORT ZCameraCalibrationPluginInterface : public ZCorePlugin
 {
 public:
     virtual ~ZCameraCalibrationPluginInterface() {}
-
-    /// plugin information
-    virtual QString name() = 0;
-    virtual QString version() = 0;
 
     /// calibration utilities
     virtual ZCameraCalibration::Ptr getCalibration(QVariantMap options) = 0;
@@ -34,5 +28,3 @@ public:
 #define ZCameraCalibrationPluginInterface_iid "z3d.zcameracalibration.zcameracalibrationplugininterface"
 
 Q_DECLARE_INTERFACE(Z3D::ZCameraCalibrationPluginInterface, ZCameraCalibrationPluginInterface_iid)
-
-#endif // Z3D_CAMERACALIBRATION___ZCAMERACALIBRATIONPLUGININTERFACE_H

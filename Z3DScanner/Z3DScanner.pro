@@ -8,7 +8,6 @@ QT += core gui opengl #declarative
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets quick qml concurrent
 
-CONFIG += c++11
 #CONFIG += console
 
 DESTDIR = $$Z3D_BUILD_DIR
@@ -23,28 +22,19 @@ win32:DEFINES += _USE_MATH_DEFINES # pcl-1.7 lo define, pero 1.6 no
 SOURCES += \
     src/main.cpp \
     src/ui/mainwindow.cpp \
-    src/sls/geometryutils.cpp \
-    src/sls/stereosystem.cpp \
-    src/sls/threephase.cpp \
-    src/sls/binarypatternprojection.cpp \
-    src/sls/decodedpattern.cpp \
-    src/sls/binarypatternprojectionconfigwidget.cpp \
-    zscannerinitialconfigwizard.cpp
+    src/zscannerinitialconfigwizard.cpp \
+    src/zpointcloudwidget.cpp \
+    src/zpointclouddata.cpp
 
 HEADERS += \
     src/ui/mainwindow.h \
-    src/sls/geometryutils.h \
-    src/sls/stereosystem.h \
-    src/sls/threephase.h \
-    src/sls/binarypatternprojection.h \
-    src/sls/decodedpattern.h \
-    src/sls/binarypatternprojectionconfigwidget.h \
-    zscannerinitialconfigwizard.h
+    src/zscannerinitialconfigwizard.h \
+    src/zpointcloudwidget.h \
+    src/zpointclouddata.h
 
 FORMS += \
     src/ui/mainwindow.ui \
-    src/sls/binarypatternprojectionconfigwidget.ui \
-    zscannerinitialconfigwizard.ui
+    src/zscannerinitialconfigwizard.ui
 
 RESOURCES += \
     resources.qrc
@@ -54,10 +44,6 @@ RESOURCES += \
 ###############################################################################
 # OpenCV
 include($$PWD/../3rdparty/opencv.pri)
-
-###############################################################################
-# PCL, VTK, etc etc
-include($$PWD/../3rdparty/pcl.pri)
 
 ###############################################################################
 # Qt Solutions - Property Browser
@@ -84,8 +70,8 @@ include($$PWD/../lib/zcameracalibration/zcameracalibration.pri)
 include($$PWD/../lib/zcalibratedcamera/zcalibratedcamera.pri)
 
 ###############################################################################
-# Points clouds
-include($$PWD/../lib/zpointcloud/zpointcloud.pri)
+# Structured Light
+include($$PWD/../lib/zstructuredlight/zstructuredlight.pri)
 
 ###############################################################################
 # Camera calibrator

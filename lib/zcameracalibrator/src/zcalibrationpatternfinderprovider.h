@@ -1,5 +1,4 @@
-#ifndef Z3D_CAMERACALIBRATOR___ZCALIBRATIONPATTERNFINDERPROVIDER_H
-#define Z3D_CAMERACALIBRATOR___ZCALIBRATIONPATTERNFINDERPROVIDER_H
+#pragma once
 
 #include "zcameracalibrator_global.h"
 #include "zcalibrationpatternfinder.h"
@@ -17,7 +16,7 @@ class Z3D_CAMERACALIBRATOR_SHARED_EXPORT ZCalibrationPatternFinderProvider
 {
 
 public:
-    static void loadPlugins(QString folder = QString());
+    static void loadPlugins();
     static void unloadPlugins();
 
     static QList<ZCalibrationPatternFinder::Ptr> getAll();
@@ -29,5 +28,3 @@ private:
 };
 
 } // namespace Z3D
-
-#endif // Z3D_CAMERACALIBRATOR___ZCALIBRATIONPATTERNFINDERPROVIDER_H

@@ -1,5 +1,4 @@
-#ifndef Z3D_LASERTRIANGULATIONCALIBRATOR___ZLASERTRIANGULATIONCALIBRATOR_H
-#define Z3D_LASERTRIANGULATIONCALIBRATOR___ZLASERTRIANGULATIONCALIBRATOR_H
+#pragma once
 
 #include "zltscalibrationimagemodel.h"
 #include "zcalibrationpatternfinder.h"
@@ -82,5 +81,3 @@ protected:
 };
 
 } // namespace Z3D
-
-#endif // Z3D_LASERTRIANGULATIONCALIBRATOR___ZLASERTRIANGULATIONCALIBRATOR_H

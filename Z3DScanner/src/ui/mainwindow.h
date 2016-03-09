@@ -1,11 +1,10 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
+#include "zsimplepointcloud.h"
+
 #include <QMainWindow>
-
-#include "src/sls/binarypatternprojection.h"
-
-#include <Z3DCalibratedCamera>
+#include <QPointer>
 
 #include <opencv2/core/core.hpp>
 
@@ -14,15 +13,11 @@ class MainWindow;
 }
 
 namespace Z3D {
-class ZCloudView;
-class ZMultiCameraCalibratorWidget;
+class ZPatternProjection;
+class ZStructuredLightSystem;
 }
 
-class CalibrationWindow;
-class StereoSystem;
-
-class QSignalMapper;
-//class QThread;
+class ZPointCloudWidget;
 
 class MainWindow : public QMainWindow
 {
@@ -32,62 +27,29 @@ public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
 
-    QList<Z3D::ZCalibratedCamera::Ptr> getCameras() { return m_camList; }
-
 signals:
-    void cameraListChanged(QList<Z3D::ZCalibratedCamera::Ptr> cameras);
 
 private slots:
     void init();
 
     virtual void closeEvent(QCloseEvent *event);
 
-    Z3D::ZCloudView *getCloudViewer();
-    QWidget *getCalibrationWindow();
-
     //
     void onPatternProjectionTypeChanged(int index);
+    void onStructuredLightSystemTypeChanged(int index);
 
-    // add cameras to be used
-    void addCameras(QList<Z3D::ZCalibratedCamera::Ptr> cameras);
-
-    // each camera's submenu items
-    void openCameraPreview(int camIndex);
-    void openCameraSettingsDialog(int camIndex);
-    void openCameraCalibrationWindow(int camIndex);
-    void loadCameraCalibrationFile(int camIndex);
-    void take3dCameraSnapshot(int camIndex);
-
-    void onPatternDecoded(Z3D::DecodedPattern::Ptr pattern);
-    void getThreePhasePatternPhotos();
-
-    void on_actionCloudViewer_triggered();
-    void on_actionQuit_triggered();
-    void on_actionCalibrateSystem_triggered();
-    void on_actionShowSnapshot3D_triggered();
+    void onScanFinished(Z3D::ZSimplePointCloud::Ptr cloud);
 
 private:
     Ui::MainWindow *ui;
 
-    QList<BinaryPatternProjection *> m_patternProjectionList;
-    BinaryPatternProjection *m_currentPatternProjection;
+    QList<Z3D::ZPatternProjection *> m_patternProjectionList;
+    Z3D::ZPatternProjection *m_currentPatternProjection;
 
-    StereoSystem *m_stereoSystem;
+    QList<Z3D::ZStructuredLightSystem *> m_structuredLightList;
+    Z3D::ZStructuredLightSystem *m_currentStructuredLightSystem;
 
-    /// 3D view window (created on demand)
-    QPointer<Z3D::ZCloudView> m_cloudViewer;
-
-    /// Calibration window (created on demand)
-    //CalibrationWindow *m_calibrationWindow;
-    QPointer<Z3D::ZMultiCameraCalibratorWidget> m_calibrationWindow;
-
-    QList<Z3D::ZCalibratedCamera::Ptr> m_camList;
-
-    QSignalMapper *m_previewSignalMapper;
-    QSignalMapper *m_settingsSignalMapper;
-    QSignalMapper *m_calibrateCameraSignalMapper;
-    QSignalMapper *m_loadCalibrationSignalMapper;
-    QSignalMapper *m_take3dSnapshotSignalMapper;
+    ZPointCloudWidget *m_pointCloudWidget;
 };
 
 #endif // MAINWINDOW_H

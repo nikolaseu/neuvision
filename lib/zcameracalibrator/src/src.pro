@@ -51,6 +51,10 @@ FORMS += \
 include($$PWD/../../../3rdparty/opencv.pri)
 
 ###############################################################################
+# Core
+include($$PWD/../../zcore/zcore.pri)
+
+###############################################################################
 # Camera acquisition
 include($$PWD/../../zcameraacquisition/zcameraacquisition.pri)
 

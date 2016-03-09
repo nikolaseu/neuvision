@@ -1,5 +1,4 @@
-#ifndef Z3D_CAMERAACQUISITION___ZCAMERALISTMODEL_H
-#define Z3D_CAMERAACQUISITION___ZCAMERALISTMODEL_H
+#pragma once
 
 #include "zcameraacquisition_global.h"
 #include "zcamerainterface.h"
@@ -40,5 +39,3 @@ protected:
 };
 
 } // namespace Z3D
-
-#endif // Z3D_CAMERAACQUISITION___ZCAMERALISTMODEL_H

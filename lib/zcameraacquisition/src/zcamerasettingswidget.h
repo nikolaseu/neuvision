@@ -1,5 +1,4 @@
-#ifndef Z3D_CAMERAACQUISITION___ZCAMERASETTINGSWIDGET_H
-#define Z3D_CAMERAACQUISITION___ZCAMERASETTINGSWIDGET_H
+#pragma once
 
 #include "zcameraacquisition_global.h"
 #include "zcamerainterface.h"
@@ -9,12 +8,12 @@
 
 #include <QWidget>
 
-namespace Ui {
-class CameraSettingsWidget;
-}
-
 namespace Z3D
 {
+
+namespace Ui {
+class ZCameraSettingsWidget;
+}
 
 class Z3D_CAMERAACQUISITION_SHARED_EXPORT ZCameraSettingsWidget : public QWidget
 {
@@ -31,7 +30,7 @@ protected slots:
     void onCameraAttributeChanged(QString name, QVariant value);
 
 private:
-    Ui::CameraSettingsWidget *ui;
+    Ui::ZCameraSettingsWidget *ui;
 
     ZCameraInterface::WeakPtr m_camera;
 
@@ -49,5 +48,3 @@ private:
 };
 
 } // namespace Z3D
-
-#endif // Z3D_CAMERAACQUISITION___ZCAMERASETTINGSWIDGET_H

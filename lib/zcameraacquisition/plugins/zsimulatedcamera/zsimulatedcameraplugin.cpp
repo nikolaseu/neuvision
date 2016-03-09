@@ -5,34 +5,35 @@
 namespace Z3D
 {
 
-SimulatedCameraPlugin::SimulatedCameraPlugin()
+ZSimulatedCameraPlugin::ZSimulatedCameraPlugin()
 {
 }
 
-QString SimulatedCameraPlugin::id()
+QString ZSimulatedCameraPlugin::id()
 {
     return QString("ZSIMULATED");
 }
 
-QString SimulatedCameraPlugin::name()
+QString ZSimulatedCameraPlugin::name()
 {
     return QString("Simulated camera");
 }
 
-QString SimulatedCameraPlugin::version()
+QString ZSimulatedCameraPlugin::version()
 {
     return QString(Z3D_VERSION_STR);
 }
 
-QList<ZCameraInfo*> SimulatedCameraPlugin::getConnectedCameras()
+QList<ZCameraInfo*> ZSimulatedCameraPlugin::getConnectedCameras()
 {
     QList<ZCameraInfo*> list;
+    list << new ZCameraInfo(this, "NEW", QVariantMap());
     return list;
 }
 
-ZCameraInterface::Ptr SimulatedCameraPlugin::getCamera(QVariantMap options)
+ZCameraInterface::Ptr ZSimulatedCameraPlugin::getCamera(QVariantMap options)
 {
-    return ZCameraInterface::Ptr( new Z3D::SimulatedCamera(options) );
+    return ZCameraInterface::Ptr( new Z3D::ZSimulatedCamera(options) );
 }
 
 } // namespace Z3D
