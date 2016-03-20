@@ -1,6 +1,5 @@
 ﻿#include "zimageviewer.h"
 
-#include <QGLWidget>
 #include <QMenu>
 #include <QMouseEvent>
 #include <QFileDialog>
@@ -25,9 +24,6 @@ ZImageViewer::ZImageViewer(QWidget *parent) :
 {
     setTransformationAnchor(QGraphicsView::AnchorUnderMouse);
     setDragMode(QGraphicsView::ScrollHandDrag);
-
-    /// to render using OpenGL
-    //setViewport(new QGLWidget());
 
     //setRenderHints(QPainter::Antialiasing | QPainter::SmoothPixmapTransform);
     setMouseTracking(true);

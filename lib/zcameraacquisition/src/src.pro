@@ -3,7 +3,6 @@ include(../../../NEUVision.pri)
 TEMPLATE      = lib
 # CONFIG       += plugin
 #QT           -= gui //we need gui because we use QImage, QScrollArea, etc
-QT           += opengl # QGLWidget for ZImageViewer
 greaterThan(QT_MAJOR_VERSION, 4) {
     QT += widgets
 }
