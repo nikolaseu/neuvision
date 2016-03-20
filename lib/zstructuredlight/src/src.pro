@@ -60,9 +60,5 @@ include($$PWD/../../zcameracalibration/zcameracalibration.pri)
 include($$PWD/../../zcalibratedcamera/zcalibratedcamera.pri)
 
 ###############################################################################
-# Points clouds
-include($$PWD/../../zpointcloud/zpointcloud.pri)
-
-###############################################################################
 # Camera calibrator
 include($$PWD/../../zcameracalibrator/zcameracalibrator.pri)
