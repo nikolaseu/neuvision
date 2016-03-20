@@ -43,7 +43,8 @@ void ZPluginLoader::loadPlugins(QString folder)
 #endif
 
         if (!pluginsDir.cd(folder)) {
-            qWarning() << "plugins folder" << folder << "not found in" << pluginsDir.absolutePath();
+            qWarning() << "plugins folder" << folder << "not found in" << pluginsDir.absolutePath()
+                       << "available dirs/files:" << pluginsDir.entryList(QDir::AllEntries);
             return;
         }
     }
