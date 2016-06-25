@@ -11,11 +11,13 @@ Z3DCameraCalibration.depends = lib
 SUBDIRS  += Z3DCameraViewer
 Z3DCameraViewer.depends = lib
 
-SUBDIRS  += LTSAcquisition
-LTSAcquisition.depends = lib
+!android:{
+    SUBDIRS  += LTSAcquisition
+    LTSAcquisition.depends = lib
 
-SUBDIRS  += Z3DCloudViewer
-Z3DCloudViewer.depends = lib
+    SUBDIRS  += Z3DCloudViewer
+    Z3DCloudViewer.depends = lib
 
-SUBDIRS  += Z3DScanner
-Z3DScanner.depends = lib
+    SUBDIRS  += Z3DScanner
+    Z3DScanner.depends = lib
+}

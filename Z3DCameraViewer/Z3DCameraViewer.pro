@@ -38,3 +38,9 @@ include($$PWD/../lib/zcore/zcore.pri)
 ###############################################################################
 # Camera acquisition
 include($$PWD/../lib/zcameraacquisition/zcameraacquisition.pri)
+
+###############################################################################
+# Android specific
+android:{
+    ANDROID_PACKAGE_SOURCE_DIR = $$PWD/../android-sources
+}
