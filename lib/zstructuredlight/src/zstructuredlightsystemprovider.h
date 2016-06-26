@@ -19,7 +19,7 @@ public:
 private:
     explicit ZStructuredLightSystemProvider();
 
-    static QList<ZStructuredLightSystemPlugin*> m_list;
+    static QMap< QString, ZStructuredLightSystemPlugin *> m_plugins;
 };
 
 } // namespace Z3D

@@ -111,7 +111,12 @@ void ZDualCameraStereoSLS::setRightCamera(ZCalibratedCamera::Ptr camera)
     }
 }
 
-QString ZDualCameraStereoSLS::displayName()
+QString ZDualCameraStereoSLS::id() const
+{
+    return QString("DualCamera");
+}
+
+QString ZDualCameraStereoSLS::displayName() const
 {
     return QString("Dual cameras");
 }

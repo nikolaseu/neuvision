@@ -14,7 +14,12 @@ ZSingleCameraStereoSLS::~ZSingleCameraStereoSLS()
 
 }
 
-QString ZSingleCameraStereoSLS::displayName()
+QString ZSingleCameraStereoSLS::id() const
+{
+    return QString("Projector+Camera");
+}
+
+QString ZSingleCameraStereoSLS::displayName() const
 {
     return QString("Projector + Camera");
 }

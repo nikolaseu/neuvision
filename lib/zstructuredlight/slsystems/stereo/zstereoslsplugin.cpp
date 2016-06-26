@@ -12,7 +12,7 @@ ZStereoSLSPlugin::ZStereoSLSPlugin()
 
 QString ZStereoSLSPlugin::id()
 {
-    return "ZStereoSLSPlugin";
+    return "ZStereoSLS";
 }
 
 QString ZStereoSLSPlugin::name()

@@ -23,7 +23,8 @@ class Z3D_STRUCTUREDLIGHT_SHARED_EXPORT ZStructuredLightSystem : public QObject
 public:
     explicit ZStructuredLightSystem(QObject *parent = 0);
 
-    virtual QString displayName() = 0;
+    virtual QString id() const = 0;
+    virtual QString displayName() const = 0;
 
     bool ready() const;
     bool debugSaveFringePoints() const;

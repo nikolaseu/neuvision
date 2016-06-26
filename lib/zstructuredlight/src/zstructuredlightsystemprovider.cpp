@@ -8,7 +8,7 @@
 namespace Z3D
 {
 
-QList<ZStructuredLightSystemPlugin *> ZStructuredLightSystemProvider::m_list;
+QMap<QString, ZStructuredLightSystemPlugin *> ZStructuredLightSystemProvider::m_plugins;
 
 void ZStructuredLightSystemProvider::loadPlugins()
 {
@@ -19,7 +19,7 @@ void ZStructuredLightSystemProvider::loadPlugins()
         if (plugin) {
             qDebug() << "structured light system plugin loaded. type:" << plugin->id()
                      << "version:" << plugin->version();
-            m_list << plugin;
+            m_plugins.insert(plugin->id(), plugin);
         } else {
             qWarning() << "invalid structured light system plugin:" << plugin;
         }
@@ -34,7 +34,7 @@ void ZStructuredLightSystemProvider::unloadPlugins()
 QList<ZStructuredLightSystem *> ZStructuredLightSystemProvider::getAll()
 {
     QList<ZStructuredLightSystem *> list;
-    for (auto plugin : m_list) {
+    for (auto plugin : m_plugins.values()) {
         list << plugin->getAll();
     }
     return list;

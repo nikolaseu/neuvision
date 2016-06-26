@@ -60,7 +60,12 @@ ZBinaryPatternProjection::~ZBinaryPatternProjection()
         m_dlpview->deleteLater();
 }
 
-QString ZBinaryPatternProjection::displayName()
+QString ZBinaryPatternProjection::id() const
+{
+    return QString("Binary");
+}
+
+QString ZBinaryPatternProjection::displayName() const
 {
     return QString("Binary");
 }

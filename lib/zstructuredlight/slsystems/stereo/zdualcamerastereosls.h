@@ -32,7 +32,8 @@ private:
 
     // ZStructuredLightSystem interface
 public:
-    virtual QString displayName() override;
+    virtual QString id() const override;
+    virtual QString displayName() const override;
 
 public slots:
     virtual QWidget *configWidget() override;
