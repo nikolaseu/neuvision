@@ -3,7 +3,6 @@
 #include "zstereoslsconfigwidget.h"
 #include "zstereosystemimpl.h"
 #include "zcalibratedcameraprovider.h"
-#include "zmulticameracalibratorwidget.h"
 
 #include <QFile>
 #include <QTimer>
@@ -15,7 +14,6 @@ ZStereoSLS::ZStereoSLS(QObject *parent)
     : ZStructuredLightSystem(parent)
     , m_stereoSystem(nullptr)
     , m_maxValidDistance(0.001)
-    , m_calibrationWindow(nullptr)
     , m_configWidget(nullptr)
 {
     /// finish initialization
@@ -24,10 +22,6 @@ ZStereoSLS::ZStereoSLS(QObject *parent)
 
 ZStereoSLS::~ZStereoSLS()
 {
-    qDebug() << "deleting calibration window...";
-    if (m_calibrationWindow)
-        m_calibrationWindow->deleteLater();
-
     qDebug() << "deleting stereo system...";
     if (m_stereoSystem)
         delete m_stereoSystem;
@@ -39,17 +33,6 @@ ZStereoSLS::~ZStereoSLS()
 QString ZStereoSLS::displayName()
 {
     return QString("Stereo");
-}
-
-QWidget *ZStereoSLS::getCalibrationWindow()
-{
-    if (!m_calibrationWindow) {
-        m_calibrationWindow = new Z3D::ZMultiCameraCalibratorWidget(m_cameras);
-    }
-
-    m_calibrationWindow->show();
-
-    return m_calibrationWindow;
 }
 
 ZCalibratedCamera::Ptr ZStereoSLS::leftCamera() const

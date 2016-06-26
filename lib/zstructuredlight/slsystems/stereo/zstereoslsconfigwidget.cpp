@@ -3,6 +3,7 @@
 
 #include "zcameracalibratorwidget.h"
 #include "zcamerapreviewer.h"
+#include "zmulticameracalibratorwidget.h"
 #include "zstereosls.h"
 
 #include <QMenu>
@@ -17,8 +18,13 @@ ZStereoSLSConfigWidget::ZStereoSLSConfigWidget(ZStereoSLS *stereoSLS, QWidget *p
     ui->setupUi(this);
 
     /// Update UI
-    connect(ui->calibrateSystemButton, &QPushButton::clicked,
-            [&](){ m_stereoSLS->getCalibrationWindow()->show(); });
+    connect(ui->calibrateSystemButton, &QPushButton::clicked, [&](){
+        std::vector<Z3D::ZCalibratedCamera::Ptr> cameras;
+        cameras.push_back(m_stereoSLS->leftCamera());
+        cameras.push_back(m_stereoSLS->rightCamera());
+        Z3D::ZMultiCameraCalibratorWidget *calibWidget = new Z3D::ZMultiCameraCalibratorWidget(cameras);
+        calibWidget->show();
+    });
 
     connect(m_stereoSLS, &ZStereoSLS::maxValidDistanceChanged,
             ui->maxValidDistanceSpinBox, &QDoubleSpinBox::setValue);

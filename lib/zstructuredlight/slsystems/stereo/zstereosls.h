@@ -6,7 +6,6 @@
 namespace Z3D
 {
 
-class ZMultiCameraCalibratorWidget;
 class ZStereoSLSConfigWidget;
 class ZStereoSystemImpl;
 
@@ -21,8 +20,6 @@ public:
     ~ZStereoSLS();
 
     virtual QString displayName() override;
-
-    QWidget *getCalibrationWindow();
 
     Z3D::ZCalibratedCamera::Ptr leftCamera() const;
     Z3D::ZCalibratedCamera::Ptr rightCamera() const;
@@ -54,9 +51,6 @@ private:
     std::vector<Z3D::ZCalibratedCamera::Ptr> m_cameras;
 
     double m_maxValidDistance;
-
-    /// Calibration window (created on demand)
-    QPointer<Z3D::ZMultiCameraCalibratorWidget> m_calibrationWindow;
 
     /// Config widget (created on demand)
     ZStereoSLSConfigWidget *m_configWidget;
