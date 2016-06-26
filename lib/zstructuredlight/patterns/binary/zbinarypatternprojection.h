@@ -93,6 +93,8 @@ public slots:
     void setAutomaticPatternCount(bool arg);
 
 protected:
+    void updateMaxUsefulPatterns();
+
 #if QT_VERSION < 0x050000
     QDeclarativeView *m_dlpview;
 #else

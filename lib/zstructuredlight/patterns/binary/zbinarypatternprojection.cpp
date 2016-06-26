@@ -79,15 +79,8 @@ void ZBinaryPatternProjection::hideProjectionWindow()
 void ZBinaryPatternProjection::setProjectionWindowGeometry(const QRect &geometry)
 {
     m_dlpview->setGeometry(geometry);
-    //m_dlpview->setGeometry(geometry.center().x()-60, geometry.center().y()-60, 120, 120);
 
-    /// to skip useless patterns
-    /// log2(number) == log(number)/log(2)
-    m_maxUsefulPatterns = ceil(log((double)geometry.width())/log(2.));
-
-    qDebug() << "geometry:" << geometry << "maxUsefulPatterns:" << m_maxUsefulPatterns;
-
-    setAutomaticPatternCount(m_automaticPatternCount);
+    updateMaxUsefulPatterns();
 }
 
 QWidget *ZBinaryPatternProjection::configWidget()
@@ -327,6 +320,8 @@ void ZBinaryPatternProjection::setVertical(bool arg)
     if (m_vertical != arg) {
         m_vertical = arg;
         emit verticalChanged(arg);
+
+        updateMaxUsefulPatterns();
     }
 }
 
@@ -438,6 +433,23 @@ void ZBinaryPatternProjection::setAutomaticPatternCount(bool arg)
     if (m_automaticPatternCount) {
         setNumPatterns(m_maxUsefulPatterns);
     }
+}
+
+void ZBinaryPatternProjection::updateMaxUsefulPatterns()
+{
+    const auto& geometry = m_dlpview->geometry();
+
+    /// to skip useless patterns
+    /// log2(number) == log(number)/log(2)
+    if (m_vertical) {
+        m_maxUsefulPatterns = int(ceil(log(double(geometry.width()))/log(2.)));
+    } else {
+        m_maxUsefulPatterns = int(ceil(log(double(geometry.height()))/log(2.)));
+    }
+
+    qDebug() << "geometry:" << geometry << "maxUsefulPatterns:" << m_maxUsefulPatterns;
+
+    setAutomaticPatternCount(m_automaticPatternCount);
 }
 
 } // namespace Z3D
