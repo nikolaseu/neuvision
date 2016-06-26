@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>Z3D::ZStereoSLSConfigWidget</class>
- <widget class="QWidget" name="Z3D::ZStereoSLSConfigWidget">
+ <class>Z3D::ZDualCameraStereoSLSConfigWidget</class>
+ <widget class="QWidget" name="Z3D::ZDualCameraStereoSLSConfigWidget">
   <property name="geometry">
    <rect>
     <x>0</x>

@@ -1,12 +1,11 @@
 #pragma once
 
 #include "zstructuredlightsystem.h"
-#include "zcalibratedcamera.h"
+#include "zcameracalibration.h"
 
 namespace Z3D
 {
 
-class ZStereoSLSConfigWidget;
 class ZStereoSystemImpl;
 
 class ZStereoSLS : public ZStructuredLightSystem
@@ -19,11 +18,6 @@ public:
     explicit ZStereoSLS(QObject *parent = 0);
     ~ZStereoSLS();
 
-    virtual QString displayName() override;
-
-    Z3D::ZCalibratedCamera::Ptr leftCamera() const;
-    Z3D::ZCalibratedCamera::Ptr rightCamera() const;
-
     double maxValidDistance() const;
 
 signals:
@@ -32,28 +26,20 @@ signals:
 public slots:
     void setMaxValidDistance(double maxValidDistance);
 
-    // ZStructuredLightSystem interface
-    virtual QWidget *configWidget() override;
-
 protected slots:
-    void onPatternProjected(ZProjectedPattern::Ptr pattern) override;
-    void onPatternsDecoded(std::vector<Z3D::ZDecodedPattern::Ptr> decodedPatterns) override;
+    void init();
+
+    void setLeftCalibration(Z3D::ZCameraCalibration::Ptr cameraCalibration);
+    void setRightCalibration(Z3D::ZCameraCalibration::Ptr cameraCalibration);
+
+    Z3D::ZSimplePointCloud::Ptr triangulate(const cv::Mat &intensityImg,
+            const std::map<int, std::vector<cv::Vec2f> > &leftPoints,
+            const std::map<int, std::vector<cv::Vec2f> > &rightPoints,
+            int maxPosibleCloudPoints);
 
 private:
-    void init();
-    void addCameras(QList<Z3D::ZCalibratedCamera::Ptr> cameras);
-
-    void setLeftCamera(Z3D::ZCalibratedCamera::Ptr camera);
-    void setRightCamera(Z3D::ZCalibratedCamera::Ptr camera);
-
-    ZStereoSystemImpl *m_stereoSystem;
-
-    std::vector<Z3D::ZCalibratedCamera::Ptr> m_cameras;
-
     double m_maxValidDistance;
-
-    /// Config widget (created on demand)
-    ZStereoSLSConfigWidget *m_configWidget;
+    ZStereoSystemImpl *m_stereoSystem;
 };
 
 } // namespace Z3D

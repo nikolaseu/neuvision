@@ -1,6 +1,7 @@
 #include "zstereoslsplugin.h"
 
-#include "zstereosls.h"
+#include "zdualcamerastereosls.h"
+#include "zsinglecamerastereosls.h"
 
 namespace Z3D {
 
@@ -26,7 +27,9 @@ QString ZStereoSLSPlugin::version()
 
 QList<ZStructuredLightSystem *> ZStereoSLSPlugin::getAll()
 {
-    return QList<ZStructuredLightSystem *>() << new ZStereoSLS();
+    return QList<ZStructuredLightSystem *>()
+            << new ZDualCameraStereoSLS()
+            << new ZSingleCameraStereoSLS();
 }
 
 } // namespace Z3D

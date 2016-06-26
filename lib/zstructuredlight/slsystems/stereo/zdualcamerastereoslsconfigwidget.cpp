@@ -1,18 +1,18 @@
-#include "zstereoslsconfigwidget.h"
-#include "ui_zstereoslsconfigwidget.h"
+#include "zdualcamerastereoslsconfigwidget.h"
+#include "ui_zdualcamerastereoslsconfigwidget.h"
 
 #include "zcameracalibratorwidget.h"
 #include "zcamerapreviewer.h"
 #include "zmulticameracalibratorwidget.h"
-#include "zstereosls.h"
+#include "zdualcamerastereosls.h"
 
 #include <QMenu>
 
 namespace Z3D {
 
-ZStereoSLSConfigWidget::ZStereoSLSConfigWidget(ZStereoSLS *stereoSLS, QWidget *parent)
+ZDualCameraStereoSLSConfigWidget::ZDualCameraStereoSLSConfigWidget(ZDualCameraStereoSLS *stereoSLS, QWidget *parent)
     : QWidget(parent)
-    , ui(new Ui::ZStereoSLSConfigWidget)
+    , ui(new Ui::ZDualCameraStereoSLSConfigWidget)
     , m_stereoSLS(stereoSLS)
 {
     ui->setupUi(this);
@@ -26,20 +26,20 @@ ZStereoSLSConfigWidget::ZStereoSLSConfigWidget(ZStereoSLS *stereoSLS, QWidget *p
         calibWidget->show();
     });
 
-    connect(m_stereoSLS, &ZStereoSLS::maxValidDistanceChanged,
+    connect(m_stereoSLS, &ZDualCameraStereoSLS::maxValidDistanceChanged,
             ui->maxValidDistanceSpinBox, &QDoubleSpinBox::setValue);
     connect(ui->maxValidDistanceSpinBox, static_cast<void (QDoubleSpinBox::*)(double)>(&QDoubleSpinBox::valueChanged),
-            m_stereoSLS, &ZStereoSLS::setMaxValidDistance);
+            m_stereoSLS, &ZDualCameraStereoSLS::setMaxValidDistance);
 
-    connect(m_stereoSLS, &ZStereoSLS::debugShowDecodedImagesChanged,
+    connect(m_stereoSLS, &ZDualCameraStereoSLS::debugShowDecodedImagesChanged,
             ui->debugShowDecodedImagesCheckBox, &QCheckBox::setChecked);
     connect(ui->debugShowDecodedImagesCheckBox, &QCheckBox::toggled,
-            m_stereoSLS, &ZStereoSLS::setDebugShowDecodedImages);
+            m_stereoSLS, &ZDualCameraStereoSLS::setDebugShowDecodedImages);
 
-    connect(m_stereoSLS, &ZStereoSLS::debugShowFringesChanged,
+    connect(m_stereoSLS, &ZDualCameraStereoSLS::debugShowFringesChanged,
             ui->debugShowFringesCheckBox, &QCheckBox::setChecked);
     connect(ui->debugShowFringesCheckBox, &QCheckBox::toggled,
-            m_stereoSLS, &ZStereoSLS::setDebugShowFringes);
+            m_stereoSLS, &ZDualCameraStereoSLS::setDebugShowFringes);
 
     ui->maxValidDistanceSpinBox->setValue(m_stereoSLS->maxValidDistance());
     ui->debugShowDecodedImagesCheckBox->setChecked(m_stereoSLS->debugShowDecodedImages());
@@ -88,7 +88,7 @@ ZStereoSLSConfigWidget::ZStereoSLSConfigWidget(ZStereoSLS *stereoSLS, QWidget *p
     ui->rightCameraButton->setMenu(rightCameraMenu);
 }
 
-ZStereoSLSConfigWidget::~ZStereoSLSConfigWidget()
+ZDualCameraStereoSLSConfigWidget::~ZDualCameraStereoSLSConfigWidget()
 {
     delete ui;
 }
