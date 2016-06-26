@@ -509,8 +509,8 @@ void ZStereoSystemImpl::stereoRectify(double alpha)
 
 
 Z3D::ZSimplePointCloud::Ptr ZStereoSystemImpl::triangulateOptimized(const cv::Mat &intensityImg,
-                                                 std::map<int, std::vector<cv::Vec2f> > &leftFringePoints,
-                                                 std::map<int, std::vector<cv::Vec2f> > &rightFringePoints,
+                                                 const std::map<int, std::vector<cv::Vec2f> > &leftFringePoints,
+                                                 const std::map<int, std::vector<cv::Vec2f> > &rightFringePoints,
                                                  int maxPosibleCloudPoints,
                                                  float maxValidDistanceThreshold)
 {
@@ -542,6 +542,7 @@ Z3D::ZSimplePointCloud::Ptr ZStereoSystemImpl::triangulateOptimized(const cv::Ma
     QVector<std::vector<const std::vector<cv::Vec2f>*> > parallellData;
     parallellData.resize(leftFringePoints.size());
 
+    const auto rightPointsItEnd = rightFringePoints.cend();
     int currentIndex = -1;
     for (auto it = leftFringePoints.cbegin(), itEnd = leftFringePoints.cend();
          it != itEnd;
@@ -550,7 +551,12 @@ Z3D::ZSimplePointCloud::Ptr ZStereoSystemImpl::triangulateOptimized(const cv::Ma
         const int fringeID = it->first;
 
         /// skip if fringe is only present in one camera
-        const auto &rightPointsVector = rightFringePoints[fringeID];
+        const auto rightPointsIt = rightFringePoints.find(fringeID);
+        if (rightPointsIt == rightPointsItEnd) {
+            continue;
+        }
+
+        const auto &rightPointsVector = rightPointsIt->second;
         if (rightPointsVector.empty()) {
             continue;
         }

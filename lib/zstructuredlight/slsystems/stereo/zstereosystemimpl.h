@@ -37,10 +37,9 @@ public slots:
 //    cv::Mat getRectifiedSnapshot2D();
     //Z3D::ZSimplePointCloud::Ptr getRectifiedSnapshot3D(int cameraIndex, float imageScale = 50, int lod_step = 4);
 
-    Z3D::ZSimplePointCloud::Ptr triangulateOptimized(
-            const cv::Mat &intensityImg,
-            std::map<int, std::vector<cv::Vec2f> > &leftPoints,
-            std::map<int, std::vector<cv::Vec2f> > &rightPoints,
+    Z3D::ZSimplePointCloud::Ptr triangulateOptimized(const cv::Mat &intensityImg,
+            const std::map<int, std::vector<cv::Vec2f> > &leftPoints,
+            const std::map<int, std::vector<cv::Vec2f> > &rightPoints,
             int maxPosibleCloudPoints,
             float maxValidDistanceThreshold);
 
