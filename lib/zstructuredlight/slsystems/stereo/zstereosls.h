@@ -51,6 +51,7 @@ public slots:
     virtual QWidget *configWidget() override;
 
 protected slots:
+    void onPatternProjected(ZProjectedPattern::Ptr pattern) override;
     void onPatternsDecoded(std::vector<Z3D::ZDecodedPattern::Ptr> decodedPatterns) override;
 
 private:

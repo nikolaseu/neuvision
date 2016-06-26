@@ -143,6 +143,11 @@ void ZStereoSLS::init()
     addCameras( CalibratedCameraProvider::loadCameras() );
 }
 
+void ZStereoSLS::onPatternProjected(ZProjectedPattern::Ptr pattern)
+{
+    Q_UNUSED(pattern);
+}
+
 void ZStereoSLS::onPatternsDecoded(std::vector<ZDecodedPattern::Ptr> decodedPatterns)
 {
     /// is there something to process?

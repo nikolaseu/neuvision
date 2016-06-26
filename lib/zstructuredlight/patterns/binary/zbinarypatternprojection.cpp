@@ -152,6 +152,38 @@ void ZBinaryPatternProjection::beginScan()
 
     emit finishAcquisition();
 
+    /// create the pattern that was just projected
+    Z3D::ZProjectedPattern::Ptr pattern(new Z3D::ZProjectedPattern);
+    auto &fringePoints = pattern->fringePointsList;
+    const auto geometry = m_dlpview->geometry();
+    const auto projectionHeight = geometry.height();
+    const auto projectionWidth = geometry.width();
+    const int fringeStep = int(pow(2, firstPatternToShow));
+    if (m_vertical) {
+        for (int x = fringeStep-1; x<projectionWidth-1; x+=fringeStep) {
+            std::vector<cv::Vec2f> fringe;
+            fringe.reserve(projectionHeight);
+            for (int y = 0; y<projectionHeight; ++y) {
+                fringe.push_back(cv::Vec2f(0.5f+x, y));
+            }
+            fringePoints[x] = fringe;
+        }
+    } else {
+        for (int y = fringeStep-1; y<projectionHeight-1; y+=fringeStep) {
+            std::vector<cv::Vec2f> fringe;
+            fringe.reserve(projectionWidth);
+            for (int x = 0; x<projectionWidth; ++x) {
+                fringe.push_back(cv::Vec2f(x, 0.5f+y));
+            }
+            fringePoints[y] = fringe;
+        }
+    }
+    qDebug() << "pattern has" << fringePoints.size() << "fringes";
+    /// to know how many point we could have (to reserve memory)
+    pattern->updatePointCount();
+    /// notify possible listeners
+    emit patternProjected(pattern);
+
     /// return previous state
     setPreviewEnabled(previewWasEnabled);
 }

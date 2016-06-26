@@ -3,6 +3,7 @@
 #include "zstructuredlight_global.h"
 #include "zcameraimage.h"
 #include "zdecodedpattern.h"
+#include "zprojectedpattern.h"
 
 #include <QObject>
 
@@ -22,6 +23,8 @@ signals:
     void prepareAcquisition(QString acquisitionId);
     void acquireSingle(QString id);
     void finishAcquisition();
+
+    void patternProjected(Z3D::ZProjectedPattern::Ptr pattern);
 
     void patternsDecoded(std::vector<Z3D::ZDecodedPattern::Ptr> pattern);
 

@@ -39,6 +39,7 @@ public slots:
     virtual QWidget *configWidget() = 0;
 
 protected slots:
+    virtual void onPatternProjected(Z3D::ZProjectedPattern::Ptr pattern) = 0;
     virtual void onPatternsDecoded(std::vector<Z3D::ZDecodedPattern::Ptr> pattern) = 0;
 
 private:

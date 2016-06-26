@@ -77,6 +77,8 @@ void ZStructuredLightSystem::setupConnections()
     connect(m_acqManager, &ZCameraAcquisitionManager::acquisitionFinished,
             m_patternProjection, &ZPatternProjection::processImages);
 
+    connect(m_patternProjection, &ZPatternProjection::patternProjected,
+            this, &ZStructuredLightSystem::onPatternProjected);
     connect(m_patternProjection, &ZPatternProjection::patternsDecoded,
             this, &ZStructuredLightSystem::onPatternsDecoded);
 }
