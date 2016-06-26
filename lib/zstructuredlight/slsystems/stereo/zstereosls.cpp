@@ -37,8 +37,6 @@ ZStereoSLS::~ZStereoSLS()
         delete m_stereoSystem;
 
     qDebug() << "deleting cameras...";
-//    foreach(Z3D::CalibratedCamera::Ptr camera, m_camList)
-//        delete camera.data();
     m_cameras.clear();
 }
 
@@ -246,20 +244,6 @@ void ZStereoSLS::onPatternsDecoded(std::vector<ZDecodedPattern::Ptr> decodedPatt
 
 void ZStereoSLS::addCameras(QList<Z3D::ZCalibratedCamera::Ptr> cameras)
 {
-    /*
-    /// get starting index for the new cameras
-    const QList<QAction*> &actionsList = ui->menuCameras->actions();
-    int iCam = actionsList.size() - 2; // separator and "configure cameras" items
-
-    if (iCam != m_camList.size()) {
-        qCritical() << "something is wrong with the camera indexes";
-        return;
-    }
-
-    /// the new cameras menu should be inserted before the separator
-    QAction *insertBeforeThisAction = actionsList[iCam];
-*/
-
     setReady(false);
 
     /// add cameras to list
@@ -275,49 +259,6 @@ void ZStereoSLS::addCameras(QList<Z3D::ZCalibratedCamera::Ptr> cameras)
     for (auto cam : cameras)
         camerasVector.push_back(cam->camera());
     setAcquisitionManager(new ZCameraAcquisitionManager(camerasVector));
-
-/*
-    for (int i = iCam; i<m_camList.size(); ++i) {
-        Z3D::ZCameraInterface::Ptr camera = m_camList[i]->camera();
-
-        /// add sub menu exclusive for this camera
-        QMenu *camSubmenu = new QMenu(camera->uuid(), this);
-
-        /// open preview
-        QAction *previewAction = new QAction("Preview...", this);
-        camSubmenu->addAction(previewAction);
-        QObject::connect(previewAction, SIGNAL(triggered()), m_previewSignalMapper, SLOT(map()));
-        m_previewSignalMapper->setMapping(previewAction, i);
-
-        /// open settings
-        QAction *settingsAction = new QAction("Settings...", this);
-        camSubmenu->addAction(settingsAction);
-        QObject::connect(settingsAction, SIGNAL(triggered()), m_settingsSignalMapper, SLOT(map()));
-        m_settingsSignalMapper->setMapping(settingsAction, i);
-
-        /// open camera calibration tool
-        QAction *openCameraCalibrationAction = new QAction("Calibrate camera...", this);
-        camSubmenu->addAction(openCameraCalibrationAction);
-        QObject::connect(openCameraCalibrationAction, SIGNAL(triggered()), m_calibrateCameraSignalMapper, SLOT(map()));
-        m_calibrateCameraSignalMapper->setMapping(openCameraCalibrationAction, i);
-
-        /// load calibration file
-        QAction *loadCalibrationAction = new QAction("Load calibration from file...", this);
-        camSubmenu->addAction(loadCalibrationAction);
-        QObject::connect(loadCalibrationAction, SIGNAL(triggered()), m_loadCalibrationSignalMapper, SLOT(map()));
-        m_loadCalibrationSignalMapper->setMapping(loadCalibrationAction, i);
-
-        /// take 3d snapshot
-        QAction *take3dSnapshotAction = new QAction("Show snapshot in 3D...", this);
-        camSubmenu->addAction(take3dSnapshotAction);
-        QObject::connect(take3dSnapshotAction, SIGNAL(triggered()), m_take3dSnapshotSignalMapper, SLOT(map()));
-        m_take3dSnapshotSignalMapper->setMapping(take3dSnapshotAction, i);
-
-        ui->menuCameras->insertMenu(insertBeforeThisAction, camSubmenu);
-    }
-
-    emit cameraListChanged(m_camList);
-    */
 }
 
 void ZStereoSLS::setLeftCamera(ZCalibratedCamera::Ptr camera)
