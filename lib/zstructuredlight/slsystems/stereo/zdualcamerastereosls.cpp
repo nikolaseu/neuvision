@@ -1,11 +1,8 @@
 #include "zdualcamerastereosls.h"
 
-#include "zstereosystemimpl.h"
 #include "zdualcamerastereoslsconfigwidget.h"
 #include "zcalibratedcameraprovider.h"
-
-#include <QFile>
-#include <QTimer>
+#include "zpinhole/zpinholecameracalibration.h"
 
 namespace Z3D
 {
@@ -14,8 +11,7 @@ ZDualCameraStereoSLS::ZDualCameraStereoSLS(QObject *parent)
     : ZStereoSLS(parent)
     , m_configWidget(nullptr)
 {
-    /// finish initialization
-    QTimer::singleShot(0, this, &ZDualCameraStereoSLS::init);
+
 }
 
 ZDualCameraStereoSLS::~ZDualCameraStereoSLS()
@@ -32,14 +28,6 @@ ZCalibratedCamera::Ptr ZDualCameraStereoSLS::leftCamera() const
 ZCalibratedCamera::Ptr ZDualCameraStereoSLS::rightCamera() const
 {
     return m_cameras[1];
-}
-
-void ZDualCameraStereoSLS::init()
-{
-    ZStereoSLS::init();
-
-    /// add configured cameras
-    addCameras( CalibratedCameraProvider::loadCameras() );
 }
 
 void ZDualCameraStereoSLS::addCameras(QList<Z3D::ZCalibratedCamera::Ptr> cameras)
@@ -119,6 +107,29 @@ QString ZDualCameraStereoSLS::id() const
 QString ZDualCameraStereoSLS::displayName() const
 {
     return QString("Dual cameras");
+}
+
+void ZDualCameraStereoSLS::init(QSettings *settings)
+{
+    QList<ZCalibratedCamera::Ptr> cameras;
+
+    settings->beginGroup("StructuredLightSystem");
+    {
+        settings->beginGroup("Left");
+        {
+            cameras << CalibratedCameraProvider::getCalibratedCamera(settings);
+        }
+        settings->endGroup();
+
+        settings->beginGroup("Right");
+        {
+            cameras << CalibratedCameraProvider::getCalibratedCamera(settings);
+        }
+        settings->endGroup();
+    }
+    settings->endGroup();
+
+    addCameras(cameras);
 }
 
 QWidget *ZDualCameraStereoSLS::configWidget()

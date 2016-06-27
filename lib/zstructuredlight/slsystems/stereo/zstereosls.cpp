@@ -10,7 +10,8 @@ ZStereoSLS::ZStereoSLS(QObject *parent)
     , m_maxValidDistance(0.001)
     , m_stereoSystem(nullptr)
 {
-
+    /// finish initialization
+    initialize();
 }
 
 ZStereoSLS::~ZStereoSLS()
@@ -36,7 +37,7 @@ void ZStereoSLS::setMaxValidDistance(double maxValidDistance)
     emit maxValidDistanceChanged(maxValidDistance);
 }
 
-void ZStereoSLS::init()
+void ZStereoSLS::initialize()
 {
     m_stereoSystem = new ZStereoSystemImpl();
 

@@ -19,6 +19,8 @@ public:
     virtual QString id() const override;
     virtual QString displayName() const override;
 
+    virtual void init(QSettings *settings) override;
+
 public slots:
     virtual QWidget *configWidget() override;
 

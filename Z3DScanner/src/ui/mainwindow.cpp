@@ -62,7 +62,7 @@ void MainWindow::init()
 
     /// add structured light systems
     m_structuredLightList << Z3D::ZStructuredLightSystemProvider::getAll();
-    for (auto *structuredLightSystem : m_structuredLightList) {
+    for (const auto *structuredLightSystem : m_structuredLightList) {
         ui->structuredLightSystemComboBox->addItem(structuredLightSystem->displayName());
     }
 
@@ -72,7 +72,7 @@ void MainWindow::init()
 
     /// add types of pattern projection
     m_patternProjectionList << Z3D::ZPatternProjectionProvider::getAll();
-    for (auto *patternProjection : m_patternProjectionList) {
+    for (const auto *patternProjection : m_patternProjectionList) {
         ui->patternTypeComboBox->addItem(patternProjection->displayName());
     }
 }
@@ -128,6 +128,23 @@ void MainWindow::onStructuredLightSystemTypeChanged(int index)
             this, &MainWindow::onScanFinished);
     connect(ui->startAcquisitionButton, &QPushButton::clicked,
             m_currentStructuredLightSystem, &Z3D::ZStructuredLightSystem::start);
+
+    QDir configDir = QDir::current();
+#if defined(Q_OS_WIN)
+//        if (pluginsDir.dirName().toLower() == "debug" || pluginsDir.dirName().toLower() == "release")
+//            pluginsDir.cdUp();
+#elif defined(Q_OS_MAC)
+    if (configDir.dirName() == "MacOS") {
+        configDir.cdUp();
+        configDir.cdUp();
+        configDir.cdUp();
+    }
+#endif
+
+    QString settingsFile = configDir.absoluteFilePath(QString("%1.ini").arg(QApplication::applicationName()));
+    qDebug() << "trying to load config from:" << settingsFile;
+    QSettings settings(settingsFile, QSettings::IniFormat);
+    m_currentStructuredLightSystem->init(&settings);
 
     /// add config widget
     QWidget *currentWidget = m_currentStructuredLightSystem->configWidget();

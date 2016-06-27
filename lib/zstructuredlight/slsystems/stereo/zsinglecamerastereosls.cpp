@@ -24,6 +24,11 @@ QString ZSingleCameraStereoSLS::displayName() const
     return QString("Projector + Camera");
 }
 
+void ZSingleCameraStereoSLS::init(QSettings *settings)
+{
+
+}
+
 QWidget *ZSingleCameraStereoSLS::configWidget()
 {
     return nullptr;

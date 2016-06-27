@@ -8,6 +8,10 @@
 
 #include <QObject>
 
+QT_BEGIN_NAMESPACE
+class QSettings;
+QT_END_NAMESPACE
+
 namespace Z3D
 {
 
@@ -25,6 +29,8 @@ public:
 
     virtual QString id() const = 0;
     virtual QString displayName() const = 0;
+
+    virtual void init(QSettings *settings) = 0;
 
     bool ready() const;
     bool debugSaveFringePoints() const;

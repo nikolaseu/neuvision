@@ -27,7 +27,7 @@ public slots:
     void setMaxValidDistance(double maxValidDistance);
 
 protected slots:
-    void init();
+    void initialize();
 
     void setLeftCalibration(Z3D::ZCameraCalibration::Ptr cameraCalibration);
     void setRightCalibration(Z3D::ZCameraCalibration::Ptr cameraCalibration);

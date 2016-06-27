@@ -20,7 +20,6 @@ public:
     Z3D::ZCalibratedCamera::Ptr rightCamera() const;
 
 private slots:
-    void init();
     void addCameras(QList<Z3D::ZCalibratedCamera::Ptr> cameras);
 
     void setLeftCamera(Z3D::ZCalibratedCamera::Ptr camera);
@@ -34,6 +33,8 @@ private:
 public:
     virtual QString id() const override;
     virtual QString displayName() const override;
+
+    virtual void init(QSettings *settings) override;
 
 public slots:
     virtual QWidget *configWidget() override;
