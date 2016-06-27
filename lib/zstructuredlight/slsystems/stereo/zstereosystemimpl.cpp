@@ -144,10 +144,10 @@ struct ParallelFringeProcessingImpl
                         camLcal->getWorldRayForSubPixel(firstMeanPoint[0], firstMeanPoint[1], firstRayOrigin, firstRayDirection);
                         camLcal->getWorldRayForSubPixel(secondMeanPoint[0], secondMeanPoint[1], secondRayOrigin, secondRayDirection);
                     } else {
-                        camRcal->getWorldRayForPixel(realPoint[0], realPoint[1], realRayOrigin, realRayDirection);
+                        camRcal->getWorldRayForPixel(int(std::round(realPoint[0])), int(std::round(realPoint[1])), realRayOrigin, realRayDirection);
 
-                        camLcal->getWorldRayForPixel(firstMeanPoint[0], firstMeanPoint[1], firstRayOrigin, firstRayDirection);
-                        camLcal->getWorldRayForPixel(secondMeanPoint[0], secondMeanPoint[1], secondRayOrigin, secondRayDirection);
+                        camLcal->getWorldRayForPixel(int(std::round(firstMeanPoint[0])), int(std::round(firstMeanPoint[1])), firstRayOrigin, firstRayDirection);
+                        camLcal->getWorldRayForPixel(int(std::round(secondMeanPoint[0])), int(std::round(secondMeanPoint[1])), secondRayOrigin, secondRayDirection);
                     }
                 }
             } else {
@@ -170,10 +170,10 @@ struct ParallelFringeProcessingImpl
                         camRcal->getWorldRayForSubPixel(firstMeanPoint[0], firstMeanPoint[1], firstRayOrigin, firstRayDirection);
                         camRcal->getWorldRayForSubPixel(secondMeanPoint[0], secondMeanPoint[1], secondRayOrigin, secondRayDirection);
                     } else {
-                        camLcal->getWorldRayForPixel(realPoint[0], realPoint[1], realRayOrigin, realRayDirection);
+                        camLcal->getWorldRayForPixel(int(std::round(realPoint[0])), int(std::round(realPoint[1])), realRayOrigin, realRayDirection);
 
-                        camRcal->getWorldRayForPixel(firstMeanPoint[0], firstMeanPoint[1], firstRayOrigin, firstRayDirection);
-                        camRcal->getWorldRayForPixel(secondMeanPoint[0], secondMeanPoint[1], secondRayOrigin, secondRayDirection);
+                        camRcal->getWorldRayForPixel(int(std::round(firstMeanPoint[0])), int(std::round(firstMeanPoint[1])), firstRayOrigin, firstRayDirection);
+                        camRcal->getWorldRayForPixel(int(std::round(secondMeanPoint[0])), int(std::round(secondMeanPoint[1])), secondRayOrigin, secondRayDirection);
                     }
                 }
             }
@@ -193,14 +193,14 @@ struct ParallelFringeProcessingImpl
                             meanRayOrigin, meanRayDirection);
 
                 /// use atomicint to atomically get current value and increment
-                const int currentIndex = m_atomicInteger.fetchAndAddAcquire(1);
+                const auto currentIndex = size_t(m_atomicInteger.fetchAndAddAcquire(1));
 
                 auto &currentPoint = m_cloudPoints[currentIndex];
 
                 /// use the point
-                currentPoint[0] = intersection[0];
-                currentPoint[1] = intersection[1];
-                currentPoint[2] = intersection[2];
+                currentPoint[0] = float(intersection[0]);
+                currentPoint[1] = float(intersection[1]);
+                currentPoint[2] = float(intersection[2]);
 
                 /// point color. we use an intensity image from the left camera
                 /// this point is not exactly the intersection point, but it's close enough
@@ -231,7 +231,7 @@ struct ParallelFringeProcessingImpl
     ZStereoSystemImpl *stereoSystem;
     Z3D::ZCameraCalibration *camLcal;
     Z3D::ZCameraCalibration *camRcal;
-    const std::vector< std::vector<cv::Vec3d> > &m_undistortedRays;
+    const std::vector< std::vector<cv::Vec3f> > &m_undistortedRays;
     Z3D::ZSimplePointCloud::Ptr m_cloud;
     Z3D::ZSimplePointCloud::PointVector &m_cloudPoints;
     QAtomicInt &m_atomicInteger;
@@ -273,7 +273,7 @@ void ZStereoSystemImpl::stereoRectify(double alpha)
 
     setReady(false);
 
-    for (int i=0; i<2; ++i) {
+    for (size_t i=0; i<2; ++i) {
         Z3D::ZPinholeCameraCalibration *cal = mCal[i];
         if (!cal) {
             qWarning() << "the calibration for camera" << i << "isn't valid. Returning...";
@@ -533,14 +533,14 @@ Z3D::ZSimplePointCloud::Ptr ZStereoSystemImpl::triangulateOptimized(const cv::Ma
     /// reserve maximum posible size, avoid reallocations
     cloud->width  = maxPosibleCloudPoints;
     cloud->height = 1;
-    cloud->points.resize(cloud->width * cloud->height);
+    cloud->points.resize(size_t(cloud->width * cloud->height));
 
     QAtomicInt i = 0;
 
     qDebug() << "using maxValidDistanceThreshold" << maxValidDistanceThreshold;
 
     QVector<std::vector<const std::vector<cv::Vec2f>*> > parallellData;
-    parallellData.resize(leftFringePoints.size());
+    parallellData.resize(int(leftFringePoints.size()));
 
     const auto rightPointsItEnd = rightFringePoints.cend();
     int currentIndex = -1;
@@ -586,7 +586,7 @@ Z3D::ZSimplePointCloud::Ptr ZStereoSystemImpl::triangulateOptimized(const cv::Ma
 
         cloud->width  = i;
         cloud->height = 1;
-        cloud->points.resize(cloud->width * cloud->height);
+        cloud->points.resize(size_t(cloud->width * cloud->height));
 
         return cloud;
     }
@@ -655,22 +655,22 @@ void ZStereoSystemImpl::precomputeOptimizations()
     const int &width = m_imageSize.width;
     const int &height = m_imageSize.height;
 
-    std::size_t pixelCount = width * height;
+    const auto pixelCount = size_t(width * height);
 
     /// fill "distorted" points for every pixel in the image
-    std::vector<cv::Point2d> points;
+    std::vector<cv::Point2f> points;
     points.resize( pixelCount );
     for (int iy = 0; iy < height; ++iy) {
         for (int ix = 0; ix < width; ++ix) {
-            points[ indexForPixel(ix, iy) ] = cv::Point2d(ix, iy);
+            points[ indexForPixel(ix, iy) ] = cv::Point2f(ix, iy);
         }
     }
 
     /// undistorted points will be returned here
-    std::vector<cv::Point2d> undistortedPoints;
+    std::vector<cv::Point2f> undistortedPoints;
     undistortedPoints.resize( pixelCount );
 
-    for (int k=0; k<2; k++) {
+    for (size_t k=0; k<2; k++) {
         qDebug() << "initializing undistorted rays lookup table for camera" << k << "with" << pixelCount << "values";
 
         /// undistortedPoints will be in world space
@@ -688,7 +688,7 @@ void ZStereoSystemImpl::precomputeOptimizations()
 
         for (int iy = 0; iy < height; ++iy) {
             for (int ix = 0; ix < width; ++ix) {
-                const int index = indexForPixel(ix, iy);
+                const auto index = indexForPixel(ix, iy);
 
                 const auto &undistortedPoint = undistortedPoints[index];
 

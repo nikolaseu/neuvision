@@ -49,15 +49,15 @@ public slots:
 protected slots:
     void precomputeOptimizations();
 
-    inline int indexForPixel(int x, int y) const { return x + y * m_imageSize.width; }
+    inline size_t indexForPixel(int x, int y) const { return size_t(x + y * m_imageSize.width); }
 
     void setReady(bool arg);
 
 protected:
     std::vector<QPointer<Z3D::ZPinholeCameraCalibration> > mCal;
 
-    std::vector< std::vector<cv::Vec3d> > m_undistortedRays;
-    //std::vector< std::vector<cv::Vec3d> > m_undistortedWorldRays;
+    std::vector< std::vector<cv::Vec3f> > m_undistortedRays;
+    //std::vector< std::vector<cv::Vec3f> > m_undistortedWorldRays;
 
     cv::Size m_imageSize;
 
