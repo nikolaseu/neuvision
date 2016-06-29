@@ -231,7 +231,7 @@ struct ParallelFringeProcessingImpl
     ZStereoSystemImpl *stereoSystem;
     Z3D::ZCameraCalibration *camLcal;
     Z3D::ZCameraCalibration *camRcal;
-    const std::vector< std::vector<cv::Vec3f> > &m_undistortedRays;
+    const std::vector< std::vector<cv::Vec3d> > &m_undistortedRays;
     Z3D::ZSimplePointCloud::Ptr m_cloud;
     Z3D::ZSimplePointCloud::PointVector &m_cloudPoints;
     QAtomicInt &m_atomicInteger;
@@ -658,16 +658,16 @@ void ZStereoSystemImpl::precomputeOptimizations()
     const auto pixelCount = size_t(width * height);
 
     /// fill "distorted" points for every pixel in the image
-    std::vector<cv::Point2f> points;
+    std::vector<cv::Point2d> points;
     points.resize( pixelCount );
     for (int iy = 0; iy < height; ++iy) {
         for (int ix = 0; ix < width; ++ix) {
-            points[ indexForPixel(ix, iy) ] = cv::Point2f(ix, iy);
+            points[ indexForPixel(ix, iy) ] = cv::Point2d(ix, iy);
         }
     }
 
     /// undistorted points will be returned here
-    std::vector<cv::Point2f> undistortedPoints;
+    std::vector<cv::Point2d> undistortedPoints;
     undistortedPoints.resize( pixelCount );
 
     for (size_t k=0; k<2; k++) {

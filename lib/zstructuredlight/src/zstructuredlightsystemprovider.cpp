@@ -4,6 +4,7 @@
 #include "zstructuredlightsystemplugin.h"
 
 #include <QDebug>
+#include <QSettings>
 
 namespace Z3D
 {
@@ -31,13 +32,30 @@ void ZStructuredLightSystemProvider::unloadPlugins()
 
 }
 
-QList<ZStructuredLightSystem *> ZStructuredLightSystemProvider::getAll()
+QList<QString> ZStructuredLightSystemProvider::getAll()
 {
-    QList<ZStructuredLightSystem *> list;
+    QList<QString> list;
     for (auto plugin : m_plugins.values()) {
-        list << plugin->getAll();
+        list << plugin->name();
     }
     return list;
+}
+
+ZStructuredLightSystem::Ptr ZStructuredLightSystemProvider::get(QSettings *settings)
+{
+    ZStructuredLightSystem::Ptr structuredLightSystem;
+
+    settings->beginGroup("StructuredLightSystem");
+    {
+        const QString pluginId = settings->value("Type").toString();
+        if (m_plugins.contains(pluginId)) {
+            const auto plugin = m_plugins.value(pluginId);
+            structuredLightSystem = plugin->get(settings);
+        }
+    }
+    settings->endGroup();
+
+    return structuredLightSystem;
 }
 
 ZStructuredLightSystemProvider::ZStructuredLightSystemProvider()

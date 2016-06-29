@@ -2,6 +2,7 @@
 #define MAINWINDOW_H
 
 #include "zsimplepointcloud.h"
+#include "zstructuredlightsystem.h"
 
 #include <QMainWindow>
 #include <QPointer>
@@ -14,7 +15,6 @@ class MainWindow;
 
 namespace Z3D {
 class ZPatternProjection;
-class ZStructuredLightSystem;
 }
 
 class ZPointCloudWidget;
@@ -31,12 +31,11 @@ signals:
 
 private slots:
     void init();
+    void initStructuredLightSystem();
 
     virtual void closeEvent(QCloseEvent *event);
 
-    //
     void onPatternProjectionTypeChanged(int index);
-    void onStructuredLightSystemTypeChanged(int index);
 
     void onScanFinished(Z3D::ZSimplePointCloud::Ptr cloud);
 
@@ -47,7 +46,7 @@ private:
     Z3D::ZPatternProjection *m_currentPatternProjection;
 
     QList<Z3D::ZStructuredLightSystem *> m_structuredLightList;
-    Z3D::ZStructuredLightSystem *m_currentStructuredLightSystem;
+    Z3D::ZStructuredLightSystem::Ptr m_currentStructuredLightSystem;
 
     ZPointCloudWidget *m_pointCloudWidget;
 };

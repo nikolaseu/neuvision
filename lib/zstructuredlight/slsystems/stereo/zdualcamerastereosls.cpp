@@ -113,19 +113,15 @@ void ZDualCameraStereoSLS::init(QSettings *settings)
 {
     QList<ZCalibratedCamera::Ptr> cameras;
 
-    settings->beginGroup("StructuredLightSystem");
+    settings->beginGroup("Left");
     {
-        settings->beginGroup("Left");
-        {
-            cameras << CalibratedCameraProvider::getCalibratedCamera(settings);
-        }
-        settings->endGroup();
+        cameras << CalibratedCameraProvider::getCalibratedCamera(settings);
+    }
+    settings->endGroup();
 
-        settings->beginGroup("Right");
-        {
-            cameras << CalibratedCameraProvider::getCalibratedCamera(settings);
-        }
-        settings->endGroup();
+    settings->beginGroup("Right");
+    {
+        cameras << CalibratedCameraProvider::getCalibratedCamera(settings);
     }
     settings->endGroup();
 

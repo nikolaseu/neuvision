@@ -14,6 +14,10 @@ public:
     explicit ZSingleCameraStereoSLS(QObject *parent = 0);
     ~ZSingleCameraStereoSLS();
 
+private:
+    ZCalibratedCamera::Ptr camera;
+    ZCameraCalibration::Ptr projectorCalibration;
+
     // ZStructuredLightSystem interface
 public:
     virtual QString id() const override;

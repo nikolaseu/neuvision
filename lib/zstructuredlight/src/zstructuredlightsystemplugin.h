@@ -3,10 +3,14 @@
 #include "zstructuredlight_global.h"
 #include "zcoreplugin.h"
 
+#include "zstructuredlightsystem.h"
+
+QT_BEGIN_NAMESPACE
+class QSettings;
+QT_END_NAMESPACE
+
 namespace Z3D
 {
-
-class ZStructuredLightSystem;
 
 class Z3D_STRUCTUREDLIGHT_SHARED_EXPORT ZStructuredLightSystemPlugin : public ZCorePlugin
 {
@@ -15,7 +19,9 @@ class Z3D_STRUCTUREDLIGHT_SHARED_EXPORT ZStructuredLightSystemPlugin : public ZC
 public:
     virtual ~ZStructuredLightSystemPlugin() {}
 
-    virtual QList<ZStructuredLightSystem*> getAll() = 0;
+    virtual QList<QString> getAll() = 0;
+
+    virtual Z3D::ZStructuredLightSystem::Ptr get(QSettings *settings) = 0;
 };
 
 } // namespace Z3D

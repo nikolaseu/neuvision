@@ -1,5 +1,10 @@
 #include "zsinglecamerastereosls.h"
 
+#include "zcameracalibrationprovider.h"
+#include "zcalibratedcameraprovider.h"
+
+#include <QLabel>
+
 namespace Z3D
 {
 
@@ -26,12 +31,18 @@ QString ZSingleCameraStereoSLS::displayName() const
 
 void ZSingleCameraStereoSLS::init(QSettings *settings)
 {
+    camera = CalibratedCameraProvider::getCalibratedCamera(settings);
 
+    settings->beginGroup("ProjectorCalibration");
+    {
+        projectorCalibration =  ZCameraCalibrationProvider::getCalibration(settings);
+    }
+    settings->endGroup();
 }
 
 QWidget *ZSingleCameraStereoSLS::configWidget()
 {
-    return nullptr;
+    return new QLabel("TO DO");
 }
 
 void ZSingleCameraStereoSLS::onPatternProjected(ZProjectedPattern::Ptr pattern)

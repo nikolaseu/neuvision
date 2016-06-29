@@ -25,11 +25,29 @@ QString ZStereoSLSPlugin::version()
     return Z3D_VERSION_STR;
 }
 
-QList<ZStructuredLightSystem *> ZStereoSLSPlugin::getAll()
+QList<QString> ZStereoSLSPlugin::getAll()
 {
-    return QList<ZStructuredLightSystem *>()
-            << new ZDualCameraStereoSLS()
-            << new ZSingleCameraStereoSLS();
+    return QList<QString>()
+            << "DualCamera"
+            << "Projector+Camera";
+}
+
+ZStructuredLightSystem::Ptr ZStereoSLSPlugin::get(QSettings *settings)
+{
+    ZStructuredLightSystem::Ptr sls;
+
+    const QString mode = settings->value("Mode").toString();
+    if (mode == "DualCamera") {
+        sls = ZStructuredLightSystem::Ptr(new ZDualCameraStereoSLS());
+    } else if (mode == "Projector+Camera") {
+        sls = ZStructuredLightSystem::Ptr(new ZSingleCameraStereoSLS());
+    }
+
+    if (sls) {
+        sls->init(settings);
+    }
+
+    return sls;
 }
 
 } // namespace Z3D

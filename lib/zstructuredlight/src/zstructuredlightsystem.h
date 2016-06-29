@@ -25,6 +25,8 @@ class Z3D_STRUCTUREDLIGHT_SHARED_EXPORT ZStructuredLightSystem : public QObject
     Q_PROPERTY(bool debugShowFringes READ debugShowFringes WRITE setDebugShowFringes NOTIFY debugShowFringesChanged)
 
 public:
+    typedef QSharedPointer<ZStructuredLightSystem> Ptr;
+
     explicit ZStructuredLightSystem(QObject *parent = 0);
 
     virtual QString id() const = 0;
