@@ -15,8 +15,13 @@ public:
     ~ZSingleCameraStereoSLS();
 
 private:
+    void processPatterns();
+
     ZCalibratedCamera::Ptr camera;
     ZCameraCalibration::Ptr projectorCalibration;
+
+    ZProjectedPattern::Ptr projectedPattern;
+    std::vector<ZDecodedPattern::Ptr> decodedPatterns;
 
     // ZStructuredLightSystem interface
 public:
