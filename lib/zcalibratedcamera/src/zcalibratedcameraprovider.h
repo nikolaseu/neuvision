@@ -13,6 +13,8 @@ class Z3D_CALIBRATEDCAMERA_SHARED_EXPORT CalibratedCameraProvider
 public:
     static QList<Z3D::ZCalibratedCamera::Ptr> loadCameras(QString folder = QString());
 
+    static Z3D::ZCalibratedCamera::Ptr getCalibratedCamera(QSettings *settings);
+
 protected:
     CalibratedCameraProvider();
 };

@@ -53,36 +53,48 @@ QList<Z3D::ZCalibratedCamera::Ptr> CalibratedCameraProvider::loadCameras(QString
         qDebug() << "found" << fileName;
         QSettings settings(configDir.absoluteFilePath(fileName), QSettings::IniFormat);
 
-        Z3D::ZCameraInterface::Ptr camera;
-        Z3D::ZCameraCalibration::Ptr cameraCalibration;
+        ZCalibratedCamera::Ptr calibratedCamera = getCalibratedCamera(&settings);
 
-        /// camera
-        settings.beginGroup("Camera");
-        {
-            camera = ZCameraProvider::getCamera(&settings);
-            if (!camera) {
-                /// we can't do anything without a camera
-                qWarning() << "unable to load camera";
-                continue;
-            }
+        if (!calibratedCamera) {
+            qWarning() << "unable to load calibrated camera";
+            continue;
         }
-        settings.endGroup();
-
-        /// camera calibration
-        settings.beginGroup("CameraCalibration");
-        {
-            cameraCalibration = ZCameraCalibrationProvider::getCalibration(&settings);
-            if (!cameraCalibration) {
-                qWarning() << "unable to load camera calibration";
-            }
-        }
-        settings.endGroup();
 
         /// add to list
-        cameraList << Z3D::ZCalibratedCamera::Ptr(new ZCalibratedCamera(camera, cameraCalibration));
+        cameraList << Z3D::ZCalibratedCamera::Ptr(calibratedCamera);
     }
 
     return cameraList;
+}
+
+ZCalibratedCamera::Ptr CalibratedCameraProvider::getCalibratedCamera(QSettings *settings)
+{
+    Z3D::ZCameraInterface::Ptr camera;
+    Z3D::ZCameraCalibration::Ptr cameraCalibration;
+
+    /// camera
+    settings->beginGroup("Camera");
+    {
+        camera = ZCameraProvider::getCamera(settings);
+        if (!camera) {
+            qWarning() << "unable to load camera";
+            return ZCalibratedCamera::Ptr(nullptr);
+        }
+    }
+    settings->endGroup();
+
+    /// camera calibration
+    settings->beginGroup("CameraCalibration");
+    {
+        cameraCalibration = ZCameraCalibrationProvider::getCalibration(settings);
+        if (!cameraCalibration) {
+            qWarning() << "unable to load camera calibration";
+            return ZCalibratedCamera::Ptr(nullptr);
+        }
+    }
+    settings->endGroup();
+
+    return ZCalibratedCamera::Ptr(new ZCalibratedCamera(camera, cameraCalibration));
 }
 
 } // namespace Z3D

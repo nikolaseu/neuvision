@@ -60,7 +60,12 @@ ZBinaryPatternProjection::~ZBinaryPatternProjection()
         m_dlpview->deleteLater();
 }
 
-QString ZBinaryPatternProjection::displayName()
+QString ZBinaryPatternProjection::id() const
+{
+    return QString("Binary");
+}
+
+QString ZBinaryPatternProjection::displayName() const
 {
     return QString("Binary");
 }
@@ -79,15 +84,8 @@ void ZBinaryPatternProjection::hideProjectionWindow()
 void ZBinaryPatternProjection::setProjectionWindowGeometry(const QRect &geometry)
 {
     m_dlpview->setGeometry(geometry);
-    //m_dlpview->setGeometry(geometry.center().x()-60, geometry.center().y()-60, 120, 120);
 
-    /// to skip useless patterns
-    /// log2(number) == log(number)/log(2)
-    m_maxUsefulPatterns = ceil(log((double)geometry.width())/log(2.));
-
-    qDebug() << "geometry:" << geometry << "maxUsefulPatterns:" << m_maxUsefulPatterns;
-
-    setAutomaticPatternCount(m_automaticPatternCount);
+    updateMaxUsefulPatterns();
 }
 
 QWidget *ZBinaryPatternProjection::configWidget()
@@ -158,6 +156,38 @@ void ZBinaryPatternProjection::beginScan()
     qDebug() << "acquisition finished in" << acquisitionTime.elapsed() << "msecs";
 
     emit finishAcquisition();
+
+    /// create the pattern that was just projected
+    Z3D::ZProjectedPattern::Ptr pattern(new Z3D::ZProjectedPattern);
+    auto &fringePoints = pattern->fringePointsList;
+    const auto geometry = m_dlpview->geometry();
+    const auto projectionHeight = geometry.height();
+    const auto projectionWidth = geometry.width();
+    const int fringeStep = int(pow(2, firstPatternToShow));
+    if (m_vertical) {
+        for (int x = fringeStep-1; x<projectionWidth-1; x+=fringeStep) {
+            std::vector<cv::Vec2f> fringe;
+            fringe.reserve(projectionHeight);
+            for (int y = 0; y<projectionHeight; ++y) {
+                fringe.push_back(cv::Vec2f(0.5f+x, y));
+            }
+            fringePoints[x] = fringe;
+        }
+    } else {
+        for (int y = fringeStep-1; y<projectionHeight-1; y+=fringeStep) {
+            std::vector<cv::Vec2f> fringe;
+            fringe.reserve(projectionWidth);
+            for (int x = 0; x<projectionWidth; ++x) {
+                fringe.push_back(cv::Vec2f(x, 0.5f+y));
+            }
+            fringePoints[y] = fringe;
+        }
+    }
+    qDebug() << "pattern has" << fringePoints.size() << "fringes";
+    /// to know how many point we could have (to reserve memory)
+    pattern->updatePointCount();
+    /// notify possible listeners
+    emit patternProjected(pattern);
 
     /// return previous state
     setPreviewEnabled(previewWasEnabled);
@@ -327,6 +357,8 @@ void ZBinaryPatternProjection::setVertical(bool arg)
     if (m_vertical != arg) {
         m_vertical = arg;
         emit verticalChanged(arg);
+
+        updateMaxUsefulPatterns();
     }
 }
 
@@ -438,6 +470,23 @@ void ZBinaryPatternProjection::setAutomaticPatternCount(bool arg)
     if (m_automaticPatternCount) {
         setNumPatterns(m_maxUsefulPatterns);
     }
+}
+
+void ZBinaryPatternProjection::updateMaxUsefulPatterns()
+{
+    const auto& geometry = m_dlpview->geometry();
+
+    /// to skip useless patterns
+    /// log2(number) == log(number)/log(2)
+    if (m_vertical) {
+        m_maxUsefulPatterns = int(ceil(log(double(geometry.width()))/log(2.)));
+    } else {
+        m_maxUsefulPatterns = int(ceil(log(double(geometry.height()))/log(2.)));
+    }
+
+    qDebug() << "geometry:" << geometry << "maxUsefulPatterns:" << m_maxUsefulPatterns;
+
+    setAutomaticPatternCount(m_automaticPatternCount);
 }
 
 } // namespace Z3D

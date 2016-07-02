@@ -22,7 +22,8 @@ public:
 
     // ZStructuredLightSystemPlugin interface
 public:
-    virtual QList<ZStructuredLightSystem *> getAll() override;
+    virtual QList<QString> getAll() override;
+    virtual ZStructuredLightSystem::Ptr get(QSettings *settings) override;
 };
 
 } // namespace Z3D

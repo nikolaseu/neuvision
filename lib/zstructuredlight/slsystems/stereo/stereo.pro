@@ -11,18 +11,22 @@ DESTDIR       = $$Z3D_BUILD_DIR/plugins/structuredlight
 VERSION       = $$Z3D_VERSION
 HEADERS       = \
     zstereosls.h \
-    zstereoslsconfigwidget.h \
     zstereosystemimpl.h \
-    zstereoslsplugin.h
+    zstereoslsplugin.h \
+    zsinglecamerastereosls.h \
+    zdualcamerastereosls.h \
+    zdualcamerastereoslsconfigwidget.h
 
 SOURCES       = \
     zstereosls.cpp \
-    zstereoslsconfigwidget.cpp \
     zstereosystemimpl.cpp \
-    zstereoslsplugin.cpp
+    zstereoslsplugin.cpp \
+    zsinglecamerastereosls.cpp \
+    zdualcamerastereosls.cpp \
+    zdualcamerastereoslsconfigwidget.cpp
 
 FORMS        += \
-    zstereoslsconfigwidget.ui
+    zdualcamerastereoslsconfigwidget.ui
 
 
 

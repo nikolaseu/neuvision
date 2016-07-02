@@ -56,15 +56,7 @@ MainWindow::~MainWindow()
 
 void MainWindow::init()
 {
-    /// connect combobox to slot
-    connect(ui->structuredLightSystemComboBox, SIGNAL(currentIndexChanged(int)),
-            this, SLOT(onStructuredLightSystemTypeChanged(int)));
-
-    /// add structured light systems
-    m_structuredLightList << Z3D::ZStructuredLightSystemProvider::getAll();
-    for (auto *structuredLightSystem : m_structuredLightList) {
-        ui->structuredLightSystemComboBox->addItem(structuredLightSystem->displayName());
-    }
+    initStructuredLightSystem();
 
     /// connect combobox to slot
     connect(ui->patternTypeComboBox, SIGNAL(currentIndexChanged(int)),
@@ -72,8 +64,47 @@ void MainWindow::init()
 
     /// add types of pattern projection
     m_patternProjectionList << Z3D::ZPatternProjectionProvider::getAll();
-    for (auto *patternProjection : m_patternProjectionList) {
+    for (const auto *patternProjection : m_patternProjectionList) {
         ui->patternTypeComboBox->addItem(patternProjection->displayName());
+    }
+}
+
+void MainWindow::initStructuredLightSystem()
+{
+    QDir configDir = QDir::current();
+#if defined(Q_OS_WIN)
+//        if (pluginsDir.dirName().toLower() == "debug" || pluginsDir.dirName().toLower() == "release")
+//            pluginsDir.cdUp();
+#elif defined(Q_OS_MAC)
+    if (configDir.dirName() == "MacOS") {
+        configDir.cdUp();
+        configDir.cdUp();
+        configDir.cdUp();
+    }
+#endif
+
+    QString settingsFile = configDir.absoluteFilePath(QString("%1.ini").arg(QApplication::applicationName()));
+    qDebug() << "trying to load config from:" << settingsFile;
+    QSettings settings(settingsFile, QSettings::IniFormat);
+
+    m_currentStructuredLightSystem = Z3D::ZStructuredLightSystemProvider::get(&settings);
+
+    if (m_currentStructuredLightSystem) {
+        m_currentStructuredLightSystem->setPatternProjection(m_currentPatternProjection);
+
+        connect(m_currentStructuredLightSystem.data(), &Z3D::ZStructuredLightSystem::readyChanged,
+                ui->centralwidget, &QWidget::setEnabled);
+        connect(m_currentStructuredLightSystem.data(), &Z3D::ZStructuredLightSystem::scanFinished,
+                this, &MainWindow::onScanFinished);
+        connect(ui->startAcquisitionButton, &QPushButton::clicked,
+                m_currentStructuredLightSystem.data(), &Z3D::ZStructuredLightSystem::start);
+
+        /// add config widget
+        QWidget *currentWidget = m_currentStructuredLightSystem->configWidget();
+        ui->structuredLightSystemConfigLayout->addWidget(currentWidget);
+        currentWidget->setVisible(true);
+
+        ui->structuredLightSystemComboBox->addItem(m_currentStructuredLightSystem->displayName());
     }
 }
 
@@ -94,44 +125,13 @@ void MainWindow::onPatternProjectionTypeChanged(int index)
 
     /// update current pattern finder
     m_currentPatternProjection = m_patternProjectionList[index];
-    m_currentStructuredLightSystem->setPatternProjection(m_currentPatternProjection);
+    if (m_currentStructuredLightSystem) {
+        m_currentStructuredLightSystem->setPatternProjection(m_currentPatternProjection);
+    }
 
     /// add config widget
     QWidget *currentWidget = m_currentPatternProjection->configWidget();
     ui->patternProjectionConfigLayout->addWidget(currentWidget);
-    currentWidget->setVisible(true);
-}
-
-void MainWindow::onStructuredLightSystemTypeChanged(int index)
-{
-    /// remove previous config widget and hide it
-    if (m_currentStructuredLightSystem) {
-        QWidget *previousWidget = m_currentStructuredLightSystem->configWidget();
-        previousWidget->setVisible(false);
-        ui->structuredLightSystemConfigLayout->removeWidget(previousWidget);
-
-        disconnect(m_currentStructuredLightSystem, &Z3D::ZStructuredLightSystem::readyChanged,
-                   ui->centralwidget, &QWidget::setEnabled);
-        disconnect(m_currentStructuredLightSystem, &Z3D::ZStructuredLightSystem::scanFinished,
-                   this, &MainWindow::onScanFinished);
-        disconnect(ui->startAcquisitionButton, &QPushButton::clicked,
-                   m_currentStructuredLightSystem, &Z3D::ZStructuredLightSystem::start);
-    }
-
-    /// update current structured light system
-    m_currentStructuredLightSystem = m_structuredLightList[index];
-    m_currentStructuredLightSystem->setPatternProjection(m_currentPatternProjection);
-
-    connect(m_currentStructuredLightSystem, &Z3D::ZStructuredLightSystem::readyChanged,
-            ui->centralwidget, &QWidget::setEnabled);
-    connect(m_currentStructuredLightSystem, &Z3D::ZStructuredLightSystem::scanFinished,
-            this, &MainWindow::onScanFinished);
-    connect(ui->startAcquisitionButton, &QPushButton::clicked,
-            m_currentStructuredLightSystem, &Z3D::ZStructuredLightSystem::start);
-
-    /// add config widget
-    QWidget *currentWidget = m_currentStructuredLightSystem->configWidget();
-    ui->structuredLightSystemConfigLayout->addWidget(currentWidget);
     currentWidget->setVisible(true);
 }
 

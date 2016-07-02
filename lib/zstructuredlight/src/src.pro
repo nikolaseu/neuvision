@@ -18,7 +18,9 @@ SOURCES += \
     zsimplepointcloud.cpp \
     zstructuredlightsystem.cpp \
     zthreephase.cpp \
-    zstructuredlightsystemprovider.cpp
+    zstructuredlightsystemprovider.cpp \
+    zprojectedpattern.cpp \
+    zstructuredlightpattern.cpp
 
 HEADERS += \
     zpatternprojectionprovider.h \
@@ -32,7 +34,9 @@ HEADERS += \
     zthreephase.h \
     zpatternprojectionplugin.h \
     zstructuredlightsystemplugin.h \
-    zstructuredlightsystemprovider.h
+    zstructuredlightsystemprovider.h \
+    zprojectedpattern.h \
+    zstructuredlightpattern.h
 
 RESOURCES += \
     resources.qrc
