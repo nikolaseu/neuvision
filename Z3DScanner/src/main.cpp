@@ -76,7 +76,11 @@ int main(int argc, char* argv[])
 
         app.finishSplashScreen(&window);
 
+#if defined(Q_OS_ANDROID)
+        window.showFullScreen();
+#else
         window.show();
+#endif
 
         result = app.exec();
     }

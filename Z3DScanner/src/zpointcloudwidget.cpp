@@ -308,7 +308,9 @@ void ZPointCloudWidget::paintGL()
     m_program->setUniformValue(m_normalMatrixLoc, normalMatrix);
 
     if (m_pointCloud) {
+#if !defined(Q_OS_ANDROID)
         glPointSize(devicePixelRatio() * m_pointSize);
+#endif
         glDrawArrays(GL_POINTS, 0, m_pointCloud->vertexCount());
     }
 

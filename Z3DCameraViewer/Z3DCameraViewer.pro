@@ -1,6 +1,6 @@
 include(../NEUVision.pri)
 
-QT       += core gui
+QT       += core gui multimedia
 
 greaterThan(QT_MAJOR_VERSION, 4) {
     QT += widgets
@@ -43,4 +43,5 @@ include($$PWD/../lib/zcameraacquisition/zcameraacquisition.pri)
 # Android specific
 android:{
     ANDROID_PACKAGE_SOURCE_DIR = $$PWD/../android-sources
+    ANDROID_EXTRA_PLUGINS *= $$Z3D_BUILD_DIR/plugins
 }
