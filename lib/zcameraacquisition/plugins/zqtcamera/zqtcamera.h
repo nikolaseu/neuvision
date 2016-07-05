@@ -19,17 +19,18 @@ public:
     ~ZQtCamera();
 
 public slots:
-    virtual bool startAcquisition();
-    virtual bool stopAcquisition();
+    virtual bool startAcquisition() override;
+    virtual bool stopAcquisition() override;
 
-    virtual QList<ZCameraAttribute> getAllAttributes();
-    virtual bool setAttribute(const QString &name, const QVariant &value);
-    virtual QVariant getAttribute(const QString &name) const;
+    virtual QList<ZCameraAttribute> getAllAttributes() override;
+    virtual bool setAttribute(const QString &name, const QVariant &value) override;
+    virtual QVariant getAttribute(const QString &name) const override;
 
 protected slots:
-    virtual bool setAttribute(const QString &name, const QVariant &value, bool notify);
+    virtual bool setAttribute(const QString &name, const QVariant &value, bool notify) override;
 
     void onImageCaptured(int id, const QImage & preview);
+    void onImageSaved(int id, const QString &fileName);
     void onImageAvailable(int id, const QVideoFrame & buffer);
     void onCaptureError(int id, QCameraImageCapture::Error error, QString message);
     void onReadyForCaptureChanged(bool ready);
@@ -37,6 +38,8 @@ protected slots:
 private:
     QCamera *m_qcamera;
     QCameraImageCapture *m_qcameraImageCapture;
+
+    bool m_isCapturing;
 };
 
 } // namespace Z3D
