@@ -314,8 +314,9 @@ void ZPointCloudWidget::paintGL()
         glDrawArrays(GL_POINTS, 0, m_pointCloud->vertexCount());
     }
 
-    if (glGetError() != GL_NO_ERROR) {
-        qWarning() << "OpenGL error:" << glGetError();
+    GLenum error = glGetError();
+    if (error != GL_NO_ERROR) {
+        qWarning() << "OpenGL error:" << error;
     }
 
     m_program->release();
