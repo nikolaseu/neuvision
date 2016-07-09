@@ -14,14 +14,16 @@ zcalibratedcamera.depends = zcameraacquisition zcameracalibration
 SUBDIRS  += zcameracalibrator
 zcameracalibrator.depends = zcalibratedcamera zcameraacquisition zcameracalibration
 
-SUBDIRS  += zpointcloud
-zpointcloud.depends = zcalibratedcamera zcameraacquisition zcameracalibration
+!android:{
+    SUBDIRS  += zpointcloud
+    zpointcloud.depends = zcalibratedcamera zcameraacquisition zcameracalibration
 
-SUBDIRS  += zlasertriangulation
-zlasertriangulation.depends = zcalibratedcamera zcameraacquisition zcameracalibration zpointcloud
+    SUBDIRS  += zlasertriangulation
+    zlasertriangulation.depends = zcalibratedcamera zcameraacquisition zcameracalibration zpointcloud
+}
 
 SUBDIRS  += zstructuredlight
-zstructuredlight.depends = zcore zpointcloud zcalibratedcamera zcameraacquisition zcameracalibration zcameracalibrator
+zstructuredlight.depends = zcore zcalibratedcamera zcameraacquisition zcameracalibration zcameracalibrator
 
 !unix:greaterThan(QT_MAJOR_VERSION, 4) {
     # Qt >= 5
@@ -29,7 +31,8 @@ zstructuredlight.depends = zcore zpointcloud zcalibratedcamera zcameraacquisitio
     # Qt 4
 #    SUBDIRS  += zlasertriangulation
 #    zlasertriangulation.depends = zpointcloud
-
-    SUBDIRS  += zlasertriangulationcalibrator
-    zlasertriangulationcalibrator.depends = zcalibratedcamera zcameraacquisition zcameracalibration zcameracalibrator zpointcloud
+    !android:{
+        SUBDIRS  += zlasertriangulationcalibrator
+        zlasertriangulationcalibrator.depends = zcalibratedcamera zcameraacquisition zcameracalibration zcameracalibrator zpointcloud
+    }
 }

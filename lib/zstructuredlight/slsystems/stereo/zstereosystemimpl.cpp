@@ -144,10 +144,10 @@ struct ParallelFringeProcessingImpl
                         camLcal->getWorldRayForSubPixel(firstMeanPoint[0], firstMeanPoint[1], firstRayOrigin, firstRayDirection);
                         camLcal->getWorldRayForSubPixel(secondMeanPoint[0], secondMeanPoint[1], secondRayOrigin, secondRayDirection);
                     } else {
-                        camRcal->getWorldRayForPixel(int(std::round(realPoint[0])), int(std::round(realPoint[1])), realRayOrigin, realRayDirection);
+                        camRcal->getWorldRayForPixel(int(round(realPoint[0])), int(round(realPoint[1])), realRayOrigin, realRayDirection);
 
-                        camLcal->getWorldRayForPixel(int(std::round(firstMeanPoint[0])), int(std::round(firstMeanPoint[1])), firstRayOrigin, firstRayDirection);
-                        camLcal->getWorldRayForPixel(int(std::round(secondMeanPoint[0])), int(std::round(secondMeanPoint[1])), secondRayOrigin, secondRayDirection);
+                        camLcal->getWorldRayForPixel(int(round(firstMeanPoint[0])), int(round(firstMeanPoint[1])), firstRayOrigin, firstRayDirection);
+                        camLcal->getWorldRayForPixel(int(round(secondMeanPoint[0])), int(round(secondMeanPoint[1])), secondRayOrigin, secondRayDirection);
                     }
                 }
             } else {
@@ -170,10 +170,10 @@ struct ParallelFringeProcessingImpl
                         camRcal->getWorldRayForSubPixel(firstMeanPoint[0], firstMeanPoint[1], firstRayOrigin, firstRayDirection);
                         camRcal->getWorldRayForSubPixel(secondMeanPoint[0], secondMeanPoint[1], secondRayOrigin, secondRayDirection);
                     } else {
-                        camLcal->getWorldRayForPixel(int(std::round(realPoint[0])), int(std::round(realPoint[1])), realRayOrigin, realRayDirection);
+                        camLcal->getWorldRayForPixel(int(round(realPoint[0])), int(round(realPoint[1])), realRayOrigin, realRayDirection);
 
-                        camRcal->getWorldRayForPixel(int(std::round(firstMeanPoint[0])), int(std::round(firstMeanPoint[1])), firstRayOrigin, firstRayDirection);
-                        camRcal->getWorldRayForPixel(int(std::round(secondMeanPoint[0])), int(std::round(secondMeanPoint[1])), secondRayOrigin, secondRayDirection);
+                        camRcal->getWorldRayForPixel(int(round(firstMeanPoint[0])), int(round(firstMeanPoint[1])), firstRayOrigin, firstRayDirection);
+                        camRcal->getWorldRayForPixel(int(round(secondMeanPoint[0])), int(round(secondMeanPoint[1])), secondRayOrigin, secondRayDirection);
                     }
                 }
             }

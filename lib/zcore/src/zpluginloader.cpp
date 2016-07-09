@@ -40,10 +40,16 @@ void ZPluginLoader::loadPlugins(QString folder)
             pluginsDir.cdUp();
             pluginsDir.cdUp();
         }
+#elif defined(Q_OS_ANDROID)
+        if (pluginsDir.dirName() == "files") {
+            pluginsDir.cdUp();
+            folder = "lib";
+        }
 #endif
 
         if (!pluginsDir.cd(folder)) {
-            qWarning() << "plugins folder" << folder << "not found in" << pluginsDir.absolutePath();
+            qWarning() << "plugins folder" << folder << "not found in" << pluginsDir.absolutePath()
+                       << "available dirs/files:" << pluginsDir.entryList(QDir::AllEntries);
             return;
         }
     }
@@ -55,11 +61,17 @@ void ZPluginLoader::loadPlugins(QString folder)
     filters << "*.dll";
 #elif defined(Q_OS_MAC)
     filters << "*.dylib";
+#elif defined(Q_OS_ANDROID)
+    filters << "libplugins_*.so";
 #else
     filters << "*.so";
 #endif
 
+#if defined(Q_OS_ANDROID)
+    auto foldersList = QStringList() << ".";
+#else
     auto foldersList = pluginsDir.entryList(QDir::AllDirs | QDir::NoDot | QDir::NoDotDot);
+#endif
     auto folderCount = foldersList.size();
     auto folderIndex = -1;
     for (const auto &folderName : foldersList) {
@@ -68,8 +80,6 @@ void ZPluginLoader::loadPlugins(QString folder)
         qDebug() << "loading plugins from" << pluginsFolderName;
         QDir currentPluginsDir(pluginsFolderName);
         currentPluginsDir.setNameFilters(filters);
-
-        QList<QObject *> pluginsList;
 
         auto fileList = currentPluginsDir.entryList(QDir::Files);
         auto fileCount = fileList.size();
@@ -89,13 +99,16 @@ void ZPluginLoader::loadPlugins(QString folder)
                          << "id:" << plugin->id() << "\n"
                          << "version:" << plugin->version() << "\n"
                          << "metaData:" << loader.metaData();
-                pluginsList << plugin;
+#if defined(Q_OS_ANDROID)
+                QString pluginType = fileName.section('_', 1, 1);
+                m_plugins[pluginType] << plugin;
+#else
+                m_plugins[folderName] << plugin;
+#endif
             } else {
                 qWarning() << "error loading plugin" << fileName << "->" << loader.errorString();
             }
         }
-
-        m_plugins[folderName] = pluginsList;
     }
 
     emit progressChanged(1.f, tr("Finished loading plugins"));

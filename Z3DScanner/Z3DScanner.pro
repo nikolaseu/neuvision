@@ -4,7 +4,7 @@ TEMPLATE = app
 
 TARGET = Z3DScanner
 
-QT += core gui opengl #declarative
+QT += core gui opengl multimedia
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets quick qml concurrent
 
@@ -76,3 +76,10 @@ include($$PWD/../lib/zstructuredlight/zstructuredlight.pri)
 ###############################################################################
 # Camera calibrator
 include($$PWD/../lib/zcameracalibrator/zcameracalibrator.pri)
+
+###############################################################################
+# Android specific
+android:{
+    ANDROID_PACKAGE_SOURCE_DIR = $$PWD/../android-sources
+    ANDROID_EXTRA_PLUGINS *= $$Z3D_BUILD_DIR/plugins
+}

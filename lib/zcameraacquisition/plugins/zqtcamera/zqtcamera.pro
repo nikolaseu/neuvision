@@ -3,7 +3,7 @@ include(../../../../NEUVision.pri)
 TEMPLATE      = lib
 CONFIG       += plugin
 QT           -= gui
-QT           += multimedia
+QT           += multimedia multimediawidgets
 TARGET        = $$qtLibraryTarget(zqtcameraplugin)
 DESTDIR       = $$Z3D_BUILD_DIR/plugins/cameraacquisition
 VERSION       = $$Z3D_VERSION
