@@ -23,3 +23,7 @@ greaterThan(QT_MAJOR_VERSION, 4) {
 
 # define Z3D_RELEASE when building in release mode
 CONFIG(release, debug|release): DEFINES += Z3D_RELEASE
+
+macx {
+QMAKE_MAC_SDK = macosx10.12
+}
