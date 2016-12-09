@@ -1,17 +1,17 @@
 ################################################################################
-## VTK 7.0 for Mac OSX
+## VTK 7.1 for Mac OSX
 ################################################################################
 INCLUDEPATH += \
-    /usr/local/opt/vtk/include/vtk-7.0/
+    /usr/local/opt/vtk/include/vtk-7.1/
 
 LIBS += \
     -L/usr/local/opt/vtk/lib/ \
-        -lvtkCommonCore-7.0 \
-        -lvtkCommonDataModel-7.0 \
-        -lvtkRenderingCore-7.0 \
-        -lvtkCommonMath-7.0 \
-        -lvtkGUISupportQt-7.0 \
-        -lvtkRenderingLOD-7.0 \
+        -lvtkCommonCore-7.1 \
+        -lvtkCommonDataModel-7.1 \
+        -lvtkRenderingCore-7.1 \
+        -lvtkCommonMath-7.1 \
+        -lvtkGUISupportQt-7.1 \
+        -lvtkRenderingLOD-7.1 \
         #-lvtkCommonExecutionModel \
         #-lvtksys \
         #-lQVTKWidgetPlugin \
