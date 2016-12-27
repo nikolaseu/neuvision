@@ -2,8 +2,10 @@
 
 #include "zcoreplugin.h"
 
+#include <QCoreApplication>
 #include <QDebug>
 #include <QDir>
+#include <QFileInfo>
 #include <QPluginLoader>
 
 namespace Z3D
@@ -22,7 +24,7 @@ ZPluginLoader *ZPluginLoader::instance()
 
 void ZPluginLoader::loadPlugins(QString folder)
 {
-    QDir pluginsDir = QDir::current();
+    QDir pluginsDir = QFileInfo(QCoreApplication::applicationFilePath()).absoluteDir();
 
     /// if no folder is indicated, use standard search path, i.e. "plugins"
     if (folder.isEmpty()) {
