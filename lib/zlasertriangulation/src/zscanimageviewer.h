@@ -17,7 +17,7 @@
  * along with Z3D.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-﻿#pragma once
+#pragma once
 
 #include "zlasertriangulation_global.h"
 #include "zscanimageviewerfilter.h"

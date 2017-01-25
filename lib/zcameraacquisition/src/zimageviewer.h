@@ -17,7 +17,7 @@
  * along with Z3D.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-﻿#pragma once
+#pragma once
 
 #include "zcameraacquisition_global.h"
 #include "zcameraimage.h"
