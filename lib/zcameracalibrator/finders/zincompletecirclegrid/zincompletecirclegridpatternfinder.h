@@ -51,7 +51,7 @@ signals:
     void refinePatternPointsChanged(bool refinePatternPoints);
 
 public slots:
-    virtual bool findCalibrationPattern(cv::Mat image, std::vector<cv::Point2f> &corners, std::vector<cv::Point3f> &objectPoints);
+    virtual bool findCalibrationPattern(cv::Mat image, std::vector<cv::Point2f> &corners, std::vector<cv::Point3f> &patternPoints);
 
     void setMaxColumns(int columns);
     void setMaxRows(int rows);

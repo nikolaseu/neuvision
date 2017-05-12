@@ -70,12 +70,18 @@ public slots:
     void setColWidth(double colWidth);
     void setRowHeight(double rowHeight);
 
+    bool findCalibrationPattern(
+            cv::Mat image,
+            std::vector<cv::Point2f> &corners,
+            std::vector<cv::Point3f> &objectPoints,
+            std::vector<cv::Point3f> &patternPoints);
+
+protected slots:
     virtual bool findCalibrationPattern(
             cv::Mat image,
             std::vector<cv::Point2f> &corners,
-            std::vector<cv::Point3f> &objectPoints);
+            std::vector<cv::Point3f> &patternPoints) = 0;
 
-protected slots:
     /// returns the hash of the parameters of this class, includign pattern type, id, size, etc
     QString getBaseHash();
 
@@ -87,6 +93,7 @@ protected:
 
     cv::Size m_boardSize;
 
+private:
     double m_colWidth;
     double m_rowHeight;
 };

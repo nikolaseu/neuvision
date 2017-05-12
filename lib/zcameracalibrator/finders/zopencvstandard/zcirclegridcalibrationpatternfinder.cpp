@@ -50,23 +50,21 @@ QWidget *ZCircleGridCalibrationPatternFinder::configWidget()
     return m_configWidget;
 }
 
-bool ZCircleGridCalibrationPatternFinder::findCalibrationPattern(cv::Mat image, std::vector<cv::Point2f> &corners, std::vector<cv::Point3f> &objectPoints)
+bool ZCircleGridCalibrationPatternFinder::findCalibrationPattern(cv::Mat image, std::vector<cv::Point2f> &corners, std::vector<cv::Point3f> &patternPoints)
 {
-    ZCalibrationPatternFinder::findCalibrationPattern(image, corners, objectPoints);
-
     bool found = cv::findCirclesGrid(image, m_boardSize, corners);
 
     if (found) {
         /// clear vector
-        objectPoints.clear();
+        patternPoints.clear();
 
         /// reserve space
-        objectPoints.reserve(columns() * rows());
+        patternPoints.reserve(columns() * rows());
 
         /// generate world object coordinates
         for (int h=0; h<rows(); ++h) {
             for (int w=0; w<columns(); ++w) {
-                objectPoints.push_back(cv::Point3f(m_colWidth * w, m_rowHeight * h, 0.f));
+                patternPoints.push_back(cv::Point3f(w, h, 0.f));
             }
         }
     }

@@ -76,12 +76,19 @@ void ZCalibrationImageViewer::updateCalibrationImage(ZCalibrationImage::Ptr imag
     if (points.empty())
         return;
 
+    const std::vector<cv::Point3f> &patternPoints = image->detectedPointsInPatternCoordinates();
+
     m_calibrationPoints.reserve( 2*points.size());
 
     int outerCircleRadius = 4; /// actually half radius
     int innerCircleRadius = 2; /// actually half radius
 
-    for (std::vector<cv::Point2f>::const_iterator it = points.begin(); it != points.end(); ++it) {
+    QFont font;
+    font.setPixelSize(11);
+    font.setWeight(QFont::Thin);
+
+    auto itW = patternPoints.cbegin();
+    for (auto it = points.cbegin(); it != points.cend(); ++it, ++itW) {
         if (false) {
             QGraphicsPolygonItem *item = new QGraphicsPolygonItem(m_markerPolygon);
             item->setPen(QPen(QBrush(Qt::blue), 3));
@@ -108,7 +115,9 @@ void ZCalibrationImageViewer::updateCalibrationImage(ZCalibrationImage::Ptr imag
             m_calibrationPoints.push_back(item);
 
             QGraphicsEllipseItem *item2 = new QGraphicsEllipseItem(-innerCircleRadius, -innerCircleRadius, 2*innerCircleRadius, 2*innerCircleRadius);
-            if (it == points.begin())
+            if ((itW->x == 0.f && itW->y == 0.f) ||
+                (itW->x == 2.f && itW->y == 0.f) ||
+                (itW->x == 0.f && itW->y == 1.f))
                 item2->setPen(QPen(QBrush(Qt::red), innerCircleRadius+2));
             else
                 item2->setPen(QPen(QBrush(Qt::green), innerCircleRadius+2));
@@ -117,6 +126,16 @@ void ZCalibrationImageViewer::updateCalibrationImage(ZCalibrationImage::Ptr imag
             item2->setVisible(m_displayMode != NoMarkers);
             m_scene->addItem(item2);
             m_calibrationPoints.push_back(item2);
+
+            QString text = QString("%1,%2").arg(itW->x).arg(itW->y);
+            QGraphicsSimpleTextItem *item3 = new QGraphicsSimpleTextItem(text);
+            item3->setFont(font);
+            item3->setBrush(QBrush(Qt::red));
+            item3->setFlag(QGraphicsItem::ItemIgnoresTransformations, true);
+            item3->setPos(it->x, it->y);
+            item3->setVisible(m_displayMode != NoMarkers);
+            m_scene->addItem(item3);
+            m_calibrationPoints.push_back(item3);
         }
     }
 }

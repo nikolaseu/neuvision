@@ -123,10 +123,8 @@ bool ZIncompleteCircleGridPatternFinder::refinePatternPoints() const
     return m_refinePatternPoints;
 }
 
-bool ZIncompleteCircleGridPatternFinder::findCalibrationPattern(cv::Mat image, std::vector<cv::Point2f> &corners, std::vector<cv::Point3f> &objectPoints)
+bool ZIncompleteCircleGridPatternFinder::findCalibrationPattern(cv::Mat image, std::vector<cv::Point2f> &corners, std::vector<cv::Point3f> &patternPoints)
 {
-    ZCalibrationPatternFinder::findCalibrationPattern(image, corners, objectPoints);
-
     cv::Mat gray;
 
     /// convert to grayscale when neccessary
@@ -531,9 +529,9 @@ bool ZIncompleteCircleGridPatternFinder::findCalibrationPattern(cv::Mat image, s
                                         /// add to centers
                                         centers.push_back(newImgPointVec[0]);
                                         if (m_isAsymmetricGrid)
-                                            objectCenters.push_back(cv::Point3f((2*j + i % 2)*m_colWidth, i*m_rowHeight, 0.f));
+                                            objectCenters.push_back(cv::Point3f((2*j + i % 2), i, 0.f));
                                         else
-                                            objectCenters.push_back(cv::Point3f(j*m_colWidth, i*m_rowHeight, 0.f));
+                                            objectCenters.push_back(cv::Point3f(j, i, 0.f));
 
 #if defined(DEBUG_PERSPECTIVE_TRANSFORMATION)
                                         const cv::Point2f &newImgPoint = newImgPointVec[0];
@@ -561,16 +559,16 @@ bool ZIncompleteCircleGridPatternFinder::findCalibrationPattern(cv::Mat image, s
                                 /// insert point as is
                                 centers.push_back(detectedPatternPoints.at(indices[0]));
                                 if (m_isAsymmetricGrid)
-                                    objectCenters.push_back(cv::Point3f((2*j + i % 2)*m_colWidth, i*m_rowHeight, 0.f));
+                                    objectCenters.push_back(cv::Point3f((2*j + i % 2), i, 0.f));
                                 else
-                                    objectCenters.push_back(cv::Point3f(j*m_colWidth, i*m_rowHeight, 0.f));
+                                    objectCenters.push_back(cv::Point3f(j, i, 0.f));
                             }
                         }
                     }
                 }
 
                 cv::Mat(centers).copyTo(corners);
-                cv::Mat(objectCenters).copyTo(objectPoints);
+                cv::Mat(objectCenters).copyTo(patternPoints);
 
                 return true;
             } else {
@@ -584,7 +582,7 @@ bool ZIncompleteCircleGridPatternFinder::findCalibrationPattern(cv::Mat image, s
     }
 
     corners.clear();
-    objectPoints.clear();
+    patternPoints.clear();
 
     qDebug() << "nothing found";
     return false;

@@ -222,10 +222,8 @@ void ZChessboardCalibrationPatternFinder::setSubPixEpsilon(double arg)
     }
 }
 
-bool ZChessboardCalibrationPatternFinder::findCalibrationPattern(cv::Mat image, std::vector<cv::Point2f> &corners, std::vector<cv::Point3f> &objectPoints)
+bool ZChessboardCalibrationPatternFinder::findCalibrationPattern(cv::Mat image, std::vector<cv::Point2f> &corners, std::vector<cv::Point3f> &patternPoints)
 {
-    ZCalibrationPatternFinder::findCalibrationPattern(image, corners, objectPoints);
-
     bool found = cv::findChessboardCorners(image,
                                            m_boardSize,
                                            corners,
@@ -239,15 +237,15 @@ bool ZChessboardCalibrationPatternFinder::findCalibrationPattern(cv::Mat image, 
                          cv::TermCriteria( cv::TermCriteria::MAX_ITER + cv::TermCriteria::EPS, m_subPixMaxIter, m_subPixEpsilon ));
 
         /// clear vector
-        objectPoints.clear();
+        patternPoints.clear();
 
         /// reserve space
-        objectPoints.reserve(columns() * rows());
+        patternPoints.reserve(columns() * rows());
 
         /// generate world object coordinates
         for (int h=0; h<rows(); ++h) {
             for (int w=0; w<columns(); ++w) {
-                objectPoints.push_back(cv::Point3f(m_colWidth * w, m_rowHeight * h, 0.f));
+                patternPoints.push_back(cv::Point3f(w, h, 0.f));
             }
         }
     }
