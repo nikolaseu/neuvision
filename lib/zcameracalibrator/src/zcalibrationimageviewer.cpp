@@ -59,6 +59,11 @@ void ZCalibrationImageViewer::setDisplayMode(ZCalibrationImageViewer::DisplayMod
         QGraphicsItem *item = *it;
         item->setVisible(m_displayMode != NoMarkers);
     }
+
+    for (std::vector<QGraphicsItem*>::iterator it = m_calibrationCoords.begin(); it != m_calibrationCoords.end(); ++it) {
+        QGraphicsItem *item = *it;
+        item->setVisible(m_displayMode == ShowMarkersAndCoords);
+    }
 }
 
 void ZCalibrationImageViewer::updateCalibrationImage(ZCalibrationImage::Ptr image)
@@ -68,6 +73,12 @@ void ZCalibrationImageViewer::updateCalibrationImage(ZCalibrationImage::Ptr imag
         delete *it;
     }
     m_calibrationPoints.clear();
+
+    for (std::vector<QGraphicsItem*>::iterator it = m_calibrationCoords.begin(); it != m_calibrationCoords.end(); ++it) {
+        m_scene->removeItem(*it);
+        delete *it;
+    }
+    m_calibrationCoords.clear();
 
     /// use cv::Mat as image, it allows to apply colormap
     ZImageViewer::updateImage(image->mat());
@@ -79,6 +90,7 @@ void ZCalibrationImageViewer::updateCalibrationImage(ZCalibrationImage::Ptr imag
     const std::vector<cv::Point3f> &patternPoints = image->detectedPointsInPatternCoordinates();
 
     m_calibrationPoints.reserve( 2*points.size());
+    m_calibrationCoords.reserve( points.size());
 
     int outerCircleRadius = 4; /// actually half radius
     int innerCircleRadius = 2; /// actually half radius
@@ -133,9 +145,9 @@ void ZCalibrationImageViewer::updateCalibrationImage(ZCalibrationImage::Ptr imag
             item3->setBrush(QBrush(Qt::red));
             item3->setFlag(QGraphicsItem::ItemIgnoresTransformations, true);
             item3->setPos(it->x, it->y);
-            item3->setVisible(m_displayMode != NoMarkers);
+            item3->setVisible(m_displayMode == ShowMarkersAndCoords);
             m_scene->addItem(item3);
-            m_calibrationPoints.push_back(item3);
+            m_calibrationCoords.push_back(item3);
         }
     }
 }

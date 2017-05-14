@@ -118,6 +118,7 @@ ZMultiCameraCalibratorWidget::ZMultiCameraCalibratorWidget(std::vector<ZCalibrat
 
     /// set up image view type
     ui->imageViewTypeComboBox->addItem(tr("View calibration pattern"), ZCalibrationImageViewer::ShowMarkers);
+    ui->imageViewTypeComboBox->addItem(tr("View pattern coords"), ZCalibrationImageViewer::ShowMarkersAndCoords);
     ui->imageViewTypeComboBox->addItem(tr("View original"), ZCalibrationImageViewer::NoMarkers);
 
     m_calibratorWorker->setImageModel(m_model);

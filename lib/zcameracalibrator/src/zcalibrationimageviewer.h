@@ -34,7 +34,8 @@ class Z3D_CAMERACALIBRATOR_SHARED_EXPORT ZCalibrationImageViewer : public ZImage
 public:
     enum DisplayMode {
         NoMarkers = 0,
-        ShowMarkers
+        ShowMarkers,
+        ShowMarkersAndCoords
     };
 
     ZCalibrationImageViewer(QWidget *parent = 0);
@@ -51,6 +52,7 @@ protected:
     QPolygonF m_markerPolygon;
 
     std::vector<QGraphicsItem*> m_calibrationPoints;
+    std::vector<QGraphicsItem*> m_calibrationCoords;
 };
 
 } // namespace Z3D
