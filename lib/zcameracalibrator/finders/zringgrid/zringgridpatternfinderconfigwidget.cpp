@@ -57,10 +57,6 @@ ZRingGridPatternFinderConfigWidget::ZRingGridPatternFinderConfigWidget(ZRingGrid
     QObject::connect(ui->maxSizeRowsSpinBox, SIGNAL(valueChanged(int)),
                      m_patternFinder, SLOT(setMaxRows(int)));
 
-    ui->asymmetricGridCheckBox->setChecked(m_patternFinder->isAsymmetricGrid());
-    QObject::connect(ui->asymmetricGridCheckBox, SIGNAL(toggled(bool)),
-                     m_patternFinder, SLOT(setIsAsymmetricGrid(bool)));
-
     ui->refinePatternPointsCheckBox->setChecked(m_patternFinder->refinePatternPoints());
     QObject::connect(ui->refinePatternPointsCheckBox, SIGNAL(toggled(bool)),
                      m_patternFinder, SLOT(setRefinePatternPoints(bool)));

@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>227</width>
-    <height>408</height>
+    <width>228</width>
+    <height>383</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -147,13 +147,6 @@
        <widget class="QCheckBox" name="refinePatternPointsCheckBox">
         <property name="text">
          <string>Refine pattern points</string>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="0">
-       <widget class="QCheckBox" name="asymmetricGridCheckBox">
-        <property name="text">
-         <string>Asymmetric grid</string>
         </property>
        </widget>
       </item>

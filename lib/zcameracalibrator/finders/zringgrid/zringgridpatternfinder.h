@@ -38,23 +38,17 @@ public:
     int maxColumns() const;
     int maxRows() const;
 
-    bool isAsymmetricGrid() const;
-
     bool refinePatternPoints() const;
 
 signals:
     void maxColumnsChanged(int columns);
     void maxRowsChanged(int rows);
 
-    void isAsymmetricGridChanged(bool isAsymetric);
-
     void refinePatternPointsChanged(bool refinePatternPoints);
 
 public slots:
     void setMaxColumns(int columns);
     void setMaxRows(int rows);
-
-    void setIsAsymmetricGrid(bool isAsymmetric);
 
     void setRefinePatternPoints(bool refinePatternPoints);
 
@@ -66,8 +60,6 @@ protected:
     QWidget *m_configWidget;
 
     cv::Size m_completeBoardSize;
-
-    bool m_isAsymmetricGrid;
 
     bool m_refinePatternPoints;
 };

@@ -51,7 +51,6 @@ ZRingGridPatternFinder::ZRingGridPatternFinder(QObject *parent)
     : ZCalibrationPatternFinder(parent)
     , m_configWidget(0)
     , m_completeBoardSize(25, 25)
-    , m_isAsymmetricGrid(false)
     , m_refinePatternPoints(false)
 {
     setColumns(4);
@@ -60,8 +59,6 @@ ZRingGridPatternFinder::ZRingGridPatternFinder(QObject *parent)
     QObject::connect(this, SIGNAL(maxColumnsChanged(int)),
                      this, SLOT(updateConfigHash()));
     QObject::connect(this, SIGNAL(maxRowsChanged(int)),
-                     this, SLOT(updateConfigHash()));
-    QObject::connect(this, SIGNAL(isAsymmetricGridChanged(bool)),
                      this, SLOT(updateConfigHash()));
     QObject::connect(this, SIGNAL(refinePatternPointsChanged(bool)),
                      this, SLOT(updateConfigHash()));
@@ -98,11 +95,6 @@ int ZRingGridPatternFinder::maxColumns() const
 int ZRingGridPatternFinder::maxRows() const
 {
     return m_completeBoardSize.height;
-}
-
-bool ZRingGridPatternFinder::isAsymmetricGrid() const
-{
-    return m_isAsymmetricGrid;
 }
 
 bool ZRingGridPatternFinder::refinePatternPoints() const
@@ -218,7 +210,7 @@ bool ZRingGridPatternFinder::findCalibrationPattern(cv::Mat image, std::vector<c
 
     if (!cv::findCirclesGrid(roi, m_boardSize, corners,
                             //cv::CALIB_CB_CLUSTERING |
-                            m_isAsymmetricGrid ? cv::CALIB_CB_ASYMMETRIC_GRID : cv::CALIB_CB_SYMMETRIC_GRID,
+                            cv::CALIB_CB_SYMMETRIC_GRID,
                             blobDetector)) {
         qDebug() << "standard circle grid not found near bigger rings";
         return false;
@@ -235,10 +227,7 @@ bool ZRingGridPatternFinder::findCalibrationPattern(cv::Mat image, std::vector<c
     /// generate pattern object coordinates
     for (int i=0; i<m_boardSize.height; ++i) {
         for (int j=0; j<m_boardSize.width; ++j) {
-            if (m_isAsymmetricGrid)
-                idealPoints.push_back(cv::Point2f((2*j + i % 2), i));
-            else
-                idealPoints.push_back(cv::Point2f(j, i));
+            idealPoints.push_back(cv::Point2f(j, i));
         }
     }
 
@@ -385,11 +374,7 @@ bool ZRingGridPatternFinder::findCalibrationPattern(cv::Mat image, std::vector<c
             else
                 j = j2;
 
-            cv::Point2f idealPt;
-            if (m_isAsymmetricGrid)
-                idealPt = cv::Point2f((2*j + i % 2), i);
-            else
-                idealPt = cv::Point2f(j, i);
+            cv::Point2f idealPt = cv::Point2f(j, i);
 
             std::vector<float> query = cv::Mat(idealPt);
             int knn = 1;
@@ -479,10 +464,7 @@ bool ZRingGridPatternFinder::findCalibrationPattern(cv::Mat image, std::vector<c
 
                             /// add to centers
                             centers.push_back(newImgPointVec[0]);
-                            if (m_isAsymmetricGrid)
-                                objectCenters.push_back(cv::Point3f((2*j + i % 2), i, 0.f));
-                            else
-                                objectCenters.push_back(cv::Point3f(j, i, 0.f));
+                            objectCenters.push_back(cv::Point3f(j, i, 0.f));
 
 #if defined(DEBUG_PERSPECTIVE_TRANSFORMATION)
                             const cv::Point2f &newImgPoint = newImgPointVec[0];
@@ -509,10 +491,7 @@ bool ZRingGridPatternFinder::findCalibrationPattern(cv::Mat image, std::vector<c
                 } else {
                     /// insert point as is
                     centers.push_back(detectedPatternPoints.at(indices[0]));
-                    if (m_isAsymmetricGrid)
-                        objectCenters.push_back(cv::Point3f((2*j + i % 2), i, 0.f));
-                    else
-                        objectCenters.push_back(cv::Point3f(j, i, 0.f));
+                    objectCenters.push_back(cv::Point3f(j, i, 0.f));
                 }
             }
         }
@@ -577,14 +556,6 @@ void ZRingGridPatternFinder::setMaxRows(int rows)
     }
 }
 
-void ZRingGridPatternFinder::setIsAsymmetricGrid(bool isAsymmetric)
-{
-    if (m_isAsymmetricGrid != isAsymmetric) {
-        m_isAsymmetricGrid = isAsymmetric;
-        emit isAsymmetricGridChanged(isAsymmetric);
-    }
-}
-
 void ZRingGridPatternFinder::setRefinePatternPoints(bool refinePatternPoints)
 {
     if (m_refinePatternPoints != refinePatternPoints) {
@@ -596,11 +567,10 @@ void ZRingGridPatternFinder::setRefinePatternPoints(bool refinePatternPoints)
 void ZRingGridPatternFinder::updateConfigHash()
 {
     /// generate unique "hash" for the current configuration
-    QString hash = QString("%1|%2|%3|%4|%5")
+    QString hash = QString("%1|%2|%3|%4")
             .arg(getBaseHash())
             .arg(m_completeBoardSize.width)
             .arg(m_completeBoardSize.height)
-            .arg(m_isAsymmetricGrid)
             .arg(m_refinePatternPoints);
 
     if (m_configHash != hash) {
