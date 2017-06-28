@@ -88,6 +88,7 @@ public:
 
     /// Detected pattern points
     std::vector<cv::Point2f> detectedPoints() const;
+    std::vector<cv::Point3f> detectedPointsInPatternCoordinates() const;
     std::vector<cv::Point3f> detectedPointsInRealCoordinates() const;
 
     cv::Matx33d rotation() const;
@@ -118,6 +119,7 @@ protected:
     int m_height;
 
     std::vector<cv::Point2f> m_corners;
+    std::vector<cv::Point3f> m_patternCorners;
     std::vector<cv::Point3f> m_worldCorners;
 
     cv::Matx33d m_rotation;

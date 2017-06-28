@@ -99,12 +99,18 @@ void ZCalibrationPatternFinder::setRowHeight(double rowHeight)
     }
 }
 
-bool ZCalibrationPatternFinder::findCalibrationPattern(cv::Mat /*image*/, std::vector<cv::Point2f> &corners, std::vector<cv::Point3f> &objectPoints)
+bool ZCalibrationPatternFinder::findCalibrationPattern(cv::Mat image, std::vector<cv::Point2f> &corners, std::vector<cv::Point3f> &objectPoints, std::vector<cv::Point3f> &patternPoints)
 {
-    corners.clear();
-    objectPoints.clear();
-
-    return false;
+    bool result = findCalibrationPattern(image, corners, patternPoints);
+    if (result) {
+        objectPoints.resize(patternPoints.size());
+        for (size_t i = 0; i < objectPoints.size(); ++i) {
+            objectPoints[i].x = patternPoints[i].x * float(m_colWidth);
+            objectPoints[i].y = patternPoints[i].y * float(m_rowHeight);
+            objectPoints[i].z = patternPoints[i].z;
+        }
+    }
+    return result;
 }
 
 QString ZCalibrationPatternFinder::getBaseHash()

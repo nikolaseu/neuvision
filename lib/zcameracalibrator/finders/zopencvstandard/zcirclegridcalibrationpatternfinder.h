@@ -38,7 +38,7 @@ public:
 signals:
 
 public slots:
-    virtual bool findCalibrationPattern(cv::Mat image, std::vector<cv::Point2f> &corners, std::vector<cv::Point3f> &objectPoints);
+    virtual bool findCalibrationPattern(cv::Mat image, std::vector<cv::Point2f> &corners, std::vector<cv::Point3f> &patternPoints);
 
 protected slots:
     virtual void updateConfigHash();

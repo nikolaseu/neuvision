@@ -19,40 +19,31 @@
 
 #pragma once
 
-#include "zcameracalibrator_global.h"
-#include "zcalibrationimage.h"
+#include <QObject>
 
-#include "zimageviewer.h"
+#include "zcalibrationpatternfinderplugininterface.h"
 
-namespace Z3D
-{
+namespace Z3D {
 
-class Z3D_CAMERACALIBRATOR_SHARED_EXPORT ZCalibrationImageViewer : public ZImageViewer
+class ZRingGridPatternFinderPlugin : public ZCalibrationPatternFinderPluginInterface
 {
     Q_OBJECT
 
+#if QT_VERSION >= 0x050000
+    Q_PLUGIN_METADATA(IID "z3d.cameracalibrator.calibrationpatternfinderplugininterface" FILE "zringgrid.json")
+#endif // QT_VERSION >= 0x050000
+
+    Q_INTERFACES(Z3D::ZCalibrationPatternFinderPluginInterface)
+
+    // ZCorePlugin interface
 public:
-    enum DisplayMode {
-        NoMarkers = 0,
-        ShowMarkers,
-        ShowMarkersAndCoords
-    };
+    virtual QString id() override;
+    virtual QString name() override;
+    virtual QString version() override;
 
-    ZCalibrationImageViewer(QWidget *parent = 0);
-    ~ZCalibrationImageViewer();
-
-    void setDisplayMode(DisplayMode displayMode);
-
-public slots:
-    void updateCalibrationImage(Z3D::ZCalibrationImage::Ptr image);
-
-protected:
-    DisplayMode m_displayMode;
-
-    QPolygonF m_markerPolygon;
-
-    std::vector<QGraphicsItem*> m_calibrationPoints;
-    std::vector<QGraphicsItem*> m_calibrationCoords;
+    // ZCalibrationPatternFinderPluginInterface interface
+public:
+    virtual QList<ZCalibrationPatternFinder::Ptr> getPatternFinders() override;
 };
 
 } // namespace Z3D

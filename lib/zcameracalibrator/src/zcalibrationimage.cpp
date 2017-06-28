@@ -200,6 +200,11 @@ std::vector<cv::Point2f> ZCalibrationImage::detectedPoints() const
     return m_corners;
 }
 
+std::vector<cv::Point3f> ZCalibrationImage::detectedPointsInPatternCoordinates() const
+{
+    return m_patternCorners;
+}
+
 std::vector<cv::Point3f> ZCalibrationImage::detectedPointsInRealCoordinates() const
 {
     return m_worldCorners;
@@ -231,7 +236,7 @@ bool ZCalibrationImage::findPattern(ZCalibrationPatternFinder *patternFinder)
         setState(CheckingState);
 
         cv::Mat cvOrigImg = mat();
-        bool patternFound = patternFinder->findCalibrationPattern(cvOrigImg, m_corners, m_worldCorners);
+        bool patternFound = patternFinder->findCalibrationPattern(cvOrigImg, m_corners, m_worldCorners, m_patternCorners);
 
         /// check if we need to update pattern thumbnail or restore from default
         if (patternFound) {
@@ -245,14 +250,21 @@ bool ZCalibrationImage::findPattern(ZCalibrationPatternFinder *patternFinder)
             QPainter painter(&m_patternThumbnail);
             painter.setRenderHint(QPainter::Antialiasing);
 
-            const cv::Point2f &point = m_corners[0] * scale;
-            painter.setPen(QPen(QBrush(Qt::red), 3));
-            painter.drawPoint(point.x, point.y);
-
             painter.setPen(QPen(QBrush(Qt::green), 3));
-            for (unsigned int i=1; i<m_corners.size(); ++i) {
+            for (unsigned int i=0; i<m_corners.size(); ++i) {
                 const cv::Point2f &point = m_corners[i] * scale;
                 painter.drawPoint(point.x, point.y);
+            }
+
+            int index = -1;
+            for (auto patternPoint : m_patternCorners) {
+                index++;
+                if (patternPoint.x == 0 && patternPoint.y == 0) {
+                    const cv::Point2f &point = m_corners[index] * scale;
+                    painter.setPen(QPen(QBrush(Qt::red), 3));
+                    painter.drawPoint(point.x, point.y);
+                    break;
+                }
             }
 
             QFile cornersFile(QString("%1.corners.txt").arg(m_fileName));

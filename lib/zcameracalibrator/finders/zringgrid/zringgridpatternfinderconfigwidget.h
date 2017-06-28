@@ -19,40 +19,30 @@
 
 #pragma once
 
-#include "zcameracalibrator_global.h"
-#include "zcalibrationimage.h"
+#include <QWidget>
 
-#include "zimageviewer.h"
+namespace Ui {
+class ZRingGridPatternFinderConfigWidget;
+}
 
 namespace Z3D
 {
 
-class Z3D_CAMERACALIBRATOR_SHARED_EXPORT ZCalibrationImageViewer : public ZImageViewer
+/// forward declaration
+class ZRingGridPatternFinder;
+
+class ZRingGridPatternFinderConfigWidget : public QWidget
 {
     Q_OBJECT
 
 public:
-    enum DisplayMode {
-        NoMarkers = 0,
-        ShowMarkers,
-        ShowMarkersAndCoords
-    };
+    explicit ZRingGridPatternFinderConfigWidget(ZRingGridPatternFinder *patternFinder, QWidget *parent = 0);
+    ~ZRingGridPatternFinderConfigWidget();
 
-    ZCalibrationImageViewer(QWidget *parent = 0);
-    ~ZCalibrationImageViewer();
+private:
+    Ui::ZRingGridPatternFinderConfigWidget *ui;
 
-    void setDisplayMode(DisplayMode displayMode);
-
-public slots:
-    void updateCalibrationImage(Z3D::ZCalibrationImage::Ptr image);
-
-protected:
-    DisplayMode m_displayMode;
-
-    QPolygonF m_markerPolygon;
-
-    std::vector<QGraphicsItem*> m_calibrationPoints;
-    std::vector<QGraphicsItem*> m_calibrationCoords;
+    ZRingGridPatternFinder *m_patternFinder;
 };
 
 } // namespace Z3D
