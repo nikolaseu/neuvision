@@ -72,13 +72,13 @@ QString ZOpenCVStereoMultiCameraCalibrator::name()
 std::vector<ZCameraCalibration::Ptr> ZOpenCVStereoMultiCameraCalibrator::getCalibration(
         std::vector< Z3D::ZCameraCalibration::Ptr > &initialCameraCalibrations,
         std::vector< std::vector< std::vector< cv::Point2f > > > &imagePoints,
-        std::vector< std::vector< std::vector< cv::Point3f > > > &objectPoints)
+        std::vector< std::vector< cv::Point3f > > &objectPoints)
 {
     qDebug() << "starting" << Q_FUNC_INFO;
 
     std::vector<ZCameraCalibration::Ptr> newCalibrations;
 
-    int ncameras = initialCameraCalibrations.size();
+    size_t ncameras = initialCameraCalibrations.size();
     if (ncameras != 2) {
         qWarning() << "this only works with two cameras!";
         return newCalibrations;
@@ -86,7 +86,7 @@ std::vector<ZCameraCalibration::Ptr> ZOpenCVStereoMultiCameraCalibrator::getCali
 
     std::vector<cv::Size> imageSize(ncameras);
 
-    int nimages = imagePoints[0].size();
+    size_t nimages = imagePoints[0].size();
 //    if (nimages < 2) {
 //        qWarning() << "Error: too little pairs to run the calibration";
 //        return newCalibrations;
@@ -99,11 +99,11 @@ std::vector<ZCameraCalibration::Ptr> ZOpenCVStereoMultiCameraCalibrator::getCali
           , R
           , T
           , E
-          , F;;
+          , F;
     cameraMatrix[0] = cv::Mat::eye(3, 3, CV_64F);
     cameraMatrix[1] = cv::Mat::eye(3, 3, CV_64F);
 
-    for (int ic = 0; ic < ncameras; ++ic) {
+    for (size_t ic = 0; ic < ncameras; ++ic) {
         /// check first! this only works for pinhole cameras!
         Z3D::ZPinholeCameraCalibration *calibration = static_cast<Z3D::ZPinholeCameraCalibration*>(initialCameraCalibrations[ic].data());
         if (!calibration) {
@@ -156,7 +156,7 @@ std::vector<ZCameraCalibration::Ptr> ZOpenCVStereoMultiCameraCalibrator::getCali
     }
 
     double rms = cv::stereoCalibrate(
-            objectPoints[0],
+            objectPoints,
             imagePoints[0], imagePoints[1],
             cameraMatrix[0], distCoeffs[0],
             cameraMatrix[1], distCoeffs[1],
@@ -180,17 +180,17 @@ std::vector<ZCameraCalibration::Ptr> ZOpenCVStereoMultiCameraCalibrator::getCali
     double err = 0;
     int npoints = 0;
     std::vector<cv::Vec3f> lines[2];
-    for (int i = 0; i < nimages; i++ ) {
-        int npt = (int)imagePoints[0][i].size();
+    for (size_t i = 0; i < nimages; i++ ) {
+        const auto npt = imagePoints[0][i].size();
         cv::Mat imgpt[2];
 
-        for (int k = 0; k < 2; k++ ) {
+        for (size_t k = 0; k < 2; k++ ) {
             imgpt[k] = cv::Mat(imagePoints[k][i]);
             cv::undistortPoints(imgpt[k], imgpt[k], cameraMatrix[k], distCoeffs[k], cv::Mat(), cameraMatrix[k]);
             cv::computeCorrespondEpilines(imgpt[k], k+1, F, lines[k]);
         }
 
-        for (int j = 0; j < npt; j++ ) {
+        for (size_t j = 0; j < npt; j++ ) {
             double errij =
                     fabs(imagePoints[0][i][j].x*lines[1][j][0] +
                          imagePoints[0][i][j].y*lines[1][j][1] +
@@ -227,7 +227,7 @@ std::vector<ZCameraCalibration::Ptr> ZOpenCVStereoMultiCameraCalibrator::getCali
     }
 */
 
-    for (int ic = 0; ic < ncameras; ++ic) {
+    for (size_t ic = 0; ic < ncameras; ++ic) {
         Z3D::ZCameraCalibration::Ptr calibration(
                     new Z3D::ZPinholeCameraCalibration(cameraMatrix[ic], distCoeffs[ic], imageSize[ic]));
         if (ic == 0) {
@@ -442,7 +442,7 @@ void ZOpenCVStereoMultiCameraCalibrator::setTermCriteriaMaxIterations(int arg)
 
 void ZOpenCVStereoMultiCameraCalibrator::setTermCriteriaEpsilon(double arg)
 {
-    if (m_termCriteriaEpsilon != arg) {
+    if (fabs(m_termCriteriaEpsilon - arg) > DBL_EPSILON) {
         m_termCriteriaEpsilon = arg;
         emit termCriteriaEpsilonChanged(arg);
     }

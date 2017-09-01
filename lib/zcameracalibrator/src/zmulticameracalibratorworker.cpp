@@ -245,18 +245,18 @@ void ZMultiCameraCalibratorWorker::calibrateFunctionImpl(std::vector<ZCameraCali
     //std::vector<ZCameraCalibration::Ptr> currentCalibrations;
     std::vector<ZCameraCalibration::Ptr> newCalibrations;
 
-    int imageCount = m_imageModel->rowCount();
-    int cameraCount = -1;
+    const auto imageCount = size_t(m_imageModel->rowCount());
+    auto cameraCount = size_t(0);
 
     /// get only the images where the calibration pattern was detected
-    QVector< Z3D::ZMultiCalibrationImage::Ptr > validImages;
+    std::vector< Z3D::ZMultiCalibrationImage::Ptr > validImages;
     validImages.reserve(imageCount);
-    for (int i=0; i<imageCount; ++i) {
-        Z3D::ZMultiCalibrationImage::Ptr multiImage = m_imageModel->imageAt(i);
+    for (size_t i=0; i<imageCount; ++i) {
+        Z3D::ZMultiCalibrationImage::Ptr multiImage = m_imageModel->imageAt(int(i));
         if (multiImage->state() == ZCalibrationImage::PatternFoundState) {
             validImages.push_back(multiImage);
 
-            if (cameraCount < 0)
+            if (cameraCount == 0)
                 cameraCount = multiImage->images().size();
             else if (cameraCount != multiImage->images().size()) {
                 qWarning() << "The number of cameras is not the same for all images";
@@ -285,7 +285,7 @@ void ZMultiCameraCalibratorWorker::calibrateFunctionImpl(std::vector<ZCameraCali
         qDebug() << "number of cameras:" << cameraCount;
     }
 
-    int validImageCount = validImages.size();
+    const auto validImageCount = validImages.size();
 
     if (validImageCount < 1) {
         /// not enough valid images
@@ -301,37 +301,62 @@ void ZMultiCameraCalibratorWorker::calibrateFunctionImpl(std::vector<ZCameraCali
         qDebug() << "number of images:" << validImageCount;
     }
 
-
+    /// 10% ¿?
+    setProgress(0.1f, tr("Preparing calibration images..."));
 
     /// load detected calibration pattern points for each image
     std::vector<std::vector<std::vector<cv::Point2f> > > allImagePoints(cameraCount);
-    std::vector<std::vector<std::vector<cv::Point3f> > > allRealWorldPoints(cameraCount);
+    std::vector<std::vector<cv::Point3f> > realWorldPoints(validImageCount);
 
-    for (int i=0; i<cameraCount; ++i) {
+    for (size_t i=0; i<cameraCount; ++i) {
         auto &imagePoints = allImagePoints[i];
         imagePoints.resize(validImageCount);
-        auto &realWorldPoints = allRealWorldPoints[i];
-        realWorldPoints.resize(validImageCount);
     }
 
-
-    for (int v=0; v<validImageCount; ++v) {
-        Z3D::ZMultiCalibrationImage::Ptr multiImage = validImages[v];
-        for (int i=0; i<cameraCount; ++i) {
-            Z3D::ZCalibrationImage::Ptr img = multiImage->image(i);
-
-            /// detected calibration pattern points in image coordinates
-            allImagePoints[i][v] = img->detectedPoints();
-
-            /// detected calibration pattern point in real world coordinates
-            allRealWorldPoints[i][v] = img->detectedPointsInRealCoordinates();
+    /// filter to only add points that were found in all cameras (required for incomplete patterns)
+    for (size_t imageIndex=0; imageIndex<validImageCount; ++imageIndex) {
+        const auto &multiImage = validImages[imageIndex];
+        const auto &imgCam1 = multiImage->image(0);
+        const auto &worldPointsCam1 = imgCam1->detectedPointsInRealCoordinates();
+        const auto &imgPointsCam1 = imgCam1->detectedPoints();
+        auto &worldPoints = realWorldPoints[imageIndex];
+        worldPoints.reserve(worldPointsCam1.size());
+        auto itImgPointsCam1 = imgPointsCam1.begin();
+        for (auto itWorldPointsCam1 = worldPointsCam1.begin();
+             itWorldPointsCam1 != worldPointsCam1.end();
+             ++itWorldPointsCam1, ++itImgPointsCam1)
+        {
+            std::vector<cv::Point2f> imagePoints(cameraCount);
+            imagePoints[0] = *itImgPointsCam1;
+            bool foundInAll = true;
+            for (size_t cameraIndex=1; cameraIndex<cameraCount; ++cameraIndex) {
+                const auto &img = multiImage->image(cameraIndex);
+                const auto &worldPointsCurrentImg = img->detectedPointsInRealCoordinates();
+                const auto itWorldPointsCurrentImg = std::find(worldPointsCurrentImg.begin(), worldPointsCurrentImg.end(), *itWorldPointsCam1);
+                if (itWorldPointsCurrentImg == worldPointsCurrentImg.end()) {
+                    foundInAll = false;
+                    break;
+                }
+                const auto indexWorldPointInCurrentImg = itWorldPointsCurrentImg - worldPointsCurrentImg.begin();
+                const auto &detectedPoints = img->detectedPoints();
+                imagePoints[cameraIndex] = detectedPoints[indexWorldPointInCurrentImg];
+            }
+            if (foundInAll) {
+                worldPoints.push_back(*itWorldPointsCam1);
+                for (size_t cameraIndex=0; cameraIndex<cameraCount; ++cameraIndex) {
+                    allImagePoints[cameraIndex][imageIndex].push_back(imagePoints[cameraIndex]);
+                }
+            }
         }
     }
 
     /// 40% ¿?
-    setProgress(0.4f, tr("Running camera calibration..."));
+    setProgress(0.4f, tr("Running calibration algorithm..."));
 
-    newCalibrations = m_cameraCalibrator->getCalibration(currentCalibrations, allImagePoints, allRealWorldPoints);
+    newCalibrations = m_cameraCalibrator->getCalibration(currentCalibrations, allImagePoints, realWorldPoints);
+
+    /// 90%
+    setProgress(0.9f, tr("Finishing calibration..."));
 
     /// this function is run from a thread in the QThreadPool, we need to move
     /// the qobject to a thread that has an event loop running
@@ -345,9 +370,6 @@ void ZMultiCameraCalibratorWorker::calibrateFunctionImpl(std::vector<ZCameraCali
             calibration->moveToThread(QCoreApplication::instance()->thread());
         }
     }
-
-    /// 90%
-    setProgress(0.9f, tr("Finishing camera calibration..."));
 
     /// calibration end
     emit calibrationChanged(newCalibrations);
