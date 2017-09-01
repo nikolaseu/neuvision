@@ -40,7 +40,7 @@ public:
     virtual std::vector<ZCameraCalibration::Ptr> getCalibration(
             std::vector< Z3D::ZCameraCalibration::Ptr > &initialCameraCalibrations,
             std::vector< std::vector< std::vector< cv::Point2f > > > &imagePoints,
-            std::vector< std::vector< std::vector< cv::Point3f > > > &objectPoints) = 0;
+            std::vector< std::vector< cv::Point3f > > &objectPoints) = 0;
 
     virtual QWidget *configWidget() = 0;
 };
