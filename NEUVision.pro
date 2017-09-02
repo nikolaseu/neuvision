@@ -8,6 +8,9 @@ lib.depends = 3rdparty
 SUBDIRS  += Z3DCameraCalibration
 Z3DCameraCalibration.depends = lib
 
+SUBDIRS  += Z3DMultiCameraCalibration
+Z3DMultiCameraCalibration.depends = lib
+
 SUBDIRS  += Z3DCameraViewer
 Z3DCameraViewer.depends = lib
 
