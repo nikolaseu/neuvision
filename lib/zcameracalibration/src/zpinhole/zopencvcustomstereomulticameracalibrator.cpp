@@ -22,9 +22,6 @@
 #include "zpinholecameracalibration.h"
 
 #include <QDebug>
-#include <QGroupBox>
-#include <QLabel>
-#include <QVBoxLayout>
 
 #include "opencv2/calib3d/calib3d.hpp"
 
@@ -36,15 +33,13 @@ namespace Z3D
 
 ZOpenCVCustomStereoMultiCameraCalibrator::ZOpenCVCustomStereoMultiCameraCalibrator(QObject *parent)
     : ZMultiCameraCalibrator(parent)
-    , m_configWidget(nullptr)
 {
 
 }
 
 ZOpenCVCustomStereoMultiCameraCalibrator::~ZOpenCVCustomStereoMultiCameraCalibrator()
 {
-    if (m_configWidget)
-        m_configWidget->deleteLater();
+
 }
 
 QString ZOpenCVCustomStereoMultiCameraCalibrator::name()
@@ -235,24 +230,6 @@ std::vector<ZCameraCalibration::Ptr> ZOpenCVCustomStereoMultiCameraCalibrator::g
     }
 
     return newCalibrations;
-}
-
-QWidget *ZOpenCVCustomStereoMultiCameraCalibrator::configWidget()
-{
-    //! TODO: implementar esto
-    if (!m_configWidget) {
-        m_configWidget = new QGroupBox(tr("Note"));
-        QVBoxLayout *layout = new QVBoxLayout(m_configWidget);
-        QLabel *label = new QLabel(
-                    tr("<p><strong>This assumes the cameras are already calibrated!</strong></p>"
-                       "<p>Only the rotation and translation between cameras will be calculated.</p>"),
-                    m_configWidget);
-        label->setWordWrap(true);
-        layout->addWidget(label);
-        m_configWidget->setLayout(layout);
-    }
-
-    return m_configWidget;
 }
 
 bool ZOpenCVCustomStereoMultiCameraCalibrator::fixIntrinsic() const

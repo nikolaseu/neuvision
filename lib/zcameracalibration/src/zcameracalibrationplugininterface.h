@@ -31,7 +31,11 @@ namespace Z3D
 
 class Z3D_CAMERACALIBRATION_SHARED_EXPORT ZCameraCalibrationPluginInterface : public ZCorePlugin
 {
+    Q_OBJECT
+
 public:
+    explicit ZCameraCalibrationPluginInterface(QObject *parent = nullptr);
+
     virtual ~ZCameraCalibrationPluginInterface() {}
 
     /// calibration utilities
@@ -39,7 +43,11 @@ public:
 
     virtual QList<ZCameraCalibrator *> getCameraCalibrators() = 0;
 
+    virtual QWidget *getConfigWidget(ZCameraCalibrator *cameraCalibrator) = 0;
+
     virtual QList<ZMultiCameraCalibrator *> getMultiCameraCalibrators() = 0;
+
+    virtual QWidget *getConfigWidget(ZMultiCameraCalibrator *multiCameraCalibrator) = 0;
 };
 
 } // namespace Z3D

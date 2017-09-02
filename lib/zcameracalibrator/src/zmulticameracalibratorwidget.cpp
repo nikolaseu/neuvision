@@ -231,7 +231,7 @@ void ZMultiCameraCalibratorWidget::onCameraModelTypeChanged(int index)
     /// remove previous config widget and hide it
     ZMultiCameraCalibrator *currentCameraCalibrator = m_calibratorWorker->cameraCalibrator();
     if (currentCameraCalibrator) {
-        QWidget *previousWidget = currentCameraCalibrator->configWidget();
+        QWidget *previousWidget = ZCameraCalibrationProvider::getConfigWidget(currentCameraCalibrator);
         if (previousWidget) {
             previousWidget->setVisible(false);
             ui->cameraModelConfigLayout->removeWidget(previousWidget);
@@ -243,7 +243,7 @@ void ZMultiCameraCalibratorWidget::onCameraModelTypeChanged(int index)
     m_calibratorWorker->setCameraCalibrator( currentCameraCalibrator );
 
     /// add config widget
-    QWidget *currentWidget = currentCameraCalibrator->configWidget();
+    QWidget *currentWidget = ZCameraCalibrationProvider::getConfigWidget(currentCameraCalibrator);
     if (currentWidget) {
         currentWidget->setVisible(true);
         ui->cameraModelConfigLayout->addWidget(currentWidget);

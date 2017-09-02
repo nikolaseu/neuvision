@@ -62,8 +62,6 @@ public:
             std::vector<std::vector<std::vector<cv::Point2f> > > &imagePoints,
             std::vector<std::vector<cv::Point3f> > &objectPoints) override;
 
-    virtual QWidget *configWidget() override;
-
     /// stereo calibration flags
     bool fixIntrinsic() const;
     bool sameFocalLength() const;
@@ -175,9 +173,6 @@ protected:
     /// cv::calibrateCamera termination criteria
     int m_termCriteriaMaxIterations;
     double m_termCriteriaEpsilon;
-
-    /// configuration widget
-    QWidget *m_configWidget;
 };
 
 } // namespace Z3D

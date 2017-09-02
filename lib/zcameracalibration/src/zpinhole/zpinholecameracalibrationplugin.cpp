@@ -25,6 +25,12 @@
 #include "zpinholecameracalibrator.h"
 #include "zopencvcustomstereomulticameracalibrator.h"
 #include "zopencvstereomulticameracalibrator.h"
+#include "zpinholecameracalibratorconfigwidget.h"
+#include "zopencvstereomulticameracalibratorconfigwidget.h"
+
+#include <QGroupBox>
+#include <QLabel>
+#include <QVBoxLayout>
 
 namespace Z3D
 {
@@ -65,14 +71,59 @@ QList<ZCameraCalibrator *> ZPinholeCameraCalibrationPlugin::getCameraCalibrators
     return list;
 }
 
+QWidget *ZPinholeCameraCalibrationPlugin::getConfigWidget(ZCameraCalibrator *cameraCalibrator)
+{
+    if (auto *pinholeCalibrator = qobject_cast<ZPinholeCameraCalibrator*>(cameraCalibrator)) {
+        /// TODO improve this
+        static ZPinholeCameraCalibratorConfigWidget *widget = nullptr;
+        if (!widget) {
+            widget = new ZPinholeCameraCalibratorConfigWidget(pinholeCalibrator);
+        }
+        return widget;
+    }
+
+    return nullptr;
+}
+
 QList<ZMultiCameraCalibrator *> ZPinholeCameraCalibrationPlugin::getMultiCameraCalibrators()
 {
     QList<ZMultiCameraCalibrator *> list;
 
-    list << new ZOpenCVCustomStereoMultiCameraCalibrator();
     list << new ZOpenCVStereoMultiCameraCalibrator();
+    list << new ZOpenCVCustomStereoMultiCameraCalibrator();
 
     return list;
+}
+
+QWidget *ZPinholeCameraCalibrationPlugin::getConfigWidget(ZMultiCameraCalibrator *multiCameraCalibrator)
+{
+    if (auto *opencvStereoCalibration = qobject_cast<ZOpenCVStereoMultiCameraCalibrator*>(multiCameraCalibrator)) {
+        /// TODO improve this
+        static ZOpenCVStereoMultiCameraCalibratorConfigWidget *widget = nullptr;
+        if (!widget) {
+            widget = new ZOpenCVStereoMultiCameraCalibratorConfigWidget(opencvStereoCalibration);
+        }
+        return widget;
+    }
+
+    if (/*auto *customStereoCalibration =*/ qobject_cast<ZOpenCVCustomStereoMultiCameraCalibrator*>(multiCameraCalibrator)) {
+        /// TODO improve this
+        static QWidget *widget = nullptr;
+        if (!widget) {
+            widget = new QGroupBox(tr("Note"));
+            QVBoxLayout *layout = new QVBoxLayout(widget);
+            QLabel *label = new QLabel(
+                        tr("<p><strong>This assumes the cameras are already calibrated!</strong></p>"
+                           "<p>Only the rotation and translation between cameras will be calculated.</p>"),
+                        widget);
+            label->setWordWrap(true);
+            layout->addWidget(label);
+            widget->setLayout(layout);
+        }
+        return widget;
+    }
+
+    return nullptr;
 }
 
 } // namespace Z3D

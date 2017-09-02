@@ -50,16 +50,14 @@ class ZPinholeCameraCalibrator : public ZCameraCalibrator
 public:
     explicit ZPinholeCameraCalibrator(QObject *parent = 0);
 
-    virtual ~ZPinholeCameraCalibrator();
+    ~ZPinholeCameraCalibrator();
 
-    virtual QString name();
+    QString name() override;
 
-    virtual ZCameraCalibration::Ptr getCalibration(
+    ZCameraCalibration::Ptr getCalibration(
             std::vector<std::vector<cv::Point2f> > &imagePoints,
             std::vector<std::vector<cv::Point3f> > &realWorldPoints,
-            cv::Size &imageSize);
-
-    virtual QWidget *configWidget();
+            cv::Size &imageSize) override;
 
     /// calibration flags
     bool useIntrinsicGuess() const;
@@ -158,9 +156,6 @@ protected:
     /// cv::calibrateCamera termination criteria
     int m_termCriteriaMaxIterations;
     double m_termCriteriaEpsilon;
-
-    /// configuration widget
-    QWidget *m_configWidget;
 };
 
 } // namespace Z3D

@@ -38,7 +38,8 @@ SOURCES      += \
     zpinhole/zpinholecameracalibration.cpp \
     zpinhole/zpinholecameracalibrationplugin.cpp \
     zpinhole/zpinholecameracalibrator.cpp \
-    zpinhole/zpinholecameracalibratorconfigwidget.cpp
+    zpinhole/zpinholecameracalibratorconfigwidget.cpp \
+    zcameracalibrationplugininterface.cpp
 
 FORMS += \
     zpinhole/zopencvstereomulticameracalibratorconfigwidget.ui \

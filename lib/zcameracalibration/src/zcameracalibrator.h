@@ -41,8 +41,6 @@ public:
             std::vector<std::vector<cv::Point2f> > &imagePoints,
             std::vector<std::vector<cv::Point3f> > &realWorldPoints,
             cv::Size &imageSize) = 0;
-
-    virtual QWidget *configWidget() = 0;
 };
 
 } // namespace Z3D

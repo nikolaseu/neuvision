@@ -19,14 +19,9 @@
 //
 
 #include "zopencvstereomulticameracalibrator.h"
-
 #include "zpinholecameracalibration.h"
-#include "zopencvstereomulticameracalibratorconfigwidget.h"
 
 #include <QDebug>
-#include <QGroupBox>
-#include <QLabel>
-#include <QVBoxLayout>
 
 #include "opencv2/calib3d/calib3d.hpp"
 #include "opencv2/imgproc/imgproc.hpp"
@@ -53,15 +48,13 @@ ZOpenCVStereoMultiCameraCalibrator::ZOpenCVStereoMultiCameraCalibrator(QObject *
     , m_useRationalModel(false)
     , m_termCriteriaMaxIterations(50)
     , m_termCriteriaEpsilon(1e-7)
-    , m_configWidget(nullptr)
 {
 
 }
 
 ZOpenCVStereoMultiCameraCalibrator::~ZOpenCVStereoMultiCameraCalibrator()
 {
-    if (m_configWidget)
-        m_configWidget->deleteLater();
+
 }
 
 QString ZOpenCVStereoMultiCameraCalibrator::name()
@@ -241,14 +234,6 @@ std::vector<ZCameraCalibration::Ptr> ZOpenCVStereoMultiCameraCalibrator::getCali
     }
 
     return newCalibrations;
-}
-
-QWidget *ZOpenCVStereoMultiCameraCalibrator::configWidget()
-{
-    if (!m_configWidget)
-        m_configWidget = new ZOpenCVStereoMultiCameraCalibratorConfigWidget(this);
-
-    return m_configWidget;
 }
 
 bool ZOpenCVStereoMultiCameraCalibrator::fixIntrinsic() const
