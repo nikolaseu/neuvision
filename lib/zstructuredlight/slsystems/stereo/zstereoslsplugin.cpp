@@ -30,17 +30,17 @@ ZStereoSLSPlugin::ZStereoSLSPlugin()
 
 }
 
-QString ZStereoSLSPlugin::id()
+QString ZStereoSLSPlugin::id() const
 {
     return "ZStereoSLS";
 }
 
-QString ZStereoSLSPlugin::name()
+QString ZStereoSLSPlugin::name() const
 {
     return "Stereo";
 }
 
-QString ZStereoSLSPlugin::version()
+QString ZStereoSLSPlugin::version() const
 {
     return Z3D_VERSION_STR;
 }

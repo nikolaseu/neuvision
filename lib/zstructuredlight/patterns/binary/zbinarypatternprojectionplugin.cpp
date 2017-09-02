@@ -29,17 +29,17 @@ ZBinaryPatternProjectionPlugin::ZBinaryPatternProjectionPlugin()
 
 }
 
-QString ZBinaryPatternProjectionPlugin::id()
+QString ZBinaryPatternProjectionPlugin::id() const
 {
     return "ZBinaryPatternProjectionPlugin";
 }
 
-QString ZBinaryPatternProjectionPlugin::name()
+QString ZBinaryPatternProjectionPlugin::name() const
 {
     return "Binary";
 }
 
-QString ZBinaryPatternProjectionPlugin::version()
+QString ZBinaryPatternProjectionPlugin::version() const
 {
     return Z3D_VERSION_STR;
 }
