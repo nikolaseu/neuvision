@@ -506,19 +506,11 @@ bool ZRingGridPatternFinder::findCalibrationPattern(cv::Mat image, std::vector<c
 
     const bool shouldSwitchAxis = (std::abs(xPattern.y) == 2. && std::abs(yPattern.x) == 1.);
     if (shouldSwitchAxis) {
-        qDebug() << "should switch X <-> Y axis";
         std::swap(xPattern, yPattern);
     }
 
     const bool shouldInvertY = yPattern.y < 0;
-    if (shouldInvertY) {
-        qDebug() << "should invert Y axis";
-    }
-
     const bool shouldInvertX = xPattern.x < 0;
-    if (shouldInvertX) {
-        qDebug() << "should invert X axis";
-    }
 
     for (auto it = patternPoints.begin(); it != patternPoints.end(); ++it) {
         it->x -= originPattern.x;
