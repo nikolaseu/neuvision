@@ -20,8 +20,6 @@
 
 #include "zcirclegridcalibrationpatternfinder.h"
 
-#include "zcirclegridcalibrationpatternfinderconfigwidget.h"
-
 #include <opencv2/calib3d/calib3d.hpp>
 
 namespace Z3D
@@ -29,25 +27,14 @@ namespace Z3D
 
 ZCircleGridCalibrationPatternFinder::ZCircleGridCalibrationPatternFinder(QObject *parent)
     : ZCalibrationPatternFinder(parent)
-    , m_configWidget(0)
 {
     /// generate current config hash
     updateConfigHash();
 }
 
-QString ZCircleGridCalibrationPatternFinder::name()
+QString ZCircleGridCalibrationPatternFinder::name() const
 {
     return QLatin1String("Circle grid");
-}
-
-QWidget *ZCircleGridCalibrationPatternFinder::configWidget()
-{
-    if (!m_configWidget) {
-        m_configWidget = new ZCircleGridCalibrationPatternFinderConfigWidget(this);
-        m_configWidget->setVisible(false);
-    }
-
-    return m_configWidget;
 }
 
 bool ZCircleGridCalibrationPatternFinder::findCalibrationPattern(cv::Mat image, std::vector<cv::Point2f> &corners, std::vector<cv::Point3f> &patternPoints)

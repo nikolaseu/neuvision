@@ -304,7 +304,7 @@ void ZCameraCalibratorWidget::onCalibrationPatternTypeChanged(int index)
     /// remove previous config widget and hide it
     ZCalibrationPatternFinder::Ptr m_currentPatternFinder = m_calibratorWorker->patternFinder();
     if (m_currentPatternFinder) {
-        QWidget *previousWidget = m_currentPatternFinder->configWidget();
+        QWidget *previousWidget = ZCalibrationPatternFinderProvider::getConfigWidget(m_currentPatternFinder);
         previousWidget->setVisible(false);
         ui->calibrationPatternConfigLayout->removeWidget(previousWidget);
     }
@@ -314,7 +314,7 @@ void ZCameraCalibratorWidget::onCalibrationPatternTypeChanged(int index)
     m_calibratorWorker->setPatternFinder(m_currentPatternFinder);
 
     /// add config widget
-    QWidget *currentWidget = m_currentPatternFinder->configWidget();
+    QWidget *currentWidget = ZCalibrationPatternFinderProvider::getConfigWidget(m_currentPatternFinder);
     currentWidget->setVisible(true);
     ui->calibrationPatternConfigLayout->addWidget(currentWidget);
 }

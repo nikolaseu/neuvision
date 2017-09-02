@@ -39,6 +39,7 @@ public:
     static void unloadPlugins();
 
     static QList<ZCalibrationPatternFinder::Ptr> getAll();
+    static QWidget* getConfigWidget(ZCalibrationPatternFinder::Ptr patternFinder);
 
 private:
     explicit ZCalibrationPatternFinderProvider();

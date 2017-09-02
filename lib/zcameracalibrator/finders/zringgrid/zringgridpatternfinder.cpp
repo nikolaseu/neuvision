@@ -20,8 +20,6 @@
 
 #include "zringgridpatternfinder.h"
 
-#include "zringgridpatternfinderconfigwidget.h"
-
 #include "opencv2/imgproc/imgproc.hpp"
 #include "opencv2/calib3d/calib3d.hpp"
 
@@ -49,7 +47,6 @@ float m_maxRectifiedDistance = (m_squareSize / 2.f);
 
 ZRingGridPatternFinder::ZRingGridPatternFinder(QObject *parent)
     : ZCalibrationPatternFinder(parent)
-    , m_configWidget(0)
     , m_completeBoardSize(25, 25)
     , m_refinePatternPoints(false)
 {
@@ -72,19 +69,9 @@ ZRingGridPatternFinder::ZRingGridPatternFinder(QObject *parent)
 #endif
 }
 
-QString ZRingGridPatternFinder::name()
+QString ZRingGridPatternFinder::name() const
 {
     return QLatin1String("Ring grid");
-}
-
-QWidget *ZRingGridPatternFinder::configWidget()
-{
-    if (!m_configWidget) {
-        m_configWidget = new ZRingGridPatternFinderConfigWidget(this);
-        m_configWidget->setVisible(false);
-    }
-
-    return m_configWidget;
 }
 
 int ZRingGridPatternFinder::maxColumns() const

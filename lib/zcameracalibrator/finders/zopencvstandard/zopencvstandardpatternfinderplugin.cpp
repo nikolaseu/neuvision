@@ -21,7 +21,9 @@
 #include "zopencvstandardpatternfinderplugin.h"
 
 #include "zchessboardcalibrationpatternfinder.h"
+#include "zchessboardcalibrationpatternfinderconfigwidget.h"
 #include "zcirclegridcalibrationpatternfinder.h"
+#include "zcirclegridcalibrationpatternfinderconfigwidget.h"
 
 namespace Z3D {
 
@@ -48,6 +50,32 @@ QList<ZCalibrationPatternFinder::Ptr> ZOpenCVStandardPatternFinderPlugin::getPat
     finderList << ZCalibrationPatternFinder::Ptr(new ZChessboardCalibrationPatternFinder());
 
     return finderList;
+}
+
+QWidget *ZOpenCVStandardPatternFinderPlugin::getConfigWidget(ZCalibrationPatternFinder::Ptr patternFinder)
+{
+    if (auto *chessboardFinder = qobject_cast<ZChessboardCalibrationPatternFinder *>(patternFinder.data())) {
+        /// TODO improve this, this assumes there will always be only one of each type
+        static QWidget *widget = nullptr;
+        if (!widget) {
+            widget = new ZChessboardCalibrationPatternFinderConfigWidget(chessboardFinder);
+            widget->setVisible(false);
+        }
+        return widget;
+    }
+
+    if (auto *circleGridFinder = qobject_cast<ZCircleGridCalibrationPatternFinder *>(patternFinder.data())) {
+        /// TODO improve this, this assumes there will always be only one of each type
+        static QWidget *widget = nullptr;
+        if (!widget) {
+            widget = new ZCircleGridCalibrationPatternFinderConfigWidget(circleGridFinder);
+            widget->setVisible(false);
+        }
+
+        return widget;
+    }
+
+    return nullptr;
 }
 
 } // namespace Z3D

@@ -60,10 +60,22 @@ QList<ZCalibrationPatternFinder::Ptr> ZCalibrationPatternFinderProvider::getAll(
     QList<ZCalibrationPatternFinder::Ptr> finderList;
 
     /// load different calibration pattern finder types
-    foreach (ZCalibrationPatternFinderPluginInterface *plugin, m_plugins)
+    for (auto *plugin : m_plugins) {
         finderList << plugin->getPatternFinders();
+    }
 
     return finderList;
+}
+
+QWidget *ZCalibrationPatternFinderProvider::getConfigWidget(ZCalibrationPatternFinder::Ptr patternFinder)
+{
+    for (auto *plugin : m_plugins) {
+        if (auto *widget = plugin->getConfigWidget(patternFinder)) {
+            return widget;
+        }
+    }
+
+    return nullptr;
 }
 
 ZCalibrationPatternFinderProvider::ZCalibrationPatternFinderProvider()

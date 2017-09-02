@@ -54,8 +54,6 @@ public:
 
     QString configHash() const;
 
-    virtual QWidget *configWidget() = 0;
-
 signals:
     void columnsChanged(int columns);
     void rowsChanged(int rows);

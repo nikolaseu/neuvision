@@ -43,7 +43,8 @@ public:
 
     // ZCalibrationPatternFinderPluginInterface interface
 public:
-    virtual QList<ZCalibrationPatternFinder::Ptr> getPatternFinders() override;
+    QList<ZCalibrationPatternFinder::Ptr> getPatternFinders() override;
+    QWidget *getConfigWidget(ZCalibrationPatternFinder::Ptr patternFinder) override;
 };
 
 } // namespace Z3D

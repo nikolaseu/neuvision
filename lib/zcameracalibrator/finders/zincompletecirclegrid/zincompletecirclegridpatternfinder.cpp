@@ -20,8 +20,6 @@
 
 #include "zincompletecirclegridpatternfinder.h"
 
-#include "zincompletecirclegridpatternfinderconfigwidget.h"
-
 #include "opencv2/imgproc/imgproc.hpp"
 #include "opencv2/calib3d/calib3d.hpp"
 
@@ -65,7 +63,6 @@ double angle(const cv::Point &pt1, const cv::Point &pt2, const cv::Point &pt0)
 
 ZIncompleteCircleGridPatternFinder::ZIncompleteCircleGridPatternFinder(QObject *parent)
     : ZCalibrationPatternFinder(parent)
-    , m_configWidget(0)
     , m_completeBoardSize(31, 31)
     , m_isAsymmetricGrid(false)
     , m_refinePatternPoints(false)
@@ -88,19 +85,9 @@ ZIncompleteCircleGridPatternFinder::ZIncompleteCircleGridPatternFinder(QObject *
 #endif
 }
 
-QString ZIncompleteCircleGridPatternFinder::name()
+QString ZIncompleteCircleGridPatternFinder::name() const
 {
     return QLatin1String("Incomplete circle grid");
-}
-
-QWidget *ZIncompleteCircleGridPatternFinder::configWidget()
-{
-    if (!m_configWidget) {
-        m_configWidget = new ZIncompleteCircleGridPatternFinderConfigWidget(this);
-        m_configWidget->setVisible(false);
-    }
-
-    return m_configWidget;
 }
 
 int ZIncompleteCircleGridPatternFinder::maxColumns() const

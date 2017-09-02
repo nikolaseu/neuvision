@@ -45,6 +45,22 @@ QList<ZCalibrationPatternFinder::Ptr> ZRingGridPatternFinderPlugin::getPatternFi
     return QList<ZCalibrationPatternFinder::Ptr>() << ZCalibrationPatternFinder::Ptr(new ZRingGridPatternFinder());
 }
 
+QWidget *ZRingGridPatternFinderPlugin::getConfigWidget(ZCalibrationPatternFinder::Ptr patternFinder)
+{
+    if (auto *finder = qobject_cast<ZRingGridPatternFinder *>(patternFinder.data())) {
+        /// TODO improve this, this assumes there will always be only one of each type
+        static QWidget *widget = nullptr;
+        if (!widget) {
+            widget = new ZRingGridPatternFinderConfigWidget(finder);
+            widget->setVisible(false);
+        }
+
+        return widget;
+    }
+
+    return nullptr;
+}
+
 } // namespace Z3D
 
 #if QT_VERSION < 0x050000

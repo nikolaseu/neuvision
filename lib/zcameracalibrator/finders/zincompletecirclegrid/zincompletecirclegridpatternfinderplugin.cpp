@@ -21,6 +21,7 @@
 #include "zincompletecirclegridpatternfinderplugin.h"
 
 #include "zincompletecirclegridpatternfinder.h"
+#include "zincompletecirclegridpatternfinderconfigwidget.h"
 
 namespace Z3D {
 
@@ -42,6 +43,22 @@ QString ZIncompleteCircleGridPatternFinderPlugin::version() const
 QList<ZCalibrationPatternFinder::Ptr> ZIncompleteCircleGridPatternFinderPlugin::getPatternFinders()
 {
     return QList<ZCalibrationPatternFinder::Ptr>() << ZCalibrationPatternFinder::Ptr(new ZIncompleteCircleGridPatternFinder());
+}
+
+QWidget *ZIncompleteCircleGridPatternFinderPlugin::getConfigWidget(ZCalibrationPatternFinder::Ptr patternFinder)
+{
+    if (auto *finder = qobject_cast<ZIncompleteCircleGridPatternFinder *>(patternFinder.data())) {
+        /// TODO improve this, this assumes there will always be only one of each type
+        static QWidget *widget = nullptr;
+        if (!widget) {
+            widget = new ZIncompleteCircleGridPatternFinderConfigWidget(finder);
+            widget->setVisible(false);
+        }
+
+        return widget;
+    }
+
+    return nullptr;
 }
 
 } // namespace Z3D

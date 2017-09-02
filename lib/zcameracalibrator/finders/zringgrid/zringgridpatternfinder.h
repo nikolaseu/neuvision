@@ -31,9 +31,7 @@ class ZRingGridPatternFinder : public ZCalibrationPatternFinder
 public:
     explicit ZRingGridPatternFinder(QObject *parent = 0);
 
-    virtual QString name();
-
-    virtual QWidget *configWidget();
+    QString name() const override;
 
     int maxColumns() const;
     int maxRows() const;
@@ -53,12 +51,10 @@ public slots:
     void setRefinePatternPoints(bool refinePatternPoints);
 
 protected slots:
-    virtual bool findCalibrationPattern(cv::Mat image, std::vector<cv::Point2f> &corners, std::vector<cv::Point3f> &patternPoints);
-    virtual void updateConfigHash();
+    bool findCalibrationPattern(cv::Mat image, std::vector<cv::Point2f> &corners, std::vector<cv::Point3f> &patternPoints) override;
+    void updateConfigHash() override;
 
 protected:
-    QWidget *m_configWidget;
-
     cv::Size m_completeBoardSize;
 
     bool m_refinePatternPoints;
