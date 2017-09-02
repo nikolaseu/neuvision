@@ -25,17 +25,17 @@
 namespace Z3D
 {
 
-QString ZFlyCapture2Plugin::id()
+QString ZFlyCapture2Plugin::id() const
 {
     return QString("ZFlyCapture2");
 }
 
-QString ZFlyCapture2Plugin::name()
+QString ZFlyCapture2Plugin::name() const
 {
     return QString("PGR FlyCapture2 SDK");
 }
 
-QString ZFlyCapture2Plugin::version()
+QString ZFlyCapture2Plugin::version() const
 {
     return QString(Z3D_VERSION_STR);
 }

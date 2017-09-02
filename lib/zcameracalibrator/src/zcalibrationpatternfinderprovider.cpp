@@ -32,7 +32,7 @@ QMap< QString, ZCalibrationPatternFinderPluginInterface *> ZCalibrationPatternFi
 
 void ZCalibrationPatternFinderProvider::loadPlugins()
 {
-    auto list = ZPluginLoader::plugins("calibrationpatternfinder");
+    const auto list = ZPluginLoader::plugins("calibrationpatternfinder");
 
     for (auto pluginInstance : list) {
         auto *plugin = qobject_cast<ZCalibrationPatternFinderPluginInterface *>(pluginInstance);
@@ -48,8 +48,9 @@ void ZCalibrationPatternFinderProvider::loadPlugins()
 
 void ZCalibrationPatternFinderProvider::unloadPlugins()
 {
-    foreach(ZCalibrationPatternFinderPluginInterface *plugin, m_plugins.values())
+    for(auto *plugin : m_plugins.values()) {
         delete plugin;
+    }
 
     m_plugins.clear();
 }

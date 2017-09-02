@@ -100,8 +100,7 @@ QList<ZCameraCalibrator *> ZCameraCalibrationProvider::getCameraCalibrators()
 QWidget *ZCameraCalibrationProvider::getConfigWidget(ZCameraCalibrator *cameraCalibrator)
 {
     for (auto *plugin : m_plugins.values()) {
-        QWidget *configWidget = plugin->getConfigWidget(cameraCalibrator);
-        if (configWidget) {
+        if (auto *configWidget = plugin->getConfigWidget(cameraCalibrator)) {
             return configWidget;
         }
     }
@@ -123,8 +122,7 @@ QList<ZMultiCameraCalibrator *> ZCameraCalibrationProvider::getMultiCameraCalibr
 QWidget *ZCameraCalibrationProvider::getConfigWidget(ZMultiCameraCalibrator *multiCameraCalibrator)
 {
     for (auto *plugin : m_plugins.values()) {
-        QWidget *configWidget = plugin->getConfigWidget(multiCameraCalibrator);
-        if (configWidget) {
+        if (auto *configWidget = plugin->getConfigWidget(multiCameraCalibrator)) {
             return configWidget;
         }
     }

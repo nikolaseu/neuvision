@@ -33,9 +33,9 @@ class ZPinholeCameraCalibrationPlugin : public ZCameraCalibrationPluginInterface
 
     // ZCorePlugin interface
 public:
-    QString id() override;
-    QString name() override;
-    QString version() override;
+    QString id() const override;
+    QString name() const override;
+    QString version() const override;
 
     // ZCameraCalibrationPluginInterface interface
 public:

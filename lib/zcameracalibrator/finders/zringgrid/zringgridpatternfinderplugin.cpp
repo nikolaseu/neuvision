@@ -21,20 +21,21 @@
 #include "zringgridpatternfinderplugin.h"
 
 #include "zringgridpatternfinder.h"
+#include "zringgridpatternfinderconfigwidget.h"
 
 namespace Z3D {
 
-QString ZRingGridPatternFinderPlugin::id()
+QString ZRingGridPatternFinderPlugin::id() const
 {
     return QString(metaObject()->className());
 }
 
-QString ZRingGridPatternFinderPlugin::name()
+QString ZRingGridPatternFinderPlugin::name() const
 {
     return QString(metaObject()->className());
 }
 
-QString ZRingGridPatternFinderPlugin::version()
+QString ZRingGridPatternFinderPlugin::version() const
 {
     return QString(Z3D_VERSION_STR);
 }

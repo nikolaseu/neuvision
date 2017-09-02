@@ -25,17 +25,17 @@
 
 namespace Z3D {
 
-QString ZOpenCVStandardPatternFinderPlugin::id()
+QString ZOpenCVStandardPatternFinderPlugin::id() const
 {
     return QString(metaObject()->className());
 }
 
-QString ZOpenCVStandardPatternFinderPlugin::name()
+QString ZOpenCVStandardPatternFinderPlugin::name() const
 {
     return QString(metaObject()->className());
 }
 
-QString ZOpenCVStandardPatternFinderPlugin::version()
+QString ZOpenCVStandardPatternFinderPlugin::version() const
 {
     return QString(Z3D_VERSION_STR);
 }

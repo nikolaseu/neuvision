@@ -37,9 +37,9 @@ class ZIncompleteCircleGridPatternFinderPlugin : public ZCalibrationPatternFinde
 
     // ZCorePlugin interface
 public:
-    virtual QString id() override;
-    virtual QString name() override;
-    virtual QString version() override;
+    QString id() const override;
+    QString name() const override;
+    QString version() const override;
 
     // ZCalibrationPatternFinderPluginInterface interface
 public:

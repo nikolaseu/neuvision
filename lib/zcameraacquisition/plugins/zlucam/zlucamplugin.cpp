@@ -28,17 +28,17 @@
 namespace Z3D
 {
 
-QString ZLuCamPlugin::id()
+QString ZLuCamPlugin::id() const
 {
     return QString("ZLuCam");
 }
 
-QString ZLuCamPlugin::name()
+QString ZLuCamPlugin::name() const
 {
     return QString("Lumenera LuCam SDK");
 }
 
-QString ZLuCamPlugin::version()
+QString ZLuCamPlugin::version() const
 {
     return QString(Z3D_VERSION_STR);
 }

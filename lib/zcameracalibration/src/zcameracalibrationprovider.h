@@ -45,10 +45,10 @@ public:
     static ZCameraCalibration::Ptr getCalibration(QSettings *settings);
 
     static QList<ZCameraCalibrator *> getCameraCalibrators();
-    static QWidget *getConfigWidget(ZCameraCalibrator *cameraCalibrator);
+    static QWidget* getConfigWidget(ZCameraCalibrator *cameraCalibrator);
 
     static QList<ZMultiCameraCalibrator *> getMultiCameraCalibrators();
-    static QWidget *getConfigWidget(ZMultiCameraCalibrator *multiCameraCalibrator);
+    static QWidget* getConfigWidget(ZMultiCameraCalibrator *multiCameraCalibrator);
 
 private:
     explicit ZCameraCalibrationProvider() {}

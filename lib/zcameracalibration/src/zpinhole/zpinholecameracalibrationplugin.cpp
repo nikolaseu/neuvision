@@ -35,17 +35,17 @@
 namespace Z3D
 {
 
-QString ZPinholeCameraCalibrationPlugin::id()
+QString ZPinholeCameraCalibrationPlugin::id() const
 {
     return QString(PINHOLE_CALIB_NAME);
 }
 
-QString ZPinholeCameraCalibrationPlugin::name()
+QString ZPinholeCameraCalibrationPlugin::name() const
 {
     return QString(PINHOLE_CALIB_NAME);
 }
 
-QString ZPinholeCameraCalibrationPlugin::version()
+QString ZPinholeCameraCalibrationPlugin::version() const
 {
     return QString(PINHOLE_CALIB_VERSION);
 }

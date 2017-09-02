@@ -25,17 +25,17 @@
 
 namespace Z3D {
 
-QString ZQtCameraPlugin::id()
+QString ZQtCameraPlugin::id() const
 {
     return QStringLiteral("ZQTCAMERA");
 }
 
-QString ZQtCameraPlugin::name()
+QString ZQtCameraPlugin::name() const
 {
     return tr("QtMultimedia camera");
 }
 
-QString ZQtCameraPlugin::version()
+QString ZQtCameraPlugin::version() const
 {
     return QStringLiteral(Z3D_VERSION_STR);
 }

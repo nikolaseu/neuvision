@@ -35,9 +35,9 @@ public:
     virtual ~ZCorePlugin() {}
 
     /// plugin information
-    virtual QString id() = 0;
-    virtual QString name() = 0;
-    virtual QString version() = 0;
+    virtual QString id() const = 0;
+    virtual QString name() const = 0;
+    virtual QString version() const = 0;
 
 signals:
 

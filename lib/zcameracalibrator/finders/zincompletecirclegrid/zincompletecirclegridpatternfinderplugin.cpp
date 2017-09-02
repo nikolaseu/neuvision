@@ -24,17 +24,17 @@
 
 namespace Z3D {
 
-QString ZIncompleteCircleGridPatternFinderPlugin::id()
+QString ZIncompleteCircleGridPatternFinderPlugin::id() const
 {
     return QString(metaObject()->className());
 }
 
-QString ZIncompleteCircleGridPatternFinderPlugin::name()
+QString ZIncompleteCircleGridPatternFinderPlugin::name() const
 {
     return QString(metaObject()->className());
 }
 
-QString ZIncompleteCircleGridPatternFinderPlugin::version()
+QString ZIncompleteCircleGridPatternFinderPlugin::version() const
 {
     return QString(Z3D_VERSION_STR);
 }
