@@ -48,10 +48,10 @@ namespace Z3D
 ZCameraCalibratorWidget::ZCameraCalibratorWidget(ZCalibratedCamera::Ptr camera, QWidget *parent)
     : QWidget(parent)
     , ui(new Ui::ZCameraCalibratorWidget)
+    , m_distortionPlot(0)
     , m_model(new ZCalibrationImageModel(this))
     , m_calibratorWorker(new ZCameraCalibratorWorker())
     , m_camera(camera)
-    , m_distortionPlot(0)
     , m_currentCalibration(0)
 {
     ui->setupUi(this);

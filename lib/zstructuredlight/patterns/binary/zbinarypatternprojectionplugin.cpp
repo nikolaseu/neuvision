@@ -20,6 +20,7 @@
 
 #include "zbinarypatternprojectionplugin.h"
 #include "zbinarypatternprojection.h"
+#include "zbinarypatternprojectionconfigwidget.h"
 
 namespace Z3D
 {
@@ -47,6 +48,21 @@ QString ZBinaryPatternProjectionPlugin::version() const
 QList<ZPatternProjection *> ZBinaryPatternProjectionPlugin::getAll()
 {
     return QList<ZPatternProjection *>() << new ZBinaryPatternProjection();
+}
+
+QWidget *ZBinaryPatternProjectionPlugin::getConfigWidget(ZPatternProjection *patternProjection)
+{
+    if (auto *binaryPatternProjection = qobject_cast<ZBinaryPatternProjection*>(patternProjection)) {
+        /// TODO this assumes there's always only one pattern projection for each type
+        static QWidget *widget = nullptr;
+        if (!widget) {
+            widget = new ZBinaryPatternProjectionConfigWidget(binaryPatternProjection);
+        }
+
+        return widget;
+    }
+
+    return nullptr;
 }
 
 } // namespace Z3D

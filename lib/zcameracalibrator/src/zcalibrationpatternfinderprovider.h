@@ -39,12 +39,12 @@ public:
     static void unloadPlugins();
 
     static QList<ZCalibrationPatternFinder::Ptr> getAll();
-    static QWidget* getConfigWidget(ZCalibrationPatternFinder::Ptr patternFinder);
+    static QWidget *getConfigWidget(ZCalibrationPatternFinder::Ptr patternFinder);
 
 private:
     explicit ZCalibrationPatternFinderProvider();
 
-    static QMap< QString, ZCalibrationPatternFinderPluginInterface *> m_plugins;
+    static QMap<QString, ZCalibrationPatternFinderPluginInterface *> m_plugins;
 };
 
 } // namespace Z3D

@@ -21,7 +21,10 @@
 #include "zstereoslsplugin.h"
 
 #include "zdualcamerastereosls.h"
+#include "zdualcamerastereoslsconfigwidget.h"
 #include "zsinglecamerastereosls.h"
+
+#include <QLabel>
 
 namespace Z3D {
 
@@ -68,6 +71,29 @@ ZStructuredLightSystem::Ptr ZStereoSLSPlugin::get(QSettings *settings)
     }
 
     return sls;
+}
+
+QWidget *ZStereoSLSPlugin::getConfigWidget(ZStructuredLightSystem *structuredLightSystem)
+{
+    if (auto *dualCameraStereo = qobject_cast<ZDualCameraStereoSLS *>(structuredLightSystem)) {
+        static QWidget *widget = nullptr;
+        if (!widget) {
+            widget = new ZDualCameraStereoSLSConfigWidget(dualCameraStereo);
+        }
+
+        return widget;
+    }
+
+    if (/*auto *singleCameraStereo =*/ qobject_cast<ZSingleCameraStereoSLS *>(structuredLightSystem)) {
+        static QWidget *widget = nullptr;
+        if (!widget) {
+            widget = new QLabel("Not implemented yet :(");
+        }
+
+        return widget;
+    }
+
+    return nullptr;
 }
 
 } // namespace Z3D

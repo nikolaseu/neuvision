@@ -78,6 +78,17 @@ ZStructuredLightSystem::Ptr ZStructuredLightSystemProvider::get(QSettings *setti
     return structuredLightSystem;
 }
 
+QWidget *ZStructuredLightSystemProvider::getConfigWidget(ZStructuredLightSystem::Ptr structuredLightSystem)
+{
+    for (auto *plugin : m_plugins) {
+        if (auto *widget = plugin->getConfigWidget(structuredLightSystem.data())) {
+            return widget;
+        }
+    }
+
+    return nullptr;
+}
+
 ZStructuredLightSystemProvider::ZStructuredLightSystemProvider()
 {
 

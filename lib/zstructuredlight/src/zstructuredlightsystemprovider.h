@@ -36,7 +36,8 @@ public:
 
     static QList<QString> getAll();
 
-    static Z3D::ZStructuredLightSystem::Ptr get(QSettings *settings);
+    static ZStructuredLightSystem::Ptr get(QSettings *settings);
+    static QWidget *getConfigWidget(ZStructuredLightSystem::Ptr structuredLightSystem);
 
 private:
     explicit ZStructuredLightSystemProvider();

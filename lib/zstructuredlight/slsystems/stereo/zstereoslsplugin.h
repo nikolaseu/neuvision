@@ -43,6 +43,7 @@ public:
 public:
     QList<QString> getAll() override;
     ZStructuredLightSystem::Ptr get(QSettings *settings) override;
+    QWidget *getConfigWidget(ZStructuredLightSystem *structuredLightSystem) override;
 };
 
 } // namespace Z3D

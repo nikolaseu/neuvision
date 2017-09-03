@@ -20,7 +20,6 @@
 
 #include "zbinarypatternprojection.h"
 
-#include "zbinarypatternprojectionconfigwidget.h"
 #include "zbinarypatterndecoder.h"
 
 #include <Z3DCameraAcquisition>
@@ -46,8 +45,7 @@ namespace Z3D
 
 ZBinaryPatternProjection::ZBinaryPatternProjection(QObject *parent)
     : ZPatternProjection(parent)
-    , m_dlpview(0)
-    , m_configWidget(0)
+    , m_dlpview(nullptr)
     , m_delayMs(400)
     , m_noiseThreshold(15)
     , m_automaticPatternCount(true)
@@ -106,14 +104,6 @@ void ZBinaryPatternProjection::setProjectionWindowGeometry(const QRect &geometry
     m_dlpview->setGeometry(geometry);
 
     updateMaxUsefulPatterns();
-}
-
-QWidget *ZBinaryPatternProjection::configWidget()
-{
-    if (!m_configWidget)
-        m_configWidget = new ZBinaryPatternProjectionConfigWidget(this);
-
-    return m_configWidget;
 }
 
 void ZBinaryPatternProjection::beginScan()

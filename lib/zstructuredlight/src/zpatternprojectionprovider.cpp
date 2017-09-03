@@ -60,6 +60,17 @@ QList<ZPatternProjection *> ZPatternProjectionProvider::getAll()
     return list;
 }
 
+QWidget *ZPatternProjectionProvider::getConfigWidget(ZPatternProjection *patternProjection)
+{
+    for (auto plugin : m_list) {
+        if (auto *widget = plugin->getConfigWidget(patternProjection)) {
+            return widget;
+        }
+    }
+
+    return nullptr;
+}
+
 ZPatternProjectionProvider::ZPatternProjectionProvider()
 {
 }

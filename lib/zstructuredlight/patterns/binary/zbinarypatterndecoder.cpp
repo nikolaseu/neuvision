@@ -257,7 +257,7 @@ cv::Mat simplifyBinaryPatternData(cv::Mat image, cv::Mat maskImg, std::map<int, 
                     float sqrNorm = cv::norm(leftPoint - *rightIt, cv::NORM_L2SQR);
                     /// if it is <= 4 it means they are on the same line
                     /// if it is more than 10 they are too far away, don't use
-                    if ( sqrNorm > 4. && sqrNorm < 10. ) {
+                    if ( sqrNorm > 4.f && sqrNorm < 10.f ) {
                         *midIt = 0.5f * (leftPoint + *rightIt);
                         //counter++;
                     }

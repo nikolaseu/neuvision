@@ -49,7 +49,6 @@ signals:
     void patternsDecoded(std::vector<Z3D::ZDecodedPattern::Ptr> pattern);
 
 public slots:
-    virtual QWidget *configWidget() = 0;
     virtual void beginScan() = 0;
     virtual void processImages(std::vector< std::vector<Z3D::ZImageGrayscale::Ptr> > acquiredImages, QString acquisitionId) = 0;
 };

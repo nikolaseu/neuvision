@@ -46,7 +46,6 @@ private slots:
 
 private:
     std::vector<Z3D::ZCalibratedCamera::Ptr> m_cameras;
-    ZDualCameraStereoSLSConfigWidget *m_configWidget;
 
     // ZStructuredLightSystem interface
 public:
@@ -54,9 +53,6 @@ public:
     virtual QString displayName() const override;
 
     virtual void init(QSettings *settings) override;
-
-public slots:
-    virtual QWidget *configWidget() override;
 
 protected slots:
     virtual void onPatternProjected(ZProjectedPattern::Ptr pattern) override;

@@ -74,8 +74,8 @@ QList<ZCameraCalibrator *> ZPinholeCameraCalibrationPlugin::getCameraCalibrators
 QWidget *ZPinholeCameraCalibrationPlugin::getConfigWidget(ZCameraCalibrator *cameraCalibrator)
 {
     if (auto *pinholeCalibrator = qobject_cast<ZPinholeCameraCalibrator*>(cameraCalibrator)) {
-        /// TODO improve this
-        static ZPinholeCameraCalibratorConfigWidget *widget = nullptr;
+        /// TODO improve this, this assumes there will always be only one of each type
+        static QWidget *widget = nullptr;
         if (!widget) {
             widget = new ZPinholeCameraCalibratorConfigWidget(pinholeCalibrator);
         }
@@ -98,8 +98,8 @@ QList<ZMultiCameraCalibrator *> ZPinholeCameraCalibrationPlugin::getMultiCameraC
 QWidget *ZPinholeCameraCalibrationPlugin::getConfigWidget(ZMultiCameraCalibrator *multiCameraCalibrator)
 {
     if (auto *opencvStereoCalibration = qobject_cast<ZOpenCVStereoMultiCameraCalibrator*>(multiCameraCalibrator)) {
-        /// TODO improve this
-        static ZOpenCVStereoMultiCameraCalibratorConfigWidget *widget = nullptr;
+        /// TODO improve this, this assumes there will always be only one of each type
+        static QWidget *widget = nullptr;
         if (!widget) {
             widget = new ZOpenCVStereoMultiCameraCalibratorConfigWidget(opencvStereoCalibration);
         }
