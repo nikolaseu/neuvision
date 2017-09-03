@@ -28,8 +28,8 @@ namespace Z3D
 ZCalibrationPatternFinder::ZCalibrationPatternFinder(QObject *parent)
     : QObject(parent)
     , m_boardSize(15, 11)
-    , m_colWidth(2.f)
-    , m_rowHeight(2.f)
+    , m_colWidth(5.)
+    , m_rowHeight(5.)
 {
     QObject::connect(this, SIGNAL(columnsChanged(int)),
                      this, SLOT(updateConfigHash()));

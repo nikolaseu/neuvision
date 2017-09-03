@@ -79,6 +79,7 @@ ZMultiCameraCalibratorWidget::ZMultiCameraCalibratorWidget(std::vector<ZCalibrat
 
     if (!hasAnyRealCamera) {
         ui->cameraViewPageButton->setVisible(false);
+        ui->updateCamerasCalibrationButton->setVisible(false);
     }
 
     /// create and add progress bar used in the statusbar

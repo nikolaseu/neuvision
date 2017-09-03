@@ -49,6 +49,8 @@ class ZOpenCVStereoMultiCameraCalibrator : public ZMultiCameraCalibrator
     Q_PROPERTY(int termCriteriaMaxIterations READ termCriteriaMaxIterations WRITE setTermCriteriaMaxIterations NOTIFY termCriteriaMaxIterationsChanged)
     Q_PROPERTY(double termCriteriaEpsilon    READ termCriteriaEpsilon       WRITE setTermCriteriaEpsilon       NOTIFY termCriteriaEpsilonChanged)
 
+    Q_PROPERTY(bool isDebugMode READ isDebugMode WRITE setDebugMode NOTIFY debugModeChanged)
+
 public:
     explicit ZOpenCVStereoMultiCameraCalibrator(QObject *parent = 0);
 
@@ -83,6 +85,8 @@ public:
     int termCriteriaMaxIterations() const;
     double termCriteriaEpsilon() const;
 
+    bool isDebugMode() const;
+
 signals:
     void fixIntrinsicChanged(bool arg);
     void sameFocalLengthChanged(bool arg);
@@ -102,6 +106,8 @@ signals:
     void termCriteriaMaxIterationsChanged(int arg);
     void termCriteriaEpsilonChanged(double arg);
 
+    void debugModeChanged(bool isDebugMode);
+
 public slots:
     void setFixIntrinsic(bool arg);
     void setSameFocalLength(bool arg);
@@ -120,6 +126,8 @@ public slots:
 
     void setTermCriteriaMaxIterations(int arg);
     void setTermCriteriaEpsilon(double arg);
+
+    void setDebugMode(bool isDebugMode);
 
 protected:
     bool m_fixIntrinsic;
@@ -173,6 +181,9 @@ protected:
     /// cv::calibrateCamera termination criteria
     int m_termCriteriaMaxIterations;
     double m_termCriteriaEpsilon;
+
+    /// when debug mode is enabled we save debug information
+    bool m_isDebugMode;
 };
 
 } // namespace Z3D

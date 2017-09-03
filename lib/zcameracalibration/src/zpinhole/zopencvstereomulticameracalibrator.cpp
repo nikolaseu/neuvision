@@ -21,12 +21,12 @@
 #include "zopencvstereomulticameracalibrator.h"
 #include "zpinholecameracalibration.h"
 
+#include <QDateTime>
 #include <QDebug>
+#include <QDir>
 
 #include "opencv2/calib3d/calib3d.hpp"
 #include "opencv2/imgproc/imgproc.hpp"
-
-#include <iostream>
 
 namespace Z3D
 {
@@ -48,6 +48,7 @@ ZOpenCVStereoMultiCameraCalibrator::ZOpenCVStereoMultiCameraCalibrator(QObject *
     , m_useRationalModel(false)
     , m_termCriteriaMaxIterations(50)
     , m_termCriteriaEpsilon(1e-7)
+    , m_isDebugMode(true)
 {
 
 }
@@ -67,8 +68,6 @@ std::vector<ZCameraCalibration::Ptr> ZOpenCVStereoMultiCameraCalibrator::getCali
         std::vector< std::vector< std::vector< cv::Point2f > > > &imagePoints,
         std::vector< std::vector< cv::Point3f > > &objectPoints)
 {
-    qDebug() << "starting" << Q_FUNC_INFO;
-
     std::vector<ZCameraCalibration::Ptr> newCalibrations;
 
     size_t ncameras = initialCameraCalibrations.size();
@@ -161,70 +160,86 @@ std::vector<ZCameraCalibration::Ptr> ZOpenCVStereoMultiCameraCalibrator::getCali
         #endif
             );
 
-    qDebug() << "\t-> done with RMS error:" << rms;
+    qDebug() << "stereo calibration finished with RMS error:" << rms
+             << ", distance between cameras:" << cv::norm(T);
 
-    // CALIBRATION QUALITY CHECK
-    // because the output fundamental matrix implicitly
-    // includes all the output information,
-    // we can check the quality of calibration using the
-    // epipolar geometry constraint: m2^t*F*m1=0
-    double err = 0;
-    int npoints = 0;
-    std::vector<cv::Vec3f> lines[2];
-    for (size_t i = 0; i < nimages; i++ ) {
-        const auto npt = imagePoints[0][i].size();
-        cv::Mat imgpt[2];
+    if (m_isDebugMode) {
 
-        for (size_t k = 0; k < 2; k++ ) {
-            imgpt[k] = cv::Mat(imagePoints[k][i]);
-            cv::undistortPoints(imgpt[k], imgpt[k], cameraMatrix[k], distCoeffs[k], cv::Mat(), cameraMatrix[k]);
-            cv::computeCorrespondEpilines(imgpt[k], k+1, F, lines[k]);
-        }
+        // CALIBRATION QUALITY CHECK
+        // because the output fundamental matrix implicitly
+        // includes all the output information,
+        // we can check the quality of calibration using the
+        // epipolar geometry constraint: m2^t*F*m1=0
+        double err = 0;
+        int npoints = 0;
+        std::vector<cv::Vec3f> lines[2];
+        for (size_t i = 0; i < nimages; i++ ) {
+            const auto npt = imagePoints[0][i].size();
+            cv::Mat imgpt[2];
 
-        for (size_t j = 0; j < npt; j++ ) {
-            double errij =
-                    fabs(imagePoints[0][i][j].x*lines[1][j][0] +
-                         imagePoints[0][i][j].y*lines[1][j][1] +
-                         lines[1][j][2]) +
-                    fabs(imagePoints[1][i][j].x*lines[0][j][0] +
-                         imagePoints[1][i][j].y*lines[0][j][1] +
-                         lines[0][j][2]);
-            err += errij;
-        }
-        npoints += npt;
-    }
-
-    qDebug() << "average reprojection err = " << err/npoints;
-
-/*
-    // save each camera intrinsic and extrinsic parameters
-    QString timeStr = QDateTime::currentDateTime().toString("yyyy.MM.dd_hh.mm.ss");
-    for( k = 0; k < 2; k++ ) {
-        cv::FileStorage fs(qPrintable(QString("%1/%2_%3.calib.yml").arg(dir).arg(timeStr).arg(camerasFolders[k])), CV_STORAGE_WRITE);
-        if( fs.isOpened() ) {
-            fs << "calibrationDate" << qPrintable(QDateTime::currentDateTime().toString(Qt::ISODate));
-            fs << "sensorWidth" << imageSize[k].width;
-            fs << "sensorHeight" << imageSize[k].height;
-            fs << "cameraMatrix" << cameraMatrix[k] << "distCoeffs" << distCoeffs[k];
-            if (k == 0) {
-                fs << "rotation" << R << "translation" << T;
-            } else {
-                fs << "rotation" << cv::Mat::eye(3, 3, CV_64F) << "translation" << cv::Mat::zeros(3, 1, CV_64F);
+            for (size_t k = 0; k < 2; k++ ) {
+                imgpt[k] = cv::Mat(imagePoints[k][i]);
+                cv::undistortPoints(imgpt[k], imgpt[k], cameraMatrix[k], distCoeffs[k], cv::Mat(), cameraMatrix[k]);
+                cv::computeCorrespondEpilines(imgpt[k], k+1, F, lines[k]);
             }
+
+            for (size_t j = 0; j < npt; j++ ) {
+                double errij =
+                        fabs(imagePoints[0][i][j].x*lines[1][j][0] +
+                             imagePoints[0][i][j].y*lines[1][j][1] +
+                             lines[1][j][2]) +
+                        fabs(imagePoints[1][i][j].x*lines[0][j][0] +
+                             imagePoints[1][i][j].y*lines[0][j][1] +
+                             lines[0][j][2]);
+                err += errij;
+            }
+            npoints += npt;
+        }
+
+        qDebug() << "average reprojection error:"
+                 << err/npoints
+                 << "pixels (sum of error is" << err << "for" << npoints << "points)";
+
+        /// create folder where the debug images will be saved
+        const QString timeStr = QDateTime::currentDateTime().toString("yyyy.MM.dd_hh.mm.ss");
+        const QString calibFolder = QString("./tmp/debug/stereo/%1/").arg(timeStr);
+        QDir::current().mkpath(calibFolder);
+        QDir calibDir = QDir(calibFolder);
+
+        // save intrinsic parameters
+        const QString intrinsicsFileName = calibDir.absoluteFilePath("intrinsics.yml");
+        cv::FileStorage fs(qPrintable(intrinsicsFileName), cv::FileStorage::WRITE);
+        if (fs.isOpened()) {
+            fs << "M1" << cameraMatrix[0] << "D1" << distCoeffs[0]
+               << "M2" << cameraMatrix[1] << "D2" << distCoeffs[1];
             fs.release();
         } else {
-            qCritical() << "Error: can not save the calibration parameters for camera" << camerasFolders[k];
+            qWarning() << "Error: cannot save the intrinsic parameters to" << intrinsicsFileName;
+        }
+
+        cv::Mat R1, R2, P1, P2, Q;
+        cv::Rect validRoi[2];
+
+        cv::stereoRectify(cameraMatrix[0], distCoeffs[0], cameraMatrix[1], distCoeffs[1],
+                imageSize[0], R, T, R1, R2, P1, P2, Q, 0, -1, imageSize[0], &validRoi[0], &validRoi[1]);
+
+        const QString extrinsicsFileName = calibDir.absoluteFilePath("extrinsics.yml");
+        fs.open(qPrintable(extrinsicsFileName), cv::FileStorage::WRITE);
+        if (fs.isOpened()) {
+            fs << "R" << R << "T" << T
+               << "R1" << R1 << "R2" << R2
+               << "P1" << P1 << "P2" << P2
+               << "Q" << Q;
+            fs.release();
+        } else {
+            qWarning() << "Error: cannot save the extrinsic parameters to" << extrinsicsFileName;
         }
     }
-*/
 
     for (size_t ic = 0; ic < ncameras; ++ic) {
         Z3D::ZCameraCalibration::Ptr calibration(
                     new Z3D::ZPinholeCameraCalibration(cameraMatrix[ic], distCoeffs[ic], imageSize[ic]));
         if (ic == 0) {
-            std::cout << "rotation:" << std::endl << R << std::endl;
-            std::cout << "translation:" << std::endl << T << std::endl;
-
             calibration->setRotation(R);
             calibration->setTranslation(T);
         }
@@ -307,6 +322,11 @@ int ZOpenCVStereoMultiCameraCalibrator::termCriteriaMaxIterations() const
 double ZOpenCVStereoMultiCameraCalibrator::termCriteriaEpsilon() const
 {
     return m_termCriteriaEpsilon;
+}
+
+bool ZOpenCVStereoMultiCameraCalibrator::isDebugMode() const
+{
+    return m_isDebugMode;
 }
 
 void ZOpenCVStereoMultiCameraCalibrator::setFixIntrinsic(bool arg)
@@ -429,6 +449,15 @@ void ZOpenCVStereoMultiCameraCalibrator::setTermCriteriaEpsilon(double arg)
         m_termCriteriaEpsilon = arg;
         emit termCriteriaEpsilonChanged(arg);
     }
+}
+
+void ZOpenCVStereoMultiCameraCalibrator::setDebugMode(bool isDebugMode)
+{
+    if (m_isDebugMode == isDebugMode)
+        return;
+
+    m_isDebugMode = isDebugMode;
+    emit debugModeChanged(m_isDebugMode);
 }
 
 } // namespace Z3D

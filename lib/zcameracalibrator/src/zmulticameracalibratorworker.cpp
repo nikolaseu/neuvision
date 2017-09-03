@@ -350,13 +350,14 @@ void ZMultiCameraCalibratorWorker::calibrateFunctionImpl(std::vector<ZCameraCali
         }
     }
 
-    /// 40% ¿?
-    setProgress(0.4f, tr("Running calibration algorithm..."));
+    /// 30% ¿?
+    setProgress(0.3f, tr("Running calibration algorithm..."));
 
     newCalibrations = m_cameraCalibrator->getCalibration(currentCalibrations, allImagePoints, realWorldPoints);
 
-    /// 90%
-    setProgress(0.9f, tr("Finishing calibration..."));
+    /// 99%
+    const auto finishMessage = tr("Calibration finished in %1 msecs").arg(time.elapsed());
+    setProgress(0.99f, finishMessage);
 
     /// this function is run from a thread in the QThreadPool, we need to move
     /// the qobject to a thread that has an event loop running
@@ -364,7 +365,6 @@ void ZMultiCameraCalibratorWorker::calibrateFunctionImpl(std::vector<ZCameraCali
         ZCameraCalibration::Ptr calibration = newCalibrations[i];
         if (calibration) {
             while (!calibration->ready()) {
-                qDebug() << "waiting for calibration to be ready, index:" << i;
                 QThread::msleep(100);
             }
             calibration->moveToThread(QCoreApplication::instance()->thread());
@@ -375,7 +375,7 @@ void ZMultiCameraCalibratorWorker::calibrateFunctionImpl(std::vector<ZCameraCali
     emit calibrationChanged(newCalibrations);
 
     /// 100%
-    setProgress(1.f, tr("Calibration finished in %1 msecs").arg(time.elapsed()));
+    setProgress(1.f, finishMessage);
 }
 
 } // namespace Z3D
