@@ -45,20 +45,26 @@ QList<ZCalibrationPatternFinder::Ptr> ZRingGridPatternFinderPlugin::getPatternFi
     return QList<ZCalibrationPatternFinder::Ptr>() << ZCalibrationPatternFinder::Ptr(new ZRingGridPatternFinder());
 }
 
-QWidget *ZRingGridPatternFinderPlugin::getConfigWidget(ZCalibrationPatternFinder::Ptr patternFinder)
+QWidget *ZRingGridPatternFinderPlugin::getConfigWidget(ZCalibrationPatternFinder *patternFinder)
 {
-    if (auto *finder = qobject_cast<ZRingGridPatternFinder *>(patternFinder.data())) {
-        /// TODO improve this, this assumes there will always be only one of each type
-        static QWidget *widget = nullptr;
-        if (!widget) {
-            widget = new ZRingGridPatternFinderConfigWidget(finder);
-            widget->setVisible(false);
-        }
-
-        return widget;
+    const auto item = m_patternFinderWidgets.find(patternFinder);
+    if (item != m_patternFinderWidgets.end()) {
+        return item->second;
     }
 
-    return nullptr;
+    QWidget *widget = nullptr;
+    if (auto *finder = qobject_cast<ZRingGridPatternFinder *>(patternFinder)) {
+        widget = new ZRingGridPatternFinderConfigWidget(finder);
+    }
+
+    if (widget) {
+        QObject::connect(patternFinder, &ZCalibrationPatternFinder::destroyed, [=](QObject *) {
+            m_patternFinderWidgets.erase(patternFinder);
+        });
+        m_patternFinderWidgets[patternFinder] = widget;
+    }
+
+    return widget;
 }
 
 } // namespace Z3D

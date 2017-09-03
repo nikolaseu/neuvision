@@ -67,7 +67,7 @@ QList<ZCalibrationPatternFinder::Ptr> ZCalibrationPatternFinderProvider::getAll(
     return finderList;
 }
 
-QWidget *ZCalibrationPatternFinderProvider::getConfigWidget(ZCalibrationPatternFinder::Ptr patternFinder)
+QWidget *ZCalibrationPatternFinderProvider::getConfigWidget(ZCalibrationPatternFinder *patternFinder)
 {
     for (auto *plugin : m_plugins) {
         if (auto *widget = plugin->getConfigWidget(patternFinder)) {

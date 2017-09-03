@@ -52,30 +52,28 @@ QList<ZCalibrationPatternFinder::Ptr> ZOpenCVStandardPatternFinderPlugin::getPat
     return finderList;
 }
 
-QWidget *ZOpenCVStandardPatternFinderPlugin::getConfigWidget(ZCalibrationPatternFinder::Ptr patternFinder)
+QWidget *ZOpenCVStandardPatternFinderPlugin::getConfigWidget(ZCalibrationPatternFinder *patternFinder)
 {
-    if (auto *chessboardFinder = qobject_cast<ZChessboardCalibrationPatternFinder *>(patternFinder.data())) {
-        /// TODO improve this, this assumes there will always be only one of each type
-        static QWidget *widget = nullptr;
-        if (!widget) {
-            widget = new ZChessboardCalibrationPatternFinderConfigWidget(chessboardFinder);
-            widget->setVisible(false);
-        }
-        return widget;
+    const auto item = m_patternFinderWidgets.find(patternFinder);
+    if (item != m_patternFinderWidgets.end()) {
+        return item->second;
     }
 
-    if (auto *circleGridFinder = qobject_cast<ZCircleGridCalibrationPatternFinder *>(patternFinder.data())) {
-        /// TODO improve this, this assumes there will always be only one of each type
-        static QWidget *widget = nullptr;
-        if (!widget) {
-            widget = new ZCircleGridCalibrationPatternFinderConfigWidget(circleGridFinder);
-            widget->setVisible(false);
-        }
-
-        return widget;
+    QWidget *widget = nullptr;
+    if (auto *chessboardFinder = qobject_cast<ZChessboardCalibrationPatternFinder *>(patternFinder)) {
+        widget = new ZChessboardCalibrationPatternFinderConfigWidget(chessboardFinder);
+    } else if (auto *circleGridFinder = qobject_cast<ZCircleGridCalibrationPatternFinder *>(patternFinder)) {
+        widget = new ZCircleGridCalibrationPatternFinderConfigWidget(circleGridFinder);
     }
 
-    return nullptr;
+    if (widget) {
+        QObject::connect(patternFinder, &ZCalibrationPatternFinder::destroyed, [=](QObject *) {
+            m_patternFinderWidgets.erase(patternFinder);
+        });
+        m_patternFinderWidgets[patternFinder] = widget;
+    }
+
+    return widget;
 }
 
 } // namespace Z3D

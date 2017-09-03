@@ -75,25 +75,26 @@ ZStructuredLightSystem::Ptr ZStereoSLSPlugin::get(QSettings *settings)
 
 QWidget *ZStereoSLSPlugin::getConfigWidget(ZStructuredLightSystem *structuredLightSystem)
 {
+    const auto item = m_structuredLightSystemWidgets.find(structuredLightSystem);
+    if (item != m_structuredLightSystemWidgets.end()) {
+        return item->second;
+    }
+
+    QWidget *widget = nullptr;
     if (auto *dualCameraStereo = qobject_cast<ZDualCameraStereoSLS *>(structuredLightSystem)) {
-        static QWidget *widget = nullptr;
-        if (!widget) {
-            widget = new ZDualCameraStereoSLSConfigWidget(dualCameraStereo);
-        }
-
-        return widget;
+        widget = new ZDualCameraStereoSLSConfigWidget(dualCameraStereo);
+    } else if (/*auto *singleCameraStereo =*/ qobject_cast<ZSingleCameraStereoSLS *>(structuredLightSystem)) {
+        widget = new QLabel("Not implemented yet :(");
     }
 
-    if (/*auto *singleCameraStereo =*/ qobject_cast<ZSingleCameraStereoSLS *>(structuredLightSystem)) {
-        static QWidget *widget = nullptr;
-        if (!widget) {
-            widget = new QLabel("Not implemented yet :(");
-        }
-
-        return widget;
+    if (widget) {
+        QObject::connect(structuredLightSystem, &QObject::destroyed, [=](QObject *) {
+            m_structuredLightSystemWidgets.erase(structuredLightSystem);
+        });
+        m_structuredLightSystemWidgets[structuredLightSystem] = widget;
     }
 
-    return nullptr;
+    return widget;
 }
 
 } // namespace Z3D

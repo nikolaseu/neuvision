@@ -45,20 +45,26 @@ QList<ZCalibrationPatternFinder::Ptr> ZIncompleteCircleGridPatternFinderPlugin::
     return QList<ZCalibrationPatternFinder::Ptr>() << ZCalibrationPatternFinder::Ptr(new ZIncompleteCircleGridPatternFinder());
 }
 
-QWidget *ZIncompleteCircleGridPatternFinderPlugin::getConfigWidget(ZCalibrationPatternFinder::Ptr patternFinder)
+QWidget *ZIncompleteCircleGridPatternFinderPlugin::getConfigWidget(ZCalibrationPatternFinder *patternFinder)
 {
-    if (auto *finder = qobject_cast<ZIncompleteCircleGridPatternFinder *>(patternFinder.data())) {
-        /// TODO improve this, this assumes there will always be only one of each type
-        static QWidget *widget = nullptr;
-        if (!widget) {
-            widget = new ZIncompleteCircleGridPatternFinderConfigWidget(finder);
-            widget->setVisible(false);
-        }
-
-        return widget;
+    const auto item = m_patternFinderWidgets.find(patternFinder);
+    if (item != m_patternFinderWidgets.end()) {
+        return item->second;
     }
 
-    return nullptr;
+    QWidget *widget = nullptr;
+    if (auto *finder = qobject_cast<ZIncompleteCircleGridPatternFinder *>(patternFinder)) {
+        widget = new ZIncompleteCircleGridPatternFinderConfigWidget(finder);
+    }
+
+    if (widget) {
+        QObject::connect(patternFinder, &ZCalibrationPatternFinder::destroyed, [=](QObject *) {
+            m_patternFinderWidgets.erase(patternFinder);
+        });
+        m_patternFinderWidgets[patternFinder] = widget;
+    }
+
+    return widget;
 }
 
 } // namespace Z3D

@@ -44,6 +44,10 @@ public:
     QWidget *getConfigWidget(ZCameraCalibrator *cameraCalibrator) override;
     QList<ZMultiCameraCalibrator *> getMultiCameraCalibrators() override;
     QWidget *getConfigWidget(ZMultiCameraCalibrator *multiCameraCalibrator) override;
+
+private:
+    std::map<ZCameraCalibrator *, QWidget *> m_cameraCalibratorWidgets;
+    std::map<ZMultiCameraCalibrator *, QWidget *> m_multiCameraCalibratorWidgets;
 };
 
 } // namespace Z3D

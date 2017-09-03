@@ -304,7 +304,7 @@ void ZCameraCalibratorWidget::onCalibrationPatternTypeChanged(int index)
     /// remove previous config widget and hide it
     ZCalibrationPatternFinder::Ptr m_currentPatternFinder = m_calibratorWorker->patternFinder();
     if (m_currentPatternFinder) {
-        QWidget *previousWidget = ZCalibrationPatternFinderProvider::getConfigWidget(m_currentPatternFinder);
+        QWidget *previousWidget = ZCalibrationPatternFinderProvider::getConfigWidget(m_currentPatternFinder.data());
         previousWidget->setVisible(false);
         ui->calibrationPatternConfigLayout->removeWidget(previousWidget);
     }
@@ -314,15 +314,15 @@ void ZCameraCalibratorWidget::onCalibrationPatternTypeChanged(int index)
     m_calibratorWorker->setPatternFinder(m_currentPatternFinder);
 
     /// add config widget
-    QWidget *currentWidget = ZCalibrationPatternFinderProvider::getConfigWidget(m_currentPatternFinder);
+    QWidget *currentWidget = ZCalibrationPatternFinderProvider::getConfigWidget(m_currentPatternFinder.data());
     currentWidget->setVisible(true);
     ui->calibrationPatternConfigLayout->addWidget(currentWidget);
 }
 
-void ZCameraCalibratorWidget::onProgressChanged(float progress, QString message)
+void ZCameraCalibratorWidget::onProgressChanged(float progress, QString /*message*/)
 {
     m_statusProgressBar->setValue(100 * progress);
-    m_statusProgressBar->setVisible(progress < 1.);
+    m_statusProgressBar->setVisible(progress < 1.f);
 
     /*if (progress == 1 && message.isEmpty())
         ui->statusbar->showMessage(tr(""), 5000);

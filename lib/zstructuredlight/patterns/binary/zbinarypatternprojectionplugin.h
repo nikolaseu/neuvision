@@ -43,6 +43,9 @@ public:
 public:
     QList<ZPatternProjection *> getAll() override;
     QWidget *getConfigWidget(ZPatternProjection *patternProjection) override;
+
+private:
+    std::map<ZPatternProjection *, QWidget *> m_patternProjectionWidgets;
 };
 
 } // namespace Z3D

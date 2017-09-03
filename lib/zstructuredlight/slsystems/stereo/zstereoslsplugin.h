@@ -44,6 +44,9 @@ public:
     QList<QString> getAll() override;
     ZStructuredLightSystem::Ptr get(QSettings *settings) override;
     QWidget *getConfigWidget(ZStructuredLightSystem *structuredLightSystem) override;
+
+private:
+    std::map<ZStructuredLightSystem *, QWidget *> m_structuredLightSystemWidgets;
 };
 
 } // namespace Z3D

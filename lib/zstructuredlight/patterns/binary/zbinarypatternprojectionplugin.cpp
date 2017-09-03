@@ -52,17 +52,24 @@ QList<ZPatternProjection *> ZBinaryPatternProjectionPlugin::getAll()
 
 QWidget *ZBinaryPatternProjectionPlugin::getConfigWidget(ZPatternProjection *patternProjection)
 {
-    if (auto *binaryPatternProjection = qobject_cast<ZBinaryPatternProjection*>(patternProjection)) {
-        /// TODO this assumes there's always only one pattern projection for each type
-        static QWidget *widget = nullptr;
-        if (!widget) {
-            widget = new ZBinaryPatternProjectionConfigWidget(binaryPatternProjection);
-        }
-
-        return widget;
+    const auto item = m_patternProjectionWidgets.find(patternProjection);
+    if (item != m_patternProjectionWidgets.end()) {
+        return item->second;
     }
 
-    return nullptr;
+    QWidget *widget = nullptr;
+    if (auto *binaryPatternProjection = qobject_cast<ZBinaryPatternProjection*>(patternProjection)) {
+        widget = new ZBinaryPatternProjectionConfigWidget(binaryPatternProjection);
+    }
+
+    if (widget) {
+        QObject::connect(patternProjection, &QObject::destroyed, [=](QObject *) {
+            m_patternProjectionWidgets.erase(patternProjection);
+        });
+        m_patternProjectionWidgets[patternProjection] = widget;
+    }
+
+    return widget;
 }
 
 } // namespace Z3D
