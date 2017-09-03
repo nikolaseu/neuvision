@@ -23,8 +23,6 @@
 #include "zcameracalibrationprovider.h"
 #include "zcalibratedcameraprovider.h"
 
-#include <QLabel>
-
 namespace Z3D
 {
 
@@ -90,11 +88,6 @@ void ZSingleCameraStereoSLS::init(QSettings *settings)
     std::vector<Z3D::ZCameraInterface::Ptr> camerasVector;
     camerasVector.push_back(camera->camera());
     setAcquisitionManager(new ZCameraAcquisitionManager(camerasVector));
-}
-
-QWidget *ZSingleCameraStereoSLS::configWidget()
-{
-    return new QLabel("TO DO");
 }
 
 void ZSingleCameraStereoSLS::onPatternProjected(ZProjectedPattern::Ptr pattern)

@@ -38,7 +38,7 @@ void ZCameraCalibrationProvider::loadPlugins(QString folder)
     ZCameraCalibrationPluginInterface *pinholePlugin = new ZPinholeCameraCalibrationPlugin;
     m_plugins.insert(pinholePlugin->name(), pinholePlugin);
 
-    auto list = ZPluginLoader::plugins("cameracalibration");
+    const auto list = ZPluginLoader::plugins("cameracalibration");
 
     for (auto pluginInstance : list) {
         auto *plugin = qobject_cast<ZCameraCalibrationPluginInterface *>(pluginInstance);
@@ -54,8 +54,9 @@ void ZCameraCalibrationProvider::loadPlugins(QString folder)
 
 void ZCameraCalibrationProvider::unloadPlugins()
 {
-    foreach(ZCameraCalibrationPluginInterface *plugin, m_plugins.values())
+    for (auto *plugin : m_plugins.values()) {
         delete plugin;
+    }
 
     m_plugins.clear();
 }
@@ -89,20 +90,44 @@ QList<ZCameraCalibrator *> ZCameraCalibrationProvider::getCameraCalibrators()
 {
     QList<ZCameraCalibrator *> list;
 
-    foreach(ZCameraCalibrationPluginInterface *plugin, m_plugins.values())
+    for (auto *plugin : m_plugins.values()) {
         list << plugin->getCameraCalibrators();
+    }
 
     return list;
+}
+
+QWidget *ZCameraCalibrationProvider::getConfigWidget(ZCameraCalibrator *cameraCalibrator)
+{
+    for (auto *plugin : m_plugins.values()) {
+        if (auto *configWidget = plugin->getConfigWidget(cameraCalibrator)) {
+            return configWidget;
+        }
+    }
+
+    return nullptr;
 }
 
 QList<ZMultiCameraCalibrator *> ZCameraCalibrationProvider::getMultiCameraCalibrators()
 {
     QList<ZMultiCameraCalibrator *> list;
 
-    foreach(ZCameraCalibrationPluginInterface *plugin, m_plugins.values())
+    for (auto *plugin : m_plugins.values()) {
         list << plugin->getMultiCameraCalibrators();
+    }
 
     return list;
+}
+
+QWidget *ZCameraCalibrationProvider::getConfigWidget(ZMultiCameraCalibrator *multiCameraCalibrator)
+{
+    for (auto *plugin : m_plugins.values()) {
+        if (auto *configWidget = plugin->getConfigWidget(multiCameraCalibrator)) {
+            return configWidget;
+        }
+    }
+
+    return nullptr;
 }
 
 } // namespace Z3D

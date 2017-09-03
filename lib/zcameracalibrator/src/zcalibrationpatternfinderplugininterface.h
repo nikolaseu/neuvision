@@ -35,6 +35,7 @@ public:
 
     /// calibration utilities
     virtual QList<ZCalibrationPatternFinder::Ptr> getPatternFinders() = 0;
+    virtual QWidget *getConfigWidget(ZCalibrationPatternFinder *patternFinder) = 0;
 };
 
 } // namespace Z3D

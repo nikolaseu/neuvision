@@ -58,23 +58,24 @@ public:
     explicit ZPinholeCameraCalibration();
     explicit ZPinholeCameraCalibration(cv::Mat cameraMatrix, cv::Mat distortionCoeffs, cv::Size imageSize);
 
-    virtual ZCameraCalibration::Ptr clone() const;
+    ZCameraCalibration::Ptr clone() const override;
 
-    virtual bool getCalibratedPixel(int x, int y,
-                                    float *calibratedX, float *calibratedY);
+    bool getCalibratedPixel(int x, int y,
+                            float *calibratedX, float *calibratedY) override;
 
-    virtual bool getRayForPixel(int x, int y,           /// pixel coordinates
-                                cv::Vec3d &origin,      /// ray origin
-                                cv::Vec3d &direction);  /// ray direction
+    bool getRayForPixel(int x, int y,                   /// pixel coordinates
+                        cv::Vec3d &origin,              /// ray origin
+                        cv::Vec3d &direction) override; /// ray direction
 
-    virtual bool getWorldRayForPixel(int x, int y,          /// pixel coordinates
-                                     cv::Vec3d &origin,     /// ray origin
-                                     cv::Vec3d &direction); /// ray direction
+    bool getWorldRayForPixel(int x, int y,                      /// pixel coordinates
+                             cv::Vec3d &origin,                 /// ray origin
+                             cv::Vec3d &direction) override;    /// ray direction
 
-    virtual bool getEstimatedTransformation(std::vector<cv::Point2f> &imageCorners,
-                                            std::vector<cv::Point3f> &worldCorners,
-                                            cv::Matx33d &rotation,
-                                            cv::Point3d &translation);
+
+    bool getEstimatedTransformation(std::vector<cv::Point2f> &imageCorners,
+                                    std::vector<cv::Point3f> &worldCorners,
+                                    cv::Matx33d &rotation,
+                                    cv::Point3d &translation) override;
 
     ///
     /// \brief PinholeCameraCalibration::loadCalibration
@@ -82,9 +83,9 @@ public:
     /// \param fileName: read calibration from this file
     /// \return true if calibration is loaded successfully
     ///
-    virtual bool loadFromFile(const QString &fileName);
+    bool loadFromFile(const QString &fileName) override;
 
-    virtual bool saveToFile(const QString &fileName);
+    bool saveToFile(const QString &fileName) override;
 
     /// Pinhole exclusive!
     cv::Mat cvCameraMatrix() { return m_cvCameraMatrix; }

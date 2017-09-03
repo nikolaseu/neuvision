@@ -64,7 +64,7 @@ MainWindow::MainWindow(QWidget *parent)
 MainWindow::~MainWindow()
 {
     qDebug() << "deleting pattern projection instances...";
-    foreach(Z3D::ZPatternProjection *patternProjection, m_patternProjectionList) {
+    for (auto *patternProjection : m_patternProjectionList) {
         delete patternProjection;
     }
 
@@ -120,7 +120,7 @@ void MainWindow::initStructuredLightSystem()
                 m_currentStructuredLightSystem.data(), &Z3D::ZStructuredLightSystem::start);
 
         /// add config widget
-        QWidget *currentWidget = m_currentStructuredLightSystem->configWidget();
+        QWidget *currentWidget = Z3D::ZStructuredLightSystemProvider::getConfigWidget(m_currentStructuredLightSystem);
         ui->structuredLightSystemConfigLayout->addWidget(currentWidget);
         currentWidget->setVisible(true);
 
@@ -138,7 +138,7 @@ void MainWindow::onPatternProjectionTypeChanged(int index)
 {
     /// remove previous config widget and hide it
     if (m_currentPatternProjection) {
-        QWidget *previousWidget = m_currentPatternProjection->configWidget();
+        QWidget *previousWidget = Z3D::ZPatternProjectionProvider::getConfigWidget(m_currentPatternProjection);
         previousWidget->setVisible(false);
         ui->patternProjectionConfigLayout->removeWidget(previousWidget);
     }
@@ -150,7 +150,7 @@ void MainWindow::onPatternProjectionTypeChanged(int index)
     }
 
     /// add config widget
-    QWidget *currentWidget = m_currentPatternProjection->configWidget();
+    QWidget *currentWidget = Z3D::ZPatternProjectionProvider::getConfigWidget(m_currentPatternProjection);
     ui->patternProjectionConfigLayout->addWidget(currentWidget);
     currentWidget->setVisible(true);
 }

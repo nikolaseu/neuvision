@@ -47,6 +47,7 @@ public:
     typedef QSharedPointer<ZStructuredLightSystem> Ptr;
 
     explicit ZStructuredLightSystem(QObject *parent = 0);
+    virtual ~ZStructuredLightSystem();
 
     virtual QString id() const = 0;
     virtual QString displayName() const = 0;
@@ -76,8 +77,6 @@ public slots:
     void setDebugSaveFringePoints(bool debugSaveFringePoints);
     void setDebugShowDecodedImages(bool debugShowDecodedImages);
     void setDebugShowFringes(bool debugShowFringes);
-
-    virtual QWidget *configWidget() = 0;
 
 protected slots:
     virtual void onPatternProjected(Z3D::ZProjectedPattern::Ptr pattern) = 0;

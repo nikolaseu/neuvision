@@ -21,7 +21,10 @@
 #include "zstereoslsplugin.h"
 
 #include "zdualcamerastereosls.h"
+#include "zdualcamerastereoslsconfigwidget.h"
 #include "zsinglecamerastereosls.h"
+
+#include <QLabel>
 
 namespace Z3D {
 
@@ -30,17 +33,17 @@ ZStereoSLSPlugin::ZStereoSLSPlugin()
 
 }
 
-QString ZStereoSLSPlugin::id()
+QString ZStereoSLSPlugin::id() const
 {
     return "ZStereoSLS";
 }
 
-QString ZStereoSLSPlugin::name()
+QString ZStereoSLSPlugin::name() const
 {
     return "Stereo";
 }
 
-QString ZStereoSLSPlugin::version()
+QString ZStereoSLSPlugin::version() const
 {
     return Z3D_VERSION_STR;
 }
@@ -68,6 +71,30 @@ ZStructuredLightSystem::Ptr ZStereoSLSPlugin::get(QSettings *settings)
     }
 
     return sls;
+}
+
+QWidget *ZStereoSLSPlugin::getConfigWidget(ZStructuredLightSystem *structuredLightSystem)
+{
+    const auto item = m_structuredLightSystemWidgets.find(structuredLightSystem);
+    if (item != m_structuredLightSystemWidgets.end()) {
+        return item->second;
+    }
+
+    QWidget *widget = nullptr;
+    if (auto *dualCameraStereo = qobject_cast<ZDualCameraStereoSLS *>(structuredLightSystem)) {
+        widget = new ZDualCameraStereoSLSConfigWidget(dualCameraStereo);
+    } else if (/*auto *singleCameraStereo =*/ qobject_cast<ZSingleCameraStereoSLS *>(structuredLightSystem)) {
+        widget = new QLabel("Not implemented yet :(");
+    }
+
+    if (widget) {
+        QObject::connect(structuredLightSystem, &QObject::destroyed, [=](QObject *) {
+            m_structuredLightSystemWidgets.erase(structuredLightSystem);
+        });
+        m_structuredLightSystemWidgets[structuredLightSystem] = widget;
+    }
+
+    return widget;
 }
 
 } // namespace Z3D

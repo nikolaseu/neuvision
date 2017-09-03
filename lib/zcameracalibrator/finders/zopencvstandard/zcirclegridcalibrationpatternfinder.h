@@ -31,20 +31,15 @@ class ZCircleGridCalibrationPatternFinder : public ZCalibrationPatternFinder
 public:
     explicit ZCircleGridCalibrationPatternFinder(QObject *parent = 0);
 
-    virtual QString name();
-
-    virtual QWidget *configWidget();
+    QString name() const override;
 
 signals:
 
 public slots:
-    virtual bool findCalibrationPattern(cv::Mat image, std::vector<cv::Point2f> &corners, std::vector<cv::Point3f> &patternPoints);
+    bool findCalibrationPattern(cv::Mat image, std::vector<cv::Point2f> &corners, std::vector<cv::Point3f> &patternPoints) override;
 
 protected slots:
-    virtual void updateConfigHash();
-
-protected:
-    QWidget *m_configWidget;
+    void updateConfigHash() override;
 };
 
 } // namespace Z3D

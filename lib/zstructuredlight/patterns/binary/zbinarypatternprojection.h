@@ -71,7 +71,6 @@ signals:
 
 public slots:
     // from ZPatternProjection
-    virtual QWidget *configWidget() override;
     virtual void beginScan() override;
     virtual void processImages(std::vector< std::vector<Z3D::ZImageGrayscale::Ptr> > acquiredImages, QString scanId) override;
 
@@ -120,8 +119,6 @@ protected:
 #else
     QQuickView *m_dlpview;
 #endif
-
-    ZBinaryPatternProjectionConfigWidget *m_configWidget;
 
     int m_delayMs;
     int m_noiseThreshold;

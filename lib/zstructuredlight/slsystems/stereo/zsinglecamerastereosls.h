@@ -49,9 +49,6 @@ public:
 
     virtual void init(QSettings *settings) override;
 
-public slots:
-    virtual QWidget *configWidget() override;
-
 protected slots:
     virtual void onPatternProjected(ZProjectedPattern::Ptr pattern) override;
     virtual void onPatternsDecoded(std::vector<ZDecodedPattern::Ptr> patterns) override;

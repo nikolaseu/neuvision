@@ -20,6 +20,7 @@
 
 #include "zbinarypatternprojectionplugin.h"
 #include "zbinarypatternprojection.h"
+#include "zbinarypatternprojectionconfigwidget.h"
 
 namespace Z3D
 {
@@ -29,17 +30,17 @@ ZBinaryPatternProjectionPlugin::ZBinaryPatternProjectionPlugin()
 
 }
 
-QString ZBinaryPatternProjectionPlugin::id()
+QString ZBinaryPatternProjectionPlugin::id() const
 {
     return "ZBinaryPatternProjectionPlugin";
 }
 
-QString ZBinaryPatternProjectionPlugin::name()
+QString ZBinaryPatternProjectionPlugin::name() const
 {
     return "Binary";
 }
 
-QString ZBinaryPatternProjectionPlugin::version()
+QString ZBinaryPatternProjectionPlugin::version() const
 {
     return Z3D_VERSION_STR;
 }
@@ -47,6 +48,28 @@ QString ZBinaryPatternProjectionPlugin::version()
 QList<ZPatternProjection *> ZBinaryPatternProjectionPlugin::getAll()
 {
     return QList<ZPatternProjection *>() << new ZBinaryPatternProjection();
+}
+
+QWidget *ZBinaryPatternProjectionPlugin::getConfigWidget(ZPatternProjection *patternProjection)
+{
+    const auto item = m_patternProjectionWidgets.find(patternProjection);
+    if (item != m_patternProjectionWidgets.end()) {
+        return item->second;
+    }
+
+    QWidget *widget = nullptr;
+    if (auto *binaryPatternProjection = qobject_cast<ZBinaryPatternProjection*>(patternProjection)) {
+        widget = new ZBinaryPatternProjectionConfigWidget(binaryPatternProjection);
+    }
+
+    if (widget) {
+        QObject::connect(patternProjection, &QObject::destroyed, [=](QObject *) {
+            m_patternProjectionWidgets.erase(patternProjection);
+        });
+        m_patternProjectionWidgets[patternProjection] = widget;
+    }
+
+    return widget;
 }
 
 } // namespace Z3D

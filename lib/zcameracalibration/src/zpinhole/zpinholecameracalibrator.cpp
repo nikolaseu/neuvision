@@ -49,7 +49,6 @@ ZPinholeCameraCalibrator::ZPinholeCameraCalibrator(QObject *parent)
     , m_useRationalModel(false)
     , m_termCriteriaMaxIterations(50)
     , m_termCriteriaEpsilon(1e-7)
-    , m_configWidget(nullptr)
 {
 
 }
@@ -121,14 +120,6 @@ ZCameraCalibration::Ptr ZPinholeCameraCalibrator::getCalibration(
     ZCameraCalibration::Ptr calib(new Z3D::ZPinholeCameraCalibration(cameraMatrix, distortionCoeffs, imageSize));
 
     return calib;
-}
-
-QWidget *ZPinholeCameraCalibrator::configWidget()
-{
-    if (!m_configWidget)
-        m_configWidget = new ZPinholeCameraCalibratorConfigWidget(this);
-
-    return m_configWidget;
 }
 
 bool ZPinholeCameraCalibrator::useIntrinsicGuess() const

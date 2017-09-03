@@ -34,6 +34,8 @@ namespace Z3D
 
 class Z3D_CAMERAACQUISITION_SHARED_EXPORT ZCameraPluginInterface : public ZCorePlugin
 {
+    Q_OBJECT
+
 public:
     virtual ~ZCameraPluginInterface() {}
 

@@ -45,7 +45,7 @@ public:
 
     explicit ZCalibrationPatternFinder(QObject *parent = 0);
 
-    virtual QString name() = 0;
+    virtual QString name() const = 0;
 
     int columns() const;
     int rows() const;
@@ -53,8 +53,6 @@ public:
     double rowHeight() const;
 
     QString configHash() const;
-
-    virtual QWidget *configWidget() = 0;
 
 signals:
     void columnsChanged(int columns);

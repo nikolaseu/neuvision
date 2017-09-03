@@ -35,14 +35,18 @@ public:
 
     // ZCorePlugin interface
 public:
-    virtual QString id() override;
-    virtual QString name() override;
-    virtual QString version() override;
+    QString id() const override;
+    QString name() const override;
+    QString version() const override;
 
     // ZStructuredLightSystemPlugin interface
 public:
-    virtual QList<QString> getAll() override;
-    virtual ZStructuredLightSystem::Ptr get(QSettings *settings) override;
+    QList<QString> getAll() override;
+    ZStructuredLightSystem::Ptr get(QSettings *settings) override;
+    QWidget *getConfigWidget(ZStructuredLightSystem *structuredLightSystem) override;
+
+private:
+    std::map<ZStructuredLightSystem *, QWidget *> m_structuredLightSystemWidgets;
 };
 
 } // namespace Z3D

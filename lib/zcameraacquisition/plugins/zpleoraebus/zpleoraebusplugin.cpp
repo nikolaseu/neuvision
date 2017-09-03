@@ -41,17 +41,17 @@ PvSystem *Z3D::ZPleoraeBUSPlugin::s_pvSystem = NULL;
 namespace Z3D
 {
 
-QString ZPleoraeBUSPlugin::id()
+QString ZPleoraeBUSPlugin::id() const
 {
     return QString("ZPleoraeBUS");
 }
 
-QString ZPleoraeBUSPlugin::name()
+QString ZPleoraeBUSPlugin::name() const
 {
     return QString("Pleora eBUS SDK");
 }
 
-QString ZPleoraeBUSPlugin::version()
+QString ZPleoraeBUSPlugin::version() const
 {
     return QString(Z3D_VERSION_STR);
 }

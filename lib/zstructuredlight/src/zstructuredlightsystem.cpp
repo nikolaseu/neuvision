@@ -39,6 +39,11 @@ ZStructuredLightSystem::ZStructuredLightSystem(QObject *parent)
 
 }
 
+ZStructuredLightSystem::~ZStructuredLightSystem()
+{
+
+}
+
 bool ZStructuredLightSystem::ready() const
 {
     return m_ready;

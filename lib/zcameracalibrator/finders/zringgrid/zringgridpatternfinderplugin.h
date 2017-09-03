@@ -37,13 +37,17 @@ class ZRingGridPatternFinderPlugin : public ZCalibrationPatternFinderPluginInter
 
     // ZCorePlugin interface
 public:
-    virtual QString id() override;
-    virtual QString name() override;
-    virtual QString version() override;
+    QString id() const override;
+    QString name() const override;
+    QString version() const override;
 
     // ZCalibrationPatternFinderPluginInterface interface
 public:
-    virtual QList<ZCalibrationPatternFinder::Ptr> getPatternFinders() override;
+    QList<ZCalibrationPatternFinder::Ptr> getPatternFinders() override;
+    QWidget *getConfigWidget(ZCalibrationPatternFinder *patternFinder) override;
+
+private:
+    std::map<ZCalibrationPatternFinder *, QWidget *> m_patternFinderWidgets;
 };
 
 } // namespace Z3D

@@ -21,20 +21,21 @@
 #include "zringgridpatternfinderplugin.h"
 
 #include "zringgridpatternfinder.h"
+#include "zringgridpatternfinderconfigwidget.h"
 
 namespace Z3D {
 
-QString ZRingGridPatternFinderPlugin::id()
+QString ZRingGridPatternFinderPlugin::id() const
 {
     return QString(metaObject()->className());
 }
 
-QString ZRingGridPatternFinderPlugin::name()
+QString ZRingGridPatternFinderPlugin::name() const
 {
     return QString(metaObject()->className());
 }
 
-QString ZRingGridPatternFinderPlugin::version()
+QString ZRingGridPatternFinderPlugin::version() const
 {
     return QString(Z3D_VERSION_STR);
 }
@@ -42,6 +43,28 @@ QString ZRingGridPatternFinderPlugin::version()
 QList<ZCalibrationPatternFinder::Ptr> ZRingGridPatternFinderPlugin::getPatternFinders()
 {
     return QList<ZCalibrationPatternFinder::Ptr>() << ZCalibrationPatternFinder::Ptr(new ZRingGridPatternFinder());
+}
+
+QWidget *ZRingGridPatternFinderPlugin::getConfigWidget(ZCalibrationPatternFinder *patternFinder)
+{
+    const auto item = m_patternFinderWidgets.find(patternFinder);
+    if (item != m_patternFinderWidgets.end()) {
+        return item->second;
+    }
+
+    QWidget *widget = nullptr;
+    if (auto *finder = qobject_cast<ZRingGridPatternFinder *>(patternFinder)) {
+        widget = new ZRingGridPatternFinderConfigWidget(finder);
+    }
+
+    if (widget) {
+        QObject::connect(patternFinder, &ZCalibrationPatternFinder::destroyed, [=](QObject *) {
+            m_patternFinderWidgets.erase(patternFinder);
+        });
+        m_patternFinderWidgets[patternFinder] = widget;
+    }
+
+    return widget;
 }
 
 } // namespace Z3D

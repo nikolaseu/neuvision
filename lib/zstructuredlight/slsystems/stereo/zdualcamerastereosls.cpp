@@ -20,7 +20,6 @@
 
 #include "zdualcamerastereosls.h"
 
-#include "zdualcamerastereoslsconfigwidget.h"
 #include "zcalibratedcameraprovider.h"
 #include "zpinhole/zpinholecameracalibration.h"
 
@@ -29,7 +28,6 @@ namespace Z3D
 
 ZDualCameraStereoSLS::ZDualCameraStereoSLS(QObject *parent)
     : ZStereoSLS(parent)
-    , m_configWidget(nullptr)
 {
 
 }
@@ -146,14 +144,6 @@ void ZDualCameraStereoSLS::init(QSettings *settings)
     settings->endGroup();
 
     addCameras(cameras);
-}
-
-QWidget *ZDualCameraStereoSLS::configWidget()
-{
-    if (!m_configWidget)
-        m_configWidget = new ZDualCameraStereoSLSConfigWidget(this);
-
-    return m_configWidget;
 }
 
 void ZDualCameraStereoSLS::onPatternProjected(ZProjectedPattern::Ptr pattern)

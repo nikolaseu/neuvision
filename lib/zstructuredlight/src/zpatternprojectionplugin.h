@@ -34,7 +34,8 @@ class Z3D_STRUCTUREDLIGHT_SHARED_EXPORT ZPatternProjectionPlugin : public ZCoreP
 public:
     virtual ~ZPatternProjectionPlugin() {}
 
-    virtual QList<ZPatternProjection*> getAll() = 0;
+    virtual QList<ZPatternProjection *> getAll() = 0;
+    virtual QWidget *getConfigWidget(ZPatternProjection* patternProjection) = 0;
 };
 
 } // namespace Z3D

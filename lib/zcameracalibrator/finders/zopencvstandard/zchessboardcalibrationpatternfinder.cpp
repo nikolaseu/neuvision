@@ -20,8 +20,6 @@
 
 #include "zchessboardcalibrationpatternfinder.h"
 
-#include "zchessboardcalibrationpatternfinderconfigwidget.h"
-
 #include <opencv2/calib3d/calib3d.hpp> // findChessboardCorners
 #include <opencv2/imgproc/imgproc.hpp> // cornerSubPix
 
@@ -37,7 +35,6 @@ ZChessboardCalibrationPatternFinder::ZChessboardCalibrationPatternFinder(QObject
     , m_subPixZeroZoneWinHeight(-1)
     , m_subPixMaxIter(50)
     , m_subPixEpsilon(1e-5)
-    , m_configWidget(0)
 {
     QObject::connect(this, SIGNAL(useAdaptiveThresholdChanged(bool)),
                      this, SLOT(updateConfigHash()));
@@ -65,19 +62,9 @@ ZChessboardCalibrationPatternFinder::ZChessboardCalibrationPatternFinder(QObject
     updateConfigHash();
 }
 
-QString ZChessboardCalibrationPatternFinder::name()
+QString ZChessboardCalibrationPatternFinder::name() const
 {
     return QLatin1String("Chessboard");
-}
-
-QWidget *ZChessboardCalibrationPatternFinder::configWidget()
-{
-    if (!m_configWidget) {
-        m_configWidget = new ZChessboardCalibrationPatternFinderConfigWidget(this);
-        m_configWidget->setVisible(false);
-    }
-
-    return m_configWidget;
 }
 
 bool ZChessboardCalibrationPatternFinder::normalizeImage() const

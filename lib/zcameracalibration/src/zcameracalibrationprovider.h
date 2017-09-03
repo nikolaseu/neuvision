@@ -45,13 +45,15 @@ public:
     static ZCameraCalibration::Ptr getCalibration(QSettings *settings);
 
     static QList<ZCameraCalibrator *> getCameraCalibrators();
+    static QWidget *getConfigWidget(ZCameraCalibrator *cameraCalibrator);
 
     static QList<ZMultiCameraCalibrator *> getMultiCameraCalibrators();
+    static QWidget *getConfigWidget(ZMultiCameraCalibrator *multiCameraCalibrator);
 
 private:
     explicit ZCameraCalibrationProvider() {}
 
-    static QMap< QString, ZCameraCalibrationPluginInterface *> m_plugins;
+    static QMap<QString, ZCameraCalibrationPluginInterface *> m_plugins;
 };
 
 } // namespace Z3D

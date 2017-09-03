@@ -33,15 +33,21 @@ class ZPinholeCameraCalibrationPlugin : public ZCameraCalibrationPluginInterface
 
     // ZCorePlugin interface
 public:
-    virtual QString id() override;
-    virtual QString name() override;
-    virtual QString version() override;
+    QString id() const override;
+    QString name() const override;
+    QString version() const override;
 
     // ZCameraCalibrationPluginInterface interface
 public:
-    virtual ZCameraCalibration::Ptr getCalibration(QVariantMap options) override;
-    virtual QList<ZCameraCalibrator *> getCameraCalibrators() override;
-    virtual QList<ZMultiCameraCalibrator *> getMultiCameraCalibrators() override;
+    ZCameraCalibration::Ptr getCalibration(QVariantMap options) override;
+    QList<ZCameraCalibrator *> getCameraCalibrators() override;
+    QWidget *getConfigWidget(ZCameraCalibrator *cameraCalibrator) override;
+    QList<ZMultiCameraCalibrator *> getMultiCameraCalibrators() override;
+    QWidget *getConfigWidget(ZMultiCameraCalibrator *multiCameraCalibrator) override;
+
+private:
+    std::map<ZCameraCalibrator *, QWidget *> m_cameraCalibratorWidgets;
+    std::map<ZMultiCameraCalibrator *, QWidget *> m_multiCameraCalibratorWidgets;
 };
 
 } // namespace Z3D

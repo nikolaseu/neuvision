@@ -40,13 +40,13 @@ class ZQtCameraPlugin : public ZCameraPluginInterface
 
 public:
     /// plugin information
-    virtual QString id();
-    virtual QString name();
-    virtual QString version();
+    QString id() const override;
+    QString name() const override;
+    QString version() const override;
 
     /// camera utilities
-    virtual QList<ZCameraInfo *> getConnectedCameras();
-    virtual ZCameraInterface::Ptr getCamera(QVariantMap options);
+    QList<ZCameraInfo *> getConnectedCameras() override;
+    ZCameraInterface::Ptr getCamera(QVariantMap options) override;
 };
 
 } // namespace Z3D

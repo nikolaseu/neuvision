@@ -231,7 +231,7 @@ void ZMultiCameraCalibratorWidget::onCameraModelTypeChanged(int index)
     /// remove previous config widget and hide it
     ZMultiCameraCalibrator *currentCameraCalibrator = m_calibratorWorker->cameraCalibrator();
     if (currentCameraCalibrator) {
-        QWidget *previousWidget = currentCameraCalibrator->configWidget();
+        QWidget *previousWidget = ZCameraCalibrationProvider::getConfigWidget(currentCameraCalibrator);
         if (previousWidget) {
             previousWidget->setVisible(false);
             ui->cameraModelConfigLayout->removeWidget(previousWidget);
@@ -243,7 +243,7 @@ void ZMultiCameraCalibratorWidget::onCameraModelTypeChanged(int index)
     m_calibratorWorker->setCameraCalibrator( currentCameraCalibrator );
 
     /// add config widget
-    QWidget *currentWidget = currentCameraCalibrator->configWidget();
+    QWidget *currentWidget = ZCameraCalibrationProvider::getConfigWidget(currentCameraCalibrator);
     if (currentWidget) {
         currentWidget->setVisible(true);
         ui->cameraModelConfigLayout->addWidget(currentWidget);
@@ -255,7 +255,7 @@ void ZMultiCameraCalibratorWidget::onCalibrationPatternTypeChanged(int index)
     /// remove previous config widget and hide it
     ZCalibrationPatternFinder::Ptr m_currentPatternFinder = m_calibratorWorker->patternFinder();
     if (m_currentPatternFinder) {
-        QWidget *previousWidget = m_currentPatternFinder->configWidget();
+        QWidget *previousWidget = ZCalibrationPatternFinderProvider::getConfigWidget(m_currentPatternFinder.data());
         previousWidget->setVisible(false);
         ui->calibrationPatternConfigLayout->removeWidget(previousWidget);
     }
@@ -265,7 +265,7 @@ void ZMultiCameraCalibratorWidget::onCalibrationPatternTypeChanged(int index)
     m_calibratorWorker->setPatternFinder(m_currentPatternFinder);
 
     /// add config widget
-    QWidget *currentWidget = m_currentPatternFinder->configWidget();
+    QWidget *currentWidget = ZCalibrationPatternFinderProvider::getConfigWidget(m_currentPatternFinder.data());
     currentWidget->setVisible(true);
     ui->calibrationPatternConfigLayout->addWidget(currentWidget);
 }

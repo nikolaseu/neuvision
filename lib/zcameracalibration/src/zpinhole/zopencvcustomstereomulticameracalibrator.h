@@ -44,8 +44,6 @@ public:
             std::vector<std::vector<std::vector<cv::Point2f> > > &imagePoints,
             std::vector<std::vector<cv::Point3f> > &objectPoints) override;
 
-    virtual QWidget *configWidget() override;
-
 public:
     bool fixIntrinsic() const;
 
@@ -57,9 +55,6 @@ signals:
 
 protected:
     bool m_fixIntrinsic;
-
-    /// configuration widget
-    QWidget *m_configWidget;
 };
 
 } // namespace Z3D

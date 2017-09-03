@@ -35,13 +35,17 @@ public:
 
     // ZCorePlugin interface
 public:
-    virtual QString id() override;
-    virtual QString name() override;
-    virtual QString version() override;
+    QString id() const override;
+    QString name() const override;
+    QString version() const override;
 
     // ZPatternProjectionPlugin interface
 public:
-    virtual QList<ZPatternProjection *> getAll() override;
+    QList<ZPatternProjection *> getAll() override;
+    QWidget *getConfigWidget(ZPatternProjection *patternProjection) override;
+
+private:
+    std::map<ZPatternProjection *, QWidget *> m_patternProjectionWidgets;
 };
 
 } // namespace Z3D

@@ -36,17 +36,17 @@ ZOpenCVVideoCapturePlugin::~ZOpenCVVideoCapturePlugin()
 
 }
 
-QString ZOpenCVVideoCapturePlugin::id()
+QString ZOpenCVVideoCapturePlugin::id() const
 {
     return QString("ZOpenCV");
 }
 
-QString ZOpenCVVideoCapturePlugin::name()
+QString ZOpenCVVideoCapturePlugin::name() const
 {
     return QString("OpenCV VideoCapture");
 }
 
-QString ZOpenCVVideoCapturePlugin::version()
+QString ZOpenCVVideoCapturePlugin::version() const
 {
     return QString(Z3D_VERSION_STR);
 }

@@ -32,7 +32,7 @@ QMap< QString, ZCalibrationPatternFinderPluginInterface *> ZCalibrationPatternFi
 
 void ZCalibrationPatternFinderProvider::loadPlugins()
 {
-    auto list = ZPluginLoader::plugins("calibrationpatternfinder");
+    const auto list = ZPluginLoader::plugins("calibrationpatternfinder");
 
     for (auto pluginInstance : list) {
         auto *plugin = qobject_cast<ZCalibrationPatternFinderPluginInterface *>(pluginInstance);
@@ -48,8 +48,9 @@ void ZCalibrationPatternFinderProvider::loadPlugins()
 
 void ZCalibrationPatternFinderProvider::unloadPlugins()
 {
-    foreach(ZCalibrationPatternFinderPluginInterface *plugin, m_plugins.values())
+    for(auto *plugin : m_plugins.values()) {
         delete plugin;
+    }
 
     m_plugins.clear();
 }
@@ -59,10 +60,22 @@ QList<ZCalibrationPatternFinder::Ptr> ZCalibrationPatternFinderProvider::getAll(
     QList<ZCalibrationPatternFinder::Ptr> finderList;
 
     /// load different calibration pattern finder types
-    foreach (ZCalibrationPatternFinderPluginInterface *plugin, m_plugins)
+    for (auto *plugin : m_plugins) {
         finderList << plugin->getPatternFinders();
+    }
 
     return finderList;
+}
+
+QWidget *ZCalibrationPatternFinderProvider::getConfigWidget(ZCalibrationPatternFinder *patternFinder)
+{
+    for (auto *plugin : m_plugins) {
+        if (auto *widget = plugin->getConfigWidget(patternFinder)) {
+            return widget;
+        }
+    }
+
+    return nullptr;
 }
 
 ZCalibrationPatternFinderProvider::ZCalibrationPatternFinderProvider()

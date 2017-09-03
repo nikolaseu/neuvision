@@ -18,47 +18,15 @@
 // along with Z3D.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-#include "zflycapture2plugin.h"
-
-#include "zflycapture2camera.h"
+#include "zcameracalibrationplugininterface.h"
 
 namespace Z3D
 {
 
-QString ZFlyCapture2Plugin::id() const
+ZCameraCalibrationPluginInterface::ZCameraCalibrationPluginInterface(QObject *parent)
+    : ZCorePlugin(parent)
 {
-    return QString("ZFlyCapture2");
-}
 
-QString ZFlyCapture2Plugin::name() const
-{
-    return QString("PGR FlyCapture2 SDK");
-}
-
-QString ZFlyCapture2Plugin::version() const
-{
-    return QString(Z3D_VERSION_STR);
-}
-
-QList<ZCameraInfo *> ZFlyCapture2Plugin::getConnectedCameras()
-{
-    //! TODO
-    QList<ZCameraInfo *> list;
-
-    return list;
-}
-
-ZCameraInterface::Ptr ZFlyCapture2Plugin::getCamera(QVariantMap options)
-{
-    QList<ZCameraInterface::Ptr> cameraList = ZFlyCapture2Camera::getConnectedCameras();
-    if (cameraList.size())
-        return cameraList.first();
-
-    return ZCameraInterface::Ptr(0);
 }
 
 } // namespace Z3D
-
-#if QT_VERSION < 0x050000
-Q_EXPORT_PLUGIN2(zflycapture2plugin, Z3D::ZFlyCapture2Plugin)
-#endif

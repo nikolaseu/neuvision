@@ -75,9 +75,7 @@ class ZChessboardCalibrationPatternFinder : public ZCalibrationPatternFinder
 public:
     explicit ZChessboardCalibrationPatternFinder(QObject *parent = 0);
 
-    virtual QString name();
-
-    virtual QWidget *configWidget();
+    QString name() const override;
 
     bool normalizeImage() const;
     bool useAdaptiveThreshold() const;
@@ -117,10 +115,10 @@ public slots:
     void setSubPixMaxIter(int arg);
     void setSubPixEpsilon(double arg);
 
-    virtual bool findCalibrationPattern(cv::Mat image, std::vector<cv::Point2f> &corners, std::vector<cv::Point3f> &patternPoints);
+    bool findCalibrationPattern(cv::Mat image, std::vector<cv::Point2f> &corners, std::vector<cv::Point3f> &patternPoints) override;
 
 protected slots:
-    virtual void updateConfigHash();
+    void updateConfigHash() override;
 
 protected:
     /// findChessboardCorners flags
@@ -133,8 +131,6 @@ protected:
     int m_subPixZeroZoneWinHeight;
     int m_subPixMaxIter;
     double m_subPixEpsilon;
-
-    QWidget *m_configWidget;
 };
 
 } // namespace Z3D

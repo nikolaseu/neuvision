@@ -21,21 +21,23 @@
 #include "zopencvstandardpatternfinderplugin.h"
 
 #include "zchessboardcalibrationpatternfinder.h"
+#include "zchessboardcalibrationpatternfinderconfigwidget.h"
 #include "zcirclegridcalibrationpatternfinder.h"
+#include "zcirclegridcalibrationpatternfinderconfigwidget.h"
 
 namespace Z3D {
 
-QString ZOpenCVStandardPatternFinderPlugin::id()
+QString ZOpenCVStandardPatternFinderPlugin::id() const
 {
     return QString(metaObject()->className());
 }
 
-QString ZOpenCVStandardPatternFinderPlugin::name()
+QString ZOpenCVStandardPatternFinderPlugin::name() const
 {
     return QString(metaObject()->className());
 }
 
-QString ZOpenCVStandardPatternFinderPlugin::version()
+QString ZOpenCVStandardPatternFinderPlugin::version() const
 {
     return QString(Z3D_VERSION_STR);
 }
@@ -48,6 +50,30 @@ QList<ZCalibrationPatternFinder::Ptr> ZOpenCVStandardPatternFinderPlugin::getPat
     finderList << ZCalibrationPatternFinder::Ptr(new ZChessboardCalibrationPatternFinder());
 
     return finderList;
+}
+
+QWidget *ZOpenCVStandardPatternFinderPlugin::getConfigWidget(ZCalibrationPatternFinder *patternFinder)
+{
+    const auto item = m_patternFinderWidgets.find(patternFinder);
+    if (item != m_patternFinderWidgets.end()) {
+        return item->second;
+    }
+
+    QWidget *widget = nullptr;
+    if (auto *chessboardFinder = qobject_cast<ZChessboardCalibrationPatternFinder *>(patternFinder)) {
+        widget = new ZChessboardCalibrationPatternFinderConfigWidget(chessboardFinder);
+    } else if (auto *circleGridFinder = qobject_cast<ZCircleGridCalibrationPatternFinder *>(patternFinder)) {
+        widget = new ZCircleGridCalibrationPatternFinderConfigWidget(circleGridFinder);
+    }
+
+    if (widget) {
+        QObject::connect(patternFinder, &ZCalibrationPatternFinder::destroyed, [=](QObject *) {
+            m_patternFinderWidgets.erase(patternFinder);
+        });
+        m_patternFinderWidgets[patternFinder] = widget;
+    }
+
+    return widget;
 }
 
 } // namespace Z3D

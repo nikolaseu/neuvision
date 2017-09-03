@@ -29,17 +29,17 @@ ZSimulatedCameraPlugin::ZSimulatedCameraPlugin()
 {
 }
 
-QString ZSimulatedCameraPlugin::id()
+QString ZSimulatedCameraPlugin::id() const
 {
     return QString("ZSIMULATED");
 }
 
-QString ZSimulatedCameraPlugin::name()
+QString ZSimulatedCameraPlugin::name() const
 {
     return QString("Simulated camera");
 }
 
-QString ZSimulatedCameraPlugin::version()
+QString ZSimulatedCameraPlugin::version() const
 {
     return QString(Z3D_VERSION_STR);
 }
