@@ -33,7 +33,7 @@ namespace Z3D
 
 ZOpenCVStereoMultiCameraCalibrator::ZOpenCVStereoMultiCameraCalibrator(QObject *parent)
     : ZMultiCameraCalibrator(parent)
-    , m_fixIntrinsic(true)
+    , m_fixIntrinsic(false)
     , m_sameFocalLength(false)
     , m_useIntrinsicGuess(false)
     , m_fixPrincipalPoint(false)
@@ -93,8 +93,6 @@ std::vector<ZCameraCalibration::Ptr> ZOpenCVStereoMultiCameraCalibrator::getCali
           , T
           , E
           , F;
-    cameraMatrix[0] = cv::Mat::eye(3, 3, CV_64F);
-    cameraMatrix[1] = cv::Mat::eye(3, 3, CV_64F);
 
     for (size_t ic = 0; ic < ncameras; ++ic) {
         /// check first! this only works for pinhole cameras!

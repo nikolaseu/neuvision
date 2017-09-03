@@ -101,6 +101,16 @@ ZPinholeCameraCalibration::ZPinholeCameraCalibration(cv::Mat cameraMatrix, cv::M
     emit calibrationChanged();
 }
 
+ZPinholeCameraCalibration::ZPinholeCameraCalibration(int imageWidth, int imageHeight)
+    : ZCameraCalibration(ZCameraCalibration::CentralCameraType)
+{
+    m_sensorWidth = imageWidth;
+    m_sensorHeight = imageHeight;
+    m_cvCameraMatrix = cv::Mat::zeros(3, 3, CV_64F);
+    /// In OpenCV 3, when using rational model, size seems to be (1x12)
+    m_cvDistortionCoeffs = cv::Mat::zeros(1, 12, CV_64F);
+}
+
 ZCameraCalibration::Ptr ZPinholeCameraCalibration::clone() const
 {
     ZCameraCalibration::Ptr clon(new ZPinholeCameraCalibration(m_cvCameraMatrix.clone(), m_cvDistortionCoeffs.clone(), cv::Size(m_sensorWidth, m_sensorHeight)));
