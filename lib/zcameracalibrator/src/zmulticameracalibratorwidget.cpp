@@ -295,14 +295,12 @@ void ZMultiCameraCalibratorWidget::onCalibrationChanged(std::vector<Z3D::ZCamera
     if (newCalibrations.size() == m_cameras.size()) {
         QString currentDateTime = QDateTime::currentDateTime().toString("yyyyMMddhhmmss");
         for (size_t i=0; i<m_cameras.size(); ++i) {
-            const QString cameraId = m_cameras[i]
-                    ? m_cameras[i]->camera()->uuid()
-                    : QString("camera%1").arg(i);
+            const auto &camera = m_cameras[i];
             Z3D::ZCameraCalibration::Ptr newCalibration = newCalibrations[i];
             QString fileName = QString("%1/%2__%3.cameracalib.ini")
                     .arg(m_sessionFolder)
                     .arg(currentDateTime)
-                    .arg(cameraId);
+                    .arg(camera ? camera->camera()->uuid() : QString("camera%1").arg(i));
             if (!newCalibration->saveToFile(fileName))
                 qWarning() << "unable to save calibration to file:" << fileName;
 
@@ -348,12 +346,12 @@ void ZMultiCameraCalibratorWidget::newSession()
 
     /// folder for each camera inside session folder
     for (size_t i=0; i<m_cameras.size(); ++i) {
-        Z3D::ZCalibratedCamera::Ptr camera = m_cameras[i];
+        const auto &camera = m_cameras[i];
 
         QString cameraFolder = QString("%1/%2__%3")
                 .arg(m_sessionFolder)
                 .arg(i, 2, 10, QLatin1Char('0'))
-                .arg(camera->camera()->uuid());
+                .arg(camera ? camera->camera()->uuid() : QString("camera%1").arg(i));
 
         if (!QDir::current().mkpath(cameraFolder)) {
             qWarning() << "unable to create folder" << cameraFolder;
@@ -437,7 +435,7 @@ void ZMultiCameraCalibratorWidget::on_saveCameraImageButton_clicked()
         QString fileName = QString("%1/%2__%3/%4.png")
                 .arg(m_sessionFolder)
                 .arg(i, 2, 10, QLatin1Char('0'))
-                .arg(camera->camera()->uuid())
+                .arg(camera ? camera->camera()->uuid() : QString("camera%1").arg(i))
                 .arg(currentDateTime);
 
         if (image->save(fileName)) {
