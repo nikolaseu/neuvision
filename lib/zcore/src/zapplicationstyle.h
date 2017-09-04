@@ -19,6 +19,8 @@
 
 #pragma once
 
+#include "zcore_global.h"
+
 namespace Z3D
 {
 
@@ -30,7 +32,7 @@ namespace ZApplicationStyle
         DarkStyle
     };
 
-    void applyStyle(ZStyle style);
+    Z3D_CORE_SHARED_EXPORT void applyStyle(ZStyle style);
 
 } // namespace ZApplicationStyle
 

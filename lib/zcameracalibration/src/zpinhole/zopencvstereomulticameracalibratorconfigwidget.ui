@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>243</width>
-    <height>460</height>
+    <width>323</width>
+    <height>519</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -31,10 +31,7 @@
      <property name="title">
       <string>Other options</string>
      </property>
-     <layout class="QFormLayout" name="formLayout_3">
-      <property name="fieldGrowthPolicy">
-       <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
-      </property>
+     <layout class="QFormLayout" name="formLayout_2">
       <item row="0" column="0">
        <widget class="QLabel" name="label_18">
         <property name="text">
@@ -75,6 +72,13 @@
         </property>
         <property name="value">
          <double>0.000001000000000</double>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="0" colspan="2">
+       <widget class="QCheckBox" name="debugModeCheckBox">
+        <property name="text">
+         <string>Save debug info</string>
         </property>
        </widget>
       </item>
@@ -173,18 +177,18 @@
      <property name="title">
       <string>Camera matrix</string>
      </property>
-     <layout class="QFormLayout" name="formLayout_2">
-      <item row="1" column="0">
-       <widget class="QCheckBox" name="fixPrincipalPointCheckBox">
-        <property name="text">
-         <string>Fix principal point</string>
-        </property>
-       </widget>
-      </item>
+     <layout class="QGridLayout" name="gridLayout_2">
       <item row="2" column="0">
        <widget class="QCheckBox" name="fixAspectRatioCheckBox">
         <property name="text">
          <string>Fix aspect ratio</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="0">
+       <widget class="QCheckBox" name="fixPrincipalPointCheckBox">
+        <property name="text">
+         <string>Fix principal point</string>
         </property>
        </widget>
       </item>

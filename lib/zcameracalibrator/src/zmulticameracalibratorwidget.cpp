@@ -36,6 +36,8 @@
 #include <QProgressBar>
 #include <QThread>
 
+#include <zpinhole/zpinholecameracalibration.h>
+
 #define CALIBRATION_PATTERN_VIEW 0
 #define IMAGE_VIEW 1
 #define CAMERA_VIEW 2
@@ -55,6 +57,7 @@ ZMultiCameraCalibratorWidget::ZMultiCameraCalibratorWidget(std::vector<ZCalibrat
 
     updateWindowTitle();
 
+    bool hasAnyRealCamera = false;
     for (auto camera : m_cameras) {
         /// camera views
         ZImageViewer *cameraImageViewer = new ZImageViewer(ui->cameraViewsLayout->widget());
@@ -63,6 +66,7 @@ ZMultiCameraCalibratorWidget::ZMultiCameraCalibratorWidget(std::vector<ZCalibrat
 
         /// set up camera image preview
         if (camera) {
+            hasAnyRealCamera = true;
             QObject::connect(camera->camera().data(), SIGNAL(newImageReceived(Z3D::ZImageGrayscale::Ptr)),
                              cameraImageViewer, SLOT(updateImage(Z3D::ZImageGrayscale::Ptr)));
         }
@@ -71,6 +75,11 @@ ZMultiCameraCalibratorWidget::ZMultiCameraCalibratorWidget(std::vector<ZCalibrat
         ZCalibrationImageViewer *imageViewer = new ZCalibrationImageViewer(ui->imageViewsLayout->widget());
         ui->imageViewsLayout->addWidget(imageViewer, 1);
         m_imageViewer.push_back(imageViewer);
+    }
+
+    if (!hasAnyRealCamera) {
+        ui->cameraViewPageButton->setVisible(false);
+        ui->updateCamerasCalibrationButton->setVisible(false);
     }
 
     /// create and add progress bar used in the statusbar
@@ -95,7 +104,7 @@ ZMultiCameraCalibratorWidget::ZMultiCameraCalibratorWidget(std::vector<ZCalibrat
     /// available camera models
     m_cameraCalibratorList = ZCameraCalibrationProvider::getMultiCameraCalibrators();
 
-    foreach (ZMultiCameraCalibrator *calibrator, m_cameraCalibratorList)
+    for (ZMultiCameraCalibrator *calibrator : m_cameraCalibratorList)
         ui->cameraModelTypeComboBox->addItem(calibrator->name());
 
     /// to update current pattern finder
@@ -105,7 +114,7 @@ ZMultiCameraCalibratorWidget::ZMultiCameraCalibratorWidget(std::vector<ZCalibrat
     /// load different calibration pattern finder types
     m_patternFinderList = ZCalibrationPatternFinderProvider::getAll();
 
-    foreach (ZCalibrationPatternFinder::Ptr patternFinder, m_patternFinderList)
+    for (ZCalibrationPatternFinder::Ptr patternFinder : m_patternFinderList)
         ui->calibrationPatternTypeComboBox->addItem(patternFinder->name());
 
     /// configure image list view
@@ -134,9 +143,9 @@ ZMultiCameraCalibratorWidget::ZMultiCameraCalibratorWidget(std::vector<ZCalibrat
     m_calibratorWorker->moveToThread(m_workerThread);
 
     //! TODO esto es necesario?
-    foreach (ZMultiCameraCalibrator *cameraCalibrator, m_cameraCalibratorList)
+    for (ZMultiCameraCalibrator *cameraCalibrator : m_cameraCalibratorList)
         cameraCalibrator->moveToThread(m_workerThread);
-    foreach (ZCalibrationPatternFinder::Ptr patternFinder, m_patternFinderList)
+    for (ZCalibrationPatternFinder::Ptr patternFinder : m_patternFinderList)
         patternFinder->moveToThread(m_workerThread);
 
     m_workerThread->start();
@@ -156,7 +165,7 @@ ZMultiCameraCalibratorWidget::~ZMultiCameraCalibratorWidget()
 
 void ZMultiCameraCalibratorWidget::closeEvent(QCloseEvent * /*event*/)
 {
-    deleteLater();
+
 }
 
 void ZMultiCameraCalibratorWidget::updateWindowTitle()
@@ -216,7 +225,7 @@ void ZMultiCameraCalibratorWidget::onCurrentSelectionChanged(QModelIndex current
     Z3D::ZMultiCalibrationImage::Ptr multiImage = variant.value<Z3D::ZMultiCalibrationImage::Ptr>();
 
     if (multiImage) {
-        for (int i=0; i<m_cameras.size(); ++i) {
+        for (size_t i=0; i<m_cameras.size(); ++i) {
             Z3D::ZCalibrationImage::Ptr image = multiImage->image(i);
             if (image)
                 m_imageViewer[i]->updateCalibrationImage(image);
@@ -273,9 +282,9 @@ void ZMultiCameraCalibratorWidget::onCalibrationPatternTypeChanged(int index)
 void ZMultiCameraCalibratorWidget::onProgressChanged(float progress, QString message)
 {
     m_statusProgressBar->setValue(100 * progress);
-    m_statusProgressBar->setVisible(progress < 1.);
+    m_statusProgressBar->setVisible(progress < 1.f);
 
-    if (progress == 1 && message.isEmpty())
+    if (progress == 1.f && message.isEmpty())
         ui->statusbar->showMessage(tr(""), 5000);
     else if (!message.isEmpty())
         ui->statusbar->showMessage(message, progress < 1 ? 0 : 5000);
@@ -285,12 +294,13 @@ void ZMultiCameraCalibratorWidget::onCalibrationChanged(std::vector<Z3D::ZCamera
 {
     if (newCalibrations.size() == m_cameras.size()) {
         QString currentDateTime = QDateTime::currentDateTime().toString("yyyyMMddhhmmss");
-        for (int i=0; i<m_cameras.size(); ++i) {
+        for (size_t i=0; i<m_cameras.size(); ++i) {
+            const auto &camera = m_cameras[i];
             Z3D::ZCameraCalibration::Ptr newCalibration = newCalibrations[i];
             QString fileName = QString("%1/%2__%3.cameracalib.ini")
                     .arg(m_sessionFolder)
                     .arg(currentDateTime)
-                    .arg(m_cameras[i]->camera()->uuid());
+                    .arg(camera ? camera->camera()->uuid() : QString("camera%1").arg(i));
             if (!newCalibration->saveToFile(fileName))
                 qWarning() << "unable to save calibration to file:" << fileName;
 
@@ -335,14 +345,13 @@ void ZMultiCameraCalibratorWidget::newSession()
     }
 
     /// folder for each camera inside session folder
-    //foreach(Z3D::CalibratedCamera::Ptr camera, m_cameras) {
-    for (int i=0; i<m_cameras.size(); ++i) {
-        Z3D::ZCalibratedCamera::Ptr camera = m_cameras[i];
+    for (size_t i=0; i<m_cameras.size(); ++i) {
+        const auto &camera = m_cameras[i];
 
         QString cameraFolder = QString("%1/%2__%3")
                 .arg(m_sessionFolder)
                 .arg(i, 2, 10, QLatin1Char('0'))
-                .arg(camera->camera()->uuid());
+                .arg(camera ? camera->camera()->uuid() : QString("camera%1").arg(i));
 
         if (!QDir::current().mkpath(cameraFolder)) {
             qWarning() << "unable to create folder" << cameraFolder;
@@ -375,8 +384,16 @@ void ZMultiCameraCalibratorWidget::on_runCalibrationButton_clicked()
     ui->runCalibrationButton->setEnabled(false);
 
     std::vector<Z3D::ZCameraCalibration::Ptr> currentCalibrations;
-    for (auto camera : m_cameras) {
-        currentCalibrations.push_back(camera->calibration());
+
+    for (size_t iCamera=0; iCamera<m_cameras.size(); ++iCamera) {
+        const auto &camera = m_cameras[iCamera];
+        if (camera) {
+            currentCalibrations.push_back(camera->calibration());
+        } else {
+            const auto &image = m_model->imageAt(0)->image(iCamera);
+            auto *calibration = new ZPinholeCameraCalibration(image->width(), image->height());
+            currentCalibrations.push_back(ZCameraCalibration::Ptr(calibration));
+        }
     }
 
     m_calibratorWorker->calibrate(currentCalibrations);
@@ -418,7 +435,7 @@ void ZMultiCameraCalibratorWidget::on_saveCameraImageButton_clicked()
         QString fileName = QString("%1/%2__%3/%4.png")
                 .arg(m_sessionFolder)
                 .arg(i, 2, 10, QLatin1Char('0'))
-                .arg(camera->camera()->uuid())
+                .arg(camera ? camera->camera()->uuid() : QString("camera%1").arg(i))
                 .arg(currentDateTime);
 
         if (image->save(fileName)) {

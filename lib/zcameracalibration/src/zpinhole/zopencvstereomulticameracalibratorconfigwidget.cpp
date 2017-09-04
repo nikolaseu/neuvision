@@ -123,6 +123,12 @@ ZOpenCVStereoMultiCameraCalibratorConfigWidget::ZOpenCVStereoMultiCameraCalibrat
                      ui->termEpsilonSpinBox, SLOT(setValue(double)));
     QObject::connect(ui->termEpsilonSpinBox, SIGNAL(valueChanged(double)),
                      m_cameraCalibrator, SLOT(setTermCriteriaEpsilon(double)));
+
+    ui->debugModeCheckBox->setChecked(m_cameraCalibrator->isDebugMode());
+    QObject::connect(m_cameraCalibrator, SIGNAL(debugModeChanged(bool)),
+                     ui->debugModeCheckBox, SLOT(setChecked(bool)));
+    QObject::connect(ui->debugModeCheckBox, SIGNAL(toggled(bool)),
+                     m_cameraCalibrator, SLOT(setDebugMode(bool)));
 }
 
 ZOpenCVStereoMultiCameraCalibratorConfigWidget::~ZOpenCVStereoMultiCameraCalibratorConfigWidget()

@@ -57,6 +57,7 @@ class Z3D_CAMERACALIBRATION_SHARED_EXPORT ZPinholeCameraCalibration : public ZCa
 public:
     explicit ZPinholeCameraCalibration();
     explicit ZPinholeCameraCalibration(cv::Mat cameraMatrix, cv::Mat distortionCoeffs, cv::Size imageSize);
+    explicit ZPinholeCameraCalibration(int imageWidth, int imageHeight);
 
     ZCameraCalibration::Ptr clone() const override;
 
