@@ -234,6 +234,22 @@ std::vector<ZCameraCalibration::Ptr> ZOpenCVStereoMultiCameraCalibrator::getCali
         } else {
             qWarning() << "Error: cannot save the extrinsic parameters to" << extrinsicsFileName;
         }
+
+        cv::Mat rmap[2][2];
+        cv::initUndistortRectifyMap(cameraMatrix[0], distCoeffs[0], R1, P1, imageSize[0], CV_16SC2, rmap[0][0], rmap[0][1]);
+        cv::initUndistortRectifyMap(cameraMatrix[1], distCoeffs[1], R2, P2, imageSize[1], CV_16SC2, rmap[1][0], rmap[1][1]);
+
+        const QString rectifyMapFileName = calibDir.absoluteFilePath("rmap.yml");
+        fs.open(qPrintable(rectifyMapFileName), cv::FileStorage::WRITE);
+        if (fs.isOpened()) {
+            fs << "M00" << rmap[0][0]
+               << "M01" << rmap[0][1]
+               << "M10" << rmap[1][0]
+               << "M11" << rmap[1][1];
+            fs.release();
+        } else {
+            qWarning() << "Error: cannot save the rectify map parameters to" << rectifyMapFileName;
+        }
     }
 
     for (size_t ic = 0; ic < ncameras; ++ic) {
