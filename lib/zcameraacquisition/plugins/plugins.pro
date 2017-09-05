@@ -2,6 +2,7 @@ TEMPLATE  = subdirs
 
 SUBDIRS += zsimulatedcamera
 SUBDIRS += zopencvvideocapture
+SUBDIRS += zqtcamera
 
 win32: {
     ## Windows build here
@@ -18,10 +19,3 @@ win32: {
         message('Building only x86_64 compatible camera acquisition plugins')
     }
 }
-
-# QCamera only included in Qt>=5
-greaterThan(QT_MAJOR_VERSION, 4) {
-    SUBDIRS  += zqtcamera
-}
-
-

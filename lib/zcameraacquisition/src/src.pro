@@ -3,10 +3,7 @@ include(../../../NEUVision.pri)
 TEMPLATE      = lib
 # CONFIG       += plugin
 #QT           -= gui //we need gui because we use QImage, QScrollArea, etc
-greaterThan(QT_MAJOR_VERSION, 4) {
-    QT += widgets
-}
-#QT           += core concurrent
+QT += widgets
 TARGET        = $$qtLibraryTarget(zcameraacquisition)
 DESTDIR       = $$Z3D_BUILD_DIR
 VERSION       = $$Z3D_VERSION
