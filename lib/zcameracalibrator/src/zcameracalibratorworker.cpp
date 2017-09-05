@@ -32,22 +32,6 @@
 namespace Z3D
 {
 
-struct ZCameraCalibratorWorkerParallelFindPatternImpl
-{
-    ZCameraCalibratorWorkerParallelFindPatternImpl(Z3D::ZCalibrationPatternFinder::Ptr patternFinder)
-        : m_patternFinder(patternFinder.data())
-    {
-        // empty
-    }
-
-    void operator()(const Z3D::ZCalibrationImage::Ptr &image)
-    {
-        image->findPattern(m_patternFinder);
-    }
-
-    Z3D::ZCalibrationPatternFinder::WeakPtr m_patternFinder;
-};
-
 ZCameraCalibratorWorker::ZCameraCalibratorWorker(QObject *parent)
     : QObject(parent)
     , m_patternFinder(nullptr)
@@ -202,7 +186,9 @@ void ZCameraCalibratorWorker::findCalibrationPattern()
     /// execution on parallel in other threads (from the thread pool)
     m_patternFinderFutureWatcher.setFuture(
                 QtConcurrent::map(m_imageModel->images(),
-                                  ZCameraCalibratorWorkerParallelFindPatternImpl(m_patternFinder)) );
+                                  [=](const Z3D::ZCalibrationImage::Ptr &image) {
+                                        image->findPattern(m_patternFinder.data());
+                                  }));
 }
 
 void ZCameraCalibratorWorker::calibrate()

@@ -33,23 +33,6 @@
 namespace Z3D
 {
 
-struct ParallelImageCheckImpl
-{
-    ParallelImageCheckImpl(ZCalibrationImageModel *imageModel)
-        : m_imageModel(imageModel) { }
-
-    void operator()(const Z3D::ZCalibrationImage::Ptr &image)
-    {
-        if (image->isValid()) {
-            m_imageModel->addImageThreadSafe(image);
-        }
-    }
-
-    ZCalibrationImageModel *m_imageModel;
-};
-
-
-
 ZCalibrationImageModel::ZCalibrationImageModel(QObject *parent) :
     QAbstractListModel(parent),
     m_width(0),
@@ -171,14 +154,11 @@ void ZCalibrationImageModel::addImageThreadSafe(Z3D::ZCalibrationImage::Ptr imag
 void ZCalibrationImageModel::addImages(const QVector<Z3D::ZCalibrationImage::Ptr > &images)
 {
     /// parallelize the checking of image validity before adding to model
-    m_futureWatcher.setFuture( QtConcurrent::map(images, ParallelImageCheckImpl(this)) );
-
-    /* VERSION no paralela
-    foreach (Z3D::ZCalibrationImage::Ptr image, images) {
+    m_futureWatcher.setFuture(QtConcurrent::map(images, [=](const auto &image) {
         if (image->isValid()) {
-            add(image);
+            addImageThreadSafe(image);
         }
-    }*/
+    }));
 }
 
 void ZCalibrationImageModel::addImpl(Z3D::ZCalibrationImage::Ptr image)
