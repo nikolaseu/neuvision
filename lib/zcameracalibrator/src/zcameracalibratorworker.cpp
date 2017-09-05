@@ -50,8 +50,8 @@ struct ZCameraCalibratorWorkerParallelFindPatternImpl
 
 ZCameraCalibratorWorker::ZCameraCalibratorWorker(QObject *parent)
     : QObject(parent)
-    , m_patternFinder(0)
-    , m_cameraCalibrator(0)
+    , m_patternFinder(nullptr)
+    , m_cameraCalibrator(nullptr)
     , m_progress(1.f)
 {
     /// connect future watcher signals to monitor progress
@@ -263,7 +263,7 @@ void ZCameraCalibratorWorker::calibrateFunctionImpl()
         /// calibration end
         setProgress(1.f, tr("Calibration failed. Not enough calibration patterns found"));
         emit calibrationFailed(tr("Calibration failed. Not enough calibration patterns found"));
-        emit calibrationChanged(ZCameraCalibration::Ptr(0));
+        emit calibrationChanged(ZCameraCalibration::Ptr(nullptr));
 
         return;
     }

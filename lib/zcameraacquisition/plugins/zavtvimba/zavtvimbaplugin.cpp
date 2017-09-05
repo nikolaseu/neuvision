@@ -113,7 +113,7 @@ ZCameraInterface::Ptr ZAVTVimbaPlugin::getCamera(QVariantMap options)
         return ZCameraInterface::Ptr(avtCamera);
     }
 
-    return ZCameraInterface::Ptr(0);
+    return ZCameraInterface::Ptr(nullptr);
 }
 
 } // namespace Z3D

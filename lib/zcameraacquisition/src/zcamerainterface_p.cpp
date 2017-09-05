@@ -33,10 +33,10 @@ namespace Z3D
 
 ZCameraBase::ZCameraBase(QObject *parent)
     : ZCameraInterface(parent)
-    , m_lastRetrievedImage(0)
+    , m_lastRetrievedImage(nullptr)
     , m_currentImageBufferIndex(-1)
     , m_simultaneousCapturesCount(0)
-    , m_settingsWidget(0)
+    , m_settingsWidget(nullptr)
 {
     QObject::connect(this, SIGNAL(acquisitionStarted()),
                      this, SIGNAL(runningChanged()));

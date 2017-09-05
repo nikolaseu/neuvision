@@ -99,7 +99,7 @@ const QList<ZCalibrationImage::Ptr> &ZMultiCalibrationImage::images() const
 ZCalibrationImage::Ptr ZMultiCalibrationImage::image(int index) const
 {
     if (index >= m_images.size())
-        return ZCalibrationImage::Ptr(0);
+        return ZCalibrationImage::Ptr(nullptr);
 
     return m_images[index];
 }

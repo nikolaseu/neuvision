@@ -34,7 +34,7 @@ ZCameraInterface::Ptr ZPleoraeBUSCamera::getCameraByMAC(QString name)
     ZPleoraeBUSCameraPrivate *cameraPrivate = ZPleoraeBUSCameraPrivate::getCameraByMAC(name);
 
     if (!cameraPrivate)
-        return ZCameraInterface::Ptr(0);
+        return ZCameraInterface::Ptr(nullptr);
 
     ZPleoraeBUSCamera *camera = new ZPleoraeBUSCamera();
 

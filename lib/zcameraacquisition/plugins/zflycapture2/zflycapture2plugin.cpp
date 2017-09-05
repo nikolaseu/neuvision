@@ -54,7 +54,7 @@ ZCameraInterface::Ptr ZFlyCapture2Plugin::getCamera(QVariantMap options)
     if (cameraList.size())
         return cameraList.first();
 
-    return ZCameraInterface::Ptr(0);
+    return ZCameraInterface::Ptr(nullptr);
 }
 
 } // namespace Z3D

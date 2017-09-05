@@ -50,8 +50,8 @@ struct ZMultiCameraCalibratorWorkerParallelFindPatternImpl
 
 ZMultiCameraCalibratorWorker::ZMultiCameraCalibratorWorker(QObject *parent)
     : QObject(parent)
-    , m_patternFinder(0)
-    , m_cameraCalibrator(0)
+    , m_patternFinder(nullptr)
+    , m_cameraCalibrator(nullptr)
     , m_progress(1.f)
 {
     /// connect future watcher signals to monitor progress

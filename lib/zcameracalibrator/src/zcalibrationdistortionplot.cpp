@@ -134,7 +134,7 @@ public:
 
 ZCalibrationDistortionPlot::ZCalibrationDistortionPlot(ZCameraCalibration::Ptr calibration, QWidget *parent)
     : QwtPlot(parent)
-    , m_spectrogram(0)
+    , m_spectrogram(nullptr)
     , m_calibration(calibration)
 {
     canvas()->setStyleSheet("border: 0px;");

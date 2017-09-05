@@ -34,7 +34,7 @@ ZCameraInterface::Ptr ZNIIMAQdxGrabCamera::getCameraByName(QString name)
     ZNIIMAQdxGrabCameraPrivate *cameraPrivate = ZNIIMAQdxGrabCameraPrivate::getCameraByName(name);
 
     if (!cameraPrivate)
-        return ZCameraInterface::Ptr(0);
+        return ZCameraInterface::Ptr(nullptr);
 
     ZNIIMAQdxGrabCamera *camera = new ZNIIMAQdxGrabCamera();
 

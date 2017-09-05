@@ -33,7 +33,7 @@ ZPointCloudWidget::ZPointCloudWidget(QWidget *parent)
       m_scale(1.f),
       m_pointSize(1),
       m_pointCloud(nullptr),
-      m_program(0)
+      m_program(nullptr)
 {
     m_core = QCoreApplication::arguments().contains(QStringLiteral("--coreprofile"));
 

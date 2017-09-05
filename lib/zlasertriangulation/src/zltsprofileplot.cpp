@@ -65,7 +65,7 @@ public:
 
 LTSProfilePlot::LTSProfilePlot(QWidget *parent) :
     QwtPlot(parent),
-    d_curve(0)
+    d_curve(nullptr)
 {
     canvas()->setStyleSheet("border: 0px;");
 

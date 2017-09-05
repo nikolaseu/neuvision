@@ -30,7 +30,7 @@ namespace Z3D
 ZCameraSelectorWidget::ZCameraSelectorWidget(QWidget *parent)
     : QWidget(parent)
     , ui(new Ui::ZCameraSelectorWidget)
-    , m_selectedCamera(0)
+    , m_selectedCamera(nullptr)
 {
     ui->setupUi(this);
 
@@ -72,7 +72,7 @@ void ZCameraSelectorWidget::onCameraIndexChanged(int index)
     if (index >= 0 && index < m_currentCameraList.size()) {
         m_selectedCamera = m_currentCameraList[index]->getCamera();
     } else {
-        m_selectedCamera = Z3D::ZCameraInterface::Ptr(0);
+        m_selectedCamera = Z3D::ZCameraInterface::Ptr(nullptr);
     }
 
     emit cameraSelected(m_selectedCamera);

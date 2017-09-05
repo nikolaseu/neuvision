@@ -61,7 +61,7 @@ ZCameraInterface::Ptr ZQtCameraPlugin::getCamera(QVariantMap options)
     QByteArray deviceName = options["deviceName"].toByteArray();
 
     if (deviceName.isNull() || deviceName.isEmpty())
-        return ZCameraInterface::Ptr(0);
+        return ZCameraInterface::Ptr(nullptr);
 
     QCamera *qcamera = new QCamera(deviceName);
 
@@ -69,7 +69,7 @@ ZCameraInterface::Ptr ZQtCameraPlugin::getCamera(QVariantMap options)
         return ZCameraInterface::Ptr(new ZQtCamera(qcamera));
 
     delete qcamera;
-    return ZCameraInterface::Ptr(0);
+    return ZCameraInterface::Ptr(nullptr);
 }
 
 } // namespace Z3D

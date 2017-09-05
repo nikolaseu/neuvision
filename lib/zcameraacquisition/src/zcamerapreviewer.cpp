@@ -36,7 +36,7 @@ ZCameraPreviewer::ZCameraPreviewer(QWidget *parent) :
 
     ui->setupUi(this);
 
-    setCamera(Z3D::ZCameraInterface::Ptr(0));
+    setCamera(Z3D::ZCameraInterface::Ptr(nullptr));
 }
 
 ZCameraPreviewer::ZCameraPreviewer(ZCameraInterface::Ptr camera, QWidget *parent)
@@ -87,7 +87,7 @@ void ZCameraPreviewer::setCamera(ZCameraInterface::Ptr camera)
                          Qt::DirectConnection); /// we don't want this to be executed from the camera thread...
     } else {
         setWindowTitle("NO CAMERA");
-        ui->imageView->updateImage(Z3D::ZImageGrayscale::Ptr(0));
+        ui->imageView->updateImage(Z3D::ZImageGrayscale::Ptr(nullptr));
     }
 
     ui->settingsButton->setEnabled(cameraIsValid);

@@ -50,7 +50,7 @@ class Z3D_CAMERACALIBRATOR_SHARED_EXPORT ZCameraCalibratorWidget : public QWidge
     Q_OBJECT
 
 public:
-    explicit ZCameraCalibratorWidget(Z3D::ZCalibratedCamera::Ptr camera = Z3D::ZCalibratedCamera::Ptr(0), QWidget *parent = 0);
+    explicit ZCameraCalibratorWidget(Z3D::ZCalibratedCamera::Ptr camera = Z3D::ZCalibratedCamera::Ptr(nullptr), QWidget *parent = 0);
     ~ZCameraCalibratorWidget();
 
 private slots:

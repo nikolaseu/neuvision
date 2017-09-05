@@ -84,7 +84,7 @@ ZNIIMAQdxGrabCameraPrivate *ZNIIMAQdxGrabCameraPrivate::getCameraByName(QString 
 ZNIIMAQdxGrabCameraPrivate::ZNIIMAQdxGrabCameraPrivate(SESSION_ID sessionId, QObject *parent) :
     QObject(parent),
     m_session(sessionId),
-    m_imaqImage(0),
+    m_imaqImage(nullptr),
     m_imaqBufferSize(20),
     m_acquisitionCounter(0),
     m_stopThreadRequested(true)
