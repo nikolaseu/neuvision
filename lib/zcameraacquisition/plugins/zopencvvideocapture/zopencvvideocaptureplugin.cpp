@@ -106,7 +106,3 @@ ZCameraInterface::Ptr ZOpenCVVideoCapturePlugin::getCamera(QVariantMap options)
 }
 
 } // namespace Z3D
-
-#if QT_VERSION < 0x050000
-Q_EXPORT_PLUGIN2(zopencvvideocapture, Z3D::ZOpenCVVideoCapturePlugin)
-#endif

@@ -31,16 +31,6 @@
 namespace Z3D
 {
 
-
-///// Qt < 5 have QThread::msleep as protected function
-//#if QT_VERSION < 0x050000
-//class SleeperThread : public QThread
-//{
-//public:
-//    static void msleep(unsigned long msecs) { QThread::msleep(msecs); }
-//};
-//#endif
-
 // static var
 QMap<int, QString> OpenCVVideoCaptureCamera::m_opencvAttributeNames;
 
@@ -344,14 +334,6 @@ void OpenCVVideoCaptureCamera::grabLoop()
 
         /// notify
         emit newImageReceived(currentImage);
-
-//        /// sleep 10ms
-//        /// this camera plugin is not the best option for high speed capture
-//#if QT_VERSION < 0x050000
-//        SleeperThread::msleep(10);
-//#else
-//        QThread::msleep(10);
-//#endif
     }
 
     qDebug() << "acquired" << frameCounter << "images";

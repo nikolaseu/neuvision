@@ -31,11 +31,7 @@ namespace Z3D
 class ZAVTVimbaPlugin : public ZCameraPluginInterface
 {
     Q_OBJECT
-
-#if QT_VERSION >= 0x050000
     Q_PLUGIN_METADATA(IID "z3d.cameraacquisition.cameraplugininterface" FILE "zavtvimba.json")
-#endif // QT_VERSION >= 0x050000
-
     Q_INTERFACES(Z3D::ZCameraPluginInterface)
 
 public:

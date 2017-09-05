@@ -32,7 +32,6 @@ namespace ZApplicationStyle
 
 void applyStyle(ZStyle style)
 {
-#if QT_VERSION >= 0x050000
     /// set custom style
     QApplication::setStyle(QStyleFactory::create("Fusion"));
 
@@ -83,7 +82,6 @@ void applyStyle(ZStyle style)
     }
 
     qApp->setPalette(p);
-#endif
 }
 
 } // namespace ZApplicationStyle

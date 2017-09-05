@@ -22,13 +22,7 @@
 
 #include <QDebug>
 #include <QDir>
-#if QT_VERSION < 0x050000
-#include <QtConcurrentMap>
-//#include <QtConcurrentRun>
-#else
 #include <QtConcurrent>
-#endif
-//#include <QUrl>
 
 namespace Z3D
 {

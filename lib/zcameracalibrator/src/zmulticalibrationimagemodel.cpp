@@ -21,12 +21,7 @@
 #include "zmulticalibrationimagemodel.h"
 
 #include <QDir>
-#if QT_VERSION < 0x050000
-#include <QtConcurrentMap>
-//#include <QtConcurrentRun>
-#else
 #include <QtConcurrent>
-#endif
 
 namespace Z3D
 {

@@ -73,8 +73,3 @@ ZCameraInterface::Ptr ZQtCameraPlugin::getCamera(QVariantMap options)
 }
 
 } // namespace Z3D
-
-
-#if QT_VERSION < 0x050000
-Q_EXPORT_PLUGIN2(zqtcamera, Z3D::ZQtCameraPlugin)
-#endif // QT_VERSION < 0x050000

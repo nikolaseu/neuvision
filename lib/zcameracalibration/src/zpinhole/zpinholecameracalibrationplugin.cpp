@@ -136,9 +136,3 @@ QWidget *ZPinholeCameraCalibrationPlugin::getConfigWidget(ZMultiCameraCalibrator
 }
 
 } // namespace Z3D
-
-/*
-#if QT_VERSION < 0x050000
-Q_EXPORT_PLUGIN2(zpinholeplugin, Z3D::PinholeCameraCalibrationPlugin)
-#endif // QT_VERSION < 0x050000
-*/
