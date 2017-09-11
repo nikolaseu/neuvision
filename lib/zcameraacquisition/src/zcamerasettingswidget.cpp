@@ -164,7 +164,7 @@ void ZCameraSettingsWidget::updateProperties()
             m_currentProperty = m_propertiesList[attribute.name];
         } else {
             /// new property
-            QtProperty *parentCategory = 0;
+            QtProperty *parentCategory = nullptr;
             auto categoriesList = attribute.name.split("::");
             QString attrName;
             if (categoriesList.size() > 1) {

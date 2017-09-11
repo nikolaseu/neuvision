@@ -30,7 +30,7 @@ void ZLogHandler(QtMsgType type, const QMessageLogContext &context, const QStrin
 {
     Q_UNUSED(context)
 
-    static FILE *m_logFile = 0;
+    static FILE *m_logFile = nullptr;
     static QDateTime m_startDateTime = QDateTime::fromTime_t(0); //! 1-1-1970 00:00
 
     QDateTime currDateTime = QDateTime::currentDateTime();

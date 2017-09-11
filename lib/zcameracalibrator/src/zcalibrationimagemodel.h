@@ -43,7 +43,7 @@ public:
         FilenameRole
     };
 
-    explicit ZCalibrationImageModel(QObject *parent = 0);
+    explicit ZCalibrationImageModel(QObject *parent = nullptr);
 
     QHash<int, QByteArray> roleNames() const;
 

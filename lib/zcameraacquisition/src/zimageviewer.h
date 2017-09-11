@@ -36,7 +36,7 @@ class Z3D_CAMERAACQUISITION_SHARED_EXPORT ZImageViewer : public QGraphicsView
     Q_OBJECT
 
 public:
-    ZImageViewer(QWidget *parent = 0);
+    ZImageViewer(QWidget *parent = nullptr);
     ~ZImageViewer();
 
 public slots:

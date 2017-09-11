@@ -110,7 +110,7 @@ OpenCVVideoCaptureCamera::~OpenCVVideoCaptureCamera()
     qDebug() << Q_FUNC_INFO << uuid();
 
     delete m_capture;
-    m_capture = 0;
+    m_capture = nullptr;
 }
 
 bool OpenCVVideoCaptureCamera::startAcquisition()

@@ -125,7 +125,7 @@ void ZPointCloudWidget::cleanup()
     if (m_pointCloud)
         m_pointCloudVbo.destroy();
     delete m_program;
-    m_program = 0;
+    m_program = nullptr;
     doneCurrent();
 }
 

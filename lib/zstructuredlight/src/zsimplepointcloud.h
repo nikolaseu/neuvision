@@ -37,7 +37,7 @@ public:
     typedef std::vector<PointType> PointVector;
     typedef QSharedPointer<Z3D::ZSimplePointCloud> Ptr;
 
-    explicit ZSimplePointCloud(QObject *parent = 0);
+    explicit ZSimplePointCloud(QObject *parent = nullptr);
 
 signals:
 

@@ -46,7 +46,7 @@ class Z3D_STRUCTUREDLIGHT_SHARED_EXPORT ZStructuredLightSystem : public QObject
 public:
     typedef QSharedPointer<ZStructuredLightSystem> Ptr;
 
-    explicit ZStructuredLightSystem(QObject *parent = 0);
+    explicit ZStructuredLightSystem(QObject *parent = nullptr);
     virtual ~ZStructuredLightSystem();
 
     virtual QString id() const = 0;

@@ -62,7 +62,7 @@ void MainWindow::onContinueButtonClicked()
         onFinishButtonClicked();
     } else if (ui->calibrateOnlineRadioButton->isChecked()) {
         /// open the camera calibration window without a camera
-        static Z3D::ZCameraSelectorWidget *cameraSelectorWidget = 0;
+        static Z3D::ZCameraSelectorWidget *cameraSelectorWidget = nullptr;
         if (!cameraSelectorWidget) {
             cameraSelectorWidget = new Z3D::ZCameraSelectorWidget(ui->pageCameraSelection);
             QObject::connect(cameraSelectorWidget, SIGNAL(cameraSelected(Z3D::ZCameraInterface::Ptr)),

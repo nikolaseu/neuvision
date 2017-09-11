@@ -88,7 +88,7 @@ ZCameraInterface::Ptr ZAVTVimbaPlugin::getCamera(QVariantMap options)
 {
     QString cameraDeviceID = options.value("DeviceID").toString();
 
-    AVTVimbaCamera *avtCamera = 0;
+    AVTVimbaCamera *avtCamera = nullptr;
 
     AVT::VmbAPI::CameraPtrVector cameras;
     /// Get all known cameras
@@ -103,7 +103,7 @@ ZCameraInterface::Ptr ZAVTVimbaPlugin::getCamera(QVariantMap options)
                 break;
 
             delete avtCamera;
-            avtCamera = 0;
+            avtCamera = nullptr;
         }
     } else {
         qWarning() << "Unable to obtain cameras. AVT::VmbAPI::VimbaSystem::GetInstance().GetCameras() failed.";

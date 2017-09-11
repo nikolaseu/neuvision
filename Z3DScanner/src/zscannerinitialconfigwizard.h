@@ -31,7 +31,7 @@ class ZScannerInitialConfigWizard : public QWidget
     Q_OBJECT
 
 public:
-    explicit ZScannerInitialConfigWizard(QWidget *parent = 0);
+    explicit ZScannerInitialConfigWizard(QWidget *parent = nullptr);
     ~ZScannerInitialConfigWizard();
 
 private slots:

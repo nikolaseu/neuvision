@@ -37,7 +37,7 @@ public:
         CameraPtrRole = Qt::UserRole + 1
     };
 
-    explicit ZCameraListModel(QObject *parent = 0);
+    explicit ZCameraListModel(QObject *parent = nullptr);
 
     QHash<int, QByteArray> roleNames() const;
 

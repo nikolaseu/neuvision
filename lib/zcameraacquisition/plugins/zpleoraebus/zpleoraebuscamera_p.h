@@ -51,7 +51,7 @@ class ZPleoraeBUSCameraPrivate : public QObject
 public:
     static ZPleoraeBUSCameraPrivate *getCameraByMAC(QString name);
 
-    explicit ZPleoraeBUSCameraPrivate(const PvDeviceInfo *deviceInfo, QObject *parent = 0);
+    explicit ZPleoraeBUSCameraPrivate(const PvDeviceInfo *deviceInfo, QObject *parent = nullptr);
     ~ZPleoraeBUSCameraPrivate();
 
 signals:

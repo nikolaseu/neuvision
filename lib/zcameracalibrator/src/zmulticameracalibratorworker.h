@@ -37,7 +37,7 @@ class ZMultiCameraCalibratorWorker : public QObject
     Q_OBJECT
 
 public:
-    explicit ZMultiCameraCalibratorWorker(QObject *parent = 0);
+    explicit ZMultiCameraCalibratorWorker(QObject *parent = nullptr);
     ~ZMultiCameraCalibratorWorker();
 
     Z3D::ZMultiCalibrationImageModel* imageModel();

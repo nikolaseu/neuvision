@@ -30,7 +30,7 @@ class ZSingleCameraStereoSLS : public ZStereoSLS
     Q_OBJECT
 
 public:
-    explicit ZSingleCameraStereoSLS(QObject *parent = 0);
+    explicit ZSingleCameraStereoSLS(QObject *parent = nullptr);
     ~ZSingleCameraStereoSLS();
 
 private:

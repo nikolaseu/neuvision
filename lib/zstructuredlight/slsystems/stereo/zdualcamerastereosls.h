@@ -32,7 +32,7 @@ class ZDualCameraStereoSLS : public ZStereoSLS
     Q_OBJECT
 
 public:
-    explicit ZDualCameraStereoSLS(QObject *parent = 0);
+    explicit ZDualCameraStereoSLS(QObject *parent = nullptr);
     ~ZDualCameraStereoSLS();
 
     Z3D::ZCalibratedCamera::Ptr leftCamera() const;

@@ -75,7 +75,7 @@ class AVTVimbaCamera : public ZCameraBase
     Q_OBJECT
 
 public:
-    explicit AVTVimbaCamera(AVT::VmbAPI::CameraPtr cameraPtr, QObject *parent = 0);
+    explicit AVTVimbaCamera(AVT::VmbAPI::CameraPtr cameraPtr, QObject *parent = nullptr);
     ~AVTVimbaCamera();
 
     QString deviceID() const;

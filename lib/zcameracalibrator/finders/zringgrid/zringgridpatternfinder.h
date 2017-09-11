@@ -29,7 +29,7 @@ class ZRingGridPatternFinder : public ZCalibrationPatternFinder
     Q_OBJECT
 
 public:
-    explicit ZRingGridPatternFinder(QObject *parent = 0);
+    explicit ZRingGridPatternFinder(QObject *parent = nullptr);
 
     QString name() const override;
 

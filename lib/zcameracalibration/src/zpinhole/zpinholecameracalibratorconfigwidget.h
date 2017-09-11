@@ -36,7 +36,7 @@ class ZPinholeCameraCalibratorConfigWidget : public QWidget
     Q_OBJECT
 
 public:
-    explicit ZPinholeCameraCalibratorConfigWidget(ZPinholeCameraCalibrator *calibrator, QWidget *parent = 0);
+    explicit ZPinholeCameraCalibratorConfigWidget(ZPinholeCameraCalibrator *calibrator, QWidget *parent = nullptr);
     ~ZPinholeCameraCalibratorConfigWidget();
 
 private:

@@ -38,7 +38,7 @@ public:
         ShowMarkersAndCoords
     };
 
-    ZCalibrationImageViewer(QWidget *parent = 0);
+    ZCalibrationImageViewer(QWidget *parent = nullptr);
     ~ZCalibrationImageViewer();
 
     void setDisplayMode(DisplayMode displayMode);

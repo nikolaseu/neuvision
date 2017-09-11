@@ -36,7 +36,7 @@ class ZRingGridPatternFinderConfigWidget : public QWidget
     Q_OBJECT
 
 public:
-    explicit ZRingGridPatternFinderConfigWidget(ZRingGridPatternFinder *patternFinder, QWidget *parent = 0);
+    explicit ZRingGridPatternFinderConfigWidget(ZRingGridPatternFinder *patternFinder, QWidget *parent = nullptr);
     ~ZRingGridPatternFinderConfigWidget();
 
 private:

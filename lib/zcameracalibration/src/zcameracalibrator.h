@@ -31,7 +31,7 @@ class ZCameraCalibrator : public QObject
     Q_OBJECT
 
 public:
-    explicit ZCameraCalibrator(QObject *parent = 0) : QObject(parent) {}
+    explicit ZCameraCalibrator(QObject *parent = nullptr) : QObject(parent) {}
 
     virtual ~ZCameraCalibrator() {}
 

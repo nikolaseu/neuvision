@@ -67,7 +67,7 @@ public:
         PatternImage   = 0x02
     };
 
-    explicit ZCalibrationImage(QString fileName, QObject *parent = 0);
+    explicit ZCalibrationImage(QString fileName, QObject *parent = nullptr);
 
     ~ZCalibrationImage();
 

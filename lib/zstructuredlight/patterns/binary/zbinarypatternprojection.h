@@ -50,7 +50,7 @@ class Z3D_STRUCTUREDLIGHT_SHARED_EXPORT ZBinaryPatternProjection : public ZPatte
     Q_PROPERTY(bool previewEnabled READ previewEnabled WRITE setPreviewEnabled NOTIFY previewEnabledChanged)
 
 public:
-    explicit ZBinaryPatternProjection(QObject *parent = 0);
+    explicit ZBinaryPatternProjection(QObject *parent = nullptr);
     ~ZBinaryPatternProjection();
 
     virtual QString id() const override;

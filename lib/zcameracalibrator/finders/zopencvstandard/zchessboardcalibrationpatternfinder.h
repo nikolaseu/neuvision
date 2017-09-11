@@ -73,7 +73,7 @@ class ZChessboardCalibrationPatternFinder : public ZCalibrationPatternFinder
                NOTIFY subPixEpsilonChanged)
 
 public:
-    explicit ZChessboardCalibrationPatternFinder(QObject *parent = 0);
+    explicit ZChessboardCalibrationPatternFinder(QObject *parent = nullptr);
 
     QString name() const override;
 

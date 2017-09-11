@@ -42,7 +42,7 @@ void ZScannerInitialConfigWizard::on_pushButton_clicked()
     int currentPage =  ui->stackedWidget->currentIndex();
     switch (currentPage) {
     case 0: {
-        static Z3D::ZCameraSelectorWidget *m_leftCameraSelectorWidget = 0;
+        static Z3D::ZCameraSelectorWidget *m_leftCameraSelectorWidget = nullptr;
         if (!m_leftCameraSelectorWidget) {
             m_leftCameraSelectorWidget = new Z3D::ZCameraSelectorWidget(ui->pageLeftCameraSelection);
             //QObject::connect(m_leftCameraSelectorWidget, SIGNAL(cameraSelected(Z3D::ZCameraInterface::Ptr)),
@@ -60,7 +60,7 @@ void ZScannerInitialConfigWizard::on_pushButton_clicked()
         break;
     }
     case 1:{
-        static Z3D::ZCameraSelectorWidget *m_rightCameraSelectorWidget = 0;
+        static Z3D::ZCameraSelectorWidget *m_rightCameraSelectorWidget = nullptr;
         if (!m_rightCameraSelectorWidget) {
             m_rightCameraSelectorWidget = new Z3D::ZCameraSelectorWidget(ui->pageRightCameraSelection);
             //QObject::connect(m_rightCameraSelectorWidget, SIGNAL(cameraSelected(Z3D::ZCameraInterface::Ptr)),

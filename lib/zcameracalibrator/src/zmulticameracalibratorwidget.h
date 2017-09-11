@@ -49,7 +49,7 @@ class Z3D_CAMERACALIBRATOR_SHARED_EXPORT ZMultiCameraCalibratorWidget : public Q
     Q_OBJECT
 
 public:
-    explicit ZMultiCameraCalibratorWidget(std::vector<ZCalibratedCamera::Ptr> cameras, QWidget *parent = 0);
+    explicit ZMultiCameraCalibratorWidget(std::vector<ZCalibratedCamera::Ptr> cameras, QWidget *parent = nullptr);
     ~ZMultiCameraCalibratorWidget();
 
 private slots:

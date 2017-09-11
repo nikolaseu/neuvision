@@ -52,7 +52,7 @@ class ZOpenCVStereoMultiCameraCalibrator : public ZMultiCameraCalibrator
     Q_PROPERTY(bool isDebugMode READ isDebugMode WRITE setDebugMode NOTIFY debugModeChanged)
 
 public:
-    explicit ZOpenCVStereoMultiCameraCalibrator(QObject *parent = 0);
+    explicit ZOpenCVStereoMultiCameraCalibrator(QObject *parent = nullptr);
 
     virtual ~ZOpenCVStereoMultiCameraCalibrator();
 

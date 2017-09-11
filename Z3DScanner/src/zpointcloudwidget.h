@@ -55,7 +55,7 @@ class ZPointCloudWidget : public QOpenGLWidget, protected QOpenGLFunctions
     Q_OBJECT
 
 public:
-    ZPointCloudWidget(QWidget *parent = 0);
+    ZPointCloudWidget(QWidget *parent = nullptr);
     ~ZPointCloudWidget();
 
     QSize minimumSizeHint() const override;
