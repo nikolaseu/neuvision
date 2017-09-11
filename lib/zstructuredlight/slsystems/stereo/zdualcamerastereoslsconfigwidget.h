@@ -34,7 +34,7 @@ class ZDualCameraStereoSLSConfigWidget : public QWidget
     Q_OBJECT
 
 public:
-    explicit ZDualCameraStereoSLSConfigWidget(ZDualCameraStereoSLS *stereoSLS, QWidget *parent = 0);
+    explicit ZDualCameraStereoSLSConfigWidget(ZDualCameraStereoSLS *stereoSLS, QWidget *parent = nullptr);
     ~ZDualCameraStereoSLSConfigWidget();
 
 private:

@@ -34,7 +34,7 @@ class ZCalibrationDistortionPlot : public QwtPlot
     Q_OBJECT
 
 public:
-    ZCalibrationDistortionPlot(ZCameraCalibration::Ptr calibration, QWidget *parent = 0);
+    ZCalibrationDistortionPlot(ZCameraCalibration::Ptr calibration, QWidget *parent = nullptr);
 
 public slots:
     void showContour(bool on);

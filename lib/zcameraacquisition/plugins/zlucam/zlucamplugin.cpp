@@ -71,7 +71,3 @@ ZCameraInterface::Ptr ZLuCamPlugin::getCamera(QVariantMap options)
 }
 
 } // namespace Z3D
-
-#if QT_VERSION < 0x050000
-Q_EXPORT_PLUGIN2(zlucam, Z3D::ZLuCamPlugin)
-#endif // QT_VERSION < 0x050000

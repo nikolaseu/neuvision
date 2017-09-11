@@ -31,7 +31,7 @@ class ZOpenCVCustomStereoMultiCameraCalibrator : public ZMultiCameraCalibrator
     Q_PROPERTY(bool fixIntrinsic READ fixIntrinsic WRITE setFixIntrinsic NOTIFY fixIntrinsicChanged)
 
 public:
-    explicit ZOpenCVCustomStereoMultiCameraCalibrator(QObject *parent = 0);
+    explicit ZOpenCVCustomStereoMultiCameraCalibrator(QObject *parent = nullptr);
 
     virtual ~ZOpenCVCustomStereoMultiCameraCalibrator();
 

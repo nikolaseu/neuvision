@@ -3,10 +3,7 @@ include(../../../NEUVision.pri)
 VERSION       = $$Z3D_VERSION
 TEMPLATE      = lib
 # CONFIG       += plugin
-#QT           -= gui
-greaterThan(QT_MAJOR_VERSION, 4) {
-    QT       += widgets concurrent
-}
+QT           += widgets concurrent
 TARGET        = $$qtLibraryTarget(zcameracalibration)
 DESTDIR       = $$Z3D_BUILD_DIR
 DEFINES      += Z3D_CAMERACALIBRATION_LIBRARY

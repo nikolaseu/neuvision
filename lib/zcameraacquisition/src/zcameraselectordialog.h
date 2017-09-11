@@ -41,7 +41,7 @@ public:
     static Z3D::ZCameraInterface::Ptr getCamera();
 
 protected:
-    explicit ZCameraSelectorDialog(QWidget *parent = 0);
+    explicit ZCameraSelectorDialog(QWidget *parent = nullptr);
 
 protected slots:
     void onCameraSelected(Z3D::ZCameraInterface::Ptr camera);

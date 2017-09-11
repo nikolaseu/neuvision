@@ -36,7 +36,7 @@ class ZIncompleteCircleGridPatternFinderConfigWidget : public QWidget
     Q_OBJECT
 
 public:
-    explicit ZIncompleteCircleGridPatternFinderConfigWidget(ZIncompleteCircleGridPatternFinder *patternFinder, QWidget *parent = 0);
+    explicit ZIncompleteCircleGridPatternFinderConfigWidget(ZIncompleteCircleGridPatternFinder *patternFinder, QWidget *parent = nullptr);
     ~ZIncompleteCircleGridPatternFinderConfigWidget();
 
 private:

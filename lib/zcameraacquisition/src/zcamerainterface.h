@@ -81,7 +81,7 @@ public:
         QStringList enumNames;
     };
 
-    explicit ZCameraInterface(QObject *parent = 0) : QObject(parent) {}
+    explicit ZCameraInterface(QObject *parent = nullptr) : QObject(parent) {}
     virtual ~ZCameraInterface() {}
 
     virtual QString uuid() = 0;

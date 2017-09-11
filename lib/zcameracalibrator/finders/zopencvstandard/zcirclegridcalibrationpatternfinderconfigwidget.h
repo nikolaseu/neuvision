@@ -36,7 +36,7 @@ class ZCircleGridCalibrationPatternFinderConfigWidget : public QWidget
     Q_OBJECT
 
 public:
-    explicit ZCircleGridCalibrationPatternFinderConfigWidget(ZCircleGridCalibrationPatternFinder *patternFinder, QWidget *parent = 0);
+    explicit ZCircleGridCalibrationPatternFinderConfigWidget(ZCircleGridCalibrationPatternFinder *patternFinder, QWidget *parent = nullptr);
     ~ZCircleGridCalibrationPatternFinderConfigWidget();
 
 private:

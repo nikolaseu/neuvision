@@ -36,7 +36,7 @@ class Z3D_CAMERAACQUISITION_SHARED_EXPORT ZCameraFramesRecorder : public QObject
 public:
     typedef QSharedPointer<Z3D::ZCameraFramesRecorder> Ptr;
 
-    explicit ZCameraFramesRecorder(QObject *parent = 0);
+    explicit ZCameraFramesRecorder(QObject *parent = nullptr);
 
     ZCameraInterface::WeakPtr getCamera() const;
     void setCamera(ZCameraInterface::WeakPtr camera);

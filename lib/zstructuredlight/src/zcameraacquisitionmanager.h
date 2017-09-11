@@ -31,7 +31,7 @@ class ZCameraAcquisitionManager : public QObject
     Q_OBJECT
 
 public:
-    explicit ZCameraAcquisitionManager(std::vector<Z3D::ZCameraInterface::Ptr> cameras, QObject *parent = 0);
+    explicit ZCameraAcquisitionManager(std::vector<Z3D::ZCameraInterface::Ptr> cameras, QObject *parent = nullptr);
 
 signals:
     void acquisitionReady(QString acquisitionId);

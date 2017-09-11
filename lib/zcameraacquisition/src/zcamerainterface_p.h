@@ -35,7 +35,7 @@ class Z3D_CAMERAACQUISITION_SHARED_EXPORT ZCameraBase : public ZCameraInterface
     Q_OBJECT
 
 public:
-    explicit ZCameraBase(QObject *parent = 0);
+    explicit ZCameraBase(QObject *parent = nullptr);
 
     virtual QString uuid() override { return m_uuid; }
 

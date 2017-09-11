@@ -35,7 +35,7 @@ class ZMultiCalibrationImage : public QObject
 public:
     typedef QSharedPointer<ZMultiCalibrationImage> Ptr;
 
-    //explicit ZMultiCalibrationImage(QObject *parent = 0);
+    //explicit ZMultiCalibrationImage(QObject *parent = nullptr);
     ZMultiCalibrationImage(QList<Z3D::ZCalibrationImage::Ptr> images);
     ~ZMultiCalibrationImage();
 

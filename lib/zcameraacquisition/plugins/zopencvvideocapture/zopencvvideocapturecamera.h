@@ -32,7 +32,7 @@ class OpenCVVideoCaptureCamera : public ZCameraBase
     Q_OBJECT
 
 public:
-    explicit OpenCVVideoCaptureCamera(int deviceId, QObject *parent = 0);
+    explicit OpenCVVideoCaptureCamera(int deviceId, QObject *parent = nullptr);
     ~OpenCVVideoCaptureCamera();
 
 signals:

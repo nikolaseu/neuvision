@@ -44,7 +44,7 @@ signals:
 public slots:
 
 private:
-    explicit ZPluginLoader(QObject *parent = 0);
+    explicit ZPluginLoader(QObject *parent = nullptr);
 
     static ZPluginLoader *m_instance;
 

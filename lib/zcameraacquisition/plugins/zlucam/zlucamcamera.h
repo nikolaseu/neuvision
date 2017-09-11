@@ -38,7 +38,7 @@ public:
     static QList<ZCameraInterface::Ptr> getConnectedCameras();
     static ZCameraInterface::Ptr getCameraByName(QString name);
 
-    explicit LuCamCamera(HANDLE cameraHandle, QObject *parent = 0);
+    explicit LuCamCamera(HANDLE cameraHandle, QObject *parent = nullptr);
     ~LuCamCamera();
 
 public slots:

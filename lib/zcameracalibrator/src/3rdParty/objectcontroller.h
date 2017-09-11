@@ -48,7 +48,7 @@ class ObjectController : public QWidget
 {
     Q_OBJECT
 public:
-    ObjectController(QWidget *parent = 0);
+    ObjectController(QWidget *parent = nullptr);
     ~ObjectController();
 
     void setObject(QObject *object);

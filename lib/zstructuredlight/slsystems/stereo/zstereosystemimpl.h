@@ -42,7 +42,7 @@ class ZStereoSystemImpl : public QObject
 public:
     friend struct ParallelFringeProcessingImpl;
 
-    explicit ZStereoSystemImpl(QObject *parent = 0);
+    explicit ZStereoSystemImpl(QObject *parent = nullptr);
     ~ZStereoSystemImpl();
 
     bool ready() const;

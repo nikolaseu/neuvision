@@ -36,7 +36,7 @@ class ZOpenCVStereoMultiCameraCalibratorConfigWidget : public QWidget
     Q_OBJECT
 
 public:
-    explicit ZOpenCVStereoMultiCameraCalibratorConfigWidget(ZOpenCVStereoMultiCameraCalibrator *calibrator, QWidget *parent = 0);
+    explicit ZOpenCVStereoMultiCameraCalibratorConfigWidget(ZOpenCVStereoMultiCameraCalibrator *calibrator, QWidget *parent = nullptr);
     ~ZOpenCVStereoMultiCameraCalibratorConfigWidget();
 
 private:

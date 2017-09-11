@@ -60,7 +60,7 @@ QList<ZCameraInfo *> ZOpenCVVideoCapturePlugin::getConnectedCameras()
         cv::VideoCapture *capture = new cv::VideoCapture(cameraDeviceID);
         if (capture->isOpened()) {
             delete capture;
-            capture = 0;
+            capture = nullptr;
 
             QVariantMap extraData;
             extraData["DeviceID"] = cameraDeviceID;
@@ -68,7 +68,7 @@ QList<ZCameraInfo *> ZOpenCVVideoCapturePlugin::getConnectedCameras()
             camerasList << new ZCameraInfo(this, QString("Camera %1").arg(cameraDeviceID), extraData);
         } else {
             delete capture;
-            capture = 0;
+            capture = nullptr;
 
             /// if capture device didn't open, assume there is no more
             break;
@@ -84,16 +84,16 @@ ZCameraInterface::Ptr ZOpenCVVideoCapturePlugin::getCamera(QVariantMap options)
 {
     int cameraDeviceID = options.value("DeviceID").toInt();
 
-    OpenCVVideoCaptureCamera *camera = 0;
+    OpenCVVideoCaptureCamera *camera = nullptr;
 
     cv::VideoCapture *capture = new cv::VideoCapture(cameraDeviceID);
     if (capture->isOpened()) {
         delete capture;
-        capture = 0;
+        capture = nullptr;
         camera = new OpenCVVideoCaptureCamera(cameraDeviceID);
     } else {
         delete capture;
-        capture = 0;
+        capture = nullptr;
     }
 
     if (camera) {
@@ -102,11 +102,7 @@ ZCameraInterface::Ptr ZOpenCVVideoCapturePlugin::getCamera(QVariantMap options)
 
     qDebug() << "opencv camera not found:" << options;
 
-    return ZCameraInterface::Ptr(0);
+    return ZCameraInterface::Ptr(nullptr);
 }
 
 } // namespace Z3D
-
-#if QT_VERSION < 0x050000
-Q_EXPORT_PLUGIN2(zopencvvideocapture, Z3D::ZOpenCVVideoCapturePlugin)
-#endif

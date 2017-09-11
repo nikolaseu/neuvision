@@ -39,7 +39,7 @@ class Z3D_CAMERAACQUISITION_SHARED_EXPORT ZCameraSettingsWidget : public QWidget
     Q_OBJECT
 
 public:
-    explicit ZCameraSettingsWidget(ZCameraInterface::WeakPtr camera, QWidget *parent = 0);
+    explicit ZCameraSettingsWidget(ZCameraInterface::WeakPtr camera, QWidget *parent = nullptr);
     ~ZCameraSettingsWidget();
 
 protected slots:

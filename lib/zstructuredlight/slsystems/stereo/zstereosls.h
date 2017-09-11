@@ -34,7 +34,7 @@ class ZStereoSLS : public ZStructuredLightSystem
     Q_PROPERTY(double maxValidDistance READ maxValidDistance WRITE setMaxValidDistance NOTIFY maxValidDistanceChanged)
 
 public:
-    explicit ZStereoSLS(QObject *parent = 0);
+    explicit ZStereoSLS(QObject *parent = nullptr);
     ~ZStereoSLS();
 
     double maxValidDistance() const;

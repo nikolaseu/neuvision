@@ -4,9 +4,7 @@ VERSION       = $$Z3D_VERSION
 TEMPLATE      = lib
 # CONFIG       += plugin
 #QT           -= gui // mientras use QPixmap necesito gui
-greaterThan(QT_MAJOR_VERSION, 4) {
-    QT       += widgets concurrent
-}
+QT           += widgets concurrent
 TARGET        = $$qtLibraryTarget(zcameracalibrator)
 DESTDIR       = $$Z3D_BUILD_DIR
 DEFINES      += Z3D_CAMERACALIBRATOR_LIBRARY

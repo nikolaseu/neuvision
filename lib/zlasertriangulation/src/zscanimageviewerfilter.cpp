@@ -63,7 +63,7 @@ ZImageGrayscale::Ptr LineSubtractionScanImageFilter::processImage(ZImageGrayscal
         cv::medianBlur(m_img, m_img, 3);
     } else {
         qWarning() << "only CV_16UC1 images implemented for the moment...";
-        return ZImageGrayscale::Ptr(0);
+        return ZImageGrayscale::Ptr(nullptr);
     }
 
     std::vector<cv::Point2i> rowVector;
@@ -82,7 +82,7 @@ ZImageGrayscale::Ptr LineSubtractionScanImageFilter::processImage(ZImageGrayscal
             }
         } else {
             qWarning() << "only CV_16UC1 images implemented for the moment...";
-            return ZImageGrayscale::Ptr(0);
+            return ZImageGrayscale::Ptr(nullptr);
         }
 
         /** OpenCV fitLine
@@ -132,7 +132,7 @@ ZImageGrayscale::Ptr LineSubtractionScanImageFilter::processImage(ZImageGrayscal
                 }
             } else {
                 qWarning() << "only CV_16UC1 images implemented for the moment...";
-                return ZImageGrayscale::Ptr(0);
+                return ZImageGrayscale::Ptr(nullptr);
             }
         }
     }
@@ -180,7 +180,7 @@ ZImageGrayscale::Ptr LineSubtractionRansacScanImageViewerFilter::processImage(ZI
         //cv::medianBlur(m_img, m_img, 3);
     } else {
         qWarning() << "only CV_16UC1 images implemented for the moment...";
-        return ZImageGrayscale::Ptr(0);
+        return ZImageGrayscale::Ptr(nullptr);
     }
 
     imgRowVector.reserve(m_img.cols);
@@ -198,7 +198,7 @@ ZImageGrayscale::Ptr LineSubtractionRansacScanImageViewerFilter::processImage(ZI
             }
         } else {
             qWarning() << "only CV_16UC1 images implemented for the moment...";
-            return ZImageGrayscale::Ptr(0);
+            return ZImageGrayscale::Ptr(nullptr);
         }
 
         if (imgRowVector.size() > 3) {
@@ -247,7 +247,7 @@ ZImageGrayscale::Ptr LineSubtractionRansacScanImageViewerFilter::processImage(ZI
                 }
             } else {
                 qWarning() << "only CV_16UC1 images implemented for the moment...";
-                return ZImageGrayscale::Ptr(0);
+                return ZImageGrayscale::Ptr(nullptr);
             }
 
             /// subtract line
@@ -295,7 +295,7 @@ ZImageGrayscale::Ptr UnsharpMaskingScanImageViewerFilter::processImage(ZImageGra
         cv::medianBlur(m_img, m_img, 3);
     } else {
         qWarning() << "only CV_16UC1 images implemented for the moment...";
-        return ZImageGrayscale::Ptr(0);
+        return ZImageGrayscale::Ptr(nullptr);
     }
 
     if (m_img.channels() == 1) {
@@ -336,7 +336,7 @@ ZImageGrayscale::Ptr UnsharpMaskingScanImageViewerFilter::processImage(ZImageGra
         m_img = m_img + (32768 - medianImg); /// center in unsigned 16bits = 32768
     } else {
         qCritical() << "unsupported image";
-        return ZImageGrayscale::Ptr(0);
+        return ZImageGrayscale::Ptr(nullptr);
     }
 
     emit imageProcessed(image);

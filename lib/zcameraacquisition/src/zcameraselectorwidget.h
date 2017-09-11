@@ -41,7 +41,7 @@ class Z3D_CAMERAACQUISITION_SHARED_EXPORT ZCameraSelectorWidget : public QWidget
     Q_OBJECT
 
 public:
-    explicit ZCameraSelectorWidget(QWidget *parent = 0);
+    explicit ZCameraSelectorWidget(QWidget *parent = nullptr);
     ~ZCameraSelectorWidget();
 
 signals:

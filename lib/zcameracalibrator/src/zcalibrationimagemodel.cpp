@@ -22,33 +22,10 @@
 
 #include <QDebug>
 #include <QDir>
-#if QT_VERSION < 0x050000
-#include <QtConcurrentMap>
-//#include <QtConcurrentRun>
-#else
 #include <QtConcurrent>
-#endif
-//#include <QUrl>
 
 namespace Z3D
 {
-
-struct ParallelImageCheckImpl
-{
-    ParallelImageCheckImpl(ZCalibrationImageModel *imageModel)
-        : m_imageModel(imageModel) { }
-
-    void operator()(const Z3D::ZCalibrationImage::Ptr &image)
-    {
-        if (image->isValid()) {
-            m_imageModel->addImageThreadSafe(image);
-        }
-    }
-
-    ZCalibrationImageModel *m_imageModel;
-};
-
-
 
 ZCalibrationImageModel::ZCalibrationImageModel(QObject *parent) :
     QAbstractListModel(parent),
@@ -171,14 +148,11 @@ void ZCalibrationImageModel::addImageThreadSafe(Z3D::ZCalibrationImage::Ptr imag
 void ZCalibrationImageModel::addImages(const QVector<Z3D::ZCalibrationImage::Ptr > &images)
 {
     /// parallelize the checking of image validity before adding to model
-    m_futureWatcher.setFuture( QtConcurrent::map(images, ParallelImageCheckImpl(this)) );
-
-    /* VERSION no paralela
-    foreach (Z3D::ZCalibrationImage::Ptr image, images) {
+    m_futureWatcher.setFuture(QtConcurrent::map(images, [=](const auto &image) {
         if (image->isValid()) {
-            add(image);
+            addImageThreadSafe(image);
         }
-    }*/
+    }));
 }
 
 void ZCalibrationImageModel::addImpl(Z3D::ZCalibrationImage::Ptr image)
@@ -218,7 +192,7 @@ Z3D::ZCalibrationImage::Ptr ZCalibrationImageModel::imageAt(int index) const
         return m_images[index];
     } else {
         qCritical() << "invalid image index requested:" << index << " - model size:" << m_images.size();
-        return Z3D::ZCalibrationImage::Ptr(0);
+        return Z3D::ZCalibrationImage::Ptr(nullptr);
     }
 }
 

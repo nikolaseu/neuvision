@@ -31,7 +31,7 @@ class Z3D_CORE_SHARED_EXPORT ZCorePlugin : public QObject
     Q_OBJECT
 
 public:
-    explicit ZCorePlugin(QObject *parent = 0);
+    explicit ZCorePlugin(QObject *parent = nullptr);
     virtual ~ZCorePlugin() {}
 
     /// plugin information

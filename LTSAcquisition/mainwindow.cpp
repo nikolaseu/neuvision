@@ -46,8 +46,8 @@
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow),
-    m_3dview(0),
-    m_selectedCamera3D(0)
+    m_3dview(nullptr),
+    m_selectedCamera3D(nullptr)
 {
     ui->setupUi(this);
 
@@ -98,7 +98,7 @@ void MainWindow::on_connectButton_clicked()
         /// disconnection request
         /// delete camera (shared pointers handles this)
         if (m_selectedCamera3D)
-            m_selectedCamera3D = ZLTSThreadedCamera::Ptr(0);
+            m_selectedCamera3D = ZLTSThreadedCamera::Ptr(nullptr);
 
         m_camera3DList.clear();
 
@@ -273,7 +273,7 @@ void MainWindow::on_addCameraButton_clicked()
     if (!camera)
         return;
 
-    Z3D::ZCalibratedCamera::Ptr calibratedCamera(new Z3D::ZCalibratedCamera(camera, Z3D::ZCameraCalibration::Ptr(0)));
+    Z3D::ZCalibratedCamera::Ptr calibratedCamera(new Z3D::ZCalibratedCamera(camera, Z3D::ZCameraCalibration::Ptr(nullptr)));
     Z3D::LTSCamera3D::Ptr camera3D(new Z3D::LTSCamera3D(calibratedCamera));
 
     ZLTSThreadedCamera::Ptr threadedCamera(new ZLTSThreadedCamera(camera3D));

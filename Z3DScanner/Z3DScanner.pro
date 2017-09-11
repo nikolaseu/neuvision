@@ -4,9 +4,7 @@ TEMPLATE = app
 
 TARGET = Z3DScanner
 
-QT += core gui opengl multimedia
-
-greaterThan(QT_MAJOR_VERSION, 4): QT += widgets quick qml concurrent
+QT += core gui opengl multimedia widgets quick qml concurrent
 
 #CONFIG += console
 

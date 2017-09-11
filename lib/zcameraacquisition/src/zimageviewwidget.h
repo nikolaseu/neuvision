@@ -36,7 +36,7 @@ class Z3D_CAMERAACQUISITION_SHARED_EXPORT ZImageViewWidget : public QScrollArea
 {
     Q_OBJECT
 public:
-    explicit ZImageViewWidget(QWidget *parent = 0);
+    explicit ZImageViewWidget(QWidget *parent = nullptr);
     ~ZImageViewWidget();
     
 signals:

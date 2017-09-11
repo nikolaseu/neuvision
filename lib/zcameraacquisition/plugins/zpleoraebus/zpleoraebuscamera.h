@@ -34,7 +34,7 @@ class ZPleoraeBUSCamera : public ZCameraBase
 public:
     static ZCameraInterface::Ptr getCameraByMAC(QString name);
 
-    explicit ZPleoraeBUSCamera(QObject *parent = 0);
+    explicit ZPleoraeBUSCamera(QObject *parent = nullptr);
     virtual ~ZPleoraeBUSCamera();
 
 public slots:

@@ -33,7 +33,7 @@ class ZSimulatedCamera : public ZCameraBase
     Q_OBJECT
 
 public:
-    explicit ZSimulatedCamera(QVariantMap options, QObject *parent = 0);
+    explicit ZSimulatedCamera(QVariantMap options, QObject *parent = nullptr);
     ~ZSimulatedCamera();
 
 signals:

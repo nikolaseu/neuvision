@@ -35,7 +35,7 @@ class ZBinaryPatternProjectionConfigWidget : public QWidget
     Q_OBJECT
 
 public:
-    explicit ZBinaryPatternProjectionConfigWidget(ZBinaryPatternProjection *binaryPatternProjection, QWidget *parent = 0);
+    explicit ZBinaryPatternProjectionConfigWidget(ZBinaryPatternProjection *binaryPatternProjection, QWidget *parent = nullptr);
     ~ZBinaryPatternProjectionConfigWidget();
 
 private slots:

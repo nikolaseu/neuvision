@@ -1,10 +1,8 @@
 include(../../../NEUVision.pri)
 
 TEMPLATE      = lib
-greaterThan(QT_MAJOR_VERSION, 4) {
-    QT -= gui
-    QT += widgets
-}
+QT           -= gui # I guess widget depends on gui, so why?
+QT           += widgets
 TARGET        = $$qtLibraryTarget(zcore)
 DESTDIR       = $$Z3D_BUILD_DIR
 VERSION       = $$Z3D_VERSION

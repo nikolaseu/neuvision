@@ -147,7 +147,7 @@ ZCameraInterface::Ptr ZFlyCapture2Camera::getCameraByName(QString name)
     if (cameraList.size())
         return cameraList.first();
 
-    return ZCameraInterface::Ptr(0);
+    return ZCameraInterface::Ptr(nullptr);
 }
 
 ZFlyCapture2Camera::~ZFlyCapture2Camera()

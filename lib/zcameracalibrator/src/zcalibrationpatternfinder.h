@@ -43,7 +43,7 @@ public:
     typedef QSharedPointer<ZCalibrationPatternFinder> Ptr;
     typedef QPointer<ZCalibrationPatternFinder> WeakPtr;
 
-    explicit ZCalibrationPatternFinder(QObject *parent = 0);
+    explicit ZCalibrationPatternFinder(QObject *parent = nullptr);
 
     virtual QString name() const = 0;
 

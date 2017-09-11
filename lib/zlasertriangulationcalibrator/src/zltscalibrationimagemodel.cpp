@@ -198,7 +198,7 @@ Z3D::ZLTSCalibrationImage::Ptr ZLTSCalibrationImageModel::imageAt(int index)
         return m_images[index];
     } else {
         qCritical() << "invalid image index requested:" << index << " - model size:" << m_images.size();
-        return Z3D::ZLTSCalibrationImage::Ptr(0);
+        return Z3D::ZLTSCalibrationImage::Ptr(nullptr);
     }
 }
 

@@ -58,11 +58,11 @@ void MainWindow::onContinueButtonClicked()
 {
     if (ui->calibrateFromFilesRadioButton->isChecked()) {
         /// open the camera calibration window directly, without a camera
-        m_selectedCamera = Z3D::ZCameraInterface::Ptr(0);
+        m_selectedCamera = Z3D::ZCameraInterface::Ptr(nullptr);
         onFinishButtonClicked();
     } else if (ui->calibrateOnlineRadioButton->isChecked()) {
         /// open the camera calibration window without a camera
-        static Z3D::ZCameraSelectorWidget *cameraSelectorWidget = 0;
+        static Z3D::ZCameraSelectorWidget *cameraSelectorWidget = nullptr;
         if (!cameraSelectorWidget) {
             cameraSelectorWidget = new Z3D::ZCameraSelectorWidget(ui->pageCameraSelection);
             QObject::connect(cameraSelectorWidget, SIGNAL(cameraSelected(Z3D::ZCameraInterface::Ptr)),
@@ -79,7 +79,7 @@ void MainWindow::onContinueButtonClicked()
 void MainWindow::onFinishButtonClicked()
 {
     if (m_selectedCamera) {
-        Z3D::ZCalibratedCamera::Ptr calibratedCamera(new Z3D::ZCalibratedCamera(m_selectedCamera, Z3D::ZCameraCalibration::Ptr(0)));
+        Z3D::ZCalibratedCamera::Ptr calibratedCamera(new Z3D::ZCalibratedCamera(m_selectedCamera, Z3D::ZCameraCalibration::Ptr(nullptr)));
         Z3D::ZCameraCalibratorWidget *calibratorWindow = new Z3D::ZCameraCalibratorWidget(calibratedCamera);
         calibratorWindow->show();
     } else {

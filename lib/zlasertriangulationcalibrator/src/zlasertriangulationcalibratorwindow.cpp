@@ -36,7 +36,7 @@ ZLaserTriangulationCalibratorWindow::ZLaserTriangulationCalibratorWindow(ZCalibr
     ui(new Ui::ZLaserTriangulationCalibratorWindow),
     m_camera(camera3D),
     m_model(new ZLTSCalibrationImageModel(this)),
-    m_currentPatternFinder(0),
+    m_currentPatternFinder(nullptr),
     m_ltsCalibrator(new ZLaserTriangulationCalibrator())
 {
     ui->setupUi(this);

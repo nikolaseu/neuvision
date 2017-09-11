@@ -97,7 +97,7 @@ AVTVimbaCamera::AVTVimbaCamera(AVT::VmbAPI::CameraPtr cameraPtr, QObject *parent
     ZCameraBase(parent),
     m_cameraHandle(cameraPtr),
     m_vimbaBufferSize(bufferSize()), /// use same buffer size that ZCameraBase
-    m_frameObserverInternal(0),
+    m_frameObserverInternal(nullptr),
     m_opened(false)
 {
     std::string strInfo;

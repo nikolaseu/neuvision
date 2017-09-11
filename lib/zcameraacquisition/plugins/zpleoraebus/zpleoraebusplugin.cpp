@@ -161,7 +161,3 @@ PvSystem *ZPleoraeBUSPlugin::getPvSystem()
 }
 
 } // namespace Z3D
-
-#if QT_VERSION < 0x050000
-Q_EXPORT_PLUGIN2(zpleoraebus, Z3D::ZPleoraeBUSPlugin)
-#endif // QT_VERSION < 0x050000

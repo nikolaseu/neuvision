@@ -48,7 +48,7 @@ class ZPinholeCameraCalibrator : public ZCameraCalibrator
     Q_PROPERTY(double termCriteriaEpsilon    READ termCriteriaEpsilon       WRITE setTermCriteriaEpsilon       NOTIFY termCriteriaEpsilonChanged)
 
 public:
-    explicit ZPinholeCameraCalibrator(QObject *parent = 0);
+    explicit ZPinholeCameraCalibrator(QObject *parent = nullptr);
 
     ~ZPinholeCameraCalibrator();
 

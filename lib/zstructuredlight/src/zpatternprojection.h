@@ -34,7 +34,7 @@ class Z3D_STRUCTUREDLIGHT_SHARED_EXPORT ZPatternProjection : public QObject
     Q_OBJECT
 
 public:
-    explicit ZPatternProjection(QObject *parent = 0);
+    explicit ZPatternProjection(QObject *parent = nullptr);
 
     virtual QString id() const = 0;
     virtual QString displayName() const = 0;

@@ -239,8 +239,8 @@ ZPleoraeBUSCameraPrivate *ZPleoraeBUSCameraPrivate::getCameraByMAC(QString name)
 ZPleoraeBUSCameraPrivate::ZPleoraeBUSCameraPrivate(const PvDeviceInfo *deviceInfo, QObject *parent) :
     QObject(parent),
     lDeviceInfo(deviceInfo),
-    lDevice(0),
-    lStream(0),
+    lDevice(nullptr),
+    lStream(nullptr),
     m_internalBufferSize(20),
     m_acquisitionCounter(0),
     m_stopThreadRequested(true)

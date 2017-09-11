@@ -36,7 +36,7 @@ class ZChessboardCalibrationPatternFinderConfigWidget : public QWidget
     Q_OBJECT
 
 public:
-    explicit ZChessboardCalibrationPatternFinderConfigWidget(ZChessboardCalibrationPatternFinder *patternFinder, QWidget *parent = 0);
+    explicit ZChessboardCalibrationPatternFinderConfigWidget(ZChessboardCalibrationPatternFinder *patternFinder, QWidget *parent = nullptr);
     ~ZChessboardCalibrationPatternFinderConfigWidget();
 
 private slots:

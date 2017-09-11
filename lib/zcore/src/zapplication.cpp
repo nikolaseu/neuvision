@@ -36,11 +36,7 @@ ZApplication::ZApplication(int &argc, char **argv)
 {
     /// set message handler for debug
 #if !defined(Q_OS_ANDROID)
-#if QT_VERSION < 0x050000
-    qInstallMsgHandler(&ZLogHandler);
-#else
     qInstallMessageHandler(&ZLogHandler);
-#endif
 #endif
 
 #ifdef Z3D_THREAD_COUNT_LIMIT

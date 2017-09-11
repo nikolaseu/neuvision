@@ -68,7 +68,3 @@ QWidget *ZRingGridPatternFinderPlugin::getConfigWidget(ZCalibrationPatternFinder
 }
 
 } // namespace Z3D
-
-#if QT_VERSION < 0x050000
-Q_EXPORT_PLUGIN2(zringgridcalibrationpatternfinderplugin, Z3D::ZRingGridPatternFinderPlugin)
-#endif
