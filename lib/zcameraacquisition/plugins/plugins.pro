@@ -4,6 +4,10 @@ SUBDIRS += zsimulatedcamera
 SUBDIRS += zopencvvideocapture
 SUBDIRS += zqtcamera
 
+unix: {
+    SUBDIRS += zlibgphoto2
+}
+
 win32: {
     ## Windows build here
 
