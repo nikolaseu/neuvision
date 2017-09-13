@@ -109,21 +109,23 @@ int sample_open_camera(Camera ** camera, const char *model, const char *port, GP
     return GP_OK;
 }
 
-static void ctx_error_func (GPContext *context, const char *str, void *data)
+static void ctx_error_func (GPContext * /*context*/, const char *str, void * /*data*/)
 {
-    fprintf  (stderr, "\n*** Contexterror ***              \n%s\n",str);
-    fflush   (stderr);
+    qWarning() << str;
 }
 
-static void ctx_status_func (GPContext *context, const char *str, void *data)
+static void ctx_status_func (GPContext * /*context*/, const char *str, void * /*data*/)
 {
-    fprintf  (stderr, "%s\n", str);
-    fflush   (stderr);
+    qDebug() << str;
 }
 
-GPContext* sample_create_context() {
-    GPContext *context;
 
+
+
+
+
+ZLibGPhoto2Plugin::ZLibGPhoto2Plugin()
+{
     /* This is the mandatory part */
     context = gp_context_new();
 
@@ -139,16 +141,6 @@ GPContext* sample_create_context() {
             ctx_progress_start_func, ctx_progress_update_func,
             ctx_progress_stop_func, p);
     */
-    return context;
-}
-
-
-
-
-
-ZLibGPhoto2Plugin::ZLibGPhoto2Plugin()
-{
-
 }
 
 ZLibGPhoto2Plugin::~ZLibGPhoto2Plugin()
@@ -174,8 +166,6 @@ QString ZLibGPhoto2Plugin::version() const
 QList<ZCameraInfo *> ZLibGPhoto2Plugin::getConnectedCameras()
 {
     QList<ZCameraInfo*> camerasList;
-
-    GPContext *context = sample_create_context(); /* see context.c */
 
     /* Detect all the cameras that can be autodetected... */
     CameraList *list;
@@ -221,6 +211,10 @@ QList<ZCameraInfo *> ZLibGPhoto2Plugin::getConnectedCameras()
         extraData["port"] = QString(value);
 
         camerasList << new ZCameraInfo(this, QString(name), extraData);
+
+        /// release camera
+        gp_camera_exit(cam, context);
+        gp_camera_free(cam);
     }
 
     return camerasList;
@@ -231,20 +225,14 @@ ZCameraInterface::Ptr ZLibGPhoto2Plugin::getCamera(QVariantMap options)
     QString model = options.value("model").toString();
     QString port = options.value("port").toString();
 
-    ZLibGPhoto2Camera *camera = nullptr;
-
-    GPContext *context = sample_create_context(); /* see context.c */
     Camera *cam;
     int ret = sample_open_camera(&cam, qPrintable(model), qPrintable(port), context);
     if (ret < GP_OK) {
         qWarning() << "Camera:" << model << "on port:" << port << "failed to open";
+        return nullptr;
     }
 
-    if (!camera) {
-        qDebug() << "libgphoto2 camera could not be found or opened:" << options;
-    }
-
-    return ZCameraInterface::Ptr(camera);
+    return ZCameraInterface::Ptr(new ZLibGPhoto2Camera(context, cam));
 }
 
 } // namespace Z3D

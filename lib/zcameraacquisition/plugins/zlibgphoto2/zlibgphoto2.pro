@@ -2,7 +2,7 @@ include(../../../../NEUVision.pri)
 
 TEMPLATE      = lib
 CONFIG       += plugin
-QT           -= gui
+#QT           -= gui // I nees gui because I use QImage to convert jpg images
 TARGET        = $$qtLibraryTarget(zlibgphoto2plugin)
 DESTDIR       = $$Z3D_BUILD_DIR/plugins/cameraacquisition
 VERSION       = $$Z3D_VERSION

@@ -21,6 +21,8 @@
 
 #include "zcamerainterface_p.h"
 
+#include <gphoto2/gphoto2-camera.h>
+
 namespace Z3D
 {
 
@@ -29,7 +31,7 @@ class ZLibGPhoto2Camera : public ZCameraBase
     Q_OBJECT
 
 public:
-    explicit ZLibGPhoto2Camera(QObject *parent = 0);
+    explicit ZLibGPhoto2Camera(GPContext *context, Camera *camera, QObject *parent = 0);
     ~ZLibGPhoto2Camera();
 
 signals:
@@ -39,15 +41,24 @@ public slots:
     bool startAcquisition() override;
     bool stopAcquisition() override;
 
+    ZImageGrayscale::Ptr getSnapshot() override;
+
     /// camera attributes (settings)
     QList<ZCameraAttribute> getAllAttributes() override;
-    QVariant getAttribute(const QString &deviceID) const override;
+    QVariant getAttribute(const QString &id) const override;
 
 protected slots:
-    bool setAttribute(const QString &name, const QVariant &value, bool notify) override;
+    bool setAttribute(const QString &id, const QVariant &value, bool notify) override;
+
+    void grabLoop();
 
 private:
+    bool m_stopThreadRequested;
+    QMutex m_mutex;
 
+    /// gPhoto2
+    GPContext *context;
+    Camera *cam;
 };
 
 } // namespace Z3D

@@ -24,6 +24,8 @@
 #include "zcamerainterface.h"
 #include "zcameraplugininterface.h"
 
+#include <gphoto2/gphoto2-context.h>
+
 namespace Z3D
 {
 
@@ -45,6 +47,9 @@ public:
     /// camera utilities
     QList<ZCameraInfo *> getConnectedCameras() override;
     ZCameraInterface::Ptr getCamera(QVariantMap options) override;
+
+private:
+    GPContext *context;
 };
 
 } // namespace Z3D
