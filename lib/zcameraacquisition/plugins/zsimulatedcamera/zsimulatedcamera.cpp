@@ -81,7 +81,9 @@ QList<ZCameraInterface::ZCameraAttribute> ZSimulatedCamera::getAllAttributes()
     QList<ZCameraInterface::ZCameraAttribute> attributes;
 
     ZCameraInterface::ZCameraAttribute folderAttr;
-    folderAttr.name = "Folder";
+    folderAttr.id = "Folder";
+    folderAttr.path = "Folder";
+    folderAttr.label = "Folder";
     folderAttr.value = m_folder;
     folderAttr.type = ZCameraInterface::CameraAttributeTypeString;
     folderAttr.readable = true;
@@ -89,7 +91,9 @@ QList<ZCameraInterface::ZCameraAttribute> ZSimulatedCamera::getAllAttributes()
     attributes << folderAttr;
 
     ZCameraInterface::ZCameraAttribute fileAttr;
-    fileAttr.name = "CurrentFile";
+    fileAttr.id = "CurrentFile";
+    fileAttr.path = "CurrentFile";
+    fileAttr.label = "CurrentFile";
     fileAttr.value = m_currentFile;
     fileAttr.type = ZCameraInterface::CameraAttributeTypeString;
     fileAttr.readable = true;

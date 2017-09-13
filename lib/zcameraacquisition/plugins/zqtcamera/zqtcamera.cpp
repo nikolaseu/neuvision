@@ -98,7 +98,9 @@ QList<ZCameraInterface::ZCameraAttribute> ZQtCamera::getAllAttributes()
     attrRes.writable = attrRes.readable = true;
     attrRes.type = ZCameraInterface::CameraAttributeTypeEnum;
     attrRes.description = "Resolution";
-    attrRes.name = "Resolution";
+    attrRes.id = "Resolution";
+    attrRes.path = "Resolution";
+    attrRes.label = "Resolution";
     QList<QSize> supportedResolutions = m_qcameraImageCapture->supportedResolutions();
     int currentIndex = 0;
     foreach(const QSize &resolution, supportedResolutions) {
@@ -114,7 +116,9 @@ QList<ZCameraInterface::ZCameraAttribute> ZQtCamera::getAllAttributes()
     attrCodec.writable = attrCodec.readable = true;
     attrCodec.type = ZCameraInterface::CameraAttributeTypeEnum;
     attrCodec.description = "Image format";
-    attrCodec.name = "Codec";
+    attrCodec.id = "Codec";
+    attrCodec.path = "Codec";
+    attrCodec.label = "Codec";
     currentIndex = 0;
     foreach(const QString &codecName, m_qcameraImageCapture->supportedImageCodecs()) {
         attrCodec.enumNames << codecName;
@@ -129,7 +133,9 @@ QList<ZCameraInterface::ZCameraAttribute> ZQtCamera::getAllAttributes()
     attrQuality.writable = attrQuality.readable = true;
     attrQuality.type = ZCameraInterface::CameraAttributeTypeEnum;
     attrQuality.description = "Quality";
-    attrQuality.name = "Quality";
+    attrQuality.id = "Quality";
+    attrQuality.path = "Quality";
+    attrQuality.label = "Quality";
     attrQuality.enumNames << "VeryLowQuality"
                           << "LowQuality"
                           << "NormalQuality"

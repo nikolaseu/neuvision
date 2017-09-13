@@ -170,7 +170,9 @@ QList<ZCameraInterface::ZCameraAttribute> OpenCVVideoCaptureCamera::getAllAttrib
 #endif
     ZCameraInterface::ZCameraAttribute mode;
     mode.type = ZCameraInterface::CameraAttributeTypeEnum;
-    mode.name = ATTR_MODE;
+    mode.id = ATTR_MODE;
+    mode.path = ATTR_MODE;
+    mode.label = ATTR_MODE;
     for (int is = 0; is<m_frameSizes.size(); ++is) {
         const QSize &size = m_frameSizes[is];
         mode.enumNames << QString("%1x%2").arg(size.width()).arg(size.height());
@@ -201,7 +203,9 @@ QList<ZCameraInterface::ZCameraAttribute> OpenCVVideoCaptureCamera::getAllAttrib
             attr.minimumValue = -DBL_MAX;
             attr.maximumValue = DBL_MAX;
         }
-        attr.name = m_opencvAttributeNames[key];
+        attr.id = m_opencvAttributeNames[key];
+        attr.path = m_opencvAttributeNames[key];
+        attr.label = m_opencvAttributeNames[key];
         attr.value = m_capture->get(key);
         attr.readable = true;
         attr.writable = true;
