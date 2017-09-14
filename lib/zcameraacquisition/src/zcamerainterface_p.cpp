@@ -169,7 +169,9 @@ bool ZCameraBase::loadConfiguration(QString configFileName)
             settings.beginGroup(settingIndex);
 
             ZCameraAttribute currAttr;
-            currAttr.name = settings.value("name").toString();
+            currAttr.id = settings.value("name").toString();
+            currAttr.path = settings.value("name").toString();
+            currAttr.label = settings.value("name").toString();
             currAttr.value = settings.value("value");
             settingsGroup.append(currAttr);
 
@@ -203,7 +205,7 @@ bool ZCameraBase::loadPresetConfiguration(QString presetName)
         CAMERA_DEBUG("Loading preset " + presetName);
         const QList<ZCameraAttribute> &presetAttributesList = m_cameraPresets[presetName];
         foreach (ZCameraAttribute attr, presetAttributesList) {
-            if (!setAttribute(attr.name, attr.value, false)) {
+            if (!setAttribute(attr.id, attr.value, false)) {
                 error = true;
 //                qWarning() << "unable to set attribute" << attr.name << "to" << attr.value;
             }

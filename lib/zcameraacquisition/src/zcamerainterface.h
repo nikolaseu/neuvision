@@ -57,7 +57,9 @@ public:
 
     struct ZCameraAttribute {
         ZCameraAttribute() :
-            name("UNKNOWN"),
+            id(),
+            path(),
+            label("UNKNOWN"),
             value("UNKNOWN"),
             readable(false),
             writable(false),
@@ -69,7 +71,9 @@ public:
 
         }
 
-        QString name;
+        QString id;
+        QString path;
+        QString label;
         QString description;
         QVariant value;
         bool readable;

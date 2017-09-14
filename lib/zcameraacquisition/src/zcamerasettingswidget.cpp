@@ -90,16 +90,16 @@ ZCameraSettingsWidget::~ZCameraSettingsWidget()
 
 void ZCameraSettingsWidget::propertyChanged(QtProperty *property)
 {
-    if (!m_camera)
+    if (!m_camera) {
         return;
+    }
 
     auto found = false;
 
-    foreach (const QString &attrName, m_propertiesList.keys()) {
-        auto mapProperty = m_propertiesList[attrName];
+    for (const auto *mapProperty : m_propertiesList) {
         if (mapProperty == property) {
             found = true;
-
+            const auto &attrName = property->whatsThis(); // FIXME ugly hack
             const auto manager = property->propertyManager();
 
             if (manager == m_boolPropertyManager) {
@@ -131,8 +131,9 @@ void ZCameraSettingsWidget::propertyChanged(QtProperty *property)
 
 void ZCameraSettingsWidget::updateProperties()
 {
-    if (!m_camera)
+    if (!m_camera) {
         return;
+    }
 
     /// disconnect signals to avoid re-setting parameters when refreshed
     QObject::disconnect(m_boolPropertyManager,   SIGNAL(propertyChanged(QtProperty*)),
@@ -149,23 +150,21 @@ void ZCameraSettingsWidget::updateProperties()
                      this, SLOT(propertyChanged(QtProperty*)));
 
     /// disable all, later they will be enabled again (when available)
-    foreach (QtProperty *property, m_propertiesList) {
-        if (property->propertyManager() != m_groupManager)
+    for (auto *property : m_propertiesList) {
+        if (property->propertyManager() != m_groupManager) {
             property->setEnabled(false);
+        }
     }
 
-    auto attributes = m_camera->getAllAttributes();
-
-    foreach(Z3D::ZCameraInterface::ZCameraAttribute attribute, attributes) {
-
+    for (const auto &attribute : m_camera->getAllAttributes()) {
         QtProperty *m_currentProperty;
-        if (m_propertiesList.contains(attribute.name)) {
+        if (m_propertiesList.contains(attribute.path)) {
             /// already existed
-            m_currentProperty = m_propertiesList[attribute.name];
+            m_currentProperty = m_propertiesList[attribute.path];
         } else {
             /// new property
             QtProperty *parentCategory = nullptr;
-            auto categoriesList = attribute.name.split("::");
+            auto categoriesList = attribute.path.split("::");
             QString attrName;
             if (categoriesList.size() > 1) {
                 /// its a sub property, got to find/create the category
@@ -196,9 +195,9 @@ void ZCameraSettingsWidget::updateProperties()
                     parentCategory = m_currentProperty;
                 }
 
-                attrName = categoriesList[propertyIndex];
+                attrName = !attribute.label.isNull() ? attribute.label : categoriesList[propertyIndex];
             } else {
-                attrName = attribute.name;
+                attrName = !attribute.label.isNull() ? attribute.label : attribute.id;
             }
 
             /// create property
@@ -237,19 +236,21 @@ void ZCameraSettingsWidget::updateProperties()
             }
 
             if (!m_currentProperty) {
-                qWarning() << "Unable to add property" << attribute.name;
+                qWarning() << "Unable to add property" << attribute.id;
                 continue;
             }
 
             m_currentProperty->setToolTip(attribute.description);
 
-            m_propertiesList[attribute.name] = m_currentProperty;
+            m_propertiesList[attribute.path] = m_currentProperty;
 
             if (parentCategory)
                 parentCategory->addSubProperty( m_currentProperty );
             else
                 m_propertyBrowser->addProperty( m_currentProperty );
         }
+
+        m_currentProperty->setWhatsThis(attribute.id); // FIXME ugly hack
 
         /// set value
         switch (attribute.type) {
