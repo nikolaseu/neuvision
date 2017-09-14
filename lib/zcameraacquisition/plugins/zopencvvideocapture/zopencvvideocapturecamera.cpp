@@ -203,9 +203,10 @@ QList<ZCameraInterface::ZCameraAttribute> OpenCVVideoCaptureCamera::getAllAttrib
             attr.minimumValue = -DBL_MAX;
             attr.maximumValue = DBL_MAX;
         }
-        attr.id = m_opencvAttributeNames[key];
-        attr.path = m_opencvAttributeNames[key];
-        attr.label = m_opencvAttributeNames[key];
+        const auto &name = m_opencvAttributeNames[key];
+        attr.id = name;
+        attr.path = name;
+        attr.label = name.mid(name.lastIndexOf("::") + 2);
         attr.value = m_capture->get(key);
         attr.readable = true;
         attr.writable = true;
