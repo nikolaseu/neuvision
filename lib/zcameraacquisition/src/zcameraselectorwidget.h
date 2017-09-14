@@ -22,7 +22,7 @@
 #include "zcameraacquisition_global.h"
 #include "zcamerainterface.h"
 
-#include <QWidget>
+#include "zwidget.h"
 
 namespace Z3D
 {
@@ -36,7 +36,7 @@ class ZCameraInfo;
 class ZCameraPluginInterface;
 
 
-class Z3D_CAMERAACQUISITION_SHARED_EXPORT ZCameraSelectorWidget : public QWidget
+class Z3D_CAMERAACQUISITION_SHARED_EXPORT ZCameraSelectorWidget : public ZWidget
 {
     Q_OBJECT
 

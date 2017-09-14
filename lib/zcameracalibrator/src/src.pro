@@ -53,6 +53,10 @@ include($$PWD/../../../3rdparty/opencv.pri)
 include($$PWD/../../zcore/zcore.pri)
 
 ###############################################################################
+# Gui
+include($$PWD/../../zgui/zgui.pri)
+
+###############################################################################
 # Camera acquisition
 include($$PWD/../../zcameraacquisition/zcameraacquisition.pri)
 

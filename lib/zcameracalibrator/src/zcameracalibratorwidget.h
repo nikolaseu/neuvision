@@ -25,7 +25,7 @@
 
 #include <Z3DCalibratedCamera>
 
-#include <QWidget>
+#include "zwidget.h"
 #include <QModelIndex>
 
 class QProgressBar;
@@ -45,7 +45,7 @@ class ZCalibrationImageModel;
 class ZCameraCalibratorWorker;
 class ZCameraCalibrator;
 
-class Z3D_CAMERACALIBRATOR_SHARED_EXPORT ZCameraCalibratorWidget : public QWidget
+class Z3D_CAMERACALIBRATOR_SHARED_EXPORT ZCameraCalibratorWidget : public ZWidget
 {
     Q_OBJECT
 

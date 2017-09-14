@@ -25,7 +25,7 @@
 #include <QtProperty>
 #include <QtStringPropertyManager>
 
-#include <QWidget>
+#include "zwidget.h"
 
 namespace Z3D
 {
@@ -34,7 +34,7 @@ namespace Ui {
 class ZCameraSettingsWidget;
 }
 
-class Z3D_CAMERAACQUISITION_SHARED_EXPORT ZCameraSettingsWidget : public QWidget
+class Z3D_CAMERAACQUISITION_SHARED_EXPORT ZCameraSettingsWidget : public ZWidget
 {
     Q_OBJECT
 

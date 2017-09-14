@@ -32,7 +32,7 @@ namespace Z3D
 {
 
 ZCameraSettingsWidget::ZCameraSettingsWidget(ZCameraInterface::WeakPtr camera, QWidget *parent)
-    : QWidget(parent)
+    : ZWidget(parent)
     , ui(new Ui::ZCameraSettingsWidget)
     , m_camera(camera)
 {

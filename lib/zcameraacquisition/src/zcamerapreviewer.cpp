@@ -28,9 +28,9 @@
 namespace Z3D
 {
 
-ZCameraPreviewer::ZCameraPreviewer(QWidget *parent) :
-    QWidget(parent),
-    ui(new Ui::ZCameraPreviewer)
+ZCameraPreviewer::ZCameraPreviewer(QWidget *parent)
+    : ZWidget(parent)
+    , ui(new Ui::ZCameraPreviewer)
 {
     qDebug() << Q_FUNC_INFO;
 

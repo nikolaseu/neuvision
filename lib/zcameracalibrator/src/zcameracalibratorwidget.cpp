@@ -46,7 +46,7 @@ namespace Z3D
 {
 
 ZCameraCalibratorWidget::ZCameraCalibratorWidget(ZCalibratedCamera::Ptr camera, QWidget *parent)
-    : QWidget(parent)
+    : ZWidget(parent)
     , ui(new Ui::ZCameraCalibratorWidget)
     , m_distortionPlot(nullptr)
     , m_model(new ZCalibrationImageModel(this))

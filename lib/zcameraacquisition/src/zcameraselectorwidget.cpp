@@ -28,7 +28,7 @@ namespace Z3D
 {
 
 ZCameraSelectorWidget::ZCameraSelectorWidget(QWidget *parent)
-    : QWidget(parent)
+    : ZWidget(parent)
     , ui(new Ui::ZCameraSelectorWidget)
     , m_selectedCamera(nullptr)
 {
