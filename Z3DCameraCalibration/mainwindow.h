@@ -22,14 +22,14 @@
 
 #include "zcamerainterface.h"
 
-#include <QMainWindow>
+#include "zmainwindow.h"
 
 namespace Ui
 {
 class MainWindow;
 }
 
-class MainWindow : public QMainWindow
+class MainWindow : public Z3D::ZMainWindow
 {
     Q_OBJECT
 
