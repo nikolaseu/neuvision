@@ -19,21 +19,23 @@
 
 #pragma once
 
-#include "zcore_global.h"
+#include "zgui_global.h"
 
-namespace Z3D
+#include <QWidget>
+
+namespace Z3D {
+
+class Z3D_GUI_SHARED_EXPORT ZWidget : public QWidget
 {
+    Q_OBJECT
 
-namespace ZApplicationStyle
-{
+public:
+    explicit ZWidget(QWidget *parent = nullptr);
 
-    enum ZStyle {
-        LightStyle,
-        DarkStyle
-    };
+signals:
 
-    Z3D_CORE_SHARED_EXPORT void applyStyle(ZStyle style);
+public slots:
 
-} // namespace ZApplicationStyle
+};
 
 } // namespace Z3D

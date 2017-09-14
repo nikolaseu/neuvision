@@ -19,47 +19,23 @@
 
 #pragma once
 
-#include "zcameraacquisition_global.h"
-#include "zcamerainterface.h"
+#include "zgui_global.h"
 
-#include "zwidget.h"
+#include <QMainWindow>
 
-namespace Z3D
-{
+namespace Z3D {
 
-namespace Ui
-{
-class ZCameraSelectorWidget;
-}
-
-class ZCameraInfo;
-class ZCameraPluginInterface;
-
-
-class Z3D_CAMERAACQUISITION_SHARED_EXPORT ZCameraSelectorWidget : public ZWidget
+class Z3D_GUI_SHARED_EXPORT ZMainWindow : public QMainWindow
 {
     Q_OBJECT
 
 public:
-    explicit ZCameraSelectorWidget(QWidget *parent = nullptr);
-    ~ZCameraSelectorWidget();
+    explicit ZMainWindow(QWidget *parent = nullptr);
 
 signals:
-    void cameraSelected(Z3D::ZCameraInterface::Ptr camera);
 
-private slots:
-    void onPluginIndexChanged(int index);
+public slots:
 
-    void onCameraIndexChanged(int index);
-
-private:
-    Ui::ZCameraSelectorWidget *ui;
-
-    QList<Z3D::ZCameraPluginInterface *> m_pluginList;
-
-    QList<Z3D::ZCameraInfo *> m_currentCameraList;
-
-    Z3D::ZCameraInterface::Ptr m_selectedCamera;
 };
 
 } // namespace Z3D

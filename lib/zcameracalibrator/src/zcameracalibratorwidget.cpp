@@ -46,7 +46,7 @@ namespace Z3D
 {
 
 ZCameraCalibratorWidget::ZCameraCalibratorWidget(ZCalibratedCamera::Ptr camera, QWidget *parent)
-    : QWidget(parent)
+    : ZWidget(parent)
     , ui(new Ui::ZCameraCalibratorWidget)
     , m_distortionPlot(nullptr)
     , m_model(new ZCalibrationImageModel(this))
@@ -169,19 +169,19 @@ void ZCameraCalibratorWidget::updateWindowTitle()
 {
     if (m_camera) {
         if (m_sessionFolder.isEmpty()) {
-            setWindowTitle(tr("Camera calibration - %1 [empty session]")
-                           .arg(m_camera->camera()->uuid()));
+//            setWindowTitle(tr("Camera calibration - %1 [empty session]")
+//                           .arg(m_camera->camera()->uuid()));
         } else {
-            setWindowTitle(tr("Camera calibration - %1 [%2]")
-                           .arg(m_camera->camera()->uuid())
-                           .arg(m_sessionFolder));
+//            setWindowTitle(tr("Camera calibration - %1 [%2]")
+//                           .arg(m_camera->camera()->uuid())
+//                           .arg(m_sessionFolder));
         }
     } else {
         if (m_sessionFolder.isEmpty()) {
-            setWindowTitle(tr("Camera calibration [empty session]"));
+//            setWindowTitle(tr("Camera calibration [empty session]"));
         } else {
-            setWindowTitle(tr("Camera calibration [%2]")
-                           .arg(m_sessionFolder));
+//            setWindowTitle(tr("Camera calibration [%2]")
+//                           .arg(m_sessionFolder));
         }
     }
 }

@@ -56,6 +56,10 @@ include($$PWD/../3rdparty/qwt.pri)
 include($$PWD/../lib/zcore/zcore.pri)
 
 ###############################################################################
+# Gui
+include($$PWD/../lib/zgui/zgui.pri)
+
+###############################################################################
 # Camera acquisition
 include($$PWD/../lib/zcameraacquisition/zcameraacquisition.pri)
 

@@ -19,26 +19,23 @@
 
 #pragma once
 
-#include "zcore_global.h"
+#include "zgui_global.h"
 
-#include <QApplication>
+#include <QWidget>
 
-class QSplashScreen;
-
-namespace Z3D {
-
-class Z3D_CORE_SHARED_EXPORT ZApplication : public QApplication
+namespace Z3D
 {
-public:
-    ZApplication(int &argc, char **argv);
 
-    void loadPlugins();
+namespace ZApplicationStyle
+{
 
-    QSplashScreen *showSplashScreen();
-    void finishSplashScreen(QWidget *widget);
+    enum ZStyle {
+        LightStyle,
+        DarkStyle
+    };
 
-private:
-    QSplashScreen *m_splash;
-};
+    Z3D_GUI_SHARED_EXPORT void applyStyle(ZStyle style);
+
+} // namespace ZApplicationStyle
 
 } // namespace Z3D

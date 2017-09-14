@@ -17,13 +17,13 @@
  * along with Z3D.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef MAINWINDOW_H
-#define MAINWINDOW_H
+#pragma once
 
 #include "zsimplepointcloud.h"
 #include "zstructuredlightsystem.h"
 
-#include <QMainWindow>
+#include "zmainwindow.h"
+
 #include <QPointer>
 
 #include <opencv2/core/core.hpp>
@@ -38,7 +38,7 @@ class ZPatternProjection;
 
 class ZPointCloudWidget;
 
-class MainWindow : public QMainWindow
+class MainWindow : public Z3D::ZMainWindow
 {
     Q_OBJECT
 
@@ -69,5 +69,3 @@ private:
 
     ZPointCloudWidget *m_pointCloudWidget;
 };
-
-#endif // MAINWINDOW_H

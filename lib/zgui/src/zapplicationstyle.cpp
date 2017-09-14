@@ -47,6 +47,7 @@ void applyStyle(ZStyle style)
         QColor baseColor(85, 85, 85);
         QColor buttonColor(93, 93, 93);
         QColor textColor(236, 236, 236);
+        p.setColor(QPalette::Background, windowColor);
         p.setColor(QPalette::Window, windowColor);
         p.setColor(QPalette::WindowText, textColor);
         p.setColor(QPalette::Disabled, QPalette::WindowText, textColor.darker(125));

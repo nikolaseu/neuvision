@@ -10,9 +10,6 @@
     <height>520</height>
    </rect>
   </property>
-  <property name="windowTitle">
-   <string>Z3D Scanner</string>
-  </property>
   <widget class="QWidget" name="centralwidget">
    <layout class="QGridLayout" name="gridLayout">
     <property name="leftMargin">

@@ -44,7 +44,7 @@
 
 
 MainWindow::MainWindow(QWidget *parent)
-    : QMainWindow(parent)
+    : Z3D::ZMainWindow(parent)
     , ui(new Ui::MainWindow)
     , m_currentPatternProjection(nullptr)
     , m_currentStructuredLightSystem(nullptr)

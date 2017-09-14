@@ -32,13 +32,13 @@ namespace Z3D
 {
 
 ZCameraSettingsWidget::ZCameraSettingsWidget(ZCameraInterface::WeakPtr camera, QWidget *parent)
-    : QWidget(parent)
+    : ZWidget(parent)
     , ui(new Ui::ZCameraSettingsWidget)
     , m_camera(camera)
 {
     ui->setupUi(this);
 
-    setWindowTitle(tr("Camera settings - %1").arg(m_camera->uuid()));
+//    setWindowTitle(tr("Camera settings - %1").arg(m_camera->uuid()));
 
     m_propertyBrowser = new QtTreePropertyBrowser(this);
 

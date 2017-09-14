@@ -47,7 +47,7 @@ namespace Z3D
 {
 
 ZMultiCameraCalibratorWidget::ZMultiCameraCalibratorWidget(std::vector<ZCalibratedCamera::Ptr> cameras, QWidget *parent)
-    : QWidget(parent)
+    : ZWidget(parent)
     , ui(new Ui::ZMultiCameraCalibratorWidget)
     , m_model(new ZMultiCalibrationImageModel(this))
     , m_calibratorWorker(new ZMultiCameraCalibratorWorker())
@@ -171,10 +171,10 @@ void ZMultiCameraCalibratorWidget::closeEvent(QCloseEvent * /*event*/)
 void ZMultiCameraCalibratorWidget::updateWindowTitle()
 {
     if (m_sessionFolder.isEmpty()) {
-        setWindowTitle(tr("Multi camera calibration - [empty session]"));
+//        setWindowTitle(tr("Multi camera calibration - [empty session]"));
     } else {
-        setWindowTitle(tr("Multi camera calibration - [%1]")
-                       .arg(m_sessionFolder));
+//        setWindowTitle(tr("Multi camera calibration - [%1]")
+//                       .arg(m_sessionFolder));
     }
 }
 

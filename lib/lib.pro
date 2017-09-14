@@ -2,6 +2,8 @@ TEMPLATE  = subdirs
 
 SUBDIRS  += zcore
 
+SUBDIRS  += zgui
+
 SUBDIRS  += zcameraacquisition
 zcameraacquisition.depends = zcore
 

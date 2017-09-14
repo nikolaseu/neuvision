@@ -17,36 +17,12 @@
  * along with Z3D.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef MAINWINDOW_H
-#define MAINWINDOW_H
+#pragma once
 
-#include "zcamerainterface.h"
+#include <QtCore/qglobal.h>
 
-#include "zmainwindow.h"
-
-namespace Ui
-{
-class MainWindow;
-}
-
-class MainWindow : public Z3D::ZMainWindow
-{
-    Q_OBJECT
-
-public:
-    explicit MainWindow(QWidget *parent = nullptr);
-    ~MainWindow();
-
-private slots:
-    void onCameraSelected(Z3D::ZCameraInterface::Ptr camera);
-
-    void onContinueButtonClicked();
-    void onFinishButtonClicked();
-
-private:
-    Ui::MainWindow *ui;
-
-    Z3D::ZCameraInterface::Ptr m_selectedCamera;
-};
-
-#endif // MAINWINDOW_H
+#if defined(Z3D_GUI_LIBRARY)
+#  define Z3D_GUI_SHARED_EXPORT Q_DECL_EXPORT
+#else
+#  define Z3D_GUI_SHARED_EXPORT Q_DECL_IMPORT
+#endif

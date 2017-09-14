@@ -19,7 +19,6 @@
 //
 
 #include <QSplashScreen>
-#include <QThreadPool>
 
 #include "zapplication.h"
 #include "zapplicationstyle.h"
@@ -62,10 +61,6 @@ int main(int argc, char* argv[])
 
         splash.showMessage("Loading main window...");
         app.processEvents();
-
-#ifdef Z3D_THREAD_COUNT_LIMIT
-        QThreadPool::globalInstance()->setMaxThreadCount(Z3D_THREAD_COUNT_LIMIT);
-#endif
 
         /// TODO this is just a workaround for now, see how to improve it
         std::vector<Z3D::ZCalibratedCamera::Ptr> cameras(2);

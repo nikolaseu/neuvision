@@ -87,10 +87,6 @@ int main(int argc, char* argv[])
         splash.showMessage("Loading main window...");
         app.processEvents();
 
-#ifdef Z3D_THREAD_COUNT_LIMIT
-        QThreadPool::globalInstance()->setMaxThreadCount(Z3D_THREAD_COUNT_LIMIT);
-#endif
-
         //ZScannerInitialConfigWizard window;
         MainWindow window;
 
