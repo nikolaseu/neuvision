@@ -71,7 +71,7 @@ void ZCameraPreviewer::setCamera(ZCameraInterface::Ptr camera)
     bool cameraIsValid = bool(m_camera);
 
     if (cameraIsValid) {
-        setWindowTitle(QString("%1 - Preview").arg(m_camera->uuid()));
+//        setWindowTitle(QString("%1 - Preview").arg(m_camera->uuid()));
 
         /// updates acquisition button
         onCameraRunningChanged();
@@ -86,7 +86,7 @@ void ZCameraPreviewer::setCamera(ZCameraInterface::Ptr camera)
                          m_camera.data(), SLOT(showSettingsDialog()),
                          Qt::DirectConnection); /// we don't want this to be executed from the camera thread...
     } else {
-        setWindowTitle("NO CAMERA");
+//        setWindowTitle("NO CAMERA");
         ui->imageView->updateImage(Z3D::ZImageGrayscale::Ptr(nullptr));
     }
 
