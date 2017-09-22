@@ -30,10 +30,6 @@ include($$PWD/../3rdparty/opencv.pri)
 include($$PWD/../3rdparty/qtpropertybrowser/src/qtpropertybrowser.pri)
 
 ###############################################################################
-# Qwt
-include($$PWD/../3rdparty/qwt.pri)
-
-###############################################################################
 # Core
 include($$PWD/../lib/zcore/zcore.pri)
 

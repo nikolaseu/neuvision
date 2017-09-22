@@ -23,7 +23,6 @@
 
 #include "zcameracalibratorworker.h"
 
-#include "zcalibrationdistortionplot.h"
 #include "zcalibrationimagemodel.h"
 #include "zcalibrationpatternfinderprovider.h"
 
@@ -48,7 +47,6 @@ namespace Z3D
 ZCameraCalibratorWidget::ZCameraCalibratorWidget(ZCalibratedCamera::Ptr camera, QWidget *parent)
     : ZWidget(parent)
     , ui(new Ui::ZCameraCalibratorWidget)
-    , m_distortionPlot(nullptr)
     , m_model(new ZCalibrationImageModel(this))
     , m_calibratorWorker(new ZCameraCalibratorWorker())
     , m_camera(camera)
@@ -340,16 +338,6 @@ void ZCameraCalibratorWidget::onCalibrationChanged(Z3D::ZCameraCalibration::Ptr 
 
         //! show calibration results!
         m_calibrationParamsController->setObject(newCalibration.data());
-
-        /// remove previous plot
-        if (m_distortionPlot) {
-            ui->distortionPlotLayout->removeWidget(m_distortionPlot);
-            m_distortionPlot->deleteLater();
-        }
-
-        /// add camera distortion plot
-        m_distortionPlot = new ZCalibrationDistortionPlot(newCalibration);
-        ui->distortionPlotLayout->addWidget(m_distortionPlot);
     }
 
     /// enable button again, calibration has finished

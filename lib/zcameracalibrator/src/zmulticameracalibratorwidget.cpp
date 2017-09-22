@@ -21,9 +21,6 @@
 #include "zmulticameracalibratorwidget.h"
 #include "ui_zmulticameracalibratorwidget.h"
 
-
-
-#include "zcalibrationdistortionplot.h"
 #include "zcalibrationimageviewer.h"
 #include "zcalibrationpatternfinderprovider.h"
 #include "zmulticalibrationimagemodel.h"

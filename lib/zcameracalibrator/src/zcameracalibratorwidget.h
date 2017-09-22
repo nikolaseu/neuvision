@@ -40,7 +40,6 @@ namespace Ui {
 class ZCameraCalibratorWidget;
 }
 
-class ZCalibrationDistortionPlot;
 class ZCalibrationImageModel;
 class ZCameraCalibratorWorker;
 class ZCameraCalibrator;
@@ -94,7 +93,6 @@ private slots:
 private:
     Ui::ZCameraCalibratorWidget *ui;
     QProgressBar *m_statusProgressBar;
-    ZCalibrationDistortionPlot *m_distortionPlot;
 
     ZCalibrationImageModel *m_model;
     QString m_sessionFolder;
