@@ -51,6 +51,7 @@ void ZPluginLoader::loadPlugins(QString folder)
         folder = "plugins";
     }
 
+#if !defined(Q_OS_ANDROID)
     if (!pluginsDir.cd(folder)) {
         /// if folder does not exists and we're on Win or OSX try going up, i.e. "cd .."
 #if defined(Q_OS_WIN)
@@ -62,11 +63,6 @@ void ZPluginLoader::loadPlugins(QString folder)
             pluginsDir.cdUp();
             pluginsDir.cdUp();
         }
-#elif defined(Q_OS_ANDROID)
-        if (pluginsDir.dirName() == "files") {
-            pluginsDir.cdUp();
-            folder = "lib";
-        }
 #endif
 
         if (!pluginsDir.cd(folder)) {
@@ -75,6 +71,7 @@ void ZPluginLoader::loadPlugins(QString folder)
             return;
         }
     }
+#endif
 
     qDebug() << "searching for plugin folders in" << pluginsDir.absolutePath();
 

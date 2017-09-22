@@ -4,7 +4,7 @@ SUBDIRS += zsimulatedcamera
 SUBDIRS += zopencvvideocapture
 SUBDIRS += zqtcamera
 
-unix: {
+unix:!android: {
     SUBDIRS += zlibgphoto2
 }
 

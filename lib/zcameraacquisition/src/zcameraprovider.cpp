@@ -51,8 +51,9 @@ void ZCameraProvider::loadPlugins()
 
 void ZCameraProvider::unloadPlugins()
 {
-    foreach(ZCameraPluginInterface *plugin, m_plugins.values())
+    for (const auto *plugin : m_plugins.values()) {
         delete plugin;
+    }
 
     m_plugins.clear();
 }
@@ -114,7 +115,7 @@ ZCameraInterface::Ptr ZCameraProvider::getCamera(QString pluginName, QVariantMap
 ZCameraInterface::Ptr ZCameraProvider::getCamera(QSettings *settings)
 {
     QVariantMap options;
-    foreach(QString key, settings->allKeys()) {
+    for (const auto &key : settings->allKeys()) {
         options[key] = settings->value(key);
     }
 
@@ -156,7 +157,7 @@ QList<ZCameraInterface::Ptr> ZCameraProvider::loadCameras(QString folder)
     filters << "*.ini" << "*.json"; //! TODO: agregar para leer configuracion en JSON
     configDir.setNameFilters(filters);
 
-    foreach (QString fileName, configDir.entryList(QDir::Files)) {
+    for (const auto &fileName : configDir.entryList(QDir::Files)) {
         qDebug() << "found" << fileName;
         QSettings settings(configDir.absoluteFilePath(fileName), QSettings::IniFormat);
         settings.beginGroup("Camera");
@@ -175,8 +176,9 @@ QList<ZCameraPluginInterface *> ZCameraProvider::availablePlugins()
 {
     QList<ZCameraPluginInterface *> pluginList;
 
-    foreach(ZCameraPluginInterface *plugin, m_plugins.values())
+    for (auto *plugin : m_plugins.values()) {
         pluginList << plugin;
+    }
 
     return pluginList;
 }

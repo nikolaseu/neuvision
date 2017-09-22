@@ -172,7 +172,7 @@ void ZMultiCalibrationImageModel::addImages(const QVector<ZMultiCalibrationImage
     /// parallelize the checking of image validity before adding to model
     m_futureWatcher.setFuture(QtConcurrent::map(images, [=](const auto &image) {
         if (image->isValid()) {
-            addImageThreadSafe(image);
+            this->addImageThreadSafe(image);
         }
     }));
 }
