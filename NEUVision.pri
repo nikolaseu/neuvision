@@ -16,7 +16,7 @@ CONFIG += c++14
 CONFIG(release, debug|release): DEFINES += Z3D_RELEASE
 
 macx {
-QMAKE_MAC_SDK = macosx10.12
+QMAKE_MAC_SDK = macosx10.13
 }
 
 # The following define makes your compiler emit warnings if you use
