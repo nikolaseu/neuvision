@@ -13,14 +13,12 @@ HEADERS      += \
     zcalibrationimage.h \
     zcalibrationimagemodel.h \
     zcalibrationpatternfinder.h \
-    zcalibrationdistortionplot.h \
     zcameracalibratorworker.h \
     zcalibrationimageviewer.h \
     zmulticalibrationimage.h \
     zmulticalibrationimagemodel.h \
     zmulticameracalibratorworker.h \
     3rdParty/objectcontroller.h \
-    zcalibrationdistortionplotdata.h \
     zcalibrationpatternfinderplugininterface.h \
     zcalibrationpatternfinderprovider.h \
     zcameracalibratorwidget.h \
@@ -29,14 +27,12 @@ SOURCES      += \
     zcalibrationimage.cpp \
     zcalibrationimagemodel.cpp \
     zcalibrationpatternfinder.cpp \
-    zcalibrationdistortionplot.cpp \
     zcameracalibratorworker.cpp \
     zcalibrationimageviewer.cpp \
     zmulticalibrationimage.cpp \
     zmulticalibrationimagemodel.cpp \
     zmulticameracalibratorworker.cpp \
     3rdParty/objectcontroller.cpp \
-    zcalibrationdistortionplotdata.cpp \
     zcalibrationpatternfinderprovider.cpp \
     zcameracalibratorwidget.cpp \
     zmulticameracalibratorwidget.cpp
@@ -67,10 +63,6 @@ include($$PWD/../../zcameracalibration/zcameracalibration.pri)
 ###############################################################################
 # Calibrated camera
 include($$PWD/../../zcalibratedcamera/zcalibratedcamera.pri)
-
-###############################################################################
-# Qwt
-include($$PWD/../../../3rdparty/qwt.pri)
 
 ###############################################################################
 # Qt Solutions - Property Browser
