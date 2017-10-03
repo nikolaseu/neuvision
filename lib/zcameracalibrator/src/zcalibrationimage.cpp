@@ -235,8 +235,14 @@ bool ZCalibrationImage::findPattern(ZCalibrationPatternFinder *patternFinder)
 
         setState(CheckingState);
 
-        cv::Mat cvOrigImg = mat();
-        bool patternFound = patternFinder->findCalibrationPattern(cvOrigImg, m_corners, m_worldCorners, m_patternCorners);
+        bool patternFound;
+
+        try {
+            patternFound = patternFinder->findCalibrationPattern(mat(), m_corners, m_worldCorners, m_patternCorners);
+        } catch (std::exception e) {
+            qWarning() << "exception thrown while finding calibration pattern:" << e.what();
+            patternFound = false;
+        }
 
         /// check if we need to update pattern thumbnail or restore from default
         if (patternFound) {
@@ -244,7 +250,7 @@ bool ZCalibrationImage::findPattern(ZCalibrationPatternFinder *patternFinder)
             m_patternThumbnail = m_thumbnail;
 
             /// scale we need to use to transform the corner coordinates for the thumbnail
-            float scale = (float)m_patternThumbnail.width() / (float)m_width;
+            float scale = float(m_patternThumbnail.width()) / float(m_width);
 
             /// draw pattern points
             QPainter painter(&m_patternThumbnail);
@@ -281,7 +287,11 @@ bool ZCalibrationImage::findPattern(ZCalibrationPatternFinder *patternFinder)
                 }
                 cornersFile.close();
             }
-        } else if (prevState == PatternFoundState || prevState == UncheckedState) {
+        } else {
+            m_corners.clear();
+            m_worldCorners.clear();
+            m_patternCorners.clear();
+
             /// create "pattern not found" thumbnail
             m_patternThumbnail = m_thumbnail;
             QPainter painter(&m_patternThumbnail);
