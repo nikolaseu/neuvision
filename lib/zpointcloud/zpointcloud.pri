@@ -12,7 +12,3 @@ macx: {
 
 INCLUDEPATH += $$PWD/src
 DEPENDPATH += $$PWD/src
-
-###############################################################################
-# VTK Qt support without having to build VTK explicitly with Qt support
-INCLUDEPATH += $$PWD/../../3rdparty/VTK/GUISupport/Qt

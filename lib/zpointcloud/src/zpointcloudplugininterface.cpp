@@ -18,20 +18,9 @@
 // along with Z3D.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-#include "zpointcloud.h"
+#include "zpointcloudplugininterface.h"
 
-namespace Z3D
-{
-
-ZPointCloud::ZPointCloud(QObject *parent)
-    : QObject(parent)
+Z3D::ZPointCloudPluginInterface::~ZPointCloudPluginInterface()
 {
 
 }
-
-ZPointCloud::~ZPointCloud()
-{
-
-}
-
-} // namespace Z3D
