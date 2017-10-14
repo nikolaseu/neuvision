@@ -28,9 +28,9 @@ unix: {
 
 # Mac OSX
 macx: {
-    OPENCV_INCLUDE_DIR = "/usr/local/opt/opencv3/include"
-    OPENCV_LIB_DIR = "/usr/local/opt/opencv3/lib"
-    OPENCV_VER = 300
+    OPENCV_INCLUDE_DIR = "/usr/local/opt/opencv/include"
+    OPENCV_LIB_DIR = "/usr/local/opt/opencv/lib"
+    OPENCV_VER = 330
 }
 
 # Android

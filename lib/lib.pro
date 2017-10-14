@@ -3,6 +3,7 @@ TEMPLATE  = subdirs
 SUBDIRS  += zcore
 
 SUBDIRS  += zgui
+zgui.depends = zcore
 
 SUBDIRS  += zcameraacquisition
 zcameraacquisition.depends = zcore
