@@ -49,7 +49,3 @@ include($$PWD/../3rdparty/opencv.pri)
 ###############################################################################
 # Qt Solutions - Property Browser
 include($$PWD/../3rdparty/qtpropertybrowser/src/qtpropertybrowser.pri)
-
-###############################################################################
-# Qwt
-include($$PWD/../3rdparty/qwt.pri)
