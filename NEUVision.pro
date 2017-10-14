@@ -18,9 +18,6 @@ SUBDIRS  += Z3DScanner
 Z3DScanner.depends = lib
 
 !android:{
-    SUBDIRS  += LTSAcquisition
-    LTSAcquisition.depends = lib
-
     SUBDIRS  += Z3DCloudViewer
     Z3DCloudViewer.depends = lib
 }
