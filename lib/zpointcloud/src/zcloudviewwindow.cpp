@@ -24,33 +24,22 @@
 #include <Z3DCameraAcquisition>
 #include <Z3DCameraCalibration>
 
-#ifdef Q_OS_OSX
-#include "osx/osxhelper.h"
-#endif
-
 #include "pcl/io/pcd_io.h"
 #include "pcl/io/ply_io.h"
-
 #include "pcl/filters/statistical_outlier_removal.h"
 #include "pcl/filters/voxel_grid.h"
 #include "pcl/surface/mls.h"
-//#include "pcl/surface/mls_omp.h"
-
 #include "pcl/surface/gp3.h"
 #include "pcl/surface/grid_projection.h"
-
 #include "pcl/sample_consensus/method_types.h"
 #include "pcl/sample_consensus/model_types.h"
 #include "pcl/segmentation/sac_segmentation.h"
-
 #include "pcl/visualization/histogram_visualizer.h"
-
-#if PCL_VERSION_COMPARE(>=,1,7,0)
 #include "pcl/visualization/pcl_plotter.h"
-#endif
 
+#include "vtkRenderer.h"
+#include "vtkGenericOpenGLRenderWindow.h"
 #include "vtkCamera.h"
-//#include "vtkLegendScaleActor.h"
 #include "vtkRenderWindow.h"
 
 #include <QDebug>
@@ -99,18 +88,15 @@ namespace Z3D
 ZCloudViewWindow::ZCloudViewWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::ZCloudViewWindow),
-    m_pclViewer(new pcl::visualization::PCLVisualizer("3D", false))
+    m_renderer(vtkRenderer::New()),
+    m_renderWindow(vtkGenericOpenGLRenderWindow::New()),
+    m_pclViewer(new pcl::visualization::PCLVisualizer(m_renderer, m_renderWindow, "3D", false))
 {
     ui->setupUi(this);
 
-#ifdef Q_OS_OSX
-    /// Fix retina display + VTK bug that causes only a quarter of the screen to be used
-    disableGLHiDPI(ui->qvtkWidget->winId());
-#endif
-
     /// setup QVTKWidget
-    vtkSmartPointer<vtkRenderWindow> renderWindow = m_pclViewer->getRenderWindow();
-    ui->qvtkWidget->SetRenderWindow(renderWindow);
+    m_renderWindow->AddRenderer(m_renderer);
+    ui->qvtkWidget->SetRenderWindow(m_renderWindow);
 
     /// these are useful to add to make the controls more like pcd_viewer
     m_pclViewer->setupInteractor(ui->qvtkWidget->GetInteractor(), ui->qvtkWidget->GetRenderWindow());
@@ -127,10 +113,8 @@ ZCloudViewWindow::ZCloudViewWindow(QWidget *parent) :
     /// init some default camera parameters
     m_pclViewer->initCameraParameters();
 
-#if PCL_VERSION_COMPARE(>=,1,7,0)
     /// disable FPS text
     m_pclViewer->setShowFPS(false);
-#endif
 
     /// set orthographic projection
     vtkSmartPointer<vtkRendererCollection> rendererCollection = m_pclViewer->getRenderWindow()->GetRenderers();
@@ -768,17 +752,13 @@ void ZCloudViewWindow::on_actionViewCoordinateSystem_toggled(bool arg1)
     if (arg1) {
         m_pclViewer->addCoordinateSystem(25);
 
-#if PCL_VERSION_COMPARE(>=,1,7,0)
         /// Adds a widget which shows an interactive axes display for orientation
         m_pclViewer->addOrientationMarkerWidgetAxes(m_pclViewer->getRenderWindow()->GetInteractor());
-#endif
     } else {
         m_pclViewer->removeCoordinateSystem();
 
-#if PCL_VERSION_COMPARE(>=,1,7,0)
         /// Removes the widget which shows an interactive axes display for orientation
         m_pclViewer->removeOrientationMarkerWidgetAxes();
-#endif
     }
 
     ui->qvtkWidget->update();
@@ -941,9 +921,6 @@ void ZCloudViewWindow::on_actionToolsFitCylinder_triggered()
     histogram->addFeatureHistogram(*m_pointCloud->pclPointCloud(), "x", 2, "cloud_hist_x", 800, 600);
     histogram->setBackgroundColor(255,255,255);
 
-
-
-#if PCL_VERSION_COMPARE(>=,1,7,0)
     pcl::visualization::PCLPlotter plotter;
 
     std::vector<double> errorsInliersD;
@@ -957,7 +934,6 @@ void ZCloudViewWindow::on_actionToolsFitCylinder_triggered()
     plotter.setYTitle(qPrintable(tr("Points")));
     plotter.setShowLegend(false);
     plotter.spin();
-#endif
 
     /// results dialog
     QDialog resultsDialog(this);
@@ -1237,8 +1213,6 @@ void ZCloudViewWindow::on_actionToolsFitPlane_triggered()
               errorsInliers))
         qWarning() << "unable to save error data";
 
-
-#if PCL_VERSION_COMPARE(>=,1,7,0)
     pcl::visualization::PCLPlotter plotter;
 
     std::vector<double> errorsInliersD;
@@ -1252,8 +1226,6 @@ void ZCloudViewWindow::on_actionToolsFitPlane_triggered()
     plotter.setYTitle(qPrintable(tr("Points")));
     plotter.setShowLegend(false);
     plotter.spin();
-#endif
-
 
     /// results dialog
     QDialog resultsDialog(this);
@@ -1455,14 +1427,12 @@ void ZCloudViewWindow::on_actionRenderShadingFlat_triggered()
     ui->actionRenderShadingGouraud->setChecked(false);
     ui->actionRenderShadingPhong->setChecked(false);
 
-#if PCL_VERSION_COMPARE(>=,1,7,0)
     QString id = QString("%1__%2").arg(m_pointCloud->id()).arg("surface");
 
     m_pclViewer->setShapeRenderingProperties(
                 pcl::visualization::PCL_VISUALIZER_SHADING,
                 pcl::visualization::PCL_VISUALIZER_SHADING_FLAT,
                 qPrintable(id));
-#endif
 }
 
 void ZCloudViewWindow::on_actionRenderShadingGouraud_triggered()
@@ -1471,14 +1441,12 @@ void ZCloudViewWindow::on_actionRenderShadingGouraud_triggered()
     ui->actionRenderShadingGouraud->setChecked(true);
     ui->actionRenderShadingPhong->setChecked(false);
 
-#if PCL_VERSION_COMPARE(>=,1,7,0)
     QString id = QString("%1__%2").arg(m_pointCloud->id()).arg("surface");
 
     m_pclViewer->setShapeRenderingProperties(
                 pcl::visualization::PCL_VISUALIZER_SHADING,
                 pcl::visualization::PCL_VISUALIZER_SHADING_GOURAUD,
                 qPrintable(id));
-#endif
 }
 
 void ZCloudViewWindow::on_actionRenderShadingPhong_triggered()
@@ -1487,14 +1455,12 @@ void ZCloudViewWindow::on_actionRenderShadingPhong_triggered()
     ui->actionRenderShadingGouraud->setChecked(false);
     ui->actionRenderShadingPhong->setChecked(true);
 
-#if PCL_VERSION_COMPARE(>=,1,7,0)
     QString id = QString("%1__%2").arg(m_pointCloud->id()).arg("surface");
 
     m_pclViewer->setShapeRenderingProperties(
                 pcl::visualization::PCL_VISUALIZER_SHADING,
                 pcl::visualization::PCL_VISUALIZER_SHADING_PHONG,
                 qPrintable(id));
-#endif
 }
 
 void ZCloudViewWindow::on_actionRenderToFile_triggered()
