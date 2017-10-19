@@ -18,11 +18,18 @@
 // along with Z3D.  If not, see <http://www.gnu.org/licenses/>.
 //
 
+#include <QSurfaceFormat>
+
+#include "QVTKOpenGLWidget.h"
+
 #include "zapplication.h"
 #include "zcloudviewwindow.h"
 
 int main(int argc, char *argv[])
 {
+    // before initializing QApplication, set the default surface format.
+    QSurfaceFormat::setDefaultFormat(QVTKOpenGLWidget::defaultFormat());
+
     Z3D::ZApplication a(argc, argv);
 
     Z3D::ZCloudViewWindow w;

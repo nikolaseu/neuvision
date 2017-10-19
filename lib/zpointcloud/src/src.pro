@@ -18,14 +18,6 @@ SOURCES      += \
 FORMS        += \
     zcloudviewwindow.ui
 
-mac {
-# to use the fix for QVTK widget and retina displays (this works at least for VTK7.0)
-# http://public.kitware.com/pipermail/vtkusers/2015-February/090117.html
-LIBS += -framework Foundation
-HEADERS += osx/osxhelper.h
-OBJECTIVE_SOURCES += osx/osxhelper.mm
-}
-
 ###############################################################################
 # Camera acquisition
 include($$PWD/../../zcameraacquisition/zcameraacquisition.pri)

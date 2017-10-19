@@ -29,6 +29,9 @@
 #include <pcl/visualization/pcl_visualizer.h>
 #endif // Q_MOC_RUN
 
+class vtkRenderer;
+class vtkGenericOpenGLRenderWindow;
+
 namespace Z3D
 {
 
@@ -96,6 +99,8 @@ private slots:
 private:
     Ui::ZCloudViewWindow *ui;
 
+    vtkSmartPointer<vtkRenderer> m_renderer;
+    vtkSmartPointer<vtkGenericOpenGLRenderWindow> m_renderWindow;
     boost::shared_ptr<pcl::visualization::PCLVisualizer> m_pclViewer;
 
     Z3D::ZPointCloud::Ptr m_pointCloud;
