@@ -66,6 +66,8 @@ PylonCamera::PylonCamera(Pylon::IPylonDevice *device, QObject *parent)
 
     m_camera.RegisterImageEventHandler(m_image_handler, Pylon::RegistrationMode_Append, Pylon::Cleanup_Delete);
     m_camera.Open();
+
+    m_uuid = QString("ZPylon-%1").arg(m_camera.GetDeviceInfo().GetSerialNumber().c_str());
 }
 
 PylonCamera::~PylonCamera()
