@@ -19,10 +19,12 @@
 
 #pragma once
 
+#include "zcore_global.h"
+
 #include <QDebug>
 
 namespace Z3D {
 
-void ZLogHandler(QtMsgType type, const QMessageLogContext &context, const QString &msgstr);
+void Z3D_CORE_SHARED_EXPORT ZLogHandler(QtMsgType type, const QMessageLogContext &context, const QString &msgstr);
 
 } // namespace Z3D

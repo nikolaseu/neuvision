@@ -17,7 +17,6 @@ SOURCES += \
     zpatternprojection.cpp \
     zsimplepointcloud.cpp \
     zstructuredlightsystem.cpp \
-    zthreephase.cpp \
     zstructuredlightsystemprovider.cpp \
     zprojectedpattern.cpp \
     zstructuredlightpattern.cpp
@@ -31,7 +30,6 @@ HEADERS += \
     zpatternprojection.h \
     zsimplepointcloud.h \
     zstructuredlightsystem.h \
-    zthreephase.h \
     zpatternprojectionplugin.h \
     zstructuredlightsystemplugin.h \
     zstructuredlightsystemprovider.h \
