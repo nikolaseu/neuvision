@@ -10,6 +10,7 @@ unix:!android: {
 
 win32: {
     ## Windows build here
+    SUBDIRS  += zpylon
 
     !contains(QMAKE_TARGET.arch, x86_64) {
         ## Windows x86 (32bit) specific build here
