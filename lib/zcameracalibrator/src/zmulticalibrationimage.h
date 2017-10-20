@@ -28,7 +28,7 @@
 namespace Z3D
 {
 
-class ZMultiCalibrationImage : public QObject
+class Z3D_CAMERACALIBRATOR_SHARED_EXPORT ZMultiCalibrationImage : public QObject
 {
     Q_OBJECT
 

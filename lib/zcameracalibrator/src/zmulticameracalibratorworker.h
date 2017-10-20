@@ -32,7 +32,7 @@ namespace Z3D
 
 class ZMultiCameraCalibrator;
 
-class ZMultiCameraCalibratorWorker : public QObject
+class Z3D_CAMERACALIBRATOR_SHARED_EXPORT ZMultiCameraCalibratorWorker : public QObject
 {
     Q_OBJECT
 
