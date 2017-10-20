@@ -2,21 +2,15 @@
 
 # Windows
 win32 {
-    !contains(QMAKE_TARGET.arch, x86_64) {
-        ## Windows x86 (32bit) specific build here
-        OPENCV_INCLUDE_DIR = "D:/Nicou/Software/OpenCV-3.0.0-beta/include"
-        OPENCV_LIB_DIR = "D:/Nicou/Software/OpenCV-3.0.0-beta/lib"
-        OPENCV_VER = 300
+    OPENCV_INCLUDE_DIR = $$(THIRDPARTY)/Release/include
 
-        message('Using OpenCV x86 version '$$OPENCV_VER)
+    CONFIG(release, debug|release) {
+        OPENCV_LIB_DIR = $$(THIRDPARTY)/Release/x64/vc14/lib
     } else {
-        ## Windows x64 (64bit) specific build here
-        OPENCV_INCLUDE_DIR = "C:/Users/T93907/Documents/OpenCV/2.4.9/opencv/build/include"
-        OPENCV_LIB_DIR = "C:/Users/T93907/Documents/OpenCV/2.4.9/opencv/build/x64/vc12/lib"
-        OPENCV_VER = 249
-
-        message('Using OpenCV x86_64')
+        OPENCV_LIB_DIR = $$(THIRDPARTY)/Debug/x64/vc14/lib
     }
+
+    OPENCV_VER = 330
 }
 
 # Linux

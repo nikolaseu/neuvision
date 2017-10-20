@@ -10,7 +10,7 @@ QT += core gui opengl multimedia widgets quick qml concurrent
 
 DESTDIR = $$Z3D_BUILD_DIR
 
-win32:DEFINES += _USE_MATH_DEFINES # pcl-1.7 lo define, pero 1.6 no
+win32:LIBS += opengl32.lib # to use "real" OpenGL on windows
 
 # Define this to limit QtConcurrent thread pool size
 #DEFINES += Z3D_THREAD_COUNT_LIMIT=1

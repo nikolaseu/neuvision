@@ -21,12 +21,13 @@
 
 #include <QObject>
 
+#include "zstructuredlight_global.h"
 #include "zcameraimage.h"
 #include "zcamerainterface.h"
 
 namespace Z3D {
 
-class ZCameraAcquisitionManager : public QObject
+class Z3D_STRUCTUREDLIGHT_SHARED_EXPORT ZCameraAcquisitionManager : public QObject
 {
     Q_OBJECT
 

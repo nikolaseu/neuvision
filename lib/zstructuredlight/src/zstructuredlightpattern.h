@@ -19,6 +19,8 @@
 
 #pragma once
 
+#include "zstructuredlight_global.h"
+
 #include "opencv2/core/core.hpp"
 
 #include <QSharedPointer>
@@ -28,7 +30,7 @@
 namespace Z3D
 {
 
-class ZStructuredLightPattern
+class Z3D_STRUCTUREDLIGHT_SHARED_EXPORT ZStructuredLightPattern
 {
 public:
     explicit ZStructuredLightPattern();

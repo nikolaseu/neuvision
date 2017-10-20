@@ -19,18 +19,17 @@
 
 #pragma once
 
-#include "opencv2/core/core.hpp"
-
+#include "zstructuredlight_global.h"
 #include "zstructuredlightpattern.h"
 
-#include <QSharedPointer>
+#include "opencv2/core/core.hpp"
 
-#include <map>
+#include <QSharedPointer>
 
 namespace Z3D
 {
 
-class ZDecodedPattern : public ZStructuredLightPattern
+class Z3D_STRUCTUREDLIGHT_SHARED_EXPORT ZDecodedPattern : public ZStructuredLightPattern
 {
 public:
     typedef QSharedPointer<ZDecodedPattern> Ptr;

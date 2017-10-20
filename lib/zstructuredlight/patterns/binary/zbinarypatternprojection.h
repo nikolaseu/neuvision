@@ -19,7 +19,6 @@
 
 #pragma once
 
-#include "zstructuredlight_global.h"
 #include "zpatternprojection.h"
 
 #if QT_VERSION < 0x050000
@@ -33,7 +32,7 @@ namespace Z3D
 
 class ZBinaryPatternProjectionConfigWidget;
 
-class Z3D_STRUCTUREDLIGHT_SHARED_EXPORT ZBinaryPatternProjection : public ZPatternProjection
+class ZBinaryPatternProjection : public ZPatternProjection
 {
     Q_OBJECT
 

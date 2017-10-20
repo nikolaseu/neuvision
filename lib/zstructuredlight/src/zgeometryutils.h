@@ -19,6 +19,8 @@
 
 #pragma once
 
+#include "zstructuredlight_global.h"
+
 #include <opencv2/core/core.hpp>
 
 namespace GeometryUtils
@@ -38,10 +40,10 @@ namespace GeometryUtils
  * @param distance the squared minimum distance between the lines
  * @return approximate intersection between lines
  */
-cv::Vec3d intersectLineWithLine3D(const cv::Vec3d &q1,
-                                  const cv::Vec3d &v1,
-                                  const cv::Vec3d &q2,
-                                  const cv::Vec3d &v2,
-                                  double *distance = nullptr);
+cv::Vec3d Z3D_STRUCTUREDLIGHT_SHARED_EXPORT intersectLineWithLine3D(const cv::Vec3d &q1,
+                                                                    const cv::Vec3d &v1,
+                                                                    const cv::Vec3d &q2,
+                                                                    const cv::Vec3d &v2,
+                                                                    double *distance = nullptr);
 
 } // namespace GeometryUtils
