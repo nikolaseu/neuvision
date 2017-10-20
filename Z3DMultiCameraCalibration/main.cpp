@@ -18,13 +18,14 @@
 // along with Z3D.  If not, see <http://www.gnu.org/licenses/>.
 //
 
+#include <QDir>
+#include <QSettings>
 #include <QSplashScreen>
 
 #include "zapplication.h"
 #include "zapplicationstyle.h"
-//#include <Z3DCameraProvider>
-#include <Z3DCameraCalibrationProvider>
 #include "zcalibrationpatternfinderprovider.h"
+#include "zcameraprovider.h"
 #include "zmulticameracalibratorwidget.h"
 
 
@@ -46,11 +47,11 @@ int main(int argc, char* argv[])
         splash.showMessage("Loading plugins...");
         app.processEvents();
         app.loadPlugins();
-/*
+
         splash.showMessage("Loading camera acquisition plugins...");
         app.processEvents();
         Z3D::ZCameraProvider::loadPlugins();
-*/
+
         splash.showMessage("Loading camera calibration plugins...");
         app.processEvents();
         Z3D::ZCameraCalibrationProvider::loadPlugins();
@@ -63,7 +64,24 @@ int main(int argc, char* argv[])
         app.processEvents();
 
         /// TODO this is just a workaround for now, see how to improve it
-        std::vector<Z3D::ZCalibratedCamera::Ptr> cameras(2);
+        QDir configDir = QDir::current();
+        QString settingsFile = configDir.absoluteFilePath(QString("%1.ini").arg(QApplication::applicationName()));
+        qDebug() << "trying to load config from:" << settingsFile;
+        QSettings settings(settingsFile, QSettings::IniFormat);
+
+        std::vector<Z3D::ZCalibratedCamera::Ptr> cameras;
+        settings.beginGroup("Left");
+        {
+            cameras.push_back(Z3D::CalibratedCameraProvider::getCalibratedCamera(&settings));
+        }
+        settings.endGroup();
+
+        settings.beginGroup("Right");
+        {
+            cameras.push_back(Z3D::CalibratedCameraProvider::getCalibratedCamera(&settings));
+        }
+        settings.endGroup();
+
         Z3D::ZMultiCameraCalibratorWidget calibWidget(cameras);
         calibWidget.show();
 
@@ -77,9 +95,9 @@ int main(int argc, char* argv[])
 
     qDebug() << "unloading camera calibration plugins...";
     Z3D::ZCameraCalibrationProvider::unloadPlugins();
-/*
+
     qDebug() << "unloading camera plugins...";
     Z3D::ZCameraProvider::unloadPlugins();
-*/
+
     return result;
 }
