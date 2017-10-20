@@ -85,6 +85,11 @@ ZIncompleteCircleGridPatternFinder::ZIncompleteCircleGridPatternFinder(QObject *
 #endif
 }
 
+QString ZIncompleteCircleGridPatternFinder::id() const
+{
+    return QString(metaObject()->className());
+}
+
 QString ZIncompleteCircleGridPatternFinder::name() const
 {
     return QLatin1String("Incomplete circle grid");

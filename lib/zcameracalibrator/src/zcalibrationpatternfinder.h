@@ -45,6 +45,7 @@ public:
 
     explicit ZCalibrationPatternFinder(QObject *parent = nullptr);
 
+    virtual QString id() const = 0;
     virtual QString name() const = 0;
 
     int columns() const;

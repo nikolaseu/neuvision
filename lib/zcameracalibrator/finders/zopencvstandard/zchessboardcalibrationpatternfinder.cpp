@@ -62,6 +62,11 @@ ZChessboardCalibrationPatternFinder::ZChessboardCalibrationPatternFinder(QObject
     updateConfigHash();
 }
 
+QString ZChessboardCalibrationPatternFinder::id() const
+{
+    return QString(metaObject()->className());
+}
+
 QString ZChessboardCalibrationPatternFinder::name() const
 {
     return QLatin1String("Chessboard");

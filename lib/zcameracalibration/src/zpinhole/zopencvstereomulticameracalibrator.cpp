@@ -58,6 +58,11 @@ ZOpenCVStereoMultiCameraCalibrator::~ZOpenCVStereoMultiCameraCalibrator()
 
 }
 
+QString ZOpenCVStereoMultiCameraCalibrator::id() const
+{
+    return QString(metaObject()->className());
+}
+
 QString ZOpenCVStereoMultiCameraCalibrator::name() const
 {
     return QLatin1String("OpenCV stereo calibration");

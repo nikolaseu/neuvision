@@ -31,6 +31,7 @@ class ZRingGridPatternFinder : public ZCalibrationPatternFinder
 public:
     explicit ZRingGridPatternFinder(QObject *parent = nullptr);
 
+    QString id() const override;
     QString name() const override;
 
     int maxColumns() const;

@@ -58,7 +58,12 @@ ZPinholeCameraCalibrator::~ZPinholeCameraCalibrator()
 
 }
 
-QString ZPinholeCameraCalibrator::name()
+QString ZPinholeCameraCalibrator::id() const
+{
+    return QString(metaObject()->className());
+}
+
+QString ZPinholeCameraCalibrator::name() const
 {
     return QLatin1String("Pinhole + distorsion (radial & tangential)");
 }

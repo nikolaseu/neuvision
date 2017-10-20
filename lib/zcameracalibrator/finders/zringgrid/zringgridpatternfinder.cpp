@@ -69,6 +69,11 @@ ZRingGridPatternFinder::ZRingGridPatternFinder(QObject *parent)
 #endif
 }
 
+QString ZRingGridPatternFinder::id() const
+{
+    return QString(metaObject()->className());
+}
+
 QString ZRingGridPatternFinder::name() const
 {
     return QLatin1String("Ring grid");

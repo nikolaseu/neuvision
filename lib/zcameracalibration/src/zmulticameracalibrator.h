@@ -35,6 +35,7 @@ public:
 
     virtual ~ZMultiCameraCalibrator() {}
 
+    virtual QString id() const = 0;
     virtual QString name() const = 0;
 
     virtual std::vector<ZCameraCalibration::Ptr> getCalibration(

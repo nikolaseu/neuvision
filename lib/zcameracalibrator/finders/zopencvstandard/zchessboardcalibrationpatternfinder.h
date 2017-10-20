@@ -75,6 +75,7 @@ class ZChessboardCalibrationPatternFinder : public ZCalibrationPatternFinder
 public:
     explicit ZChessboardCalibrationPatternFinder(QObject *parent = nullptr);
 
+    QString id() const override;
     QString name() const override;
 
     bool normalizeImage() const;

@@ -42,6 +42,11 @@ ZOpenCVCustomStereoMultiCameraCalibrator::~ZOpenCVCustomStereoMultiCameraCalibra
 
 }
 
+QString ZOpenCVCustomStereoMultiCameraCalibrator::id() const
+{
+    return QString(metaObject()->className());
+}
+
 QString ZOpenCVCustomStereoMultiCameraCalibrator::name() const
 {
     return QLatin1String("Custom stereo calibration");

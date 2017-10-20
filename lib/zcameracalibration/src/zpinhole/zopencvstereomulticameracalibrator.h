@@ -57,6 +57,7 @@ public:
     virtual ~ZOpenCVStereoMultiCameraCalibrator();
 
     /// ZMultiCameraCalibrator interface
+    virtual QString id() const override;
     virtual QString name() const override;
 
     virtual std::vector<ZCameraCalibration::Ptr> getCalibration(

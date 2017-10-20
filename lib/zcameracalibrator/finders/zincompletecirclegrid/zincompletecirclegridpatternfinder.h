@@ -31,6 +31,7 @@ class ZIncompleteCircleGridPatternFinder : public ZCalibrationPatternFinder
 public:
     explicit ZIncompleteCircleGridPatternFinder(QObject *parent = nullptr);
 
+    QString id() const override;
     QString name() const override;
 
     int maxColumns() const;

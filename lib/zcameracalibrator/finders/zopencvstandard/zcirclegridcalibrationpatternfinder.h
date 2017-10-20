@@ -31,6 +31,7 @@ class ZCircleGridCalibrationPatternFinder : public ZCalibrationPatternFinder
 public:
     explicit ZCircleGridCalibrationPatternFinder(QObject *parent = nullptr);
 
+    QString id() const override;
     QString name() const override;
 
 signals:

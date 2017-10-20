@@ -52,7 +52,8 @@ public:
 
     ~ZPinholeCameraCalibrator();
 
-    QString name() override;
+    QString id() const override;
+    QString name() const override;
 
     ZCameraCalibration::Ptr getCalibration(
             std::vector<std::vector<cv::Point2f> > &imagePoints,

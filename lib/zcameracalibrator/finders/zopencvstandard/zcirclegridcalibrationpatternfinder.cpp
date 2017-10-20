@@ -32,6 +32,11 @@ ZCircleGridCalibrationPatternFinder::ZCircleGridCalibrationPatternFinder(QObject
     updateConfigHash();
 }
 
+QString ZCircleGridCalibrationPatternFinder::id() const
+{
+    return QString(metaObject()->className());
+}
+
 QString ZCircleGridCalibrationPatternFinder::name() const
 {
     return QLatin1String("Circle grid");
