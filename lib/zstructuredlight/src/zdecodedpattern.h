@@ -29,17 +29,27 @@
 namespace Z3D
 {
 
-class Z3D_STRUCTUREDLIGHT_SHARED_EXPORT ZDecodedPattern : public ZStructuredLightPattern
+struct Z3D_STRUCTUREDLIGHT_SHARED_EXPORT ZDecodedPattern : public ZStructuredLightPattern
 {
 public:
     typedef QSharedPointer<ZDecodedPattern> Ptr;
 
-    explicit ZDecodedPattern();
+    explicit ZDecodedPattern(std::map<int, std::vector<cv::Vec2f> > fringePointsList,
+                             cv::Mat m_intensityImg,
+                             cv::Mat m_maskImg,
+                             cv::Mat m_decodedImage,
+                             cv::Mat m_fringeImage);
 
-    cv::Mat intensityImg;
-    cv::Mat maskImg;
-    cv::Mat decodedImage;
-    cv::Mat fringeImage;
+    cv::Mat intensityImg() const;
+    cv::Mat maskImg() const;
+    cv::Mat decodedImage() const;
+    cv::Mat fringeImage() const;
+
+private:
+    cv::Mat m_intensityImg;
+    cv::Mat m_maskImg;
+    cv::Mat m_decodedImage;
+    cv::Mat m_fringeImage;
 };
 
 } // namespace Z3D

@@ -62,8 +62,9 @@ void ZDualCameraStereoSLS::addCameras(QList<Z3D::ZCalibratedCamera::Ptr> cameras
     }
 
     std::vector<Z3D::ZCameraInterface::Ptr> camerasVector;
-    for (auto cam : cameras)
+    for (const auto &cam : cameras) {
         camerasVector.push_back(cam->camera());
+    }
     setAcquisitionManager(new ZCameraAcquisitionManager(camerasVector));
 }
 
@@ -155,18 +156,20 @@ void ZDualCameraStereoSLS::onPatternsDecoded(std::vector<ZDecodedPattern::Ptr> d
 {
     /// is there something to process?
     for (auto decodedPattern : decodedPatterns) {
-        if (decodedPattern->estimatedCloudPoints < 1)
+        if (decodedPattern->estimatedCloudPoints() < 1) {
             return;
+        }
     }
 
     int estimatedCloudPoints = 0;
-    for (const auto &decodedPattern : decodedPatterns)
-        estimatedCloudPoints += decodedPattern->estimatedCloudPoints;
+    for (const auto &decodedPattern : decodedPatterns) {
+        estimatedCloudPoints += decodedPattern->estimatedCloudPoints();
+    }
 
     Z3D::ZSimplePointCloud::Ptr cloud = triangulate(
-                decodedPatterns[0]->intensityImg,
-                decodedPatterns[0]->fringePointsList,
-            decodedPatterns[1]->fringePointsList,
+                decodedPatterns[0]->intensityImg(),
+                decodedPatterns[0]->fringePointsList(),
+            decodedPatterns[1]->fringePointsList(),
             estimatedCloudPoints);
 
     if (cloud) {

@@ -30,15 +30,17 @@
 namespace Z3D
 {
 
-class Z3D_STRUCTUREDLIGHT_SHARED_EXPORT ZStructuredLightPattern
+struct Z3D_STRUCTUREDLIGHT_SHARED_EXPORT ZStructuredLightPattern
 {
 public:
-    explicit ZStructuredLightPattern();
+    explicit ZStructuredLightPattern(std::map<int, std::vector<cv::Vec2f> > fringePointsList);
 
-    void updatePointCount();
+    std::map<int, std::vector<cv::Vec2f> > fringePointsList() const;
+    int estimatedCloudPoints() const;
 
-    std::map<int, std::vector<cv::Vec2f> > fringePointsList;
-    int estimatedCloudPoints;
+private:
+    std::map<int, std::vector<cv::Vec2f> > m_fringePointsList;
+    int m_estimatedCloudPoints;
 };
 
 } // namespace Z3D

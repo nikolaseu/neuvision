@@ -168,8 +168,7 @@ void ZBinaryPatternProjection::beginScan()
     emit finishAcquisition();
 
     /// create the pattern that was just projected
-    Z3D::ZProjectedPattern::Ptr pattern(new Z3D::ZProjectedPattern);
-    auto &fringePoints = pattern->fringePointsList;
+    std::map<int, std::vector<cv::Vec2f> > fringePoints;
     const auto geometry = m_dlpview->geometry();
     const auto projectionHeight = geometry.height();
     const auto projectionWidth = geometry.width();
@@ -194,8 +193,9 @@ void ZBinaryPatternProjection::beginScan()
         }
     }
     qDebug() << "pattern has" << fringePoints.size() << "fringes";
-    /// to know how many point we could have (to reserve memory)
-    pattern->updatePointCount();
+
+    const Z3D::ZProjectedPattern::Ptr pattern(new Z3D::ZProjectedPattern(fringePoints));
+
     /// notify possible listeners
     emit patternProjected(pattern);
 
@@ -253,8 +253,7 @@ void ZBinaryPatternProjection::processImages(std::vector< std::vector<Z3D::ZImag
         /// set mask to keep only values greater than threshold
         maskImg = maskImg > m_noiseThreshold;
 
-        Z3D::ZDecodedPattern::Ptr decodedPattern(new Z3D::ZDecodedPattern());
-        decodedPattern->intensityImg = whiteImg.clone();
+        auto intensityImg = whiteImg.clone();
 
         /// the first images are useless to decode pattern
         whiteImages.erase(whiteImages.begin());
@@ -298,17 +297,10 @@ void ZBinaryPatternProjection::processImages(std::vector< std::vector<Z3D::ZImag
         }
 
         /// vector of points for every fringe
-        auto &fringePoints = decodedPattern->fringePointsList;
+        std::map<int, std::vector<cv::Vec2f> > fringePoints;
         cv::Mat decodedBorders = Z3D::ZBinaryPatternDecoder::simplifyBinaryPatternData(decoded, maskImg, fringePoints);
 
-        /// to know how many point we could have (to reserve memory)
-        decodedPattern->updatePointCount();
-
-        /// debug info
-        decodedPattern->maskImg = maskImg;
-        decodedPattern->decodedImage = decoded;
-        decodedPattern->fringeImage = decodedBorders;
-
+        Z3D::ZDecodedPattern::Ptr decodedPattern(new Z3D::ZDecodedPattern(fringePoints, intensityImg, maskImg, decoded, decodedBorders));
         decodedPatternList.push_back(decodedPattern);
     }
 

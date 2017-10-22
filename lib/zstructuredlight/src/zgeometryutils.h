@@ -23,6 +23,9 @@
 
 #include <opencv2/core/core.hpp>
 
+namespace Z3D
+{
+
 namespace GeometryUtils
 {
 
@@ -47,3 +50,5 @@ cv::Vec3d Z3D_STRUCTUREDLIGHT_SHARED_EXPORT intersectLineWithLine3D(const cv::Ve
                                                                     double *distance = nullptr);
 
 } // namespace GeometryUtils
+
+} // namespace Z3D

@@ -20,6 +20,9 @@
 
 #include "zgeometryutils.h"
 
+namespace Z3D
+{
+
 cv::Vec3d GeometryUtils::intersectLineWithLine3D(const cv::Vec3d &q1, const cv::Vec3d &v1, const cv::Vec3d &q2, const cv::Vec3d &v2, double *distance)
 {
     cv::Vec3d q12 = q1 - q2;
@@ -53,3 +56,5 @@ cv::Vec3d GeometryUtils::intersectLineWithLine3D(const cv::Vec3d &q1, const cv::
 
     return p;
 }
+
+} // namespace Z3D

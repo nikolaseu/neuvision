@@ -23,18 +23,24 @@
 namespace Z3D
 {
 
-ZStructuredLightPattern::ZStructuredLightPattern()
-    : estimatedCloudPoints(0)
+ZStructuredLightPattern::ZStructuredLightPattern(std::map<int, std::vector<cv::Vec2f> > fringePointsList)
+    : m_estimatedCloudPoints(0)
 {
+    m_fringePointsList = std::move(fringePointsList);
 
+    for (auto it = fringePointsList.cbegin(), itEnd = fringePointsList.cend(); it != itEnd; ++it) {
+        m_estimatedCloudPoints += it->second.size();
+    }
 }
 
-void ZStructuredLightPattern::updatePointCount()
+std::map<int, std::vector<cv::Vec2f> > ZStructuredLightPattern::fringePointsList() const
 {
-    estimatedCloudPoints = 0;
-    for (auto it = fringePointsList.cbegin(), itEnd = fringePointsList.cend(); it != itEnd; ++it) {
-        estimatedCloudPoints += it->second.size();
-    }
+    return m_fringePointsList;
+}
+
+int ZStructuredLightPattern::estimatedCloudPoints() const
+{
+    return m_estimatedCloudPoints;
 }
 
 } // namespace Z3D

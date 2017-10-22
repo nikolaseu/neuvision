@@ -27,12 +27,12 @@
 namespace Z3D
 {
 
-class Z3D_STRUCTUREDLIGHT_SHARED_EXPORT ZProjectedPattern : public ZStructuredLightPattern
+struct Z3D_STRUCTUREDLIGHT_SHARED_EXPORT ZProjectedPattern : public ZStructuredLightPattern
 {
 public:
     typedef QSharedPointer<ZProjectedPattern> Ptr;
 
-    explicit ZProjectedPattern();
+    explicit ZProjectedPattern(std::map<int, std::vector<cv::Vec2f> > fringePointsList);
 };
 
 } // namespace Z3D

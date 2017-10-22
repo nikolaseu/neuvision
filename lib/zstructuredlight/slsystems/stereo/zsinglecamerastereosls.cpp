@@ -44,14 +44,15 @@ void ZSingleCameraStereoSLS::processPatterns()
         return;
     }
 
-    int estimatedCloudPoints = projectedPattern->estimatedCloudPoints;
-    for (const auto &decodedPattern : decodedPatterns)
-        estimatedCloudPoints += decodedPattern->estimatedCloudPoints;
+    int estimatedCloudPoints = projectedPattern->estimatedCloudPoints();
+    for (const auto &decodedPattern : decodedPatterns) {
+        estimatedCloudPoints += decodedPattern->estimatedCloudPoints();
+    }
 
     Z3D::ZSimplePointCloud::Ptr cloud = triangulate(
-                decodedPatterns[0]->intensityImg,
-                decodedPatterns[0]->fringePointsList,
-            projectedPattern->fringePointsList,
+                decodedPatterns[0]->intensityImg(),
+                decodedPatterns[0]->fringePointsList(),
+            projectedPattern->fringePointsList(),
             estimatedCloudPoints);
 
     if (cloud) {
@@ -92,7 +93,7 @@ void ZSingleCameraStereoSLS::init(QSettings *settings)
 
 void ZSingleCameraStereoSLS::onPatternProjected(ZProjectedPattern::Ptr pattern)
 {
-    if (pattern && pattern->estimatedCloudPoints > 0) {
+    if (pattern && pattern->estimatedCloudPoints() > 0) {
         projectedPattern = pattern;
         processPatterns();
     } else {
@@ -102,8 +103,8 @@ void ZSingleCameraStereoSLS::onPatternProjected(ZProjectedPattern::Ptr pattern)
 
 void ZSingleCameraStereoSLS::onPatternsDecoded(std::vector<ZDecodedPattern::Ptr> patterns)
 {
-    for (auto decodedPattern : patterns) {
-        if (decodedPattern->estimatedCloudPoints < 1) {
+    for (const auto &decodedPattern : patterns) {
+        if (decodedPattern->estimatedCloudPoints() < 1) {
             projectedPattern = ZProjectedPattern::Ptr(nullptr);
             return;
         }

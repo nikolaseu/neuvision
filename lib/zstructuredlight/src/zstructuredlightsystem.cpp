@@ -144,7 +144,7 @@ void ZStructuredLightSystem::onPatternsDecodedDebug(std::vector<ZDecodedPattern:
 
         /// only to show in the window, we need to change image "range" to improve visibility
         for (const auto &decodedPattern : patterns) {
-            cv::Mat &decoded = decodedPattern->decodedImage;
+            cv::Mat decoded = decodedPattern->decodedImage();
 
             ///find minimum and maximum intensities
             minMaxLoc(decoded, &minVal, &maxVal);
@@ -172,7 +172,7 @@ void ZStructuredLightSystem::onPatternsDecodedDebug(std::vector<ZDecodedPattern:
         if (m_debugShowDecodedImages) {
             int iCam = 0;
             for (const auto &decodedPattern : patterns) {
-                cv::Mat &decodedImage = decodedPattern->decodedImage;
+                cv::Mat decodedImage = decodedPattern->decodedImage();
 
                 /// convert to "visible" image to show in window
                 cv::Mat decodedVisibleImage;
@@ -189,7 +189,7 @@ void ZStructuredLightSystem::onPatternsDecodedDebug(std::vector<ZDecodedPattern:
         if (m_debugShowFringes) {
             int iCam = 0;
             for (const auto &decodedPattern : patterns) {
-                cv::Mat &decodedBorders = decodedPattern->fringeImage;
+                cv::Mat decodedBorders = decodedPattern->fringeImage();
 
                 /// convert to "visible" image to show in window
                 cv::Mat decodedVisibleBorders;
