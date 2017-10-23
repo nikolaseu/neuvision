@@ -126,22 +126,6 @@ QList<ZCameraInterface::ZCameraAttribute> PylonCamera::getAllAttributes()
             attr.description = node->GetDescription();
             attr.label = node->GetDisplayName();
 
-            GenICam::gcstring_vector propertyNames;
-            node->GetPropertyNames(propertyNames);
-            QVariantMap properties;
-            GenICam::gcstring values, attributes;
-            for (const auto &property : propertyNames) {
-                if (!node->GetProperty(property, values, attributes)) {
-                    qWarning() << "unable to get property for" << attr.path;
-                    break;
-                }
-                QVariantMap map;
-                map["values"] = values.c_str();
-                map["attributes"] = attributes.c_str();
-                properties[QString(property.c_str())] = map;
-            }
-            qDebug() << attr.path << properties;
-
             switch (node->GetPrincipalInterfaceType()) {
             case GenApi::EInterfaceType::intfIValue:       //!< IValue interface
                 qWarning() << "unhandled type GenApi::EInterfaceType::intfIValue" << attr.path;
@@ -149,34 +133,60 @@ QList<ZCameraInterface::ZCameraAttribute> PylonCamera::getAllAttributes()
             case GenApi::EInterfaceType::intfIBase:        //!< IBase interface
                 qWarning() << "unhandled type GenApi::EInterfaceType::intfIBase" << attr.path;
                 continue;
-            case GenApi::EInterfaceType::intfIInteger:     //!< IInteger interface
+            case GenApi::EInterfaceType::intfIInteger: {    //!< IInteger interface
+                GenApi::CIntegerPtr integerNode(node);
                 attr.type =  ZCameraInterface::CameraAttributeTypeInt;
-                attr.value = QString(values.c_str()).toInt();
+                attr.value = integerNode->GetValue();
+                attr.minimumValue = integerNode->GetMin();
+                attr.maximumValue = integerNode->GetMax();
                 break;
-            case GenApi::EInterfaceType::intfIBoolean:     //!< IBoolean interface
+            }
+            case GenApi::EInterfaceType::intfIBoolean: {    //!< IBoolean interface
+                GenApi::CBooleanPtr booleanNode(node);
                 attr.type =  ZCameraInterface::CameraAttributeTypeBool;
-                attr.value = QString(values.c_str()).toInt() != 0;
+                attr.value = booleanNode->GetValue();
                 break;
-            case GenApi::EInterfaceType::intfICommand:     //!< ICommand interface
+            }
+            case GenApi::EInterfaceType::intfICommand: {    //!< ICommand interface
                 attr.type =  ZCameraInterface::CameraAttributeTypeCommand;
                 break;
-            case GenApi::EInterfaceType::intfIFloat:       //!< IFloat interface
+            }
+            case GenApi::EInterfaceType::intfIFloat: {      //!< IFloat interface
+                GenApi::CFloatPtr floatNode(node);
                 attr.type =  ZCameraInterface::CameraAttributeTypeFloat;
-                attr.value = QString(values.c_str()).toDouble();
+                attr.value = floatNode->GetValue();
+                attr.minimumValue = floatNode->GetMin();
+                attr.maximumValue = floatNode->GetMax();
                 break;
-            case GenApi::EInterfaceType::intfIString:      //!< IString interface
+            }
+            case GenApi::EInterfaceType::intfIString: {     //!< IString interface
+                GenApi::CStringPtr stringNode(node);
                 attr.type =  ZCameraInterface::CameraAttributeTypeString;
-                attr.value = QString(values.c_str());
+                attr.value = QString(stringNode->GetValue().c_str());
                 break;
+            }
             case GenApi::EInterfaceType::intfIRegister:    //!< IRegister interface
                 qWarning() << "unhandled type GenApi::EInterfaceType::intfIRegister" << attr.path;
                 continue;
             case GenApi::EInterfaceType::intfICategory:    //!< ICategory interface
                 qWarning() << "unhandled type GenApi::EInterfaceType::intfICategory" << attr.path;
                 continue;
-            case GenApi::EInterfaceType::intfIEnumeration: //!< IEnumeration interface
-                attr.type =  ZCameraInterface::CameraAttributeTypeEnum;
+            case GenApi::EInterfaceType::intfIEnumeration: {    //!< IEnumeration interface
+                try {
+                    GenApi::CEnumerationPtr enumNode(node);
+                    attr.type =  ZCameraInterface::CameraAttributeTypeEnum;
+                    GenApi::NodeList_t entries;
+                    enumNode->GetEntries(entries);
+                    for (const auto &entry : entries) {
+                        attr.enumNames << QString(entry->GetDisplayName().c_str());
+                    }
+                    qDebug() << attr.path << enumNode->ToString().c_str();
+                    attr.enumValue = enumNode->GetIntValue();
+                } catch (...) {
+                    qWarning() << "exception enumerating properties for" << attr.path;
+                }
                 break;
+            }
             case GenApi::EInterfaceType::intfIEnumEntry:   //!< IEnumEntry interface
                 qWarning() << "unhandled type GenApi::EInterfaceType::intfIEnumEntry" << attr.path;
                 break;
