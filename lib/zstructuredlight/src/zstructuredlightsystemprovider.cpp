@@ -71,6 +71,8 @@ ZStructuredLightSystem::Ptr ZStructuredLightSystemProvider::get(QSettings *setti
         if (m_plugins.contains(pluginId)) {
             const auto plugin = m_plugins.value(pluginId);
             structuredLightSystem = plugin->get(settings);
+        } else {
+            qWarning() << "structured light type not found:" << pluginId;
         }
     }
     settings->endGroup();

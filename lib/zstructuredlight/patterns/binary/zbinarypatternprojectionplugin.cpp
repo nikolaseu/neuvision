@@ -32,12 +32,12 @@ ZBinaryPatternProjectionPlugin::ZBinaryPatternProjectionPlugin()
 
 QString ZBinaryPatternProjectionPlugin::id() const
 {
-    return "ZBinaryPatternProjectionPlugin";
+    return QString(metaObject()->className());
 }
 
 QString ZBinaryPatternProjectionPlugin::name() const
 {
-    return "Binary";
+    return tr("Binary");
 }
 
 QString ZBinaryPatternProjectionPlugin::version() const

@@ -50,9 +50,11 @@ ZPinholeCameraCalibration::ZPinholeCameraCalibration()
     //m_cvCameraMatrix = cv::Mat::zeros(3, 3, CV_64F);
     //m_cvDistortionCoeffs = cv::Mat::zeros(1, 12, CV_64F);
 
-    for (int r=0; r<m_cvDistortionCoeffs.rows; ++r)
-        for (int c=0; c<m_cvDistortionCoeffs.cols; ++c)
+    for (int r=0; r<m_cvDistortionCoeffs.rows; ++r) {
+        for (int c=0; c<m_cvDistortionCoeffs.cols; ++c) {
             m_cvDistortionCoeffs.at<double>(r,c) = 0.;
+        }
+    }
 
     QObject::connect(this, SIGNAL(calibrationChanged()),
                      this, SIGNAL(pinholeCalibrationChanged()));
@@ -88,9 +90,11 @@ ZPinholeCameraCalibration::ZPinholeCameraCalibration(cv::Mat cameraMatrix, cv::M
     //distCoeffs.convertTo(m_cvDistortionCoeffs, CV_64F);
     cv::Mat distCoeffs64;
     distCoeffs.convertTo(distCoeffs64, CV_64F);
-    for (int r=0; r<distCoeffs64.rows; ++r)
-        for (int c=0; c<distCoeffs64.cols; ++c)
+    for (int r=0; r<distCoeffs64.rows; ++r) {
+        for (int c=0; c<distCoeffs64.cols; ++c) {
             m_cvDistortionCoeffs.at<double>(r,c) = distCoeffs64.at<double>(r,c);
+        }
+    }
 
     QObject::connect(this, SIGNAL(calibrationChanged()),
                      this, SIGNAL(pinholeCalibrationChanged()));
@@ -204,8 +208,9 @@ bool ZPinholeCameraCalibration::getEstimatedTransformation(std::vector<cv::Point
 
 bool ZPinholeCameraCalibration::loadFromFile(const QString &fileName)
 {
-    if (fileName.isEmpty() || fileName.isNull())
+    if (fileName.isEmpty() || fileName.isNull()) {
         return false;
+    }
 
     QDir currentDir = QDir::current();
     if (!currentDir.exists(fileName)) {
@@ -443,28 +448,31 @@ double ZPinholeCameraCalibration::k3() const
 double ZPinholeCameraCalibration::k4() const
 {
     /// only present when calibrated using rational model
-    if (m_cvDistortionCoeffs.cols > 5)
+    if (m_cvDistortionCoeffs.cols > 5) {
         return m_cvDistortionCoeffs.at<double>(0, 5);
-    else
+    } else {
         return 0;
+    }
 }
 
 double ZPinholeCameraCalibration::k5() const
 {
     /// only present when calibrated using rational model
-    if (m_cvDistortionCoeffs.cols > 6)
+    if (m_cvDistortionCoeffs.cols > 6) {
         return m_cvDistortionCoeffs.at<double>(0, 6);
-    else
+    } else {
         return 0;
+    }
 }
 
 double ZPinholeCameraCalibration::k6() const
 {
     /// only present when calibrated using rational model
-    if (m_cvDistortionCoeffs.cols > 7)
+    if (m_cvDistortionCoeffs.cols > 7) {
         return m_cvDistortionCoeffs.at<double>(0, 7);
-    else
+    } else {
         return 0;
+    }
 }
 
 QPointF ZPinholeCameraCalibration::principalPoint() const
@@ -503,8 +511,9 @@ QPointF ZPinholeCameraCalibration::focalLength() const
 
 void ZPinholeCameraCalibration::setCx(double arg)
 {
-    if (cx() == arg)
+    if (cx() == arg) {
         return;
+    }
 
     m_cvCameraMatrix.at<double>(0, 2) = arg;
 
@@ -513,8 +522,9 @@ void ZPinholeCameraCalibration::setCx(double arg)
 
 void ZPinholeCameraCalibration::setCy(double arg)
 {
-    if (cy() == arg)
+    if (cy() == arg) {
         return;
+    }
 
     m_cvCameraMatrix.at<double>(1, 2) = arg;
 
@@ -523,8 +533,9 @@ void ZPinholeCameraCalibration::setCy(double arg)
 
 void ZPinholeCameraCalibration::setFx(double arg)
 {
-    if (fx() == arg)
+    if (fx() == arg) {
         return;
+    }
 
     m_cvCameraMatrix.at<double>(0, 0) = arg;
 
@@ -533,8 +544,9 @@ void ZPinholeCameraCalibration::setFx(double arg)
 
 void ZPinholeCameraCalibration::setFy(double arg)
 {
-    if (fy() == arg)
+    if (fy() == arg) {
         return;
+    }
 
     m_cvCameraMatrix.at<double>(1, 1) = arg;
 
@@ -543,8 +555,9 @@ void ZPinholeCameraCalibration::setFy(double arg)
 
 void ZPinholeCameraCalibration::setP1(double arg)
 {
-    if (p1() == arg)
+    if (p1() == arg) {
         return;
+    }
 
     m_cvDistortionCoeffs.at<double>(0, 2) = arg;
 
@@ -553,8 +566,9 @@ void ZPinholeCameraCalibration::setP1(double arg)
 
 void ZPinholeCameraCalibration::setP2(double arg)
 {
-    if (p2() == arg)
+    if (p2() == arg) {
         return;
+    }
 
     m_cvDistortionCoeffs.at<double>(0, 3) = arg;
 
@@ -563,8 +577,9 @@ void ZPinholeCameraCalibration::setP2(double arg)
 
 void ZPinholeCameraCalibration::setK1(double arg)
 {
-    if (k1() == arg)
+    if (k1() == arg) {
         return;
+    }
 
     m_cvDistortionCoeffs.at<double>(0, 0) = arg;
 
@@ -573,8 +588,9 @@ void ZPinholeCameraCalibration::setK1(double arg)
 
 void ZPinholeCameraCalibration::setK2(double arg)
 {
-    if (k2() == arg)
+    if (k2() == arg) {
         return;
+    }
 
     m_cvDistortionCoeffs.at<double>(0, 1) = arg;
 
@@ -583,8 +599,9 @@ void ZPinholeCameraCalibration::setK2(double arg)
 
 void ZPinholeCameraCalibration::setK3(double arg)
 {
-    if (k3() == arg)
+    if (k3() == arg) {
         return;
+    }
 
     m_cvDistortionCoeffs.at<double>(0, 4) = arg;
 
@@ -593,8 +610,9 @@ void ZPinholeCameraCalibration::setK3(double arg)
 
 void ZPinholeCameraCalibration::setK4(double arg)
 {
-    if (k4() == arg)
+    if (k4() == arg) {
         return;
+    }
 
     m_cvDistortionCoeffs.at<double>(0, 5) = arg;
 
@@ -603,8 +621,9 @@ void ZPinholeCameraCalibration::setK4(double arg)
 
 void ZPinholeCameraCalibration::setK5(double arg)
 {
-    if (k5() == arg)
+    if (k5() == arg) {
         return;
+    }
 
     m_cvDistortionCoeffs.at<double>(0, 6) = arg;
 
@@ -613,8 +632,9 @@ void ZPinholeCameraCalibration::setK5(double arg)
 
 void ZPinholeCameraCalibration::setK6(double arg)
 {
-    if (k6() == arg)
+    if (k6() == arg) {
         return;
+    }
 
     m_cvDistortionCoeffs.at<double>(0, 7) = arg;
 

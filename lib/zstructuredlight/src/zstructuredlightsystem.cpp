@@ -66,8 +66,9 @@ bool ZStructuredLightSystem::debugShowFringes() const
 
 bool ZStructuredLightSystem::start()
 {
-    if (!m_acqManager || !m_patternProjection)
+    if (!m_acqManager || !m_patternProjection) {
         return false;
+    }
 
     QTimer::singleShot(0, m_patternProjection, &ZPatternProjection::beginScan);
 
@@ -76,8 +77,9 @@ bool ZStructuredLightSystem::start()
 
 void ZStructuredLightSystem::setAcquisitionManager(ZCameraAcquisitionManager *acquisitionManager)
 {
-    if (m_acqManager == acquisitionManager)
+    if (m_acqManager == acquisitionManager) {
         return;
+    }
 
     discardConnections();
 
@@ -88,8 +90,9 @@ void ZStructuredLightSystem::setAcquisitionManager(ZCameraAcquisitionManager *ac
 
 void ZStructuredLightSystem::setPatternProjection(ZPatternProjection *patternProjection)
 {
-    if (m_patternProjection == patternProjection)
+    if (m_patternProjection == patternProjection) {
         return;
+    }
 
     discardConnections();
 
@@ -100,8 +103,9 @@ void ZStructuredLightSystem::setPatternProjection(ZPatternProjection *patternPro
 
 void ZStructuredLightSystem::setReady(bool ready)
 {
-    if (m_ready == ready)
+    if (m_ready == ready) {
         return;
+    }
 
     m_ready = ready;
     emit readyChanged(ready);
@@ -109,8 +113,9 @@ void ZStructuredLightSystem::setReady(bool ready)
 
 void ZStructuredLightSystem::setDebugSaveFringePoints(bool debugSaveFringePoints)
 {
-    if (m_debugSaveFringePoints == debugSaveFringePoints)
+    if (m_debugSaveFringePoints == debugSaveFringePoints) {
         return;
+    }
 
     m_debugSaveFringePoints = debugSaveFringePoints;
     emit debugSaveFringePointsChanged(debugSaveFringePoints);
@@ -118,8 +123,9 @@ void ZStructuredLightSystem::setDebugSaveFringePoints(bool debugSaveFringePoints
 
 void ZStructuredLightSystem::setDebugShowDecodedImages(bool debugShowDecodedImages)
 {
-    if (m_debugShowDecodedImages == debugShowDecodedImages)
+    if (m_debugShowDecodedImages == debugShowDecodedImages) {
         return;
+    }
 
     m_debugShowDecodedImages = debugShowDecodedImages;
     emit debugShowDecodedImagesChanged(debugShowDecodedImages);
@@ -127,8 +133,9 @@ void ZStructuredLightSystem::setDebugShowDecodedImages(bool debugShowDecodedImag
 
 void ZStructuredLightSystem::setDebugShowFringes(bool debugShowFringes)
 {
-    if (m_debugShowFringes == debugShowFringes)
+    if (m_debugShowFringes == debugShowFringes) {
         return;
+    }
 
     m_debugShowFringes = debugShowFringes;
     emit debugShowFringesChanged(debugShowFringes);
@@ -136,79 +143,92 @@ void ZStructuredLightSystem::setDebugShowFringes(bool debugShowFringes)
 
 void ZStructuredLightSystem::onPatternsDecodedDebug(std::vector<ZDecodedPattern::Ptr> patterns)
 {
-    if (m_debugShowDecodedImages || m_debugShowFringes) {
-        double minVal,
-               maxVal,
-               absMinVal = DBL_MAX,
-               absMaxVal = DBL_MIN;
+    if (!m_debugShowDecodedImages && !m_debugShowFringes) {
+        return;
+    }
 
-        /// only to show in the window, we need to change image "range" to improve visibility
+    double minVal,
+           maxVal,
+           absMinVal = DBL_MAX,
+           absMaxVal = DBL_MIN;
+
+    /// only to show in the window, we need to change image "range" to improve visibility
+    for (const auto &decodedPattern : patterns) {
+        cv::Mat decoded = decodedPattern->decodedImage();
+
+        ///find minimum and maximum intensities
+        cv::minMaxLoc(decoded, &minVal, &maxVal);
+
+        /// minimum will always be zero, we need to find the minimum != 0
+        /// we set maxVal where value is zero
+        cv::Mat mask = decoded == 0;
+        decoded.setTo(cv::Scalar(maxVal), mask);
+
+        /// find correct minimum and maximum intensities (skipping zeros)
+        cv::minMaxLoc(decoded, &minVal, &maxVal);
+
+        qDebug() << "min:" << minVal
+                 << "max:" << maxVal;
+
+        /// return back to original
+        decoded.setTo(cv::Scalar(0), mask);
+
+        if (absMinVal > minVal) {
+            absMinVal = minVal;
+        }
+
+        if (absMaxVal < maxVal) {
+            absMaxVal = maxVal;
+        }
+    }
+
+    /// range of values
+    double range = (absMaxVal - absMinVal);
+
+    qDebug() << "abs min:" << absMinVal
+             << "abs max:" << absMaxVal
+             << "range:" << range;
+
+    if (m_debugShowDecodedImages) {
+        int iCam = 0;
         for (const auto &decodedPattern : patterns) {
-            cv::Mat decoded = decodedPattern->decodedImage();
+            cv::Mat decodedImage = decodedPattern->decodedImage();
 
-            ///find minimum and maximum intensities
-            minMaxLoc(decoded, &minVal, &maxVal);
+            /// convert to "visible" image to show in window
+            cv::Mat decodedVisibleImage;
+            decodedImage.convertTo(decodedVisibleImage, CV_8U, 255.0/range, -absMinVal * 255.0/range);
 
-            /// minimum will always be zero, we need to find the minimum != 0
-            /// we set maxVal where value is zero
-            cv::Mat mask = decoded == 0;
-            decoded.setTo(cv::Scalar(maxVal), mask);
-
-            /// find correct minimum and maximum intensities (skipping zeros)
-            minMaxLoc(decoded, &minVal, &maxVal);
-
-            /// return back to original
-            decoded.setTo(cv::Scalar(0), mask);
-
-            if (absMinVal > minVal)
-                absMinVal = minVal;
-            if (absMaxVal < maxVal)
-                absMaxVal = maxVal;
+            Z3D::ZImageViewer *imageWidget = new Z3D::ZImageViewer();
+            imageWidget->setDeleteOnClose(true);
+            imageWidget->setWindowTitle(QString("Decoded image [Camera %1]").arg(iCam++));
+            imageWidget->updateImage(decodedVisibleImage);
+            imageWidget->show();
         }
+    }
 
-        /// range of values
-        double range = (absMaxVal - absMinVal);
+    if (m_debugShowFringes) {
+        int iCam = 0;
+        for (const auto &decodedPattern : patterns) {
+            cv::Mat decodedBorders = decodedPattern->fringeImage();
 
-        if (m_debugShowDecodedImages) {
-            int iCam = 0;
-            for (const auto &decodedPattern : patterns) {
-                cv::Mat decodedImage = decodedPattern->decodedImage();
+            /// convert to "visible" image to show in window
+            cv::Mat decodedVisibleBorders;
+            decodedBorders.convertTo(decodedVisibleBorders, CV_8U, 255.0/range, -absMinVal * 255.0/range);
 
-                /// convert to "visible" image to show in window
-                cv::Mat decodedVisibleImage;
-                decodedImage.convertTo(decodedVisibleImage, CV_8U, 255.0/range, -absMinVal * 255.0/range);
-
-                Z3D::ZImageViewer *imageWidget = new Z3D::ZImageViewer();
-                imageWidget->setDeleteOnClose(true);
-                imageWidget->setWindowTitle(QString("Decoded image [Camera %1]").arg(iCam++));
-                imageWidget->updateImage(decodedVisibleImage);
-                imageWidget->show();
-            }
-        }
-
-        if (m_debugShowFringes) {
-            int iCam = 0;
-            for (const auto &decodedPattern : patterns) {
-                cv::Mat decodedBorders = decodedPattern->fringeImage();
-
-                /// convert to "visible" image to show in window
-                cv::Mat decodedVisibleBorders;
-                decodedBorders.convertTo(decodedVisibleBorders, CV_8U, 255.0/range, -absMinVal * 255.0/range);
-
-                Z3D::ZImageViewer *imageWidget = new Z3D::ZImageViewer();
-                imageWidget->setDeleteOnClose(true);
-                imageWidget->setWindowTitle(QString("Fringe borders [Camera %1]").arg(iCam++));
-                imageWidget->updateImage(decodedVisibleBorders);
-                imageWidget->show();
-            }
+            Z3D::ZImageViewer *imageWidget = new Z3D::ZImageViewer();
+            imageWidget->setDeleteOnClose(true);
+            imageWidget->setWindowTitle(QString("Fringe borders [Camera %1]").arg(iCam++));
+            imageWidget->updateImage(decodedVisibleBorders);
+            imageWidget->show();
         }
     }
 }
 
 void ZStructuredLightSystem::setupConnections()
 {
-    if (!m_acqManager || !m_patternProjection)
+    if (!m_acqManager || !m_patternProjection) {
         return;
+    }
 
     connect(m_patternProjection, &ZPatternProjection::prepareAcquisition,
             m_acqManager, &ZCameraAcquisitionManager::prepareAcquisition);
@@ -230,8 +250,9 @@ void ZStructuredLightSystem::setupConnections()
 
 void ZStructuredLightSystem::discardConnections()
 {
-    if (!m_acqManager || !m_patternProjection)
+    if (!m_acqManager || !m_patternProjection) {
         return;
+    }
 
     disconnect(m_patternProjection, &ZPatternProjection::prepareAcquisition,
                m_acqManager, &ZCameraAcquisitionManager::prepareAcquisition);

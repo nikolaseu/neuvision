@@ -77,7 +77,7 @@ ZCameraCalibration::Ptr ZCameraCalibrationProvider::getCalibration(QString plugi
 ZCameraCalibration::Ptr ZCameraCalibrationProvider::getCalibration(QSettings *settings)
 {
     QVariantMap options;
-    foreach(QString key, settings->allKeys()) {
+    for (const auto &key : settings->allKeys()) {
         options[key] = settings->value(key);
     }
 

@@ -80,12 +80,12 @@ ZBinaryPatternProjection::~ZBinaryPatternProjection()
 
 QString ZBinaryPatternProjection::id() const
 {
-    return QString("Binary");
+    return QString(metaObject()->className());
 }
 
 QString ZBinaryPatternProjection::displayName() const
 {
-    return QString("Binary");
+    return tr("Binary");
 }
 
 void ZBinaryPatternProjection::showProjectionWindow()

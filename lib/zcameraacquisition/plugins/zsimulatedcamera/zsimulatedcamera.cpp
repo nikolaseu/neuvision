@@ -35,7 +35,7 @@ ZSimulatedCamera::ZSimulatedCamera(QVariantMap options, QObject *parent)
     m_folder = options["Folder"].toString();
 
     m_dir = QDir::current();
-    if (m_dir.exists(m_folder)) {
+    if (!m_folder.isEmpty() && m_dir.exists(m_folder)) {
         m_dir.cd(m_folder);
     } else {
 #if defined(Q_OS_MAC)
@@ -44,27 +44,29 @@ ZSimulatedCamera::ZSimulatedCamera(QVariantMap options, QObject *parent)
             m_dir.cdUp();
             m_dir.cdUp();
         }
-        if (m_dir.exists(m_folder)) {
+        if (!m_folder.isEmpty() && m_dir.exists(m_folder)) {
             m_dir.cd(m_folder);
         } else
 #endif
             qWarning() << "Folder" << m_folder << "not found in" << m_dir.absolutePath();
     }
 
-    loadImageFromFilename("gray_00_inv.png");
-
-//    qDebug() << Q_FUNC_INFO << uuid();
+    const auto entries = m_dir.entryList(QStringList() << "*.png", QDir::Files);
+    if (entries.size()) {
+        loadImageFromFilename(entries.first());
+    }
 }
 
 ZSimulatedCamera::~ZSimulatedCamera()
 {
-//    qDebug() << Q_FUNC_INFO << uuid();
+
 }
 
 bool ZSimulatedCamera::startAcquisition()
 {
-    if (!ZCameraBase::startAcquisition())
+    if (!ZCameraBase::startAcquisition()) {
         return false;
+    }
 
     QTimer::singleShot(100, this, SLOT(emitNewImage()));
 
@@ -135,8 +137,9 @@ void ZSimulatedCamera::loadImageFromFilename(QString fileName)
 
     m_lastRetrievedImage->swap(newImage);
 
-    if (isRunning())
+    if (isRunning()) {
         emit newImageReceived(*m_lastRetrievedImage);
+    }
 }
 
 bool ZSimulatedCamera::setAttribute(const QString &name, const QVariant &value, bool notify)
@@ -144,8 +147,9 @@ bool ZSimulatedCamera::setAttribute(const QString &name, const QVariant &value, 
     if (name == "CurrentFile") {
         loadImageFromFilename(value.toString());
 
-        if (notify)
+        if (notify) {
             emit attributeChanged("CurrentFile", m_currentFile);
+        }
 
         return true;
     }

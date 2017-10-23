@@ -64,6 +64,8 @@ ZStructuredLightSystem::Ptr ZStereoSLSPlugin::get(QSettings *settings)
         sls = ZStructuredLightSystem::Ptr(new ZDualCameraStereoSLS());
     } else if (mode == "Projector+Camera") {
         sls = ZStructuredLightSystem::Ptr(new ZSingleCameraStereoSLS());
+    } else {
+        qWarning() << "unknown ZStereoSLS mode:" << mode;
     }
 
     if (sls) {
