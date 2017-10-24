@@ -108,7 +108,7 @@ QList<ZCameraInterface::ZCameraAttribute> PylonCamera::getAllAttributes()
     GenApi::NodeList_t nodelist;
     nodemap.GetNodes(nodelist);
 
-    for (const auto node : nodelist) {
+    for (const auto &node : nodelist) {
         if (node->GetPrincipalInterfaceType() != GenApi::EInterfaceType::intfICategory) {
             continue;
         }
