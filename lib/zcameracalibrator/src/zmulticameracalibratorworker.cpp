@@ -300,6 +300,7 @@ void ZMultiCameraCalibratorWorker::calibrateFunctionImpl(std::vector<ZCameraCali
     }
 
     /// filter to only add points that were found in all cameras (required for incomplete patterns)
+    int pointsCount = 0;
     for (size_t imageIndex=0; imageIndex<validImageCount; ++imageIndex) {
         const auto &multiImage = validImages[imageIndex];
         const auto &imgCam1 = multiImage->image(0);
@@ -328,12 +329,27 @@ void ZMultiCameraCalibratorWorker::calibrateFunctionImpl(std::vector<ZCameraCali
                 imagePoints[cameraIndex] = detectedPoints[indexWorldPointInCurrentImg];
             }
             if (foundInAll) {
+                pointsCount++;
                 worldPoints.push_back(*itWorldPointsCam1);
                 for (size_t cameraIndex=0; cameraIndex<cameraCount; ++cameraIndex) {
                     allImagePoints[cameraIndex][imageIndex].push_back(imagePoints[cameraIndex]);
                 }
             }
         }
+    }
+
+    if (pointsCount < 16 * imageCount) {
+        /// not enough detected points
+        qWarning() << "could not calibrate multi camera, not enough points";
+
+        /// calibration end
+        setProgress(1.f);
+        emit calibrationFailed(tr("Calibration failed. Not enough points detected"));
+        emit calibrationChanged(newCalibrations);
+
+        return;
+    } else {
+        qDebug() << "number of points:" << pointsCount;
     }
 
     /// 30% ¿?

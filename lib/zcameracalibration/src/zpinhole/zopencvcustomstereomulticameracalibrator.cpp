@@ -88,10 +88,17 @@ std::vector<ZCameraCalibration::Ptr> ZOpenCVCustomStereoMultiCameraCalibrator::g
             return newCalibrations;
         }
 
+        if (calibration->sensorWidth() * calibration->sensorWidth() < 1) {
+            qWarning() << "invalid calibration config! camera sensor size is zero!";
+            return newCalibrations;
+        }
+
         imageSize[ic] = cv::Size(calibration->sensorWidth(),
                                  calibration->sensorHeight());
         cameraMatrix[ic] = calibration->cvCameraMatrix().clone();
         distCoeffs[ic] = calibration->cvDistortionCoeffs().clone();
+
+        qDebug() << "camera" << ic << "imageSize:" << imageSize[ic].width << "x" << imageSize[ic].height;
     }
 
     std::vector< std::vector<cv::Mat> > rotationMats(ncameras);
