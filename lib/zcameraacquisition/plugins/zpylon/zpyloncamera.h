@@ -38,7 +38,7 @@ class PylonCamera : public ZCameraBase
     public:
         explicit BaslerImageHandler(PylonCamera *camera);
 
-        virtual void OnImageGrabbed(Pylon::CInstantCamera& camera, const Pylon::CGrabResultPtr& ptrGrabResult) override;
+        virtual void OnImageGrabbed(Pylon::CInstantCamera& camera, const Pylon::CGrabResultPtr& grabResult) override;
     private:
         PylonCamera *m_camera;
     };

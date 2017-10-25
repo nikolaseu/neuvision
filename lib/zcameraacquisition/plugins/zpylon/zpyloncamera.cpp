@@ -33,25 +33,29 @@ PylonCamera::BaslerImageHandler::BaslerImageHandler(PylonCamera *camera)
 {
 }
 
-void PylonCamera::BaslerImageHandler::OnImageGrabbed(Pylon::CInstantCamera& camera, const Pylon::CGrabResultPtr& ptrGrabResult)
+void PylonCamera::BaslerImageHandler::OnImageGrabbed(Pylon::CInstantCamera&, const Pylon::CGrabResultPtr& grabResult)
 {
-    const uint8_t* pImageBuffer = (uint8_t*)ptrGrabResult->GetBuffer();
+    if (grabResult->GetErrorCode()) {
+        emit m_camera->error(QString(grabResult->GetErrorDescription()));
+        return;
+    }
 
-    size_t width = ptrGrabResult->GetWidth();
-    size_t height = ptrGrabResult->GetHeight();
-    cv::Mat image(cv::Size(width, height), CV_8UC1,
-        (unsigned char*)pImageBuffer, cv::Mat::AUTO_STEP);
+    const auto width = grabResult->GetWidth();
+    const auto height = grabResult->GetHeight();
+    const auto offsetX = grabResult->GetOffsetX();
+    const auto offsetY = grabResult->GetOffsetY();
 
+    //! TODO properly set the correct bytesPerPixel value
     const int bytesPerPixel = 1;
 
     /// get image from buffer
-    ZImageGrayscale::Ptr currentImage = m_camera->getNextBufferImage(width, height, 0, 0, bytesPerPixel);
+    ZImageGrayscale::Ptr currentImage = m_camera->getNextBufferImage(width, height, offsetX, offsetY, bytesPerPixel);
 
     /// copy data
-    currentImage->setBuffer((void *)pImageBuffer);
+    currentImage->setBuffer(grabResult->GetBuffer());
 
     /// set image number
-    currentImage->setNumber(ptrGrabResult->GetFrameNumber());
+    currentImage->setNumber(grabResult->GetFrameNumber());
 
     /// notify
     emit m_camera->newImageReceived(currentImage);
@@ -206,14 +210,102 @@ QList<ZCameraInterface::ZCameraAttribute> PylonCamera::getAllAttributes()
 
 QVariant PylonCamera::getAttribute(const QString &name) const
 {
+    Q_UNUSED(name);
+
     //! TODO
     return QVariant("INVALID");
 }
 
 bool PylonCamera::setAttribute(const QString &name, const QVariant &value, bool notify)
 {
-    //! TODO
-    return false;
+    qDebug() << "trying to set " << name << "to" << value;
+
+    auto node = m_camera.GetNodeMap().GetNode(qPrintable(name));
+    if (!GenApi::IsWritable(node)) {
+        qWarning() << "camera attribute is not writable" << name;
+        return false;
+    }
+
+    bool changed = false;
+
+    switch (node->GetPrincipalInterfaceType()) {
+    case GenApi::EInterfaceType::intfIValue:       //!< IValue interface
+        qWarning() << "unhandled type GenApi::EInterfaceType::intfIValue" << node->GetName(true);
+        break;
+    case GenApi::EInterfaceType::intfIBase:        //!< IBase interface
+        qWarning() << "unhandled type GenApi::EInterfaceType::intfIBase" << node->GetName(true);
+        break;
+    case GenApi::EInterfaceType::intfIInteger: {    //!< IInteger interface
+        GenApi::CIntegerPtr integerNode(node);
+        integerNode->SetValue(value.toInt());
+        changed = true;
+        break;
+    }
+    case GenApi::EInterfaceType::intfIBoolean: {    //!< IBoolean interface
+        GenApi::CBooleanPtr booleanNode(node);
+        booleanNode->SetValue(value.toBool());
+        changed = true;
+        break;
+    }
+    case GenApi::EInterfaceType::intfICommand: {    //!< ICommand interface
+        GenApi::CCommandPtr commandNode(node);
+        commandNode->Execute();
+        changed = true;
+        break;
+    }
+    case GenApi::EInterfaceType::intfIFloat: {      //!< IFloat interface
+        GenApi::CFloatPtr floatNode(node);
+        floatNode->SetValue(value.toDouble());
+        changed = true;
+        break;
+    }
+    case GenApi::EInterfaceType::intfIString: {     //!< IString interface
+        GenApi::CStringPtr stringNode(node);
+        stringNode->SetValue(qPrintable(value.toString()));
+        changed = true;
+        break;
+    }
+    case GenApi::EInterfaceType::intfIRegister:    //!< IRegister interface
+        qWarning() << "unhandled type GenApi::EInterfaceType::intfIRegister" << node->GetName(true);
+        break;
+    case GenApi::EInterfaceType::intfICategory:    //!< ICategory interface
+        qWarning() << "unhandled type GenApi::EInterfaceType::intfICategory" << node->GetName(true);
+        break;
+    case GenApi::EInterfaceType::intfIEnumeration: {    //!< IEnumeration interface
+        GenApi::CEnumerationPtr enumNode(node);
+        GenApi::NodeList_t entries;
+        enumNode->GetEntries(entries);
+        QString valueString = value.toString();
+        for (const auto &entry : entries) {
+            GenApi::CEnumEntryPtr entryNode(entry);
+            if (valueString.compare(QString(entry->GetDisplayName())) == 0) {
+                enumNode->SetIntValue(entryNode->GetValue());
+                changed = true;
+                break;
+            }
+        }
+        break;
+    }
+    case GenApi::EInterfaceType::intfIEnumEntry:   //!< IEnumEntry interface
+        qWarning() << "unhandled type GenApi::EInterfaceType::intfIEnumEntry" << node->GetName(true);
+        break;
+    case GenApi::EInterfaceType::intfIPort:         //!< IPort interface
+        qWarning() << "unhandled type GenApi::EInterfaceType::intfIPort" << node->GetName(true);
+        break;
+    default:
+        qWarning() << "unknown type for" << node->GetName(true);
+        break;
+    }
+
+    if (!changed) {
+        qWarning() << "failed to change" << node->GetName(true) << "to" << value;
+    } else {
+        if (notify) {
+            emit attributeChanged(name, value);
+        }
+    }
+
+    return changed;
 }
 
 } // namespace Z3D

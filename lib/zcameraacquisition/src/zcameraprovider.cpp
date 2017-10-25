@@ -81,28 +81,11 @@ ZCameraInterface::Ptr ZCameraProvider::getCamera(QString pluginName, QVariantMap
             /// custom buffer size
             if (options.contains("BufferSize")) {
                 int bufferSize = options.value("BufferSize").toInt();
-                if (camera->setBufferSize(bufferSize))
+                if (camera->setBufferSize(bufferSize)) {
                     qDebug() << "camera" << camera->uuid() << "using a buffer size of" << bufferSize;
+                }
             }
-/* TODO: each camera will have to do this...
-            /// create a thread for the camera and move the camera to it
-            if (QThread::currentThread() == camera->thread()) {
-                QThread *cameraThread = new QThread();
-                qDebug() << qPrintable(
-                                QString("[%1] moving camera to its own thread (0x%2)")
-                                .arg(camera->uuid())
-                                .arg((long)cameraThread, 0, 16));
-                camera->moveToThread(cameraThread);
-                /// start thread with the highest priority
-                cameraThread->start(QThread::TimeCriticalPriority);
-            } else {
-                qWarning() << qPrintable(
-                                  QString("[%1] camera thread (0x%2) is not the current thread (0x%3). Cannot move camera to its own thread!")
-                                  .arg(camera->uuid())
-                                  .arg((long)camera->thread(), 0, 16)
-                                  .arg((long)QThread::currentThread(), 0, 16));
-            }
-*/
+
             m_model.add(camera.data());
         }
     } else {
