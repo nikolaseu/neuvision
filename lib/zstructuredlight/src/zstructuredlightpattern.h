@@ -33,12 +33,15 @@ namespace Z3D
 struct Z3D_STRUCTUREDLIGHT_SHARED_EXPORT ZStructuredLightPattern
 {
 public:
-    explicit ZStructuredLightPattern(std::map<int, std::vector<cv::Vec2f> > fringePointsList);
+    explicit ZStructuredLightPattern(cv::Mat decodedImage,
+                                     std::map<int, std::vector<cv::Vec2f> > fringePointsList);
 
+    cv::Mat decodedImage() const;
     std::map<int, std::vector<cv::Vec2f> > fringePointsList() const;
     int estimatedCloudPoints() const;
 
 private:
+    cv::Mat m_decodedImage;
     std::map<int, std::vector<cv::Vec2f> > m_fringePointsList;
     int m_estimatedCloudPoints;
 };

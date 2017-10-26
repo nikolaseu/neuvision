@@ -32,9 +32,7 @@ ZStructuredLightSystem::ZStructuredLightSystem(QObject *parent)
     , m_acqManager(nullptr)
     , m_patternProjection(nullptr)
     , m_ready(false)
-    , m_debugSaveFringePoints(false)
     , m_debugShowDecodedImages(false)
-    , m_debugShowFringes(false)
 {
 
 }
@@ -49,19 +47,9 @@ bool ZStructuredLightSystem::ready() const
     return m_ready;
 }
 
-bool ZStructuredLightSystem::debugSaveFringePoints() const
-{
-    return m_debugSaveFringePoints;
-}
-
 bool ZStructuredLightSystem::debugShowDecodedImages() const
 {
     return m_debugShowDecodedImages;
-}
-
-bool ZStructuredLightSystem::debugShowFringes() const
-{
-    return m_debugShowFringes;
 }
 
 bool ZStructuredLightSystem::start()
@@ -111,16 +99,6 @@ void ZStructuredLightSystem::setReady(bool ready)
     emit readyChanged(ready);
 }
 
-void ZStructuredLightSystem::setDebugSaveFringePoints(bool debugSaveFringePoints)
-{
-    if (m_debugSaveFringePoints == debugSaveFringePoints) {
-        return;
-    }
-
-    m_debugSaveFringePoints = debugSaveFringePoints;
-    emit debugSaveFringePointsChanged(debugSaveFringePoints);
-}
-
 void ZStructuredLightSystem::setDebugShowDecodedImages(bool debugShowDecodedImages)
 {
     if (m_debugShowDecodedImages == debugShowDecodedImages) {
@@ -131,19 +109,9 @@ void ZStructuredLightSystem::setDebugShowDecodedImages(bool debugShowDecodedImag
     emit debugShowDecodedImagesChanged(debugShowDecodedImages);
 }
 
-void ZStructuredLightSystem::setDebugShowFringes(bool debugShowFringes)
-{
-    if (m_debugShowFringes == debugShowFringes) {
-        return;
-    }
-
-    m_debugShowFringes = debugShowFringes;
-    emit debugShowFringesChanged(debugShowFringes);
-}
-
 void ZStructuredLightSystem::onPatternsDecodedDebug(std::vector<ZDecodedPattern::Ptr> patterns)
 {
-    if (!m_debugShowDecodedImages && !m_debugShowFringes) {
+    if (!m_debugShowDecodedImages) {
         return;
     }
 
@@ -189,38 +157,19 @@ void ZStructuredLightSystem::onPatternsDecodedDebug(std::vector<ZDecodedPattern:
              << "abs max:" << absMaxVal
              << "range:" << range;
 
-    if (m_debugShowDecodedImages) {
-        int iCam = 0;
-        for (const auto &decodedPattern : patterns) {
-            cv::Mat decodedImage = decodedPattern->decodedImage();
+    int iCam = 0;
+    for (const auto &decodedPattern : patterns) {
+        cv::Mat decodedImage = decodedPattern->decodedImage();
 
-            /// convert to "visible" image to show in window
-            cv::Mat decodedVisibleImage;
-            decodedImage.convertTo(decodedVisibleImage, CV_8U, 255.0/range, -absMinVal * 255.0/range);
+        /// convert to "visible" image to show in window
+        cv::Mat decodedVisibleImage;
+        decodedImage.convertTo(decodedVisibleImage, CV_8U, 255.0/range, -absMinVal * 255.0/range);
 
-            Z3D::ZImageViewer *imageWidget = new Z3D::ZImageViewer();
-            imageWidget->setDeleteOnClose(true);
-            imageWidget->setWindowTitle(QString("Decoded image [Camera %1]").arg(iCam++));
-            imageWidget->updateImage(decodedVisibleImage);
-            imageWidget->show();
-        }
-    }
-
-    if (m_debugShowFringes) {
-        int iCam = 0;
-        for (const auto &decodedPattern : patterns) {
-            cv::Mat decodedBorders = decodedPattern->fringeImage();
-
-            /// convert to "visible" image to show in window
-            cv::Mat decodedVisibleBorders;
-            decodedBorders.convertTo(decodedVisibleBorders, CV_8U, 255.0/range, -absMinVal * 255.0/range);
-
-            Z3D::ZImageViewer *imageWidget = new Z3D::ZImageViewer();
-            imageWidget->setDeleteOnClose(true);
-            imageWidget->setWindowTitle(QString("Fringe borders [Camera %1]").arg(iCam++));
-            imageWidget->updateImage(decodedVisibleBorders);
-            imageWidget->show();
-        }
+        Z3D::ZImageViewer *imageWidget = new Z3D::ZImageViewer();
+        imageWidget->setDeleteOnClose(true);
+        imageWidget->setWindowTitle(QString("Decoded image [Camera %1]").arg(iCam++));
+        imageWidget->updateImage(decodedVisibleImage);
+        imageWidget->show();
     }
 }
 

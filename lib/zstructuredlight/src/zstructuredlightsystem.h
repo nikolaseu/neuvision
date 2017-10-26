@@ -39,9 +39,7 @@ class Z3D_STRUCTUREDLIGHT_SHARED_EXPORT ZStructuredLightSystem : public QObject
     Q_OBJECT
 
     Q_PROPERTY(bool ready READ ready WRITE setReady NOTIFY readyChanged)
-    Q_PROPERTY(bool debugSaveFringePoints READ debugSaveFringePoints WRITE setDebugSaveFringePoints NOTIFY debugSaveFringePointsChanged)
     Q_PROPERTY(bool debugShowDecodedImages READ debugShowDecodedImages WRITE setDebugShowDecodedImages NOTIFY debugShowDecodedImagesChanged)
-    Q_PROPERTY(bool debugShowFringes READ debugShowFringes WRITE setDebugShowFringes NOTIFY debugShowFringesChanged)
 
 public:
     typedef QSharedPointer<ZStructuredLightSystem> Ptr;
@@ -55,15 +53,11 @@ public:
     virtual void init(QSettings *settings) = 0;
 
     bool ready() const;
-    bool debugSaveFringePoints() const;
     bool debugShowDecodedImages() const;
-    bool debugShowFringes() const;
 
 signals:
     void readyChanged(bool ready);
-    void debugSaveFringePointsChanged(bool debugSaveFringePoints);
     void debugShowDecodedImagesChanged(bool debugShowDecodedImages);
-    void debugShowFringesChanged(bool debugShowFringes);
 
     void scanFinished(Z3D::ZSimplePointCloud::Ptr cloud);
 
@@ -74,9 +68,7 @@ public slots:
     virtual void setPatternProjection(Z3D::ZPatternProjection *patternProjection);
 
     void setReady(bool ready);
-    void setDebugSaveFringePoints(bool debugSaveFringePoints);
     void setDebugShowDecodedImages(bool debugShowDecodedImages);
-    void setDebugShowFringes(bool debugShowFringes);
 
 protected slots:
     virtual void onPatternProjected(Z3D::ZProjectedPattern::Ptr pattern) = 0;
@@ -94,9 +86,7 @@ private:
 
     bool m_ready;
 
-    bool m_debugSaveFringePoints;
     bool m_debugShowDecodedImages;
-    bool m_debugShowFringes;
 };
 
 }

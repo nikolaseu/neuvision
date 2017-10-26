@@ -32,7 +32,8 @@ struct Z3D_STRUCTUREDLIGHT_SHARED_EXPORT ZProjectedPattern : public ZStructuredL
 public:
     typedef QSharedPointer<ZProjectedPattern> Ptr;
 
-    explicit ZProjectedPattern(std::map<int, std::vector<cv::Vec2f> > fringePointsList);
+    explicit ZProjectedPattern(cv::Mat decodedImage,
+                               std::map<int, std::vector<cv::Vec2f> > fringePointsList);
 };
 
 } // namespace Z3D
