@@ -27,16 +27,11 @@ namespace Z3D
 
 static int z3dDecodedPatternPtrTypeId = qRegisterMetaType<Z3D::ZDecodedPattern::Ptr>("Z3D::DecodedPattern::Ptr");
 
-ZDecodedPattern::ZDecodedPattern(std::map<int, std::vector<cv::Vec2f> > fringePointsList,
+ZDecodedPattern::ZDecodedPattern(cv::Mat decodedImage,
                                  cv::Mat intensityImg,
-                                 cv::Mat maskImg,
-                                 cv::Mat decodedImage,
-                                 cv::Mat fringeImage)
-    : ZStructuredLightPattern(fringePointsList)
+                                 std::map<int, std::vector<cv::Vec2f> > fringePointsList)
+    : ZStructuredLightPattern(decodedImage, fringePointsList)
     , m_intensityImg(intensityImg)
-    , m_maskImg(maskImg)
-    , m_decodedImage(decodedImage)
-    , m_fringeImage(fringeImage)
 {
 
 }
@@ -44,21 +39,6 @@ ZDecodedPattern::ZDecodedPattern(std::map<int, std::vector<cv::Vec2f> > fringePo
 cv::Mat ZDecodedPattern::intensityImg() const
 {
     return m_intensityImg;
-}
-
-cv::Mat ZDecodedPattern::maskImg() const
-{
-    return m_maskImg;
-}
-
-cv::Mat ZDecodedPattern::decodedImage() const
-{
-    return m_decodedImage;
-}
-
-cv::Mat ZDecodedPattern::fringeImage() const
-{
-    return m_fringeImage;
 }
 
 } // namespace Z3D

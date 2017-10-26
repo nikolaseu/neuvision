@@ -25,17 +25,12 @@
 #include <Z3DCameraAcquisition>
 
 #include <opencv2/imgproc/imgproc.hpp>
-#include <opencv2/calib3d/calib3d.hpp>
-#include <opencv2/highgui/highgui.hpp>
-#include <iostream> // std::cout
 
 #include <QCoreApplication>
 #include <QDateTime>
 #include <QDir>
 #include <QDebug>
-#include <QSignalMapper>
 #include <QThread>
-#include <QQmlEngine>
 #include <QQmlContext>
 #include <QQuickView>
 
@@ -58,15 +53,9 @@ ZBinaryPatternProjection::ZBinaryPatternProjection(QObject *parent)
     , m_debugMode(false)
     , m_previewEnabled(false)
 {
-    //! Creo QQuickView con lo que se debe mostrar por el proyector
     m_dlpview = new QQuickView();
-
-    //! Exporto esta ventana, se usa para leer la "configuracion" de la ventana actual
     m_dlpview->rootContext()->setContextProperty("config", this);
-
-    //! Para poder maximizar y manejar esas cosas desde qml
     m_dlpview->rootContext()->setContextProperty("window", m_dlpview);
-
     m_dlpview->setSource(QUrl("qrc:///zstructuredlight/qml/binarypatternprojection.qml"));
     m_dlpview->setResizeMode(QQuickView::SizeRootObjectToView);
 }
@@ -74,8 +63,9 @@ ZBinaryPatternProjection::ZBinaryPatternProjection(QObject *parent)
 ZBinaryPatternProjection::~ZBinaryPatternProjection()
 {
     qDebug() << "deleting projector window...";
-    if (m_dlpview)
+    if (m_dlpview) {
         m_dlpview->deleteLater();
+    }
 }
 
 QString ZBinaryPatternProjection::id() const
@@ -121,15 +111,11 @@ void ZBinaryPatternProjection::beginScan()
     qDebug() << "maxUsefulPatterns:" << m_maxUsefulPatterns;
     qDebug() << "numPatterns:" << m_numPatterns << "firstPatternToShow:" << firstPatternToShow;
 
-    //int numPatterns = qMax(m_numPatterns, m_maxUsefulPatterns) - firstPatternToShow + 1;
-
     QString scanTmpFolder = QString("tmp/dlpscans/%1").arg(QDateTime::currentDateTime().toString("yyyy.MM.dd_hh.mm.ss"));
 
     emit prepareAcquisition(scanTmpFolder);
 
     setVertical(m_vertical);
-
-
 
     /// acquisition time
     QTime acquisitionTime;
@@ -138,8 +124,9 @@ void ZBinaryPatternProjection::beginScan()
     for (int iPattern=0; iPattern <= m_maxUsefulPatterns; ++iPattern) {
         /// always show first (all white, used to stablish the noise threshold)
         /// but skip all up to firstPatternToShow
-        if (iPattern && iPattern<=firstPatternToShow)
+        if (iPattern && iPattern<=firstPatternToShow) {
             continue;
+        }
 
         setCurrentPattern(iPattern);
 
@@ -194,7 +181,7 @@ void ZBinaryPatternProjection::beginScan()
     }
     qDebug() << "pattern has" << fringePoints.size() << "fringes";
 
-    const Z3D::ZProjectedPattern::Ptr pattern(new Z3D::ZProjectedPattern(fringePoints));
+    const Z3D::ZProjectedPattern::Ptr pattern(new Z3D::ZProjectedPattern(cv::Mat(), fringePoints));
 
     /// notify possible listeners
     emit patternProjected(pattern);
@@ -267,40 +254,13 @@ void ZBinaryPatternProjection::processImages(std::vector< std::vector<Z3D::ZImag
                                    .arg(scanId)
                                    .arg(iCam)),
                         decoded);
-
-//            /// test
-//            cv::Mat blurredDecoded;
-
-//            cv::blur(decoded, blurredDecoded, cv::Size(3,3));
-//            cv::imwrite(qPrintable(QString("%1/%2/decoded_blur3x3.tiff")
-//                                   .arg(decodedPattern->scanTmpFolder)
-//                                   .arg(m_camList[iCam]->camera()->uuid())),
-//                        blurredDecoded);
-
-//            cv::blur(decoded, blurredDecoded, cv::Size(5,5));
-//            cv::imwrite(qPrintable(QString("%1/%2/decoded_blur5x5.tiff")
-//                                   .arg(decodedPattern->scanTmpFolder)
-//                                   .arg(m_camList[iCam]->camera()->uuid())),
-//                        blurredDecoded);
-
-//            cv::medianBlur(decoded, blurredDecoded, 3);
-//            cv::imwrite(qPrintable(QString("%1/%2/decoded_median3x3.tiff")
-//                                   .arg(decodedPattern->scanTmpFolder)
-//                                   .arg(m_camList[iCam]->camera()->uuid())),
-//                        blurredDecoded);
-
-//            cv::medianBlur(decoded, blurredDecoded, 5);
-//            cv::imwrite(qPrintable(QString("%1/%2/decoded_median5x5.tiff")
-//                                   .arg(decodedPattern->scanTmpFolder)
-//                                   .arg(m_camList[iCam]->camera()->uuid())),
-//                        blurredDecoded);
         }
 
         /// vector of points for every fringe
         std::map<int, std::vector<cv::Vec2f> > fringePoints;
-        cv::Mat decodedBorders = Z3D::ZBinaryPatternDecoder::simplifyBinaryPatternData(decoded, maskImg, fringePoints);
+        Z3D::ZBinaryPatternDecoder::simplifyBinaryPatternData(decoded, maskImg, fringePoints);
 
-        Z3D::ZDecodedPattern::Ptr decodedPattern(new Z3D::ZDecodedPattern(fringePoints, intensityImg, maskImg, decoded, decodedBorders));
+        Z3D::ZDecodedPattern::Ptr decodedPattern(new Z3D::ZDecodedPattern(decoded, intensityImg, fringePoints));
         decodedPatternList.push_back(decodedPattern);
     }
 
@@ -317,10 +277,12 @@ double ZBinaryPatternProjection::intensity()
 
 void ZBinaryPatternProjection::setIntensity(double arg)
 {
-    if (m_intensity != arg) {
-        m_intensity = arg;
-        emit intensityChanged(arg);
+    if (m_intensity == arg) {
+        return;
     }
+
+    m_intensity = arg;
+    emit intensityChanged(arg);
 }
 
 int ZBinaryPatternProjection::currentPattern()
@@ -330,10 +292,12 @@ int ZBinaryPatternProjection::currentPattern()
 
 void ZBinaryPatternProjection::setCurrentPattern(int arg)
 {
-    if (m_currentPattern != arg) {
-        m_currentPattern = arg;
-        emit currentPatternChanged(arg);
+    if (m_currentPattern == arg) {
+        return;
     }
+
+    m_currentPattern = arg;
+    emit currentPatternChanged(arg);
 }
 
 bool ZBinaryPatternProjection::inverted()
@@ -343,10 +307,12 @@ bool ZBinaryPatternProjection::inverted()
 
 void ZBinaryPatternProjection::setInverted(bool arg)
 {
-    if (m_inverted != arg) {
-        m_inverted = arg;
-        emit invertedChanged(arg);
+    if (m_inverted == arg) {
+        return;
     }
+
+    m_inverted = arg;
+    emit invertedChanged(arg);
 }
 
 bool ZBinaryPatternProjection::vertical()
@@ -356,12 +322,13 @@ bool ZBinaryPatternProjection::vertical()
 
 void ZBinaryPatternProjection::setVertical(bool arg)
 {
-    if (m_vertical != arg) {
-        m_vertical = arg;
-        emit verticalChanged(arg);
-
-        updateMaxUsefulPatterns();
+    if (m_vertical == arg) {
+        return;
     }
+
+    m_vertical = arg;
+    emit verticalChanged(arg);
+    updateMaxUsefulPatterns();
 }
 
 bool ZBinaryPatternProjection::useGrayBinary()
@@ -371,10 +338,12 @@ bool ZBinaryPatternProjection::useGrayBinary()
 
 void ZBinaryPatternProjection::setUseGrayBinary(bool arg)
 {
-    if (m_useGrayBinary != arg) {
-        m_useGrayBinary = arg;
-        emit useGrayBinaryChanged(arg);
+    if (m_useGrayBinary == arg) {
+        return;
     }
+
+    m_useGrayBinary = arg;
+    emit useGrayBinaryChanged(arg);
 }
 
 int ZBinaryPatternProjection::delayMs() const
@@ -384,10 +353,12 @@ int ZBinaryPatternProjection::delayMs() const
 
 void ZBinaryPatternProjection::setDelayMs(int arg)
 {
-    if (m_delayMs != arg) {
-        m_delayMs = arg;
-        emit delayMsChanged(arg);
+    if (m_delayMs == arg) {
+        return;
     }
+
+    m_delayMs = arg;
+    emit delayMsChanged(arg);
 }
 
 int ZBinaryPatternProjection::noiseThreshold() const
@@ -397,10 +368,12 @@ int ZBinaryPatternProjection::noiseThreshold() const
 
 void ZBinaryPatternProjection::setNoiseThreshold(int arg)
 {
-    if (m_noiseThreshold != arg) {
-        m_noiseThreshold = arg;
-        emit noiseThresholdChanged(arg);
+    if (m_noiseThreshold == arg) {
+        return;
     }
+
+    m_noiseThreshold = arg;
+    emit noiseThresholdChanged(arg);
 }
 
 int ZBinaryPatternProjection::numPatterns() const
@@ -410,15 +383,17 @@ int ZBinaryPatternProjection::numPatterns() const
 
 void ZBinaryPatternProjection::setNumPatterns(int arg)
 {
-    if (m_numPatterns != arg) {
-        m_numPatterns = arg;
-        emit numPatternsChanged(arg);
+    if (m_numPatterns == arg) {
+        return;
+    }
 
-        if (!m_automaticPatternCount) {
-            int firstPatternToShow = m_maxUsefulPatterns - m_numPatterns;
-            qDebug() << "not using automatic pattern count. maxUsefulPatterns:" << m_maxUsefulPatterns;
-            qDebug() << "numPatterns:" << m_numPatterns << "firstPatternToShow:" << firstPatternToShow;
-        }
+    m_numPatterns = arg;
+    emit numPatternsChanged(arg);
+
+    if (!m_automaticPatternCount) {
+        int firstPatternToShow = m_maxUsefulPatterns - m_numPatterns;
+        qDebug() << "not using automatic pattern count. maxUsefulPatterns:" << m_maxUsefulPatterns;
+        qDebug() << "numPatterns:" << m_numPatterns << "firstPatternToShow:" << firstPatternToShow;
     }
 }
 
@@ -429,10 +404,12 @@ bool ZBinaryPatternProjection::debugMode() const
 
 void ZBinaryPatternProjection::setDebugMode(bool arg)
 {
-    if (m_debugMode != arg) {
-        m_debugMode = arg;
-        emit debugModeChanged(arg);
+    if (m_debugMode == arg) {
+        return;
     }
+
+    m_debugMode = arg;
+    emit debugModeChanged(arg);
 }
 
 bool ZBinaryPatternProjection::previewEnabled() const

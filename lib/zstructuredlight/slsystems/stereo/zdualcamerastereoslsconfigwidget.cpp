@@ -56,14 +56,8 @@ ZDualCameraStereoSLSConfigWidget::ZDualCameraStereoSLSConfigWidget(ZDualCameraSt
     connect(ui->debugShowDecodedImagesCheckBox, &QCheckBox::toggled,
             m_stereoSLS, &ZDualCameraStereoSLS::setDebugShowDecodedImages);
 
-    connect(m_stereoSLS, &ZDualCameraStereoSLS::debugShowFringesChanged,
-            ui->debugShowFringesCheckBox, &QCheckBox::setChecked);
-    connect(ui->debugShowFringesCheckBox, &QCheckBox::toggled,
-            m_stereoSLS, &ZDualCameraStereoSLS::setDebugShowFringes);
-
     ui->maxValidDistanceSpinBox->setValue(m_stereoSLS->maxValidDistance());
     ui->debugShowDecodedImagesCheckBox->setChecked(m_stereoSLS->debugShowDecodedImages());
-    ui->debugShowFringesCheckBox->setChecked(m_stereoSLS->debugShowFringes());
 
     /// Left camera
     QMenu *leftCameraMenu = new QMenu(this);

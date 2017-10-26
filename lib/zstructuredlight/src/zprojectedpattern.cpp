@@ -27,8 +27,9 @@ namespace Z3D
 
 static int z3dDecodedPatternPtrTypeId = qRegisterMetaType<Z3D::ZProjectedPattern::Ptr>("Z3D::ZProjectedPattern::Ptr");
 
-ZProjectedPattern::ZProjectedPattern(std::map<int, std::vector<cv::Vec2f> > fringePointsList)
-    : ZStructuredLightPattern(fringePointsList)
+ZProjectedPattern::ZProjectedPattern(cv::Mat decodedImage,
+                                     std::map<int, std::vector<cv::Vec2f> > fringePointsList)
+    : ZStructuredLightPattern(decodedImage, fringePointsList)
 {
 
 }
