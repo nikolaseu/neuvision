@@ -65,7 +65,7 @@ private slots:
     void onCalibrationPatternTypeChanged(int index);
 
     void onProgressChanged(float progress, QString message);
-    void onCalibrationChanged(std::vector<Z3D::ZCameraCalibration::Ptr> newCalibrations);
+    void onCalibrationChanged(ZMultiCameraCalibration::Ptr calibrationResult);
 
     void loadSession();
     void newSession();

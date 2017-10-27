@@ -130,10 +130,10 @@ ZMultiCameraCalibratorWidget::ZMultiCameraCalibratorWidget(std::vector<ZCalibrat
     m_calibratorWorker->setImageModel(m_model);
 
     /// calibrator signals
-    QObject::connect(m_calibratorWorker, SIGNAL(progressChanged(float,QString)),
-                     this, SLOT(onProgressChanged(float,QString)));
-    QObject::connect(m_calibratorWorker, SIGNAL(calibrationChanged(std::vector<Z3D::ZCameraCalibration::Ptr>)),
-                     this, SLOT(onCalibrationChanged(std::vector<Z3D::ZCameraCalibration::Ptr>)));
+    QObject::connect(m_calibratorWorker, &ZMultiCameraCalibratorWorker::progressChanged,
+                     this, &ZMultiCameraCalibratorWidget::onProgressChanged);
+    QObject::connect(m_calibratorWorker, &ZMultiCameraCalibratorWorker::calibrationChanged,
+                     this, &ZMultiCameraCalibratorWidget::onCalibrationChanged);
 
     /// move to worker thread
     m_workerThread = new QThread(this);
@@ -287,9 +287,10 @@ void ZMultiCameraCalibratorWidget::onProgressChanged(float progress, QString mes
         ui->statusbar->showMessage(message, progress < 1 ? 0 : 5000);
 }
 
-void ZMultiCameraCalibratorWidget::onCalibrationChanged(std::vector<Z3D::ZCameraCalibration::Ptr> newCalibrations)
+void ZMultiCameraCalibratorWidget::onCalibrationChanged(ZMultiCameraCalibration::Ptr calibrationResult)
 {
-    if (newCalibrations.size() == m_cameras.size()) {
+    if (calibrationResult) {
+        const auto &newCalibrations = calibrationResult->calibrations();
         QString currentDateTime = QDateTime::currentDateTime().toString("yyyyMMddhhmmss");
         for (size_t i=0; i<m_cameras.size(); ++i) {
             const auto &camera = m_cameras[i];
@@ -304,7 +305,7 @@ void ZMultiCameraCalibratorWidget::onCalibrationChanged(std::vector<Z3D::ZCamera
             //! TODO show calibration results!
         }
     } else {
-        qWarning() << "calibration went wrong, cameras.size != newCalibrations.size";
+        qWarning() << "calibration went wrong";
     }
 
     /// enable button again, calibration has finished

@@ -23,6 +23,7 @@
 #include "zcalibrationpatternfinder.h"
 
 #include "zcameracalibration.h"
+#include "zmulticameracalibration.h"
 
 #include <QFutureWatcher>
 #include <QObject>
@@ -53,7 +54,7 @@ signals:
     void progressChanged(float progress, QString message = QString());
 
     void calibrationFailed(QString message);
-    void calibrationChanged(std::vector<Z3D::ZCameraCalibration::Ptr> calibrations);
+    void calibrationChanged(Z3D::ZMultiCameraCalibration::Ptr multiCameraCalibrationResult);
 
 public slots:
     void setImageModel(Z3D::ZMultiCalibrationImageModel* imageModel);

@@ -228,9 +228,6 @@ void ZMultiCameraCalibratorWorker::calibrateFunctionImpl(std::vector<ZCameraCali
     /// 0%
     setProgress(0.f, tr("Starting multi camera calibration..."));
 
-    //std::vector<ZCameraCalibration::Ptr> currentCalibrations;
-    std::vector<ZCameraCalibration::Ptr> newCalibrations;
-
     const auto imageCount = size_t(m_imageModel->rowCount());
     auto cameraCount = size_t(0);
 
@@ -250,7 +247,7 @@ void ZMultiCameraCalibratorWorker::calibrateFunctionImpl(std::vector<ZCameraCali
                 /// calibration end
                 setProgress(1.f);
                 emit calibrationFailed(tr("Calibration failed. The number of cameras is not the same for all images"));
-                emit calibrationChanged(newCalibrations);
+                emit calibrationChanged(nullptr);
 
                 return;
             }
@@ -264,7 +261,7 @@ void ZMultiCameraCalibratorWorker::calibrateFunctionImpl(std::vector<ZCameraCali
         /// calibration end
         setProgress(1.f);
         emit calibrationFailed(tr("Calibration failed. Not enought cameras to calibrate"));
-        emit calibrationChanged(newCalibrations);
+        emit calibrationChanged(nullptr);
 
         return;
     } else {
@@ -280,7 +277,7 @@ void ZMultiCameraCalibratorWorker::calibrateFunctionImpl(std::vector<ZCameraCali
         /// calibration end
         setProgress(1.f);
         emit calibrationFailed(tr("Calibration failed. Not enough calibration patterns found"));
-        emit calibrationChanged(newCalibrations);
+        emit calibrationChanged(nullptr);
 
         return;
     } else {
@@ -345,7 +342,7 @@ void ZMultiCameraCalibratorWorker::calibrateFunctionImpl(std::vector<ZCameraCali
         /// calibration end
         setProgress(1.f);
         emit calibrationFailed(tr("Calibration failed. Not enough points detected"));
-        emit calibrationChanged(newCalibrations);
+        emit calibrationChanged(nullptr);
 
         return;
     } else {
@@ -355,7 +352,20 @@ void ZMultiCameraCalibratorWorker::calibrateFunctionImpl(std::vector<ZCameraCali
     /// 30% ¿?
     setProgress(0.3f, tr("Running calibration algorithm..."));
 
-    newCalibrations = m_cameraCalibrator->getCalibration(currentCalibrations, allImagePoints, realWorldPoints);
+    Z3D::ZMultiCameraCalibration::Ptr calibrationResult = m_cameraCalibrator->getCalibration(currentCalibrations, allImagePoints, realWorldPoints);
+    if (!calibrationResult) {
+        /// calibration failed
+        qWarning() << "could not calibrate multi camera, calibration algorithm failed";
+
+        /// calibration end
+        setProgress(1.f);
+        emit calibrationFailed(tr("Calibration failed."));
+        emit calibrationChanged(nullptr);
+
+        return;
+    }
+
+    std::vector<ZCameraCalibration::Ptr> newCalibrations = calibrationResult->calibrations();
 
     /// 99%
     const auto finishMessage = tr("Calibration finished in %1 msecs").arg(time.elapsed());
@@ -374,7 +384,7 @@ void ZMultiCameraCalibratorWorker::calibrateFunctionImpl(std::vector<ZCameraCali
     }
 
     /// calibration end
-    emit calibrationChanged(newCalibrations);
+    emit calibrationChanged(calibrationResult);
 
     /// 100%
     setProgress(1.f, finishMessage);

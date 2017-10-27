@@ -52,17 +52,15 @@ QString ZOpenCVCustomStereoMultiCameraCalibrator::name() const
     return QLatin1String("Custom stereo calibration");
 }
 
-std::vector<ZCameraCalibration::Ptr> ZOpenCVCustomStereoMultiCameraCalibrator::getCalibration(
+ZMultiCameraCalibration::Ptr ZOpenCVCustomStereoMultiCameraCalibrator::getCalibration(
         std::vector< Z3D::ZCameraCalibration::Ptr > &initialCameraCalibrations,
         std::vector< std::vector< std::vector< cv::Point2f > > > &imagePoints,
         std::vector<std::vector<cv::Point3f> > &objectPoints) const
 {
-    std::vector<ZCameraCalibration::Ptr> newCalibrations;
-
     const auto ncameras = initialCameraCalibrations.size();
     if (ncameras != 2) {
         qWarning() << "this only works with two cameras!";
-        return newCalibrations;
+        return nullptr;
     }
 
     std::vector<cv::Size> imageSize(ncameras);
@@ -85,12 +83,12 @@ std::vector<ZCameraCalibration::Ptr> ZOpenCVCustomStereoMultiCameraCalibrator::g
         Z3D::ZPinholeCameraCalibration *calibration = static_cast<Z3D::ZPinholeCameraCalibration*>(initialCameraCalibrations[ic].data());
         if (!calibration) {
             qWarning() << "invalid calibration! this only works for pinhole cameras!";
-            return newCalibrations;
+            return nullptr;
         }
 
         if (calibration->sensorWidth() * calibration->sensorWidth() < 1) {
             qWarning() << "invalid calibration config! camera sensor size is zero!";
-            return newCalibrations;
+            return nullptr;
         }
 
         imageSize[ic] = cv::Size(calibration->sensorWidth(),
@@ -197,6 +195,8 @@ std::vector<ZCameraCalibration::Ptr> ZOpenCVCustomStereoMultiCameraCalibrator::g
     }
 
     Z3D::ZCameraCalibration::Ptr cam0calib( new ZPinholeCameraCalibration(cameraMatrix[0], distCoeffs[0], imageSize[0]) );
+
+    std::vector<ZCameraCalibration::Ptr> newCalibrations;
     newCalibrations.push_back( cam0calib );
 
     for (size_t ic = 1; ic < ncameras; ++ic) {
@@ -241,7 +241,7 @@ std::vector<ZCameraCalibration::Ptr> ZOpenCVCustomStereoMultiCameraCalibrator::g
         cam0calib->setTranslation(-(rMat.t() * tvec));
     }
 
-    return newCalibrations;
+    return ZMultiCameraCalibration::Ptr(new ZMultiCameraCalibration(newCalibrations));
 }
 
 bool ZOpenCVCustomStereoMultiCameraCalibrator::fixIntrinsic() const

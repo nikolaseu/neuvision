@@ -17,8 +17,10 @@ HEADERS      += \
     zcameracalibrationplugininterface.h \
     zcameracalibrationprovider.h \
     zcameracalibrator.h \
+    zmulticameracalibration.h \
     zmulticameracalibrator.h \
     zpinhole/zopencvcustomstereomulticameracalibrator.h \
+    zpinhole/zopencvstereocameracalibration.h \
     zpinhole/zopencvstereomulticameracalibrator.h \
     zpinhole/zopencvstereomulticameracalibratorconfigwidget.h \
     zpinhole/zpinholecameracalibration.h \
@@ -28,15 +30,17 @@ HEADERS      += \
 
 SOURCES      += \
     zcameracalibration.cpp \
+    zcameracalibrationplugininterface.cpp \
     zcameracalibrationprovider.cpp \
+    zmulticameracalibration.cpp \
     zpinhole/zopencvcustomstereomulticameracalibrator.cpp \
+    zpinhole/zopencvstereocameracalibration.cpp \
     zpinhole/zopencvstereomulticameracalibrator.cpp \
     zpinhole/zopencvstereomulticameracalibratorconfigwidget.cpp \
     zpinhole/zpinholecameracalibration.cpp \
     zpinhole/zpinholecameracalibrationplugin.cpp \
     zpinhole/zpinholecameracalibrator.cpp \
-    zpinhole/zpinholecameracalibratorconfigwidget.cpp \
-    zcameracalibrationplugininterface.cpp
+    zpinhole/zpinholecameracalibratorconfigwidget.cpp
 
 FORMS += \
     zpinhole/zopencvstereomulticameracalibratorconfigwidget.ui \
