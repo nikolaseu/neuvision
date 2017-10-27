@@ -41,16 +41,16 @@ public:
                                             cv::Mat E,
                                             cv::Mat F);
 
-private:
-    std::vector<std::vector<cv::Point3f>> objectPoints;
-    std::vector<std::vector<std::vector<cv::Point2f>>> imagePoints;
-    cv::Mat cameraMatrix[2];
-    cv::Mat distCoeffs[2];
-    cv::Size imageSize[2];
-    cv::Mat R;
-    cv::Mat T;
-    cv::Mat E;
-    cv::Mat F;
+    const std::vector<std::vector<cv::Point3f>> objectPoints;
+    const std::vector<std::vector<std::vector<cv::Point2f>>> imagePoints;
+    std::vector<std::vector<std::vector<double>>> imagePointsEpipolarError;
+    const cv::Mat cameraMatrix[2];
+    const cv::Mat distCoeffs[2];
+    const cv::Size imageSize[2];
+    const cv::Mat R;
+    const cv::Mat T;
+    const cv::Mat E;
+    const cv::Mat F;
 };
 
 } // namespace Z3D

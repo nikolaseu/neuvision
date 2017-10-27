@@ -51,6 +51,17 @@ ZOpenCVStereoCameraCalibration::ZOpenCVStereoCameraCalibration(std::vector<ZCame
     , E(E)
     , F(F)
 {
+    const auto ncameras = imagePoints.size();
+    const auto nimages = imagePoints[0].size();
+    imagePointsEpipolarError.resize(ncameras);
+    for (size_t cam=0; cam<ncameras; ++cam) {
+        imagePointsEpipolarError[cam].resize(nimages);
+        for (size_t image=0; image<nimages; ++image) {
+            const int npoints = imagePoints[cam][image].size();
+            imagePointsEpipolarError[cam][image].resize(npoints);
+        }
+    }
+
     // CALIBRATION QUALITY CHECK
     // because the output fundamental matrix implicitly
     // includes all the output information,
@@ -59,7 +70,6 @@ ZOpenCVStereoCameraCalibration::ZOpenCVStereoCameraCalibration(std::vector<ZCame
     double err = 0;
     int npoints = 0;
     std::vector<cv::Vec3f> lines[2];
-    size_t nimages = imagePoints[0].size();
     for (size_t i = 0; i < nimages; i++ ) {
         const auto npt = imagePoints[0][i].size();
         cv::Mat imgpt[2];
@@ -71,13 +81,18 @@ ZOpenCVStereoCameraCalibration::ZOpenCVStereoCameraCalibration(std::vector<ZCame
         }
 
         for (size_t j = 0; j < npt; j++ ) {
-            double errij =
-                    fabs(imagePoints[0][i][j].x*lines[1][j][0] +
-                         imagePoints[0][i][j].y*lines[1][j][1] +
-                         lines[1][j][2]) +
-                    fabs(imagePoints[1][i][j].x*lines[0][j][0] +
-                         imagePoints[1][i][j].y*lines[0][j][1] +
-                         lines[0][j][2]);
+            double &leftError = imagePointsEpipolarError[0][i][j];
+            double &rightError = imagePointsEpipolarError[1][i][j];
+
+            leftError = imagePoints[0][i][j].x*lines[1][j][0] +
+                    imagePoints[0][i][j].y*lines[1][j][1] +
+                    lines[1][j][2];
+
+            rightError = imagePoints[1][i][j].x*lines[0][j][0] +
+                    imagePoints[1][i][j].y*lines[0][j][1] +
+                    lines[0][j][2];
+
+            double errij = fabs(leftError) + fabs(rightError);
             err += errij;
         }
         npoints += npt;

@@ -49,8 +49,6 @@ public slots:
 protected:
     DisplayMode m_displayMode;
 
-    QPolygonF m_markerPolygon;
-
     std::vector<QGraphicsItem*> m_calibrationPoints;
     std::vector<QGraphicsItem*> m_calibrationCoords;
 };

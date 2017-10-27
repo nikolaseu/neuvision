@@ -31,6 +31,11 @@ ZMultiCameraCalibration::ZMultiCameraCalibration(std::vector<ZCameraCalibrationP
 
 }
 
+ZMultiCameraCalibration::~ZMultiCameraCalibration()
+{
+
+}
+
 std::vector<ZCameraCalibrationPtr> ZMultiCameraCalibration::calibrations() const
 {
     return m_calibrations;
