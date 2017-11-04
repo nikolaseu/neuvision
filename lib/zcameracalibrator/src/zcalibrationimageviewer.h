@@ -44,7 +44,7 @@ public:
     void setDisplayMode(DisplayMode displayMode);
 
 public slots:
-    void updateCalibrationImage(Z3D::ZCalibrationImage::Ptr image);
+    void updateCalibrationImage(Z3D::ZCalibrationImagePtr image);
 
 protected:
     DisplayMode m_displayMode;

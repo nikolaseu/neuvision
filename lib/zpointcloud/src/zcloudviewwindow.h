@@ -19,10 +19,13 @@
 
 #pragma once
 
-#include <QMainWindow>
+#include "zpointcloud_fwd.h"
+#include "zpointcloud_global.h"
+#include "zpointcloud_typedefs.h"
 
 #include <Z3DCalibratedCamera>
-#include <Z3DPointCloud>
+
+#include <QMainWindow>
 
 // hack to avoid "macro argument mismatch" with some boost lib and Qt5
 #ifndef Q_MOC_RUN
@@ -47,9 +50,9 @@ public:
     explicit ZCloudViewWindow(QWidget *parent = 0);
     ~ZCloudViewWindow();
 
-    void showCameraSnapshot(Z3D::ZCalibratedCamera::Ptr pCamera);
+    void showCameraSnapshot(Z3D::ZCalibratedCameraPtr pCamera);
 
-    void drawCameraFrustrum(Z3D::ZCalibratedCamera::Ptr cam, float scale);
+    void drawCameraFrustrum(Z3D::ZCalibratedCameraPtr cam, float scale);
 
     void addPointCloud(PointCloudPCLPtr cloud, const QString &id = QString("cloud"));
 
@@ -103,7 +106,7 @@ private:
     vtkSmartPointer<vtkGenericOpenGLRenderWindow> m_renderWindow;
     boost::shared_ptr<pcl::visualization::PCLVisualizer> m_pclViewer;
 
-    Z3D::ZPointCloud::Ptr m_pointCloud;
+    Z3D::ZPointCloudPtr m_pointCloud;
     //SurfaceElementsPtr m_surfaceElements;
 
     QColor m_currentBackgroundColor;

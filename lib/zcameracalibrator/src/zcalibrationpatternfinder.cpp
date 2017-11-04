@@ -31,15 +31,15 @@ ZCalibrationPatternFinder::ZCalibrationPatternFinder(QObject *parent)
     , m_colWidth(5.)
     , m_rowHeight(5.)
 {
-    QObject::connect(this, SIGNAL(columnsChanged(int)),
-                     this, SLOT(updateConfigHash()));
-    QObject::connect(this, SIGNAL(rowsChanged(int)),
-                     this, SLOT(updateConfigHash()));
+    QObject::connect(this, &ZCalibrationPatternFinder::columnsChanged,
+                     this, &ZCalibrationPatternFinder::updateConfigHash);
+    QObject::connect(this, &ZCalibrationPatternFinder::rowsChanged,
+                     this, &ZCalibrationPatternFinder::updateConfigHash);
     /// col width and row height changes do not change the way the pattern finder works, but they change the calibration pattern "world" coordinates
-    QObject::connect(this, SIGNAL(colWidthChanged(double)),
-                     this, SLOT(updateConfigHash()));
-    QObject::connect(this, SIGNAL(rowHeightChanged(double)),
-                     this, SLOT(updateConfigHash()));
+    QObject::connect(this, &ZCalibrationPatternFinder::colWidthChanged,
+                     this, &ZCalibrationPatternFinder::updateConfigHash);
+    QObject::connect(this, &ZCalibrationPatternFinder::rowHeightChanged,
+                     this, &ZCalibrationPatternFinder::updateConfigHash);
 }
 
 int ZCalibrationPatternFinder::columns() const

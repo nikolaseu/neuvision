@@ -98,9 +98,9 @@ void CreateStreamBuffers( PvDevice *aDevice, PvStream *aStream, BufferList *aBuf
     uint32_t lSize = aDevice->GetPayloadSize();
 
     /// Use BUFFER_COUNT or the maximum number of buffers, whichever is smaller
-    uint32_t lBufferCount = ( aStream->GetQueuedBufferMaximum() < BUFFER_COUNT ) ?
-        aStream->GetQueuedBufferMaximum() :
-        BUFFER_COUNT;
+    uint32_t lBufferCount = ( aStream->GetQueuedBufferMaximum() < BUFFER_COUNT )
+            ? aStream->GetQueuedBufferMaximum()
+            : BUFFER_COUNT;
 
     /// Allocate buffers
     for ( uint32_t i = 0; i < lBufferCount; i++ ) {
@@ -236,14 +236,14 @@ ZPleoraeBUSCameraPrivate *ZPleoraeBUSCameraPrivate::getCameraByMAC(QString name)
     return 0;*/
 }
 
-ZPleoraeBUSCameraPrivate::ZPleoraeBUSCameraPrivate(const PvDeviceInfo *deviceInfo, QObject *parent) :
-    QObject(parent),
-    lDeviceInfo(deviceInfo),
-    lDevice(nullptr),
-    lStream(nullptr),
-    m_internalBufferSize(20),
-    m_acquisitionCounter(0),
-    m_stopThreadRequested(true)
+ZPleoraeBUSCameraPrivate::ZPleoraeBUSCameraPrivate(const PvDeviceInfo *deviceInfo, QObject *parent)
+    : QObject(parent)
+    , lDeviceInfo(deviceInfo)
+    , lDevice(nullptr)
+    , lStream(nullptr)
+    , m_internalBufferSize(20)
+    , m_acquisitionCounter(0)
+    , m_stopThreadRequested(true)
 {
     /// obtain properties to generate unique camera id
     m_uuid += QString("ZPleoraeBUS-%1-%2")
@@ -746,7 +746,7 @@ void ZPleoraeBUSCameraPrivate::grabLoop()
                     uint32_t imgHeight = lImage->GetHeight();
                     if (bytesPerPixel > 0 && imgWidth > 0 && imgHeight > 0) {
                         /// This is copying data
-                        ZImageGrayscale::Ptr currentImage = q_ptr->getNextBufferImage(
+                        ZCameraImagePtr currentImage = q_ptr->getNextBufferImage(
                                     imgWidth,
                                     imgHeight,
                                     lImage->GetOffsetX(),

@@ -21,16 +21,13 @@
 #include "zcalibrationimage.h"
 
 #include "zcalibrationpatternfinder.h"
-
-#include <Z3DCameraCalibration>
+#include "zcameracalibration.h"
 
 #include <QDebug>
 #include <QFile>
 #include <QPainter>
 
-#include <opencv2/highgui/highgui.hpp> // imread
-
-//#include <iostream> // sdt::cout para debug de rotation y translation
+#include <opencv2/imgcodecs.hpp> // imread
 
 #ifndef MAX_THUMBNAIL_SIZE
 #define MAX_THUMBNAIL_SIZE 218
@@ -40,7 +37,7 @@ namespace Z3D
 {
 
 //! FIXME esto no va acá
-static int _sharedPointerMetaTypeId = qRegisterMetaType< Z3D::ZCalibrationImage::Ptr >("Z3D::ZCalibrationImage::Ptr");
+static int _sharedPointerMetaTypeId = qRegisterMetaType< Z3D::ZCalibrationImagePtr >("Z3D::ZCalibrationImagePtr");
 static int _imageStateMetaTypeId = qRegisterMetaType< Z3D::ZCalibrationImage::ImageState >("Z3D::ZCalibrationImage::ImageState");
 
 ZCalibrationImage::ZCalibrationImage(QString fileName, QObject *parent)
@@ -230,8 +227,6 @@ bool ZCalibrationImage::findPattern(ZCalibrationPatternFinder *patternFinder)
     QString patternFinderHash = patternFinder->configHash();
     if (m_patternFinderHash != patternFinderHash) {
         m_patternFinderHash = patternFinderHash;
-
-        Z3D::ZCalibrationImage::ImageState prevState = state();
 
         setState(CheckingState);
 

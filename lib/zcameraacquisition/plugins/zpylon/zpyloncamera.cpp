@@ -49,7 +49,7 @@ void PylonCamera::BaslerImageHandler::OnImageGrabbed(Pylon::CInstantCamera&, con
     const int bytesPerPixel = 1;
 
     /// get image from buffer
-    ZImageGrayscale::Ptr currentImage = m_camera->getNextBufferImage(width, height, offsetX, offsetY, bytesPerPixel);
+    ZCameraImagePtr currentImage = m_camera->getNextBufferImage(width, height, offsetX, offsetY, bytesPerPixel);
 
     /// copy data
     currentImage->setBuffer(grabResult->GetBuffer());

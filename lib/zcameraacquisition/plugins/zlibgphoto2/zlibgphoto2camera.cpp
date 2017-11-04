@@ -20,12 +20,13 @@
 
 #include "zlibgphoto2camera.h"
 
+#include "zcameraimage.h"
+
 #include <QDebug>
+#include <QImage>
 #include <QSize>
 #include <QThread>
 #include <QTimer>
-
-#include <QtGui/QImage>
 
 
 namespace Z3D
@@ -428,14 +429,14 @@ bool ZLibGPhoto2Camera::stopAcquisition()
     return true;
 }
 
-ZImageGrayscale::Ptr ZLibGPhoto2Camera::getSnapshot()
+ZCameraImagePtr ZLibGPhoto2Camera::getSnapshot()
 {
     QImage picture = captureImage(cam, context);
     if (picture.isNull()) {
         return nullptr;
     }
 
-    ZImageGrayscale::Ptr currentImage = getNextBufferImage(picture.width(), picture.height(), 0, 0, 1);
+    ZCameraImagePtr currentImage = getNextBufferImage(picture.width(), picture.height(), 0, 0, 1);
 
     /// copy data
     currentImage->setBuffer(picture.bits());
@@ -494,7 +495,7 @@ void ZLibGPhoto2Camera::grabLoop()
             }
         }
 
-        ZImageGrayscale::Ptr currentImage = getNextBufferImage(picture.width(), picture.height(), 0, 0, 1);
+        ZCameraImagePtr currentImage = getNextBufferImage(picture.width(), picture.height(), 0, 0, 1);
 
         /// copy data
         currentImage->setBuffer(picture.bits());

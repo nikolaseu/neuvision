@@ -35,24 +35,9 @@
 namespace Z3D
 {
 
-QString ZPinholeCameraCalibrationPlugin::id() const
+ZCameraCalibrationPtr ZPinholeCameraCalibrationPlugin::getCalibration(QVariantMap options)
 {
-    return QString(PINHOLE_CALIB_NAME);
-}
-
-QString ZPinholeCameraCalibrationPlugin::name() const
-{
-    return QString(PINHOLE_CALIB_NAME);
-}
-
-QString ZPinholeCameraCalibrationPlugin::version() const
-{
-    return QString(PINHOLE_CALIB_VERSION);
-}
-
-ZCameraCalibration::Ptr ZPinholeCameraCalibrationPlugin::getCalibration(QVariantMap options)
-{
-    ZCameraCalibration::Ptr calibration(new ZPinholeCameraCalibration);
+    ZCameraCalibrationPtr calibration(new ZPinholeCameraCalibration);
 
     if (calibration && options.contains("ConfigFile")) {
         QString configFileName = options.value("ConfigFile").toString();

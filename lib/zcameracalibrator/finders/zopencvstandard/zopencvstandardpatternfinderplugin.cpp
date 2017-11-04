@@ -27,27 +27,12 @@
 
 namespace Z3D {
 
-QString ZOpenCVStandardPatternFinderPlugin::id() const
+QList<ZCalibrationPatternFinderPtr> ZOpenCVStandardPatternFinderPlugin::getPatternFinders()
 {
-    return QString(metaObject()->className());
-}
+    QList<ZCalibrationPatternFinderPtr> finderList;
 
-QString ZOpenCVStandardPatternFinderPlugin::name() const
-{
-    return QString(metaObject()->className());
-}
-
-QString ZOpenCVStandardPatternFinderPlugin::version() const
-{
-    return QString(Z3D_VERSION_STR);
-}
-
-QList<ZCalibrationPatternFinder::Ptr> ZOpenCVStandardPatternFinderPlugin::getPatternFinders()
-{
-    QList<ZCalibrationPatternFinder::Ptr> finderList;
-
-    finderList << ZCalibrationPatternFinder::Ptr(new ZCircleGridCalibrationPatternFinder());
-    finderList << ZCalibrationPatternFinder::Ptr(new ZChessboardCalibrationPatternFinder());
+    finderList << ZCalibrationPatternFinderPtr(new ZCircleGridCalibrationPatternFinder());
+    finderList << ZCalibrationPatternFinderPtr(new ZChessboardCalibrationPatternFinder());
 
     return finderList;
 }

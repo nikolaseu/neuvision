@@ -17,8 +17,7 @@
  * along with Z3D.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef Z3D_CAMERAACQUISITION_PLUGIN___ZNIIMAQDXGRABCAMERA_H
-#define Z3D_CAMERAACQUISITION_PLUGIN___ZNIIMAQDXGRABCAMERA_H
+#pragma once
 
 #include "zcamerainterface_p.h"
 
@@ -32,7 +31,7 @@ class ZNIIMAQdxGrabCamera : public ZCameraBase
     Q_OBJECT
 
 public:
-    static ZCameraInterface::Ptr getCameraByName(QString name);
+    static ZCameraPtr getCameraByName(QString name);
 
     explicit ZNIIMAQdxGrabCamera(QObject *parent = 0);
     ~ZNIIMAQdxGrabCamera();
@@ -56,5 +55,3 @@ private:
 };
 
 } // namespace Z3D
-
-#endif // Z3D_CAMERAACQUISITION_PLUGIN___ZNIIMAQDXGRABCAMERA_H

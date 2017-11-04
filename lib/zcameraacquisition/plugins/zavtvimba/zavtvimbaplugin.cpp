@@ -47,7 +47,7 @@ QString ZAVTVimbaPlugin::id()
     return QString("ZAVTVimba");
 }
 
-QString ZAVTVimbaPlugin::name()
+QString ZAVTVimbaPlugin::displayName()
 {
     return QString("AVT Vimba SDK");
 }
@@ -84,7 +84,7 @@ QList<ZCameraInfo *> ZAVTVimbaPlugin::getConnectedCameras()
     return camerasList;
 }
 
-ZCameraInterface::Ptr ZAVTVimbaPlugin::getCamera(QVariantMap options)
+ZCameraPtr ZAVTVimbaPlugin::getCamera(QVariantMap options)
 {
     QString cameraDeviceID = options.value("DeviceID").toString();
 
@@ -110,10 +110,10 @@ ZCameraInterface::Ptr ZAVTVimbaPlugin::getCamera(QVariantMap options)
     }
 
     if (avtCamera) {
-        return ZCameraInterface::Ptr(avtCamera);
+        return ZCameraPtr(avtCamera);
     }
 
-    return ZCameraInterface::Ptr(nullptr);
+    return nullptr;
 }
 
 } // namespace Z3D

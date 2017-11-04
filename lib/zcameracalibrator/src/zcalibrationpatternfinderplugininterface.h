@@ -19,22 +19,19 @@
 
 #pragma once
 
+#include "zcameracalibrator_fwd.h"
 #include "zcameracalibrator_global.h"
-#include "zcalibrationpatternfinder.h"
-#include "zcoreplugin.h"
 
 namespace Z3D
 {
 
-class Z3D_CAMERACALIBRATOR_SHARED_EXPORT ZCalibrationPatternFinderPluginInterface : public ZCorePlugin
+class Z3D_CAMERACALIBRATOR_SHARED_EXPORT ZCalibrationPatternFinderPluginInterface
 {
-    Q_OBJECT
-
 public:
     virtual ~ZCalibrationPatternFinderPluginInterface() {}
 
     /// calibration utilities
-    virtual QList<ZCalibrationPatternFinder::Ptr> getPatternFinders() = 0;
+    virtual QList<ZCalibrationPatternFinderPtr> getPatternFinders() = 0;
     virtual QWidget *getConfigWidget(ZCalibrationPatternFinder *patternFinder) = 0;
 };
 

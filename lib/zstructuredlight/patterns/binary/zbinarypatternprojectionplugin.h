@@ -19,12 +19,12 @@
 
 #pragma once
 
-#include <zpatternprojectionplugin.h>
+#include "zpatternprojectionplugin.h"
 
 namespace Z3D
 {
 
-class ZBinaryPatternProjectionPlugin : public ZPatternProjectionPlugin
+class ZBinaryPatternProjectionPlugin : public QObject, public ZPatternProjectionPlugin
 {
     Q_OBJECT
     Q_PLUGIN_METADATA(IID "z3d.zstructuredlight.zstructuredlightsystemplugin" FILE "zbinarypatternprojectionplugin.json")
@@ -33,16 +33,10 @@ class ZBinaryPatternProjectionPlugin : public ZPatternProjectionPlugin
 public:
     ZBinaryPatternProjectionPlugin();
 
-    // ZCorePlugin interface
-public:
-    QString id() const override;
-    QString name() const override;
-    QString version() const override;
-
     // ZPatternProjectionPlugin interface
 public:
-    QList<ZPatternProjection *> getAll() override;
-    QWidget *getConfigWidget(ZPatternProjection *patternProjection) override;
+    std::vector<ZPatternProjectionPtr> getAll() override;
+    QWidget *getConfigWidget(ZPatternProjectionWeakPtr patternProjection) override;
 
 private:
     std::map<ZPatternProjection *, QWidget *> m_patternProjectionWidgets;

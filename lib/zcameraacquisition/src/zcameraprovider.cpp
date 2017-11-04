@@ -21,6 +21,8 @@
 #include "zcameraprovider.h"
 
 #include "zcamerainterface.h"
+#include "zcameralistmodel.h"
+#include "zcoreplugin.h"
 #include "zcameraplugininterface.h"
 #include "zpluginloader.h"
 
@@ -37,12 +39,11 @@ void ZCameraProvider::loadPlugins()
 {
     auto list = ZPluginLoader::plugins("cameraacquisition");
 
-    for (auto pluginInstance : list) {
-        auto *plugin = qobject_cast<ZCameraPluginInterface *>(pluginInstance);
+    for (auto pluginLoader : list) {
+        auto *plugin = pluginLoader->instance<ZCameraPluginInterface>();
         if (plugin) {
-            qDebug() << "camera plugin loaded. type:" << plugin->id()
-                     << "version:" << plugin->version();
-            m_plugins.insert(plugin->id(), plugin);
+            qDebug() << "camera plugin loaded. type:" << pluginLoader->id();
+            m_plugins.insert(pluginLoader->id(), plugin);
         } else {
             qWarning() << "invalid camera plugin:" << plugin;
         }
@@ -58,9 +59,9 @@ void ZCameraProvider::unloadPlugins()
     m_plugins.clear();
 }
 
-ZCameraInterface::Ptr ZCameraProvider::getCamera(QString pluginName, QVariantMap options)
+ZCameraPtr ZCameraProvider::getCamera(QString pluginName, QVariantMap options)
 {
-    ZCameraInterface::Ptr camera;
+    ZCameraPtr camera;
 
     if (m_plugins.contains(pluginName)) {
         camera = m_plugins[pluginName]->getCamera(options);
@@ -86,7 +87,7 @@ ZCameraInterface::Ptr ZCameraProvider::getCamera(QString pluginName, QVariantMap
                 }
             }
 
-            m_model.add(camera.get());
+            m_model.add(camera);
         }
     } else {
         qWarning() << "camera plugin not found:" << pluginName;
@@ -95,7 +96,7 @@ ZCameraInterface::Ptr ZCameraProvider::getCamera(QString pluginName, QVariantMap
     return camera;
 }
 
-ZCameraInterface::Ptr ZCameraProvider::getCamera(QSettings *settings)
+ZCameraPtr ZCameraProvider::getCamera(QSettings *settings)
 {
     QVariantMap options;
     for (const auto &key : settings->allKeys()) {
@@ -107,7 +108,7 @@ ZCameraInterface::Ptr ZCameraProvider::getCamera(QSettings *settings)
     return getCamera(deviceType, options);
 }
 
-QList<ZCameraInterface::Ptr> ZCameraProvider::loadCameras(QString folder)
+ZCameraList ZCameraProvider::loadCameras(QString folder)
 {
     QDir configDir = QDir(folder);
 
@@ -128,13 +129,13 @@ QList<ZCameraInterface::Ptr> ZCameraProvider::loadCameras(QString folder)
 
         if (!configDir.cd("cameras")) {
             qWarning() << "cameras configuration folder 'cameras' not found in" << configDir.absolutePath();
-            return QList<Z3D::ZCameraInterface::Ptr>();
+            return ZCameraList();
         }
     }
 
     qDebug() << "loading cameras from" << configDir.absolutePath();
 
-    QList<Z3D::ZCameraInterface::Ptr> cameraList;
+    ZCameraList cameraList;
 
     QStringList filters;
     filters << "*.ini" << "*.json"; //! TODO: agregar para leer configuracion en JSON
@@ -144,7 +145,8 @@ QList<ZCameraInterface::Ptr> ZCameraProvider::loadCameras(QString folder)
         qDebug() << "found" << fileName;
         QSettings settings(configDir.absoluteFilePath(fileName), QSettings::IniFormat);
         settings.beginGroup("Camera");
-        cameraList << getCamera(&settings);
+        cameraList.push_back(getCamera(&settings));
+        settings.endGroup();
     }
 
     return cameraList;

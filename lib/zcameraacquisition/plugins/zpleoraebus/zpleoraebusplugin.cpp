@@ -46,7 +46,7 @@ QString ZPleoraeBUSPlugin::id() const
     return QString("ZPleoraeBUS");
 }
 
-QString ZPleoraeBUSPlugin::name() const
+QString ZPleoraeBUSPlugin::displayName() const
 {
     return QString("Pleora eBUS SDK");
 }
@@ -146,7 +146,7 @@ QList<ZCameraInfo *> ZPleoraeBUSPlugin::getConnectedCameras()
     return camerasList;
 }
 
-ZCameraInterface::Ptr ZPleoraeBUSPlugin::getCamera(QVariantMap options)
+ZCameraPtr ZPleoraeBUSPlugin::getCamera(QVariantMap options)
 {
     QString cameraMACAddress = options.value("MACAddress").toString();
     return ZPleoraeBUSCamera::getCameraByMAC(cameraMACAddress);

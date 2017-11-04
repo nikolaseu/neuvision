@@ -20,6 +20,7 @@
 
 #include "zpatternprojectionprovider.h"
 
+#include "zcoreplugin.h"
 #include "zpluginloader.h"
 #include "zpatternprojectionplugin.h"
 
@@ -34,11 +35,10 @@ void ZPatternProjectionProvider::loadPlugins()
 {
     auto list = ZPluginLoader::plugins("structuredlightpatterns");
 
-    for (auto pluginInstance : list) {
-        auto *plugin = qobject_cast<ZPatternProjectionPlugin *>(pluginInstance);
+    for (auto pluginLoader : list) {
+        auto *plugin = pluginLoader->instance<ZPatternProjectionPlugin>();
         if (plugin) {
-            qDebug() << "pattern projection plugin loaded. type:" << plugin->id()
-                     << "version:" << plugin->version();
+            qDebug() << "pattern projection plugin loaded. type:" << pluginLoader->id();
             m_list << plugin;
         } else {
             qWarning() << "invalid pattern projection plugin:" << plugin;
@@ -51,16 +51,18 @@ void ZPatternProjectionProvider::unloadPlugins()
 
 }
 
-QList<ZPatternProjection *> ZPatternProjectionProvider::getAll()
+std::vector<ZPatternProjectionPtr> ZPatternProjectionProvider::getAll()
 {
-    QList<ZPatternProjection *> list;
+    std::vector<ZPatternProjectionPtr> list;
     for (auto plugin : m_list) {
-        list << plugin->getAll();
+        for (auto patternProjection : plugin->getAll()) {
+            list.push_back(patternProjection);
+        }
     }
     return list;
 }
 
-QWidget *ZPatternProjectionProvider::getConfigWidget(ZPatternProjection *patternProjection)
+QWidget *ZPatternProjectionProvider::getConfigWidget(ZPatternProjectionWeakPtr patternProjection)
 {
     for (auto plugin : m_list) {
         if (auto *widget = plugin->getConfigWidget(patternProjection)) {

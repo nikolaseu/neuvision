@@ -20,11 +20,13 @@
 
 #include "zcameralistmodel.h"
 
+#include "zcamerainterface.h"
+
 namespace Z3D
 {
 
-ZCameraListModel::ZCameraListModel(QObject *parent) :
-    QAbstractListModel(parent)
+ZCameraListModel::ZCameraListModel(QObject *parent)
+    : QAbstractListModel(parent)
 {
 
 }
@@ -40,48 +42,59 @@ QHash<int, QByteArray> ZCameraListModel::roleNames() const
 
 int ZCameraListModel::rowCount(const QModelIndex &parent) const
 {
-    if (parent.isValid())
+    if (parent.isValid()) {
         return 0;
-    else
+    } else {
         return m_cameraList.size();
+    }
 }
 
 
 QVariant ZCameraListModel::data(const QModelIndex &index, int role) const
 {
-    if (!index.isValid() || role != CameraPtrRole)
+    if (!index.isValid()
+            || role != CameraPtrRole
+            || index.row() >= int(m_cameraList.size()))
+    {
         return QVariant();
+    }
 
-    ZCameraInterface* camera = m_cameraList.value(index.row());
+    ZCameraPtr camera = m_cameraList[index.row()];
 
-    return QVariant::fromValue((QObject*) camera);
+    return QVariant::fromValue((QObject*) camera.get());
 }
 
 
-void ZCameraListModel::add(ZCameraInterface* camera)
+void ZCameraListModel::add(ZCameraPtr camera)
 {
     /// insert at the end
     int row = m_cameraList.size();
     beginInsertRows(QModelIndex(), row, row);
 
     //! add to list
-    m_cameraList.insert(row, camera);
+    m_cameraList.push_back(camera);
 
     endInsertRows();
 
     /// to remove from model when camera is deleted
-    QObject::connect(camera, SIGNAL(destroyed(QObject*)),
-                     this, SLOT(onCameraDeleted(QObject*)));
+    QObject::connect(camera.get(), &ZCameraInterface::destroyed,
+                     this, &ZCameraListModel::onCameraDeleted);
 }
 
 void ZCameraListModel::onCameraDeleted(QObject *object)
 {
     ZCameraInterface *camera = static_cast<ZCameraInterface*>(object);
 
-    int index = m_cameraList.indexOf(camera);
-    beginRemoveRows(QModelIndex(), index, index);
-    m_cameraList.removeAll(camera);
-    endRemoveRows();
+    for (auto it = m_cameraList.cbegin(); it != m_cameraList.cend(); ++it) {
+        if (it->get() == camera) {
+            int index = it - m_cameraList.cbegin();
+            beginRemoveRows(QModelIndex(), index, index);
+            m_cameraList.erase(it);
+            endRemoveRows();
+
+            break;
+        }
+    }
 }
 
 } // namespace Z3D

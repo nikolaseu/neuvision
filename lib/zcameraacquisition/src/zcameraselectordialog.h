@@ -19,8 +19,8 @@
 
 #pragma once
 
+#include "zcameraacquisition_fwd.h"
 #include "zcameraacquisition_global.h"
-#include "zcamerainterface.h"
 
 #include <QDialog>
 
@@ -38,18 +38,18 @@ class Z3D_CAMERAACQUISITION_SHARED_EXPORT ZCameraSelectorDialog : public QDialog
 public:
     ~ZCameraSelectorDialog();
 
-    static Z3D::ZCameraInterface::Ptr getCamera();
+    static Z3D::ZCameraPtr getCamera();
 
 protected:
     explicit ZCameraSelectorDialog(QWidget *parent = nullptr);
 
 protected slots:
-    void onCameraSelected(Z3D::ZCameraInterface::Ptr camera);
+    void onCameraSelected(Z3D::ZCameraPtr camera);
 
 private:
     Ui::ZCameraSelectorDialog *ui;
 
-    Z3D::ZCameraInterface::Ptr m_selectedCamera;
+    Z3D::ZCameraPtr m_selectedCamera;
 };
 
 } // namespace Z3D

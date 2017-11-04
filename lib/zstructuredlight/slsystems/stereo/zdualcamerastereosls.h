@@ -19,8 +19,9 @@
 
 #pragma once
 
-#include "zcalibratedcamera.h"
 #include "zstereosls.h"
+
+#include <Z3DCalibratedCamera>
 
 namespace Z3D
 {
@@ -35,17 +36,17 @@ public:
     explicit ZDualCameraStereoSLS(QObject *parent = nullptr);
     ~ZDualCameraStereoSLS();
 
-    Z3D::ZCalibratedCamera::Ptr leftCamera() const;
-    Z3D::ZCalibratedCamera::Ptr rightCamera() const;
+    Z3D::ZCalibratedCameraPtr leftCamera() const;
+    Z3D::ZCalibratedCameraPtr rightCamera() const;
 
 private slots:
-    void addCameras(QList<Z3D::ZCalibratedCamera::Ptr> cameras);
+    void addCameras(QList<Z3D::ZCalibratedCameraPtr> cameras);
 
-    void setLeftCamera(Z3D::ZCalibratedCamera::Ptr camera);
-    void setRightCamera(Z3D::ZCalibratedCamera::Ptr camera);
+    void setLeftCamera(Z3D::ZCalibratedCameraPtr camera);
+    void setRightCamera(Z3D::ZCalibratedCameraPtr camera);
 
 private:
-    std::vector<Z3D::ZCalibratedCamera::Ptr> m_cameras;
+    std::vector<Z3D::ZCalibratedCameraPtr> m_cameras;
 
     // ZStructuredLightSystem interface
 public:
@@ -55,8 +56,8 @@ public:
     virtual void init(QSettings *settings) override;
 
 protected slots:
-    virtual void onPatternProjected(ZProjectedPattern::Ptr pattern) override;
-    virtual void onPatternsDecoded(std::vector<ZDecodedPattern::Ptr> patterns) override;
+    virtual void onPatternProjected(ZProjectedPatternPtr pattern) override;
+    virtual void onPatternsDecoded(std::vector<ZDecodedPatternPtr> patterns) override;
 };
 
 } // namespace Z3D

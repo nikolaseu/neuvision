@@ -19,7 +19,7 @@
 
 #pragma once
 
-#include "zcalibrationimage.h"
+#include "zcameracalibrator_fwd.h"
 
 #include <QAbstractListModel>
 #include <QFutureWatcher>
@@ -36,8 +36,6 @@ class ZCalibrationImageModel : public QAbstractListModel
     Q_PROPERTY(int imageHeight READ imageHeight NOTIFY imageSizeChanged)
 
 public:
-    typedef QPointer<ZCalibrationImageModel> WeakPtr;
-
     enum ZCalibrationImageModelRoles {
         DataRole = Qt::UserRole + 1,
         FilenameRole
@@ -54,7 +52,7 @@ public:
     int imageWidth() { return m_width; }
     int imageHeight() { return m_height; }
 
-    const QList< Z3D::ZCalibrationImage::Ptr > &images() const;
+    const QList< Z3D::ZCalibrationImagePtr > &images() const;
 
 signals:
     void imageSizeChanged();
@@ -65,24 +63,24 @@ public slots:
 
     void addFolder(QString folder);
 
-    void addImage(Z3D::ZCalibrationImage::Ptr image);
-    void addImageThreadSafe(Z3D::ZCalibrationImage::Ptr image);
-    void addImages(const QVector<Z3D::ZCalibrationImage::Ptr > &images);
+    void addImage(Z3D::ZCalibrationImagePtr image);
+    void addImageThreadSafe(Z3D::ZCalibrationImagePtr image);
+    void addImages(const QVector<Z3D::ZCalibrationImagePtr > &images);
 
-    void addImpl(Z3D::ZCalibrationImage::Ptr image);
+    void addImpl(Z3D::ZCalibrationImagePtr image);
 
-    Z3D::ZCalibrationImage::Ptr imageAt(int index) const;
+    Z3D::ZCalibrationImagePtr imageAt(int index) const;
 
 protected slots:
     void onImageStateChanged();
 
 private:
-    QList< Z3D::ZCalibrationImage::Ptr > m_images;
+    QList< Z3D::ZCalibrationImagePtr > m_images;
 
     int m_width;
     int m_height;
 
-    QVector< Z3D::ZCalibrationImage::Ptr > m_imagesToLoad;
+    QVector< Z3D::ZCalibrationImagePtr > m_imagesToLoad;
     QFutureWatcher<void> m_futureWatcher;
 
     QMutex m_mutex;

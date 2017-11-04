@@ -22,9 +22,8 @@
 #include "zcameracalibrator_global.h"
 
 #include <QObject>
-#include <QPointer>
 
-#include <opencv2/core/core.hpp>
+#include <opencv2/core/mat.hpp>
 
 namespace Z3D
 {
@@ -39,9 +38,6 @@ class Z3D_CAMERACALIBRATOR_SHARED_EXPORT ZCalibrationPatternFinder : public QObj
     Q_PROPERTY(float rowHeight READ rowHeight WRITE setRowHeight NOTIFY rowHeightChanged)
 
 public:
-    typedef std::shared_ptr<ZCalibrationPatternFinder> Ptr;
-    typedef QPointer<ZCalibrationPatternFinder> WeakPtr;
-
     explicit ZCalibrationPatternFinder(QObject *parent = nullptr);
 
     virtual QString id() const = 0;

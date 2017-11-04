@@ -20,6 +20,7 @@
 
 #include "zsimulatedcameraplugin.h"
 
+#include "zcamerainfo.h"
 #include "zsimulatedcamera.h"
 
 namespace Z3D
@@ -27,21 +28,12 @@ namespace Z3D
 
 ZSimulatedCameraPlugin::ZSimulatedCameraPlugin()
 {
+
 }
 
-QString ZSimulatedCameraPlugin::id() const
-{
-    return QString("ZSIMULATED");
-}
-
-QString ZSimulatedCameraPlugin::name() const
+QString ZSimulatedCameraPlugin::displayName() const
 {
     return QString("Simulated camera");
-}
-
-QString ZSimulatedCameraPlugin::version() const
-{
-    return QString(Z3D_VERSION_STR);
 }
 
 QList<ZCameraInfo*> ZSimulatedCameraPlugin::getConnectedCameras()
@@ -51,9 +43,9 @@ QList<ZCameraInfo*> ZSimulatedCameraPlugin::getConnectedCameras()
     return list;
 }
 
-ZCameraInterface::Ptr ZSimulatedCameraPlugin::getCamera(QVariantMap options)
+ZCameraPtr ZSimulatedCameraPlugin::getCamera(QVariantMap options)
 {
-    return ZCameraInterface::Ptr( new Z3D::ZSimulatedCamera(options) );
+    return ZCameraPtr( new Z3D::ZSimulatedCamera(options) );
 }
 
 } // namespace Z3D

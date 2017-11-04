@@ -30,27 +30,14 @@ ZBinaryPatternProjectionPlugin::ZBinaryPatternProjectionPlugin()
 
 }
 
-QString ZBinaryPatternProjectionPlugin::id() const
+std::vector<ZPatternProjectionPtr> ZBinaryPatternProjectionPlugin::getAll()
 {
-    return QString(metaObject()->className());
+    return std::vector<ZPatternProjectionPtr> {
+        ZPatternProjectionPtr(new ZBinaryPatternProjection())
+    };
 }
 
-QString ZBinaryPatternProjectionPlugin::name() const
-{
-    return tr("Binary");
-}
-
-QString ZBinaryPatternProjectionPlugin::version() const
-{
-    return Z3D_VERSION_STR;
-}
-
-QList<ZPatternProjection *> ZBinaryPatternProjectionPlugin::getAll()
-{
-    return QList<ZPatternProjection *>() << new ZBinaryPatternProjection();
-}
-
-QWidget *ZBinaryPatternProjectionPlugin::getConfigWidget(ZPatternProjection *patternProjection)
+QWidget *ZBinaryPatternProjectionPlugin::getConfigWidget(ZPatternProjectionWeakPtr patternProjection)
 {
     const auto item = m_patternProjectionWidgets.find(patternProjection);
     if (item != m_patternProjectionWidgets.end()) {

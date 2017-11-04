@@ -19,6 +19,7 @@
 
 #pragma once
 
+#include "zcore_fwd.h"
 #include "zcore_global.h"
 
 #include <QObject>
@@ -36,7 +37,7 @@ public:
     void loadPlugins(QString folder = QString());
     void unloadPlugins();
 
-    static const QList<QObject *> plugins(const QString &pluginType);
+    static const QList<ZCorePlugin *> plugins(const QString &pluginType);
 
 signals:
     void progressChanged(float progress, QString message);
@@ -48,7 +49,7 @@ private:
 
     static ZPluginLoader *m_instance;
 
-    std::map<QString, QList<QObject *>> m_plugins;
+    std::map<QString, QList<ZCorePlugin *>> m_plugins;
 };
 
 } // namespace Z3D

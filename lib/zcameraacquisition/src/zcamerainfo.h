@@ -19,8 +19,8 @@
 
 #pragma once
 
+#include "zcameraacquisition_fwd.h"
 #include "zcameraacquisition_global.h"
-#include "zcamerainterface.h"
 
 #include <QObject>
 #include <QVariantMap>
@@ -28,7 +28,6 @@
 namespace Z3D
 {
 
-/// FW declaration to avoid cyclic includes
 class ZCameraPluginInterface;
 
 class Z3D_CAMERAACQUISITION_SHARED_EXPORT ZCameraInfo : public QObject
@@ -47,7 +46,7 @@ public:
     QString pluginName() const;
     QVariantMap extraData() const;
 
-    ZCameraInterface::Ptr getCamera() const;
+    ZCameraPtr getCamera() const;
 
 private:
     ZCameraPluginInterface* m_plugin;

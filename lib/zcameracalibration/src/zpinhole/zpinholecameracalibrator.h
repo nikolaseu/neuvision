@@ -55,7 +55,7 @@ public:
     QString id() const override;
     QString name() const override;
 
-    ZCameraCalibration::Ptr getCalibration(
+    ZCameraCalibrationPtr getCalibration(
             std::vector<std::vector<cv::Point2f> > &imagePoints,
             std::vector<std::vector<cv::Point3f> > &realWorldPoints,
             cv::Size &imageSize) override;

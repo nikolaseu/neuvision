@@ -9,22 +9,24 @@ TARGET        = $$qtLibraryTarget(zopencvstandardpatternfinderplugin)
 DESTDIR       = $$Z3D_BUILD_DIR/plugins/calibrationpatternfinder
 
 HEADERS       = \
-    zopencvstandardpatternfinderplugin.h \
     zchessboardcalibrationpatternfinder.h \
     zchessboardcalibrationpatternfinderconfigwidget.h \
     zcirclegridcalibrationpatternfinder.h \
-    zcirclegridcalibrationpatternfinderconfigwidget.h
-    
+    zcirclegridcalibrationpatternfinderconfigwidget.h \
+    zopencvstandardpatternfinderplugin.h \
+
 SOURCES       = \
-    zopencvstandardpatternfinderplugin.cpp \
     zchessboardcalibrationpatternfinder.cpp \
     zchessboardcalibrationpatternfinderconfigwidget.cpp \
     zcirclegridcalibrationpatternfinder.cpp \
-    zcirclegridcalibrationpatternfinderconfigwidget.cpp
+    zcirclegridcalibrationpatternfinderconfigwidget.cpp \
+    zopencvstandardpatternfinderplugin.cpp \
 
 FORMS += \
     zchessboardcalibrationpatternfinderconfigwidget.ui \
-    zcirclegridcalibrationpatternfinderconfigwidget.ui
+    zcirclegridcalibrationpatternfinderconfigwidget.ui \
+
+
 
 ###############################################################################
 # Core

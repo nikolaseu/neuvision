@@ -19,10 +19,8 @@
 
 #pragma once
 
+#include "zcameraacquisition_fwd.h"
 #include "zcameraacquisition_global.h"
-
-#include "zcameraimage.h"
-#include "zcamerainterface.h"
 
 #include <QObject>
 
@@ -34,29 +32,19 @@ class Z3D_CAMERAACQUISITION_SHARED_EXPORT ZCameraFramesRecorder : public QObject
     Q_OBJECT
 
 public:
-    typedef std::shared_ptr<Z3D::ZCameraFramesRecorder> Ptr;
-
-    explicit ZCameraFramesRecorder(QObject *parent = nullptr);
-
-    ZCameraInterface::WeakPtr getCamera() const;
-    void setCamera(ZCameraInterface::WeakPtr camera);
+    explicit ZCameraFramesRecorder(ZCameraWeakPtr camera, QObject *parent = nullptr);
 
 signals:
 
 public slots:
-    void setEnabled(bool enabled);
-
     void onAcquisitionStarted();
-    void onAcquisitionStopped();
 
-    void onNewImageReceived(Z3D::ZImageGrayscale::Ptr image);
+    void onNewImageReceived(Z3D::ZCameraImagePtr image);
 
 private:
-    ZCameraInterface::WeakPtr m_camera;
+    const ZCameraWeakPtr m_camera;
+    const QString m_basePath;
 
-    bool m_enabled;
-
-    QString m_basePath;
     QString m_currentSavePath;
 };
 

@@ -31,7 +31,7 @@
 namespace Z3D
 {
 
-QString ZNIIMAQdxGrabPlugin::name()
+QString ZNIIMAQdxGrabPlugin::displayName()
 {
     return QString("ZNIIMAQdxGrab");
 }
@@ -86,14 +86,10 @@ QStringList ZNIIMAQdxGrabPlugin::getConnectedCameras()
     return camerasList;
 }
 
-ZCameraInterface::Ptr ZNIIMAQdxGrabPlugin::getCamera(QVariantMap options)
+ZCameraPtr ZNIIMAQdxGrabPlugin::getCamera(QVariantMap options)
 {
     QString cameraName = options.value("Name").toString();
     return ZNIIMAQdxGrabCamera::getCameraByName(cameraName);
 }
 
 } // namespace Z3D
-
-#if QT_VERSION < 0x050000
-Q_EXPORT_PLUGIN2(zniimaqdxgrab, Z3D::ZNIIMAQdxGrabPlugin)
-#endif // QT_VERSION < 0x050000

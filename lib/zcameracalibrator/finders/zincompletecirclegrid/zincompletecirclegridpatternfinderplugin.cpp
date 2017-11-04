@@ -25,24 +25,9 @@
 
 namespace Z3D {
 
-QString ZIncompleteCircleGridPatternFinderPlugin::id() const
+QList<ZCalibrationPatternFinderPtr> ZIncompleteCircleGridPatternFinderPlugin::getPatternFinders()
 {
-    return QString(metaObject()->className());
-}
-
-QString ZIncompleteCircleGridPatternFinderPlugin::name() const
-{
-    return QString(metaObject()->className());
-}
-
-QString ZIncompleteCircleGridPatternFinderPlugin::version() const
-{
-    return QString(Z3D_VERSION_STR);
-}
-
-QList<ZCalibrationPatternFinder::Ptr> ZIncompleteCircleGridPatternFinderPlugin::getPatternFinders()
-{
-    return QList<ZCalibrationPatternFinder::Ptr>() << ZCalibrationPatternFinder::Ptr(new ZIncompleteCircleGridPatternFinder());
+    return QList<ZCalibrationPatternFinderPtr>() << ZCalibrationPatternFinderPtr(new ZIncompleteCircleGridPatternFinder());
 }
 
 QWidget *ZIncompleteCircleGridPatternFinderPlugin::getConfigWidget(ZCalibrationPatternFinder *patternFinder)

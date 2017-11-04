@@ -21,6 +21,8 @@
 #include "zstereosystemimpl.h"
 
 #include "zgeometryutils.h"
+#include "zsimplepointcloud.h"
+#include "zpinhole/zpinholecameracalibration.h"
 
 #include <QAtomicInt>
 #include <QDateTime>
@@ -29,21 +31,9 @@
 #include <QtConcurrentMap>
 #include <QtConcurrentRun>
 
-#ifdef CV_VERSION_EPOCH
-#  if CV_VERSION_EPOCH <= 3
-#    include "opencv2/core/core.hpp"
-#    include "opencv2/imgproc/imgproc.hpp"
-#    include "opencv2/calib3d/calib3d.hpp"
-#  else
-#    include "opencv2/core.hpp"
-#    include "opencv2/imgproc.hpp"
-#    include "opencv2/calib3d.hpp"
-#  endif
-#else
-#  include "opencv2/core.hpp"
-#  include "opencv2/imgproc.hpp"
-#  include "opencv2/calib3d.hpp"
-#endif
+#include <opencv2/core.hpp>
+#include <opencv2/imgproc.hpp>
+#include <opencv2/calib3d.hpp>
 
 namespace Z3D
 {
@@ -56,7 +46,7 @@ bool compareFirstPairElement(std::pair<float, cv::Vec2f> arg1, std::pair<float, 
 
 struct ParallelFringeProcessingImpl
 {
-    ParallelFringeProcessingImpl(ZStereoSystemImpl *system, Z3D::ZSimplePointCloud::Ptr cloudPtr, QAtomicInt &i2, const cv::Mat &image, float maxValidDistanceThreshold)
+    ParallelFringeProcessingImpl(ZStereoSystemImpl *system, Z3D::ZSimplePointCloudPtr cloudPtr, QAtomicInt &i2, const cv::Mat &image, float maxValidDistanceThreshold)
         : stereoSystem(system)
         , m_undistortedRays(stereoSystem->m_undistortedRays)
         , m_cloud(cloudPtr)
@@ -249,10 +239,10 @@ struct ParallelFringeProcessingImpl
     }
 
     ZStereoSystemImpl *stereoSystem;
-    Z3D::ZCameraCalibration *camLcal;
-    Z3D::ZCameraCalibration *camRcal;
+    Z3D::ZPinholeCameraCalibrationWeakPtr camLcal;
+    Z3D::ZPinholeCameraCalibrationWeakPtr camRcal;
     const std::vector< std::vector<cv::Vec3d> > &m_undistortedRays;
-    Z3D::ZSimplePointCloud::Ptr m_cloud;
+    Z3D::ZSimplePointCloudPtr m_cloud;
     Z3D::ZSimplePointCloud::PointVector &m_cloudPoints;
     QAtomicInt &m_atomicInteger;
     cv::Mat intensityImg;
@@ -528,7 +518,7 @@ void ZStereoSystemImpl::stereoRectify(double alpha)
 //}
 
 
-Z3D::ZSimplePointCloud::Ptr ZStereoSystemImpl::triangulateOptimized(const cv::Mat &intensityImg,
+Z3D::ZSimplePointCloudPtr ZStereoSystemImpl::triangulateOptimized(const cv::Mat &intensityImg,
                                                  const std::map<int, std::vector<cv::Vec2f> > &leftFringePoints,
                                                  const std::map<int, std::vector<cv::Vec2f> > &rightFringePoints,
                                                  int maxPosibleCloudPoints,
@@ -543,10 +533,10 @@ Z3D::ZSimplePointCloud::Ptr ZStereoSystemImpl::triangulateOptimized(const cv::Ma
     /// we need calibrated cameras!
     if (!camLcal || !camRcal) {
         qWarning() << "invalid calibration! this only works for calibrated cameras!";
-        return Z3D::ZSimplePointCloud::Ptr(nullptr);
+        return nullptr;
     }
 
-    Z3D::ZSimplePointCloud::Ptr cloud(new Z3D::ZSimplePointCloud());
+    Z3D::ZSimplePointCloudPtr cloud(new Z3D::ZSimplePointCloud());
 
     qDebug() << "maximum posible points in the cloud:" << maxPosibleCloudPoints;
 
@@ -613,10 +603,10 @@ Z3D::ZSimplePointCloud::Ptr ZStereoSystemImpl::triangulateOptimized(const cv::Ma
 
     /// user of this function must check if it is valid
     qWarning() << "The point cloud could not be calculated, it's empty! Returning invalid cloud.";
-    return Z3D::ZSimplePointCloud::Ptr(nullptr);
+    return nullptr;
 }
 
-void ZStereoSystemImpl::setLeftCameraCalibration(Z3D::ZCameraCalibration::Ptr cameraCalibration)
+void ZStereoSystemImpl::setLeftCameraCalibration(ZCameraCalibrationPtr cameraCalibration)
 {
     qDebug() << Q_FUNC_INFO;
 
@@ -640,7 +630,7 @@ void ZStereoSystemImpl::setLeftCameraCalibration(Z3D::ZCameraCalibration::Ptr ca
     stereoRectify();
 }
 
-void ZStereoSystemImpl::setRightCameraCalibration(Z3D::ZCameraCalibration::Ptr cameraCalibration)
+void ZStereoSystemImpl::setRightCameraCalibration(Z3D::ZCameraCalibrationPtr cameraCalibration)
 {
     qDebug() << Q_FUNC_INFO;
 

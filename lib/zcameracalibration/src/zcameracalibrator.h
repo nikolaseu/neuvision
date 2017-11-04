@@ -19,9 +19,11 @@
 
 #pragma once
 
-#include "zcameracalibration.h"
+#include "zcameracalibration_fwd.h"
 
 #include <QObject>
+
+#include <opencv2/core/types.hpp>
 
 namespace Z3D
 {
@@ -31,14 +33,15 @@ class ZCameraCalibrator : public QObject
     Q_OBJECT
 
 public:
-    explicit ZCameraCalibrator(QObject *parent = nullptr) : QObject(parent) {}
+    explicit ZCameraCalibrator(QObject *parent = nullptr)
+        : QObject(parent) {}
 
     virtual ~ZCameraCalibrator() {}
 
     virtual QString id() const = 0;
     virtual QString name() const = 0;
 
-    virtual ZCameraCalibration::Ptr getCalibration(
+    virtual ZCameraCalibrationPtr getCalibration(
             std::vector<std::vector<cv::Point2f> > &imagePoints,
             std::vector<std::vector<cv::Point3f> > &realWorldPoints,
             cv::Size &imageSize) = 0;

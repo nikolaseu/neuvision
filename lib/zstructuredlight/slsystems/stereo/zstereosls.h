@@ -20,7 +20,10 @@
 #pragma once
 
 #include "zstructuredlightsystem.h"
-#include "zcameracalibration.h"
+
+#include <Z3DCameraCalibration>
+
+#include <opencv2/core/mat.hpp>
 
 namespace Z3D
 {
@@ -48,10 +51,10 @@ public slots:
 protected slots:
     void initialize();
 
-    void setLeftCalibration(Z3D::ZCameraCalibration::Ptr cameraCalibration);
-    void setRightCalibration(Z3D::ZCameraCalibration::Ptr cameraCalibration);
+    void setLeftCalibration(Z3D::ZCameraCalibrationPtr cameraCalibration);
+    void setRightCalibration(Z3D::ZCameraCalibrationPtr cameraCalibration);
 
-    Z3D::ZSimplePointCloud::Ptr triangulate(const cv::Mat &intensityImg,
+    Z3D::ZSimplePointCloudPtr triangulate(const cv::Mat &intensityImg,
             const std::map<int, std::vector<cv::Vec2f> > &leftPoints,
             const std::map<int, std::vector<cv::Vec2f> > &rightPoints,
             int maxPosibleCloudPoints);

@@ -19,21 +19,16 @@
 
 #pragma once
 
-#include "zsimplepointcloud.h"
-#include "zstructuredlightsystem.h"
-
 #include "zmainwindow.h"
+
+#include <Z3DStructuredLight>
 
 #include <QPointer>
 
-#include <opencv2/core/core.hpp>
+#include <opencv2/core.hpp>
 
 namespace Ui {
 class MainWindow;
-}
-
-namespace Z3D {
-class ZPatternProjection;
 }
 
 class ZPointCloudWidget;
@@ -56,16 +51,16 @@ private slots:
 
     void onPatternProjectionTypeChanged(int index);
 
-    void onScanFinished(Z3D::ZSimplePointCloud::Ptr cloud);
+    void onScanFinished(Z3D::ZSimplePointCloudPtr cloud);
 
 private:
     Ui::MainWindow *ui;
 
-    QList<Z3D::ZPatternProjection *> m_patternProjectionList;
-    Z3D::ZPatternProjection *m_currentPatternProjection;
+    std::vector<Z3D::ZPatternProjectionPtr> m_patternProjectionList;
+    Z3D::ZPatternProjectionPtr m_currentPatternProjection;
 
     QList<Z3D::ZStructuredLightSystem *> m_structuredLightList;
-    Z3D::ZStructuredLightSystem::Ptr m_currentStructuredLightSystem;
+    Z3D::ZStructuredLightSystemPtr m_currentStructuredLightSystem;
 
     ZPointCloudWidget *m_pointCloudWidget;
 };

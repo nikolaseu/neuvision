@@ -21,6 +21,7 @@
 #include "zcalibrationpatternfinderprovider.h"
 
 #include "zcalibrationpatternfinderplugininterface.h"
+#include "zcoreplugin.h"
 #include "zpluginloader.h"
 
 #include <QDebug>
@@ -34,12 +35,11 @@ void ZCalibrationPatternFinderProvider::loadPlugins()
 {
     const auto list = ZPluginLoader::plugins("calibrationpatternfinder");
 
-    for (auto pluginInstance : list) {
-        auto *plugin = qobject_cast<ZCalibrationPatternFinderPluginInterface *>(pluginInstance);
+    for (auto pluginLoader : list) {
+        auto *plugin = pluginLoader->instance<ZCalibrationPatternFinderPluginInterface>();
         if (plugin) {
-            qDebug() << "pattern finder plugin loaded. type:" << plugin->id()
-                     << "version:" << plugin->version();
-            m_plugins.insert(plugin->id(), plugin);
+            qDebug() << "pattern finder plugin loaded. type:" << pluginLoader->id();
+            m_plugins.insert(pluginLoader->id(), plugin);
         } else {
             qWarning() << "invalid pattern finder plugin:" << plugin;
         }
@@ -55,9 +55,9 @@ void ZCalibrationPatternFinderProvider::unloadPlugins()
     m_plugins.clear();
 }
 
-QList<ZCalibrationPatternFinder::Ptr> ZCalibrationPatternFinderProvider::getAll()
+QList<ZCalibrationPatternFinderPtr> ZCalibrationPatternFinderProvider::getAll()
 {
-    QList<ZCalibrationPatternFinder::Ptr> finderList;
+    QList<ZCalibrationPatternFinderPtr> finderList;
 
     /// load different calibration pattern finder types
     for (auto *plugin : m_plugins) {

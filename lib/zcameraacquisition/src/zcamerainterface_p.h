@@ -44,7 +44,7 @@ public:
 public slots:
     ///
     virtual bool requestSnapshot() override;
-    virtual ZImageGrayscale::Ptr getSnapshot() override;
+    virtual ZCameraImagePtr getSnapshot() override;
 
     /// acquisition control
     virtual bool startAcquisition() override;
@@ -75,12 +75,12 @@ protected:
 
     QMap< QString, QList<ZCameraAttribute> > m_cameraPresets;
 
-    ZImageGrayscale::Ptr *m_lastRetrievedImage;
+    ZCameraImagePtr *m_lastRetrievedImage;
 
-    ZImageGrayscale::Ptr getNextBufferImage(int width, int height, int xOffset, int yOffset, int bytesPerPixel, void *externalBuffer = 0);
+    ZCameraImagePtr getNextBufferImage(int width, int height, int xOffset, int yOffset, int bytesPerPixel, void *externalBuffer = 0);
 
 private:
-    std::vector<ZImageGrayscale::Ptr> m_imagesBuffer;
+    std::vector<ZCameraImagePtr> m_imagesBuffer;
     int m_currentImageBufferIndex;
 
     int m_simultaneousCapturesCount;

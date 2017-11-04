@@ -2,19 +2,22 @@ include(../../../NEUVision.pri)
 
 VERSION       = $$Z3D_VERSION
 TEMPLATE      = lib
-# CONFIG       += plugin
 QT           -= gui
-#QT           += core concurrent
 TARGET        = $$qtLibraryTarget(zcalibratedcamera)
 DESTDIR       = $$Z3D_BUILD_DIR
 DEFINES      += Z3D_CALIBRATEDCAMERA_LIBRARY
+
 HEADERS      += \
+    Z3DCalibratedCamera \
     zcalibratedcamera.h \
+    zcalibratedcamera_fwd.h \
     zcalibratedcamera_global.h \
-    zcalibratedcameraprovider.h
+    zcalibratedcameraprovider.h \
+
 SOURCES      += \
     zcalibratedcamera.cpp \
-    zcalibratedcameraprovider.cpp
+    zcalibratedcameraprovider.cpp \
+
 
 
 ###############################################################################

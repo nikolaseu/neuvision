@@ -17,12 +17,8 @@
  * along with Z3D.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef Z3D_CAMERAACQUISITION_PLUGIN___ZPLEORAEBUSPLUGIN_H
-#define Z3D_CAMERAACQUISITION_PLUGIN___ZPLEORAEBUSPLUGIN_H
+#pragma once
 
-#include <QObject>
-
-#include "zcamerainterface.h"
 #include "zcameraplugininterface.h"
 
 class PvSystem;
@@ -30,7 +26,7 @@ class PvSystem;
 namespace Z3D
 {
 
-class ZPleoraeBUSPlugin : public ZCameraPluginInterface
+class ZPleoraeBUSPlugin : public QObject, public ZCameraPluginInterface
 {
     Q_OBJECT
     Q_PLUGIN_METADATA(IID "z3d.cameraacquisition.cameraplugininterface" FILE "zpleoraebus.json")
@@ -39,12 +35,12 @@ class ZPleoraeBUSPlugin : public ZCameraPluginInterface
 public:
     /// plugin information
     QString id() const override;
-    QString name() const override;
+    QString displayName() const override;
     QString version() const override;
 
     /// camera utilities
     QList<ZCameraInfo *> getConnectedCameras() override;
-    ZCameraInterface::Ptr getCamera(QVariantMap options) override;
+    ZCameraPtr getCamera(QVariantMap options) override;
 
 private:
     static PvSystem *s_pvSystem;
@@ -52,5 +48,3 @@ private:
 };
 
 } // namespace Z3D
-
-#endif // Z3D_CAMERAACQUISITION_PLUGIN___ZPLEORAEBUSPLUGIN_H

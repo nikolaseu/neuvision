@@ -22,22 +22,24 @@
 
 #include "string.h" // memcpy
 
+#include <opencv2/imgcodecs.hpp>
+
 #include <QDebug>
 #include <QMetaType>
 
 //! FIXME esto no va acá!!
-static int z3dImagePtrTypeId = qRegisterMetaType<Z3D::ZImageGrayscale::Ptr>("Z3D::ZImageGrayscale::Ptr");
+static int z3dImagePtrTypeId = qRegisterMetaType<Z3D::ZCameraImagePtr>("Z3D::ZCameraImagePtr");
 
 namespace Z3D
 {
 
 ZImageGrayscale::ZImageGrayscale(int width, int height, int xOffset, int yOffset, int bytesPerPixel)
-    : m_number(0)
-    , m_width(width)
+    : m_width(width)
     , m_height(height)
     , m_xOffset(xOffset)
     , m_yOffset(yOffset)
     , m_bytesPerPixel(bytesPerPixel)
+    , m_number(0)
 {
     switch (m_bytesPerPixel) {
     case 1:
@@ -54,44 +56,29 @@ ZImageGrayscale::ZImageGrayscale(int width, int height, int xOffset, int yOffset
     //qDebug() << Q_FUNC_INFO << (long)this << bufferSize();
 }
 
-ZImageGrayscale::ZImageGrayscale(QString filename)
-    : m_number(0)
+ZImageGrayscale::ZImageGrayscale(cv::Mat mat)
+    : m_cvMat(mat)
+    , m_width(m_cvMat.cols)
+    , m_height(m_cvMat.rows)
     , m_xOffset(0)
     , m_yOffset(0)
+    , m_bytesPerPixel(m_cvMat.type() == CV_8UC1
+                      ? 1
+                      : m_cvMat.type() == CV_16UC1
+                        ? 2
+                        : -1) /// invalid
+    , m_number(0)
 {
-    try {
-        m_cvMat = cv::imread(qPrintable(filename), cv::IMREAD_GRAYSCALE);
 
-        switch (m_cvMat.type()) {
-        case CV_8UC1:
-            m_bytesPerPixel = 1;
-            break;
-        case CV_16UC1:
-            m_bytesPerPixel = 2;
-            break;
-        default:
-            qCritical() << "invalid image, only 8 or 16 bits per pixel are supported";
-            m_cvMat = cv::Mat();
-            break;
-        }
-
-        m_width = m_cvMat.cols;
-        m_height = m_cvMat.rows;
-
-    } catch (...) {
-        qCritical() << "invalid image" << filename;
-    }
-
-    //qDebug() << Q_FUNC_INFO << (long)this << bufferSize();
 }
 
 ZImageGrayscale::ZImageGrayscale(int width, int height, int xOffset, int yOffset, int bytesPerPixel, void *externalBuffer)
-    : m_number(0)
-    , m_width(width)
+    : m_width(width)
     , m_height(height)
     , m_xOffset(xOffset)
     , m_yOffset(yOffset)
     , m_bytesPerPixel(bytesPerPixel)
+    , m_number(0)
 {
     switch (m_bytesPerPixel) {
     case 1:
@@ -114,9 +101,9 @@ ZImageGrayscale::~ZImageGrayscale()
     //qDebug() << Q_FUNC_INFO << (long)this << bufferSize();
 }
 
-ZImageGrayscale::Ptr ZImageGrayscale::clone()
+ZCameraImagePtr ZImageGrayscale::clone()
 {
-    ZImageGrayscale::Ptr clon(new ZImageGrayscale(width(), height(), xOffset(), yOffset(), bytesPerPixel()));
+    ZCameraImagePtr clon(new ZImageGrayscale(width(), height(), xOffset(), yOffset(), bytesPerPixel()));
 
     clon->setBuffer( buffer() );
     clon->setNumber( number() );
@@ -134,9 +121,20 @@ bool ZImageGrayscale::setBuffer(void *otherBuffer)
     return 0 != memcpy(m_cvMat.data, otherBuffer, bufferSize());
 }
 
-bool ZImageGrayscale::save(QString fileName)
+bool ZCameraImage::save(ZCameraImagePtr image, QString fileName)
 {
-    return cv::imwrite(qPrintable(fileName), m_cvMat);
+    return cv::imwrite(qPrintable(fileName), image->cvMat());
+}
+
+ZCameraImagePtr ZCameraImage::fromFile(QString fileName)
+{
+    try {
+        auto mat = cv::imread(qPrintable(fileName), cv::IMREAD_GRAYSCALE);
+        return ZCameraImagePtr(new ZImageGrayscale(mat));
+    } catch (...) {
+        qCritical() << "invalid image" << fileName;
+        return nullptr;
+    }
 }
 
 } // namespace Z3D

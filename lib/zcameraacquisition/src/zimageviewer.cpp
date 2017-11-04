@@ -18,7 +18,10 @@
 // along with Z3D.  If not, see <http://www.gnu.org/licenses/>.
 //
 
+#include "zcameraimage.h"
 #include "zimageviewer.h"
+
+#include <opencv2/imgproc.hpp>
 
 #include <QMenu>
 #include <QMouseEvent>
@@ -33,14 +36,14 @@
 namespace Z3D
 {
 
-ZImageViewer::ZImageViewer(QWidget *parent) :
-    QGraphicsView(parent),
-    m_colormap(-1), /// colormap < 0  -->  no colormap
-    m_scene(new QGraphicsScene()),
-    m_pixmapItem(new QGraphicsPixmapItem()),
-    m_zoomFactor(0),
-    m_fitToWindowEnabled(true),
-    m_deleteOnClose(false)
+ZImageViewer::ZImageViewer(QWidget *parent)
+    : QGraphicsView(parent)
+    , m_colormap(-1) /// colormap < 0  -->  no colormap
+    , m_scene(new QGraphicsScene(this))
+    , m_pixmapItem(new QGraphicsPixmapItem())
+    , m_zoomFactor(0)
+    , m_fitToWindowEnabled(true)
+    , m_deleteOnClose(false)
 {
     setTransformationAnchor(QGraphicsView::AnchorUnderMouse);
     setDragMode(QGraphicsView::ScrollHandDrag);
@@ -57,8 +60,8 @@ ZImageViewer::ZImageViewer(QWidget *parent) :
     m_fitToWindowAction = new QAction(tr("Fit to window"), m_contextMenu);
     m_fitToWindowAction->setCheckable(true);
     m_fitToWindowAction->setChecked(m_fitToWindowEnabled);
-    QObject::connect(m_fitToWindowAction, SIGNAL(toggled(bool)),
-                     this, SLOT(setFitToWindow(bool)));
+    QObject::connect(m_fitToWindowAction, &QAction::toggled,
+                     this, &ZImageViewer::setFitToWindow);
     m_contextMenu->addAction(m_fitToWindowAction);
 
     /// add colormaps<int, QString>
@@ -88,18 +91,19 @@ ZImageViewer::ZImageViewer(QWidget *parent) :
         if (colormaps[i].first == m_colormap) {
             colormapAction->setChecked(true);
         }
-        QObject::connect(colormapAction, SIGNAL(triggered()), m_colormapSignalMapper, SLOT(map()));
+        QObject::connect(colormapAction, static_cast<void(QAction::*)(bool)>(&QAction::triggered),
+                         m_colormapSignalMapper, static_cast<void(QSignalMapper::*)()>(&QSignalMapper::map));
         m_colormapSignalMapper->setMapping(colormapAction, colormaps[i].first);
         m_colormapsMenu->addAction(colormapAction);
     }
 
-    QObject::connect(m_colormapSignalMapper, SIGNAL(mapped(int)),
-                     this, SLOT(changeColormap(int)));
+    QObject::connect(m_colormapSignalMapper, static_cast<void(QSignalMapper::*)(int)>(&QSignalMapper::mapped),
+                     this, &ZImageViewer::changeColormap);
 
     /// save image action
     auto saveImageAction = new QAction(tr("Save image as..."), m_contextMenu);
-    QObject::connect(saveImageAction, SIGNAL(triggered()),
-                     this, SLOT(saveImage()));
+    QObject::connect(saveImageAction, &QAction::triggered,
+                     this, &ZImageViewer::saveImage);
     m_contextMenu->addSeparator();
     m_contextMenu->addAction(saveImageAction);
 
@@ -231,7 +235,7 @@ void ZImageViewer::closeEvent(QCloseEvent *event)
     QGraphicsView::closeEvent(event);
 }
 
-void ZImageViewer::updateImage(ZImageGrayscale::Ptr image)
+void ZImageViewer::updateImage(ZCameraImagePtr image)
 {
     if (image)
         updateImage(image->cvMat());

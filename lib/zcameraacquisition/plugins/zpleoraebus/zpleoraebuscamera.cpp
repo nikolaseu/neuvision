@@ -29,12 +29,12 @@
 namespace Z3D
 {
 
-ZCameraInterface::Ptr ZPleoraeBUSCamera::getCameraByMAC(QString name)
+ZCameraPtr ZPleoraeBUSCamera::getCameraByMAC(QString name)
 {
     ZPleoraeBUSCameraPrivate *cameraPrivate = ZPleoraeBUSCameraPrivate::getCameraByMAC(name);
 
     if (!cameraPrivate)
-        return ZCameraInterface::Ptr(nullptr);
+        return nullptr;
 
     ZPleoraeBUSCamera *camera = new ZPleoraeBUSCamera();
 
@@ -42,20 +42,20 @@ ZCameraInterface::Ptr ZPleoraeBUSCamera::getCameraByMAC(QString name)
     camera->m_uuid = cameraPrivate->m_uuid;
     cameraPrivate->q_ptr = camera;
 
-    QObject::connect(cameraPrivate, SIGNAL(newImageReceived(Z3D::ZImageGrayscale::Ptr)),
-                     camera,        SIGNAL(newImageReceived(Z3D::ZImageGrayscale::Ptr)));
-    QObject::connect(cameraPrivate, SIGNAL(error(QString)),
-                     camera,        SIGNAL(error(QString)));
-    QObject::connect(cameraPrivate, SIGNAL(warning(QString)),
-                     camera,        SIGNAL(warning(QString)));
-    QObject::connect(cameraPrivate, SIGNAL(attributeChanged(QString,QVariant)),
-                     camera,        SIGNAL(attributeChanged(QString,QVariant)));
+    QObject::connect(cameraPrivate, &ZPleoraeBUSCameraPrivate::newImageReceived,
+                     camera,        &ZPleoraeBUSCamera::newImageReceived);
+    QObject::connect(cameraPrivate, &ZPleoraeBUSCameraPrivate::error,
+                     camera,        &ZPleoraeBUSCamera::error);
+    QObject::connect(cameraPrivate, &ZPleoraeBUSCameraPrivate::warning,
+                     camera,        &ZPleoraeBUSCamera::warning);
+    QObject::connect(cameraPrivate, &ZPleoraeBUSCameraPrivate::attributeChanged,
+                     camera,        &ZPleoraeBUSCamera::attributeChanged);
 
-    return ZCameraInterface::Ptr( camera );
+    return ZCameraPtr( camera );
 }
 
-ZPleoraeBUSCamera::ZPleoraeBUSCamera(QObject *parent) :
-    ZCameraBase(parent)
+ZPleoraeBUSCamera::ZPleoraeBUSCamera(QObject *parent)
+    : ZCameraBase(parent)
 {
 
 }

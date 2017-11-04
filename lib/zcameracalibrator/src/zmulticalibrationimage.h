@@ -19,9 +19,10 @@
 
 #pragma once
 
+#include "zcameracalibrator_fwd.h"
 #include "zcameracalibrator_global.h"
 
-#include "zcalibrationimage.h"
+#include "zcalibrationimage.h" // required here for Z3D::ZCalibrationImage::ImageState
 
 #include <QObject>
 
@@ -33,10 +34,7 @@ class Z3D_CAMERACALIBRATOR_SHARED_EXPORT ZMultiCalibrationImage : public QObject
     Q_OBJECT
 
 public:
-    typedef std::shared_ptr<ZMultiCalibrationImage> Ptr;
-
-    //explicit ZMultiCalibrationImage(QObject *parent = nullptr);
-    ZMultiCalibrationImage(QList<Z3D::ZCalibrationImage::Ptr> images);
+    ZMultiCalibrationImage(QList<Z3D::ZCalibrationImagePtr> images);
     ~ZMultiCalibrationImage();
 
     bool isValid();
@@ -45,9 +43,9 @@ public:
     /// image thumbnail
     QImage thumbnail() const;
 
-    const QList<Z3D::ZCalibrationImage::Ptr> &images() const;
+    const QList<Z3D::ZCalibrationImagePtr> &images() const;
 
-    Z3D::ZCalibrationImage::Ptr image(int index) const;
+    Z3D::ZCalibrationImagePtr image(int index) const;
 
     Z3D::ZCalibrationImage::ImageState state() const;
 
@@ -62,11 +60,11 @@ protected slots:
 protected:
     void setState(Z3D::ZCalibrationImage::ImageState arg);
 
-    QList<Z3D::ZCalibrationImage::Ptr> m_images;
+    QList<Z3D::ZCalibrationImagePtr> m_images;
 
     Z3D::ZCalibrationImage::ImageState m_state;
 };
 
 } // namespace Z3D
 
-Q_DECLARE_METATYPE(Z3D::ZMultiCalibrationImage::Ptr) /// to use in QVariant
+Q_DECLARE_METATYPE(Z3D::ZMultiCalibrationImagePtr) /// to use in QVariant

@@ -11,15 +11,17 @@ DESTDIR       = $$Z3D_BUILD_DIR/plugins/calibrationpatternfinder
 HEADERS       = \
     zringgridpatternfinder.h \
     zringgridpatternfinderconfigwidget.h \
-    zringgridpatternfinderplugin.h
+    zringgridpatternfinderplugin.h \
     
 SOURCES       = \
     zringgridpatternfinder.cpp \
     zringgridpatternfinderconfigwidget.cpp \
-    zringgridpatternfinderplugin.cpp
+    zringgridpatternfinderplugin.cpp \
 
 FORMS += \
-    zringgridpatternfinderconfigwidget.ui
+    zringgridpatternfinderconfigwidget.ui \
+
+
 
 ###############################################################################
 # Core

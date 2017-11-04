@@ -24,6 +24,7 @@
 #include "qtpropertymanager.h"
 #include "qteditorfactory.h"
 #include "qttreepropertybrowser.h"
+#include "zcamerainterface.h"
 
 #include <QDebug>
 #include <QTimer>
@@ -31,7 +32,7 @@
 namespace Z3D
 {
 
-ZCameraSettingsWidget::ZCameraSettingsWidget(ZCameraInterface::WeakPtr camera, QWidget *parent)
+ZCameraSettingsWidget::ZCameraSettingsWidget(ZCameraWeakPtr camera, QWidget *parent)
     : ZWidget(parent)
     , ui(new Ui::ZCameraSettingsWidget)
     , m_camera(camera)
@@ -74,13 +75,13 @@ ZCameraSettingsWidget::ZCameraSettingsWidget(ZCameraInterface::WeakPtr camera, Q
 
     ui->propertyBrowserLayout->addWidget(m_propertyBrowser);
 
-    QObject::connect(m_camera.data(), SIGNAL(attributeChanged(QString,QVariant)),
-                     this, SLOT(onCameraAttributeChanged(QString,QVariant)));
+    QObject::connect(m_camera.data(), &ZCameraInterface::attributeChanged,
+                     this, &ZCameraSettingsWidget::onCameraAttributeChanged);
 
-    QObject::connect(ui->refreshButton, SIGNAL(clicked()),
-                     this, SLOT(updateProperties()));
+    QObject::connect(ui->refreshButton, &QPushButton::clicked,
+                     this, &ZCameraSettingsWidget::updateProperties);
 
-    QTimer::singleShot(0, this, SLOT(updateProperties()));
+    QTimer::singleShot(0, this, &ZCameraSettingsWidget::updateProperties);
 }
 
 ZCameraSettingsWidget::~ZCameraSettingsWidget()
@@ -136,18 +137,18 @@ void ZCameraSettingsWidget::updateProperties()
     }
 
     /// disconnect signals to avoid re-setting parameters when refreshed
-    QObject::disconnect(m_boolPropertyManager,   SIGNAL(propertyChanged(QtProperty*)),
-                     this, SLOT(propertyChanged(QtProperty*)));
-    QObject::disconnect(m_stringPropertyManager, SIGNAL(propertyChanged(QtProperty*)),
-                     this, SLOT(propertyChanged(QtProperty*)));
-    QObject::disconnect(m_intPropertyManager,    SIGNAL(propertyChanged(QtProperty*)),
-                     this, SLOT(propertyChanged(QtProperty*)));
-    QObject::disconnect(m_longPropertyManager, SIGNAL(propertyChanged(QtProperty*)),
-                     this, SLOT(propertyChanged(QtProperty*)));
-    QObject::disconnect(m_floatPropertyManager,  SIGNAL(propertyChanged(QtProperty*)),
-                     this, SLOT(propertyChanged(QtProperty*)));
-    QObject::disconnect(m_enumPropertyManager,   SIGNAL(propertyChanged(QtProperty*)),
-                     this, SLOT(propertyChanged(QtProperty*)));
+    QObject::disconnect(m_boolPropertyManager, &QtBoolPropertyManager::propertyChanged,
+                     this, &ZCameraSettingsWidget::propertyChanged);
+    QObject::disconnect(m_stringPropertyManager, &QtStringPropertyManager::propertyChanged,
+                     this, &ZCameraSettingsWidget::propertyChanged);
+    QObject::disconnect(m_intPropertyManager, &QtIntPropertyManager::propertyChanged,
+                     this, &ZCameraSettingsWidget::propertyChanged);
+    QObject::disconnect(m_longPropertyManager, &QtStringPropertyManager::propertyChanged,
+                     this, &ZCameraSettingsWidget::propertyChanged);
+    QObject::disconnect(m_floatPropertyManager, &QtDoublePropertyManager::propertyChanged,
+                     this, &ZCameraSettingsWidget::propertyChanged);
+    QObject::disconnect(m_enumPropertyManager, &QtEnumPropertyManager::propertyChanged,
+                     this, &ZCameraSettingsWidget::propertyChanged);
 
     /// disable all, later they will be enabled again (when available)
     for (auto *property : m_propertiesList) {
@@ -274,9 +275,9 @@ void ZCameraSettingsWidget::updateProperties()
         case Z3D::ZCameraInterface::CameraAttributeTypeInt:
             //m_currentProperty = m_intPropertyManager->addProperty(attrName);
             m_intPropertyManager->setValue(m_currentProperty, attribute.value.toInt());
-            if (attribute.maximumValue != DBL_MAX)
+            if (attribute.maximumValue != std::numeric_limits<double>::max())
                 m_intPropertyManager->setMaximum(m_currentProperty, attribute.maximumValue);
-            if (attribute.minimumValue != DBL_MIN)
+            if (attribute.minimumValue != std::numeric_limits<double>::min())
                 m_intPropertyManager->setMinimum(m_currentProperty, attribute.minimumValue);
             m_intPropertyManager->setReadOnly(m_currentProperty, !attribute.writable);
             m_currentProperty->setEnabled(attribute.readable && attribute.writable);
@@ -290,9 +291,9 @@ void ZCameraSettingsWidget::updateProperties()
         case Z3D::ZCameraInterface::CameraAttributeTypeFloat:
             //m_currentProperty = m_floatPropertyManager->addProperty(attrName);
             m_floatPropertyManager->setValue(m_currentProperty, attribute.value.toDouble());
-            if (attribute.maximumValue != DBL_MAX)
+            if (attribute.maximumValue != std::numeric_limits<double>::max())
                 m_floatPropertyManager->setMaximum(m_currentProperty, attribute.maximumValue);
-            if (attribute.minimumValue != DBL_MIN)
+            if (attribute.minimumValue != std::numeric_limits<double>::min())
                 m_floatPropertyManager->setMinimum(m_currentProperty, attribute.minimumValue);
             m_floatPropertyManager->setReadOnly(m_currentProperty, !attribute.writable);
             m_currentProperty->setEnabled(attribute.readable && attribute.writable);
@@ -316,18 +317,18 @@ void ZCameraSettingsWidget::updateProperties()
     }
 
     /// connect signal again
-    QObject::connect(m_boolPropertyManager,   SIGNAL(propertyChanged(QtProperty*)),
-                     this, SLOT(propertyChanged(QtProperty*)));
-    QObject::connect(m_stringPropertyManager, SIGNAL(propertyChanged(QtProperty*)),
-                     this, SLOT(propertyChanged(QtProperty*)));
-    QObject::connect(m_intPropertyManager,    SIGNAL(propertyChanged(QtProperty*)),
-                     this, SLOT(propertyChanged(QtProperty*)));
-    QObject::connect(m_longPropertyManager, SIGNAL(propertyChanged(QtProperty*)),
-                     this, SLOT(propertyChanged(QtProperty*)));
-    QObject::connect(m_floatPropertyManager,  SIGNAL(propertyChanged(QtProperty*)),
-                     this, SLOT(propertyChanged(QtProperty*)));
-    QObject::connect(m_enumPropertyManager,   SIGNAL(propertyChanged(QtProperty*)),
-                     this, SLOT(propertyChanged(QtProperty*)));
+    QObject::connect(m_boolPropertyManager, &QtBoolPropertyManager::propertyChanged,
+                     this, &ZCameraSettingsWidget::propertyChanged);
+    QObject::connect(m_stringPropertyManager, &QtStringPropertyManager::propertyChanged,
+                     this, &ZCameraSettingsWidget::propertyChanged);
+    QObject::connect(m_intPropertyManager, &QtIntPropertyManager::propertyChanged,
+                     this, &ZCameraSettingsWidget::propertyChanged);
+    QObject::connect(m_longPropertyManager, &QtStringPropertyManager::propertyChanged,
+                     this, &ZCameraSettingsWidget::propertyChanged);
+    QObject::connect(m_floatPropertyManager, &QtDoublePropertyManager::propertyChanged,
+                     this, &ZCameraSettingsWidget::propertyChanged);
+    QObject::connect(m_enumPropertyManager, &QtEnumPropertyManager::propertyChanged,
+                     this, &ZCameraSettingsWidget::propertyChanged);
 }
 
 void ZCameraSettingsWidget::onCameraAttributeChanged(QString name, QVariant value)

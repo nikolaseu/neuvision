@@ -19,6 +19,7 @@
 
 #pragma once
 
+#include "zcameracalibration_fwd.h"
 #include "zcameracalibration_global.h"
 
 #include <QPointer>
@@ -26,7 +27,8 @@
 
 #include <vector>
 
-#include "opencv2/core/core.hpp"
+#include <opencv2/core/matx.hpp>
+#include <opencv2/core/types.hpp>
 
 namespace Z3D
 {
@@ -44,9 +46,6 @@ public:
         UnknownCameraType
     };
 
-    typedef std::shared_ptr<Z3D::ZCameraCalibration> Ptr;
-    typedef QPointer<Z3D::ZCameraCalibration> WeakPtr;
-
     explicit ZCameraCalibration(CameraModelType cameraModelType);
 
     virtual ~ZCameraCalibration() {}
@@ -58,7 +57,7 @@ public:
     /// Returns a new object, a copy
     /// \return a new object cloned from this
     ///
-    virtual ZCameraCalibration::Ptr clone() const = 0;
+    virtual ZCameraCalibrationPtr clone() const = 0;
 
     ///
     /// \brief getCalibratedPixel

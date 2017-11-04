@@ -20,6 +20,8 @@
 
 #include "zcalibrationimagemodel.h"
 
+#include "zcalibrationimage.h"
+
 #include <QDebug>
 #include <QDir>
 #include <QtConcurrent>
@@ -27,14 +29,14 @@
 namespace Z3D
 {
 
-ZCalibrationImageModel::ZCalibrationImageModel(QObject *parent) :
-    QAbstractListModel(parent),
-    m_width(0),
-    m_height(0)
+ZCalibrationImageModel::ZCalibrationImageModel(QObject *parent)
+    : QAbstractListModel(parent)
+    , m_width(0)
+    , m_height(0)
 {
     /// to notify when the loading of images has finished
-    QObject::connect(&m_futureWatcher, SIGNAL(finished()),
-                     this, SIGNAL(newImagesAdded()));
+    QObject::connect(&m_futureWatcher, &QFutureWatcher<void>::finished,
+                     this, &ZCalibrationImageModel::newImagesAdded);
 }
 
 QHash<int, QByteArray> ZCalibrationImageModel::roleNames() const
@@ -57,7 +59,7 @@ QVariant ZCalibrationImageModel::data(const QModelIndex &index, int role) const
     if (!index.isValid() || index.row() < 0 || index.row() >= m_images.size())
         return QVariant();
 
-    Z3D::ZCalibrationImage::Ptr imageObject = imageAt(index.row());
+    Z3D::ZCalibrationImagePtr imageObject = imageAt(index.row());
 
     switch (role) {
     case DataRole:
@@ -72,7 +74,7 @@ QVariant ZCalibrationImageModel::data(const QModelIndex &index, int role) const
     return QVariant();
 }
 
-const QList<Z3D::ZCalibrationImage::Ptr > &ZCalibrationImageModel::images() const
+const QList<ZCalibrationImagePtr> &ZCalibrationImageModel::images() const
 {
     return m_images;
 }
@@ -111,8 +113,8 @@ void ZCalibrationImageModel::addFolder(QString folder)
     m_imagesToLoad.reserve(imageFiles.size());
 
     /// images must be created from this thread, this is required by the Qml engine
-    foreach (QString file, imageFiles) {
-        Z3D::ZCalibrationImage::Ptr image( new ZCalibrationImage(imageDir.absoluteFilePath(file)) );
+    for (const auto &file : imageFiles) {
+        Z3D::ZCalibrationImagePtr image( new ZCalibrationImage(imageDir.absoluteFilePath(file)) );
         m_imagesToLoad.push_back(image);
     }
 
@@ -120,7 +122,7 @@ void ZCalibrationImageModel::addFolder(QString folder)
     addImages(m_imagesToLoad);
 }
 
-void ZCalibrationImageModel::addImage(ZCalibrationImage::Ptr image)
+void ZCalibrationImageModel::addImage(ZCalibrationImagePtr image)
 {
     /// we must wait for the previous task to finish
     /// because we use the static vector "images"
@@ -136,16 +138,16 @@ void ZCalibrationImageModel::addImage(ZCalibrationImage::Ptr image)
     addImages(m_imagesToLoad);
 }
 
-void ZCalibrationImageModel::addImageThreadSafe(Z3D::ZCalibrationImage::Ptr image)
+void ZCalibrationImageModel::addImageThreadSafe(ZCalibrationImagePtr image)
 {
     /// executes addImpl from the object thread, not from the thread where this
     /// function is called. this is needed for the view to update correctly when
     /// we add images in parallel (like in addImages, using QtConcurrent::map)
     QMetaObject::invokeMethod(this, "addImpl", Qt::AutoConnection,
-                              Q_ARG(Z3D::ZCalibrationImage::Ptr, image));
+                              Q_ARG(Z3D::ZCalibrationImagePtr, image));
 }
 
-void ZCalibrationImageModel::addImages(const QVector<Z3D::ZCalibrationImage::Ptr > &images)
+void ZCalibrationImageModel::addImages(const QVector<Z3D::ZCalibrationImagePtr > &images)
 {
     /// parallelize the checking of image validity before adding to model
     m_futureWatcher.setFuture(QtConcurrent::map(images, [=](const auto &image) {
@@ -155,7 +157,7 @@ void ZCalibrationImageModel::addImages(const QVector<Z3D::ZCalibrationImage::Ptr
     }));
 }
 
-void ZCalibrationImageModel::addImpl(Z3D::ZCalibrationImage::Ptr image)
+void ZCalibrationImageModel::addImpl(ZCalibrationImagePtr image)
 {
     /// to avoid entering this section from more than one thread at a time
     QMutexLocker mutexLocker(&m_mutex);
@@ -182,17 +184,17 @@ void ZCalibrationImageModel::addImpl(Z3D::ZCalibrationImage::Ptr image)
     endInsertRows();
 
     //! connect to image signals
-    QObject::connect(image.get(), SIGNAL(stateChanged(Z3D::ZCalibrationImage::ImageState)),
-                     this, SLOT(onImageStateChanged()));
+    QObject::connect(image.get(), &ZCalibrationImage::stateChanged,
+                     this, &ZCalibrationImageModel::onImageStateChanged);
 }
 
-Z3D::ZCalibrationImage::Ptr ZCalibrationImageModel::imageAt(int index) const
+Z3D::ZCalibrationImagePtr ZCalibrationImageModel::imageAt(int index) const
 {
     if (index >= 0 && index < m_images.size()) {
         return m_images[index];
     } else {
         qCritical() << "invalid image index requested:" << index << " - model size:" << m_images.size();
-        return Z3D::ZCalibrationImage::Ptr(nullptr);
+        return nullptr;
     }
 }
 

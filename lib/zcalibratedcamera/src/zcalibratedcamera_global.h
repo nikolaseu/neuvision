@@ -19,7 +19,7 @@
 
 #pragma once
 
-#include <QtCore/qglobal.h>
+#include <QtCore/QtGlobal>
 
 #if defined(Z3D_CALIBRATEDCAMERA_LIBRARY)
 #  define Z3D_CALIBRATEDCAMERA_SHARED_EXPORT Q_DECL_EXPORT

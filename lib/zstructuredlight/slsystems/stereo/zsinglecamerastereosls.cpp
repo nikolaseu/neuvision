@@ -20,8 +20,14 @@
 
 #include "zsinglecamerastereosls.h"
 
-#include "zcameracalibrationprovider.h"
+#include "zcalibratedcamera.h"
 #include "zcalibratedcameraprovider.h"
+#include "zcameraacquisitionmanager.h"
+#include "zcameracalibrationprovider.h"
+#include "zdecodedpattern.h"
+#include "zprojectedpattern.h"
+
+#include <Z3DCameraAcquisition>
 
 namespace Z3D
 {
@@ -49,7 +55,7 @@ void ZSingleCameraStereoSLS::processPatterns()
         estimatedCloudPoints += decodedPattern->estimatedCloudPoints();
     }
 
-    Z3D::ZSimplePointCloud::Ptr cloud = triangulate(
+    Z3D::ZSimplePointCloudPtr cloud = triangulate(
                 decodedPatterns[0]->intensityImg(),
                 decodedPatterns[0]->fringePointsList(),
             projectedPattern->fringePointsList(),
@@ -59,7 +65,7 @@ void ZSingleCameraStereoSLS::processPatterns()
         emit scanFinished(cloud);
     }
 
-    projectedPattern = ZProjectedPattern::Ptr(nullptr);
+    projectedPattern = nullptr;
     decodedPatterns.clear();
 }
 
@@ -86,12 +92,12 @@ void ZSingleCameraStereoSLS::init(QSettings *settings)
     setLeftCalibration(camera->calibration());
     setRightCalibration(projectorCalibration);
 
-    std::vector<Z3D::ZCameraInterface::Ptr> camerasVector;
+    Z3D::ZCameraList camerasVector;
     camerasVector.push_back(camera->camera());
-    setAcquisitionManager(new ZCameraAcquisitionManager(camerasVector));
+    setAcquisitionManager(ZCameraAcquisitionManagerPtr(new ZCameraAcquisitionManager(camerasVector)));
 }
 
-void ZSingleCameraStereoSLS::onPatternProjected(ZProjectedPattern::Ptr pattern)
+void ZSingleCameraStereoSLS::onPatternProjected(ZProjectedPatternPtr pattern)
 {
     if (pattern && pattern->estimatedCloudPoints() > 0) {
         projectedPattern = pattern;
@@ -101,11 +107,11 @@ void ZSingleCameraStereoSLS::onPatternProjected(ZProjectedPattern::Ptr pattern)
     }
 }
 
-void ZSingleCameraStereoSLS::onPatternsDecoded(std::vector<ZDecodedPattern::Ptr> patterns)
+void ZSingleCameraStereoSLS::onPatternsDecoded(std::vector<ZDecodedPatternPtr> patterns)
 {
     for (const auto &decodedPattern : patterns) {
         if (decodedPattern->estimatedCloudPoints() < 1) {
-            projectedPattern = ZProjectedPattern::Ptr(nullptr);
+            projectedPattern = nullptr;
             return;
         }
     }

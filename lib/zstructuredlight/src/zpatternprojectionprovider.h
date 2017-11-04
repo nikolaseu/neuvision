@@ -19,15 +19,13 @@
 
 #pragma once
 
+#include "zstructuredlight_fwd.h"
 #include "zstructuredlight_global.h"
 
 class QWidget;
 
 namespace Z3D
 {
-
-class ZPatternProjection;
-class ZPatternProjectionPlugin;
 
 class Z3D_STRUCTUREDLIGHT_SHARED_EXPORT ZPatternProjectionProvider
 {
@@ -36,8 +34,8 @@ public:
     static void loadPlugins();
     static void unloadPlugins();
 
-    static QList<ZPatternProjection *> getAll();
-    static QWidget *getConfigWidget(ZPatternProjection* patternProjection);
+    static std::vector<ZPatternProjectionPtr> getAll();
+    static QWidget *getConfigWidget(ZPatternProjectionWeakPtr patternProjection);
 
 private:
     explicit ZPatternProjectionProvider();

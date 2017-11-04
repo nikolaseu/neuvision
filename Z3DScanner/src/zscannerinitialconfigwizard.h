@@ -17,8 +17,7 @@
  * along with Z3D.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef ZSCANNERINITIALCONFIGWIZARD_H
-#define ZSCANNERINITIALCONFIGWIZARD_H
+#pragma once
 
 #include <QWidget>
 
@@ -40,5 +39,3 @@ private slots:
 private:
     Ui::ZScannerInitialConfigWizard *ui;
 };
-
-#endif // ZSCANNERINITIALCONFIGWIZARD_H

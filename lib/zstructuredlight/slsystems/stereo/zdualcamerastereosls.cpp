@@ -20,8 +20,14 @@
 
 #include "zdualcamerastereosls.h"
 
+#include "zcalibratedcamera.h"
 #include "zcalibratedcameraprovider.h"
+#include "zcameraacquisitionmanager.h"
+#include "zdecodedpattern.h"
 #include "zpinhole/zpinholecameracalibration.h"
+
+#include <QDebug>
+#include <QSettings>
 
 namespace Z3D
 {
@@ -38,17 +44,17 @@ ZDualCameraStereoSLS::~ZDualCameraStereoSLS()
     m_cameras.clear();
 }
 
-ZCalibratedCamera::Ptr ZDualCameraStereoSLS::leftCamera() const
+ZCalibratedCameraPtr ZDualCameraStereoSLS::leftCamera() const
 {
     return m_cameras[0];
 }
 
-ZCalibratedCamera::Ptr ZDualCameraStereoSLS::rightCamera() const
+Z3D::ZCalibratedCameraPtr ZDualCameraStereoSLS::rightCamera() const
 {
     return m_cameras[1];
 }
 
-void ZDualCameraStereoSLS::addCameras(QList<Z3D::ZCalibratedCamera::Ptr> cameras)
+void ZDualCameraStereoSLS::addCameras(QList<Z3D::ZCalibratedCameraPtr> cameras)
 {
     setReady(false);
 
@@ -61,14 +67,14 @@ void ZDualCameraStereoSLS::addCameras(QList<Z3D::ZCalibratedCamera::Ptr> cameras
         setRightCamera(cameras[1]);
     }
 
-    std::vector<Z3D::ZCameraInterface::Ptr> camerasVector;
+    Z3D::ZCameraList camerasVector;
     for (const auto &cam : cameras) {
         camerasVector.push_back(cam->camera());
     }
-    setAcquisitionManager(new ZCameraAcquisitionManager(camerasVector));
+    setAcquisitionManager(ZCameraAcquisitionManagerPtr(new ZCameraAcquisitionManager(camerasVector)));
 }
 
-void ZDualCameraStereoSLS::setLeftCamera(ZCalibratedCamera::Ptr camera)
+void ZDualCameraStereoSLS::setLeftCamera(Z3D::ZCalibratedCameraPtr camera)
 {
     if (m_cameras[0] != camera) {
         /// check first! this only works for pinhole cameras!
@@ -93,7 +99,7 @@ void ZDualCameraStereoSLS::setLeftCamera(ZCalibratedCamera::Ptr camera)
     }
 }
 
-void ZDualCameraStereoSLS::setRightCamera(ZCalibratedCamera::Ptr camera)
+void ZDualCameraStereoSLS::setRightCamera(ZCalibratedCameraPtr camera)
 {
     if (m_cameras[1] != camera) {
         /// check first! this only works for pinhole cameras!
@@ -130,7 +136,7 @@ QString ZDualCameraStereoSLS::displayName() const
 
 void ZDualCameraStereoSLS::init(QSettings *settings)
 {
-    QList<ZCalibratedCamera::Ptr> cameras;
+    QList<ZCalibratedCameraPtr> cameras;
 
     settings->beginGroup("Left");
     {
@@ -147,12 +153,12 @@ void ZDualCameraStereoSLS::init(QSettings *settings)
     addCameras(cameras);
 }
 
-void ZDualCameraStereoSLS::onPatternProjected(ZProjectedPattern::Ptr pattern)
+void ZDualCameraStereoSLS::onPatternProjected(ZProjectedPatternPtr pattern)
 {
     Q_UNUSED(pattern);
 }
 
-void ZDualCameraStereoSLS::onPatternsDecoded(std::vector<ZDecodedPattern::Ptr> decodedPatterns)
+void ZDualCameraStereoSLS::onPatternsDecoded(std::vector<ZDecodedPatternPtr> decodedPatterns)
 {
     /// is there something to process?
     for (auto decodedPattern : decodedPatterns) {
@@ -166,7 +172,7 @@ void ZDualCameraStereoSLS::onPatternsDecoded(std::vector<ZDecodedPattern::Ptr> d
         estimatedCloudPoints += decodedPattern->estimatedCloudPoints();
     }
 
-    Z3D::ZSimplePointCloud::Ptr cloud = triangulate(
+    Z3D::ZSimplePointCloudPtr cloud = triangulate(
                 decodedPatterns[0]->intensityImg(),
                 decodedPatterns[0]->fringePointsList(),
             decodedPatterns[1]->fringePointsList(),

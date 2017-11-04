@@ -20,9 +20,10 @@
 #pragma once
 
 #include "zstructuredlight_global.h"
+
 #include "zstructuredlightpattern.h"
 
-#include "opencv2/core/core.hpp"
+#include <opencv2/core/mat.hpp>
 
 namespace Z3D
 {
@@ -31,8 +32,6 @@ struct Z3D_STRUCTUREDLIGHT_SHARED_EXPORT ZDecodedPattern : public ZStructuredLig
 {
 public:
     static const uint16_t NO_VALUE = 0; //std::numeric_limits<uint16_t>::max();
-
-    typedef std::shared_ptr<ZDecodedPattern> Ptr;
 
     explicit ZDecodedPattern(cv::Mat decodedImage,
                              cv::Mat intensityImg,

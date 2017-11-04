@@ -19,25 +19,17 @@
 //
 
 #include "zqtcameraplugin.h"
+
+#include "zcamerainfo.h"
 #include "zqtcamera.h"
 
 #include <QCameraInfo>
 
 namespace Z3D {
 
-QString ZQtCameraPlugin::id() const
-{
-    return QStringLiteral("ZQTCAMERA");
-}
-
-QString ZQtCameraPlugin::name() const
+QString ZQtCameraPlugin::displayName() const
 {
     return tr("QtMultimedia camera");
-}
-
-QString ZQtCameraPlugin::version() const
-{
-    return QStringLiteral(Z3D_VERSION_STR);
 }
 
 QList<ZCameraInfo *> ZQtCameraPlugin::getConnectedCameras()
@@ -45,8 +37,8 @@ QList<ZCameraInfo *> ZQtCameraPlugin::getConnectedCameras()
     QList<ZCameraInfo *> cameraList;
 
     QList<QCameraInfo> cameras = QCameraInfo::availableCameras();
-    qDebug() << id() << "found" << cameras.size() << "cameras.";
-    foreach (const QCameraInfo &qtcameraInfo, cameras) {
+    qDebug() << "found" << cameras.size() << "cameras.";
+    for (const QCameraInfo &qtcameraInfo : cameras) {
         QVariantMap extraData;
         extraData["description"] = qtcameraInfo.description();
         extraData["deviceName"] = qtcameraInfo.deviceName();
@@ -56,20 +48,21 @@ QList<ZCameraInfo *> ZQtCameraPlugin::getConnectedCameras()
     return cameraList;
 }
 
-ZCameraInterface::Ptr ZQtCameraPlugin::getCamera(QVariantMap options)
+ZCameraPtr ZQtCameraPlugin::getCamera(QVariantMap options)
 {
     QByteArray deviceName = options["deviceName"].toByteArray();
 
-    if (deviceName.isNull() || deviceName.isEmpty())
-        return ZCameraInterface::Ptr(nullptr);
+    if (deviceName.isNull() || deviceName.isEmpty()) {
+        return nullptr;
+    }
 
     QCamera *qcamera = new QCamera(deviceName);
-
-    if (qcamera->isAvailable())
-        return ZCameraInterface::Ptr(new ZQtCamera(qcamera));
+    if (qcamera->isAvailable()) {
+        return ZCameraPtr(new ZQtCamera(qcamera));
+    }
 
     delete qcamera;
-    return ZCameraInterface::Ptr(nullptr);
+    return nullptr;
 }
 
 } // namespace Z3D

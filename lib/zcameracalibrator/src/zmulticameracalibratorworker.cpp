@@ -21,7 +21,11 @@
 #include "zmulticameracalibratorworker.h"
 
 #include "zcalibrationimage.h"
+#include "zcalibrationpatternfinder.h"
+#include "zcameracalibration.h"
 #include "zmulticalibrationimage.h"
+#include "zmulticalibrationimagemodel.h"
+#include "zmulticameracalibration.h"
 #include "zmulticameracalibrator.h"
 
 #include <QCoreApplication>
@@ -75,7 +79,7 @@ ZMultiCalibrationImageModel *ZMultiCameraCalibratorWorker::imageModel()
     return m_imageModel;
 }
 
-ZCalibrationPatternFinder::Ptr ZMultiCameraCalibratorWorker::patternFinder()
+ZCalibrationPatternFinderPtr ZMultiCameraCalibratorWorker::patternFinder()
 {
     return m_patternFinder;
 }
@@ -114,7 +118,7 @@ void ZMultiCameraCalibratorWorker::setImageModel(ZMultiCalibrationImageModel *im
     }
 }
 
-void ZMultiCameraCalibratorWorker::setPatternFinder(ZCalibrationPatternFinder::Ptr patternFinder)
+void ZMultiCameraCalibratorWorker::setPatternFinder(ZCalibrationPatternFinderPtr patternFinder)
 {
     if (m_patternFinder != patternFinder) {
         if (m_patternFinder) {
@@ -186,12 +190,12 @@ void ZMultiCameraCalibratorWorker::findCalibrationPattern()
     /// execution on parallel in other threads (from the thread pool)
     m_patternFinderFutureWatcher.setFuture(
                 QtConcurrent::map(m_imageModel->images(),
-                                  [=](const Z3D::ZCalibrationImage::Ptr &image) {
+                                  [=](const auto &image) {
                                       image->findPattern(m_patternFinder.get());
                                   }));
 }
 
-void ZMultiCameraCalibratorWorker::calibrate(std::vector<ZCameraCalibration::Ptr> currentCalibrations)
+void ZMultiCameraCalibratorWorker::calibrate(std::vector<ZCameraCalibrationPtr> currentCalibrations)
 {
     if (!m_imageModel)
         return;
@@ -213,7 +217,7 @@ void ZMultiCameraCalibratorWorker::calibrate(std::vector<ZCameraCalibration::Ptr
                 QtConcurrent::run(this, &ZMultiCameraCalibratorWorker::calibrateFunctionImpl, currentCalibrations) );
 }
 
-void ZMultiCameraCalibratorWorker::calibrateFunctionImpl(std::vector<ZCameraCalibration::Ptr> currentCalibrations)
+void ZMultiCameraCalibratorWorker::calibrateFunctionImpl(std::vector<ZCameraCalibrationPtr> currentCalibrations)
 {
     if (m_patternFinderFutureWatcher.isRunning()) {
         qWarning() << Q_FUNC_INFO << "waiting for pattern finder to finish...";
@@ -232,10 +236,10 @@ void ZMultiCameraCalibratorWorker::calibrateFunctionImpl(std::vector<ZCameraCali
     auto cameraCount = size_t(0);
 
     /// get only the images where the calibration pattern was detected
-    std::vector< Z3D::ZMultiCalibrationImage::Ptr > validImages;
+    std::vector< Z3D::ZMultiCalibrationImagePtr > validImages;
     validImages.reserve(imageCount);
     for (size_t i=0; i<imageCount; ++i) {
-        Z3D::ZMultiCalibrationImage::Ptr multiImage = m_imageModel->imageAt(int(i));
+        auto multiImage = m_imageModel->imageAt(int(i));
         if (multiImage->state() == ZCalibrationImage::PatternFoundState) {
             validImages.push_back(multiImage);
 
@@ -352,7 +356,7 @@ void ZMultiCameraCalibratorWorker::calibrateFunctionImpl(std::vector<ZCameraCali
     /// 30% ¿?
     setProgress(0.3f, tr("Running calibration algorithm..."));
 
-    Z3D::ZMultiCameraCalibration::Ptr calibrationResult = m_cameraCalibrator->getCalibration(currentCalibrations, allImagePoints, realWorldPoints);
+    Z3D::ZMultiCameraCalibrationPtr calibrationResult = m_cameraCalibrator->getCalibration(currentCalibrations, allImagePoints, realWorldPoints);
     if (!calibrationResult) {
         /// calibration failed
         qWarning() << "could not calibrate multi camera, calibration algorithm failed";
@@ -365,7 +369,7 @@ void ZMultiCameraCalibratorWorker::calibrateFunctionImpl(std::vector<ZCameraCali
         return;
     }
 
-    std::vector<ZCameraCalibration::Ptr> newCalibrations = calibrationResult->calibrations();
+    std::vector<ZCameraCalibrationPtr> newCalibrations = calibrationResult->calibrations();
 
     /// 99%
     const auto finishMessage = tr("Calibration finished in %1 msecs").arg(time.elapsed());
@@ -374,7 +378,7 @@ void ZMultiCameraCalibratorWorker::calibrateFunctionImpl(std::vector<ZCameraCali
     /// this function is run from a thread in the QThreadPool, we need to move
     /// the qobject to a thread that has an event loop running
     for (size_t i=0; i<newCalibrations.size(); ++i) {
-        ZCameraCalibration::Ptr calibration = newCalibrations[i];
+        ZCameraCalibrationPtr calibration = newCalibrations[i];
         if (calibration) {
             while (!calibration->ready()) {
                 QThread::msleep(100);

@@ -29,8 +29,8 @@
 namespace Z3D
 {
 
-FrameObserver::FrameObserver(AVT::VmbAPI::CameraPtr pCamera) :
-    AVT::VmbAPI::IFrameObserver( pCamera )
+FrameObserver::FrameObserver(AVT::VmbAPI::CameraPtr pCamera)
+    : AVT::VmbAPI::IFrameObserver(pCamera)
 {
     qDebug() << Q_FUNC_INFO;
 }
@@ -93,12 +93,12 @@ void FrameObserver::ClearFrameQueue()
 
 
 
-AVTVimbaCamera::AVTVimbaCamera(AVT::VmbAPI::CameraPtr cameraPtr, QObject *parent) :
-    ZCameraBase(parent),
-    m_cameraHandle(cameraPtr),
-    m_vimbaBufferSize(bufferSize()), /// use same buffer size that ZCameraBase
-    m_frameObserverInternal(nullptr),
-    m_opened(false)
+AVTVimbaCamera::AVTVimbaCamera(AVT::VmbAPI::CameraPtr cameraPtr, QObject *parent)
+    : ZCameraBase(parent)
+    , m_cameraHandle(cameraPtr)
+    , m_vimbaBufferSize(bufferSize()) /// use same buffer size that ZCameraBase
+    , m_frameObserverInternal(nullptr)
+    , m_opened(false)
 {
     std::string strInfo;
     std::stringstream strInfos;
@@ -253,8 +253,8 @@ bool AVTVimbaCamera::startAcquisition()
         m_frameObserverInternal = new FrameObserver(m_cameraHandle);
 
         /// Connect frame ready event with event handler
-        QObject::connect(m_frameObserverInternal.data(), SIGNAL(FrameReceivedSignal(int)),
-                         this, SLOT(onFrameReady(int)));
+        QObject::connect(m_frameObserverInternal.data(), &FrameObserver::FrameReceivedSignal,
+                         this, &AVTVimbaCamera::onFrameReady);
 
         /// Start streaming
         res = m_cameraHandle->StartContinuousImageAcquisition(m_vimbaBufferSize, AVT::VmbAPI::IFrameObserverPtr( m_frameObserverInternal.data() ));
@@ -626,7 +626,7 @@ void AVTVimbaCamera::onFrameReady(int status)
                                                                       pBuffer);
                 */
 
-                ZImageGrayscale::Ptr currentImage = getNextBufferImage(m_currentWidth, m_currentHeight,
+                ZCameraImagePtr currentImage = getNextBufferImage(m_currentWidth, m_currentHeight,
                                                                       m_currentXOffset, m_currentYOffset,
                                                                       bytesPerPixel);
 

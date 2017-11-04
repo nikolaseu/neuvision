@@ -24,7 +24,7 @@
 
 #include <QDebug>
 
-#include "opencv2/calib3d/calib3d.hpp"
+#include <opencv2/calib3d.hpp>
 
 namespace Z3D
 {
@@ -65,8 +65,8 @@ QString ZOpenCVStereoMultiCameraCalibrator::name() const
     return QLatin1String("OpenCV stereo calibration");
 }
 
-ZMultiCameraCalibration::Ptr ZOpenCVStereoMultiCameraCalibrator::getCalibration(
-        std::vector< Z3D::ZCameraCalibration::Ptr > &initialCameraCalibrations,
+ZMultiCameraCalibrationPtr ZOpenCVStereoMultiCameraCalibrator::getCalibration(
+        std::vector<ZCameraCalibrationPtr> &initialCameraCalibrations,
         std::vector< std::vector< std::vector< cv::Point2f > > > &imagePoints,
         std::vector< std::vector< cv::Point3f > > &objectPoints) const
 {
@@ -152,21 +152,16 @@ ZMultiCameraCalibration::Ptr ZOpenCVStereoMultiCameraCalibrator::getCalibration(
             cameraMatrix[0], distCoeffs[0],
             cameraMatrix[1], distCoeffs[1],
             imageSize[0], R, T, E, F,
-        #ifdef CV_VERSION_EPOCH
-            cv::TermCriteria(cv::TermCriteria::MAX_ITER + cv::TermCriteria::EPS, m_termCriteriaMaxIterations, m_termCriteriaEpsilon),
-            calibrationFlags
-        #else
             calibrationFlags,
             cv::TermCriteria(cv::TermCriteria::MAX_ITER + cv::TermCriteria::EPS, m_termCriteriaMaxIterations, m_termCriteriaEpsilon)
-        #endif
             );
 
     qDebug() << "stereo calibration finished with RMS error:" << rms
              << ", distance between cameras:" << cv::norm(T);
 
-    std::vector<ZCameraCalibration::Ptr> newCalibrations;
+    std::vector<ZCameraCalibrationPtr> newCalibrations;
     for (size_t ic = 0; ic < ncameras; ++ic) {
-        Z3D::ZCameraCalibration::Ptr calibration(
+        Z3D::ZCameraCalibrationPtr calibration(
                     new Z3D::ZPinholeCameraCalibration(cameraMatrix[ic], distCoeffs[ic], imageSize[ic]));
         if (ic == 0) {
             calibration->setRotation(R);
@@ -175,16 +170,16 @@ ZMultiCameraCalibration::Ptr ZOpenCVStereoMultiCameraCalibrator::getCalibration(
         newCalibrations.push_back(calibration);
     }
 
-    return ZMultiCameraCalibration::Ptr(new ZOpenCVStereoCameraCalibration(newCalibrations,
-                                                                           objectPoints,
-                                                                           imagePoints,
-                                                                           cameraMatrix,
-                                                                           distCoeffs,
-                                                                           imageSize,
-                                                                           R,
-                                                                           T,
-                                                                           E,
-                                                                           F));
+    return ZMultiCameraCalibrationPtr(new ZOpenCVStereoCameraCalibration(newCalibrations,
+                                                                         objectPoints,
+                                                                         imagePoints,
+                                                                         cameraMatrix,
+                                                                         distCoeffs,
+                                                                         imageSize,
+                                                                         R,
+                                                                         T,
+                                                                         E,
+                                                                         F));
 }
 
 bool ZOpenCVStereoMultiCameraCalibrator::fixIntrinsic() const

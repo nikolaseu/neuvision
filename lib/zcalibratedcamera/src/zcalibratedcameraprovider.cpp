@@ -20,9 +20,9 @@
 
 #include "zcalibratedcameraprovider.h"
 
-#include <Z3DCameraInterface>
-#include <Z3DCameraProvider>
-#include <Z3DCameraCalibrationProvider>
+#include "zcalibratedcamera.h"
+#include "zcameracalibrationprovider.h"
+#include "zcameraprovider.h"
 
 #include <QDebug>
 #include <QDir>
@@ -36,7 +36,7 @@ CalibratedCameraProvider::CalibratedCameraProvider()
 
 }
 
-QList<Z3D::ZCalibratedCamera::Ptr> CalibratedCameraProvider::loadCameras(QString folder)
+QList<ZCalibratedCameraPtr> CalibratedCameraProvider::loadCameras(QString folder)
 {
     auto configDir = QDir(folder);
 
@@ -57,23 +57,23 @@ QList<Z3D::ZCalibratedCamera::Ptr> CalibratedCameraProvider::loadCameras(QString
 
         if (!configDir.cd("cameras")) {
             qWarning() << "cameras configuration folder 'cameras' not found in" << configDir.absolutePath();
-            return QList<Z3D::ZCalibratedCamera::Ptr>();
+            return QList<Z3D::ZCalibratedCameraPtr>();
         }
     }
 
     qDebug() << "loading cameras from" << configDir.absolutePath();
 
-    QList<Z3D::ZCalibratedCamera::Ptr> cameraList;
+    QList<Z3D::ZCalibratedCameraPtr> cameraList;
 
     QStringList filters;
     filters << "*.ini" << "*.json"; //! TODO: agregar para leer configuracion en JSON
     configDir.setNameFilters(filters);
 
-    foreach (QString fileName, configDir.entryList(QDir::Files)) {
+    for (const QString &fileName : configDir.entryList(QDir::Files)) {
         qDebug() << "found" << fileName;
         QSettings settings(configDir.absoluteFilePath(fileName), QSettings::IniFormat);
 
-        ZCalibratedCamera::Ptr calibratedCamera = getCalibratedCamera(&settings);
+        ZCalibratedCameraPtr calibratedCamera = getCalibratedCamera(&settings);
 
         if (!calibratedCamera) {
             qWarning() << "unable to load calibrated camera";
@@ -81,16 +81,16 @@ QList<Z3D::ZCalibratedCamera::Ptr> CalibratedCameraProvider::loadCameras(QString
         }
 
         /// add to list
-        cameraList << Z3D::ZCalibratedCamera::Ptr(calibratedCamera);
+        cameraList << Z3D::ZCalibratedCameraPtr(calibratedCamera);
     }
 
     return cameraList;
 }
 
-ZCalibratedCamera::Ptr CalibratedCameraProvider::getCalibratedCamera(QSettings *settings)
+ZCalibratedCameraPtr CalibratedCameraProvider::getCalibratedCamera(QSettings *settings)
 {
-    Z3D::ZCameraInterface::Ptr camera;
-    Z3D::ZCameraCalibration::Ptr cameraCalibration;
+    Z3D::ZCameraPtr camera;
+    Z3D::ZCameraCalibrationPtr cameraCalibration;
 
     /// camera
     settings->beginGroup("Camera");
@@ -98,7 +98,7 @@ ZCalibratedCamera::Ptr CalibratedCameraProvider::getCalibratedCamera(QSettings *
         camera = ZCameraProvider::getCamera(settings);
         if (!camera) {
             qWarning() << "unable to load camera";
-            return ZCalibratedCamera::Ptr(nullptr);
+            return nullptr;
         }
     }
     settings->endGroup();
@@ -109,12 +109,12 @@ ZCalibratedCamera::Ptr CalibratedCameraProvider::getCalibratedCamera(QSettings *
         cameraCalibration = ZCameraCalibrationProvider::getCalibration(settings);
         if (!cameraCalibration) {
             qWarning() << "unable to load camera calibration";
-            return ZCalibratedCamera::Ptr(nullptr);
+            return nullptr;
         }
     }
     settings->endGroup();
 
-    return ZCalibratedCamera::Ptr(new ZCalibratedCamera(camera, cameraCalibration));
+    return ZCalibratedCameraPtr(new ZCalibratedCamera(camera, cameraCalibration));
 }
 
 } // namespace Z3D

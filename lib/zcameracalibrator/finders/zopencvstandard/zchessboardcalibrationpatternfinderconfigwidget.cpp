@@ -23,68 +23,68 @@
 
 #include "zchessboardcalibrationpatternfinder.h"
 
-Z3D::ZChessboardCalibrationPatternFinderConfigWidget::ZChessboardCalibrationPatternFinderConfigWidget(ZChessboardCalibrationPatternFinder *patternFinder, QWidget *parent) :
-    QWidget(parent),
-    ui(new Ui::ZChessboardCalibrationPatternFinderConfigWidget),
-    m_patternFinder(patternFinder)
+Z3D::ZChessboardCalibrationPatternFinderConfigWidget::ZChessboardCalibrationPatternFinderConfigWidget(ZChessboardCalibrationPatternFinder *patternFinder, QWidget *parent)
+    : QWidget(parent)
+    , ui(new Ui::ZChessboardCalibrationPatternFinderConfigWidget)
+    , m_patternFinder(patternFinder)
 {
     ui->setupUi(this);
 
     ui->sizeColumnsSpinBox->setValue(m_patternFinder->columns());
-    QObject::connect(ui->sizeColumnsSpinBox, SIGNAL(valueChanged(int)),
-                     m_patternFinder, SLOT(setColumns(int)));
+    QObject::connect(ui->sizeColumnsSpinBox, static_cast<void(QSpinBox::*)(int)>(&QSpinBox::valueChanged),
+                     m_patternFinder, &ZChessboardCalibrationPatternFinder::setColumns);
 
     ui->sizeColWidthSpinBox->setValue(m_patternFinder->colWidth());
-    QObject::connect(ui->sizeColWidthSpinBox, SIGNAL(valueChanged(double)),
-                     m_patternFinder, SLOT(setColWidth(double)));
+    QObject::connect(ui->sizeColWidthSpinBox, static_cast<void(QDoubleSpinBox::*)(double)>(&QDoubleSpinBox::valueChanged),
+                     m_patternFinder, &ZChessboardCalibrationPatternFinder::setColWidth);
 
     ui->sizeRowsSpinBox->setValue(m_patternFinder->rows());
-    QObject::connect(ui->sizeRowsSpinBox, SIGNAL(valueChanged(int)),
-                     m_patternFinder, SLOT(setRows(int)));
+    QObject::connect(ui->sizeRowsSpinBox, static_cast<void(QSpinBox::*)(int)>(&QSpinBox::valueChanged),
+                     m_patternFinder, &ZChessboardCalibrationPatternFinder::setRows);
 
     ui->sizeRowHeightSpinBox->setValue(m_patternFinder->rowHeight());
-    QObject::connect(ui->sizeRowHeightSpinBox, SIGNAL(valueChanged(double)),
-                     m_patternFinder, SLOT(setRowHeight(double)));
+    QObject::connect(ui->sizeRowHeightSpinBox, static_cast<void(QDoubleSpinBox::*)(double)>(&QDoubleSpinBox::valueChanged),
+                     m_patternFinder, &ZChessboardCalibrationPatternFinder::setRowHeight);
 
     ui->findCornersAdaptiveThreshCheckBox->setChecked(m_patternFinder->useAdaptiveThreshold());
-    QObject::connect(ui->findCornersAdaptiveThreshCheckBox, SIGNAL(toggled(bool)),
-                     m_patternFinder, SLOT(setUseAdaptiveThreshold(bool)));
+    QObject::connect(ui->findCornersAdaptiveThreshCheckBox, &QCheckBox::toggled,
+                     m_patternFinder, &ZChessboardCalibrationPatternFinder::setUseAdaptiveThreshold);
 
     ui->findCornersFastCheckCheckBox->setChecked(m_patternFinder->useFastCheck());
-    QObject::connect(ui->findCornersFastCheckCheckBox, SIGNAL(toggled(bool)),
-                     m_patternFinder, SLOT(setUseFastCheck(bool)));
+    QObject::connect(ui->findCornersFastCheckCheckBox, &QCheckBox::toggled,
+                     m_patternFinder, &ZChessboardCalibrationPatternFinder::setUseFastCheck);
 
     ui->findCornersFilterQuadsCheckBox->setChecked(m_patternFinder->filterQuads());
-    QObject::connect(ui->findCornersFilterQuadsCheckBox, SIGNAL(toggled(bool)),
-                     m_patternFinder, SLOT(setFilterQuads(bool)));
+    QObject::connect(ui->findCornersFilterQuadsCheckBox, &QCheckBox::toggled,
+                     m_patternFinder, &ZChessboardCalibrationPatternFinder::setFilterQuads);
 
     ui->findCornersNormalizeImageCheckBox->setChecked(m_patternFinder->normalizeImage());
-    QObject::connect(ui->findCornersNormalizeImageCheckBox, SIGNAL(toggled(bool)),
-                     m_patternFinder, SLOT(setNormalizeImage(bool)));
+    QObject::connect(ui->findCornersNormalizeImageCheckBox, &QCheckBox::toggled,
+                     m_patternFinder, &ZChessboardCalibrationPatternFinder::setNormalizeImage);
 
     ui->subpixWinWidthSpinBox->setValue(m_patternFinder->subPixWinWidth());
-    QObject::connect(ui->subpixWinWidthSpinBox, SIGNAL(valueChanged(int)),
-                     m_patternFinder, SLOT(setSubPixWinWidth(int)));
+    QObject::connect(ui->subpixWinWidthSpinBox, static_cast<void(QSpinBox::*)(int)>(&QSpinBox::valueChanged),
+                     m_patternFinder, &ZChessboardCalibrationPatternFinder::setSubPixWinWidth);
 
     ui->subpixWinHeightSpinBox->setValue(m_patternFinder->subPixWinHeight());
-    QObject::connect(ui->subpixWinHeightSpinBox, SIGNAL(valueChanged(int)),
-                     m_patternFinder, SLOT(setSubPixWinHeight(int)));
+    QObject::connect(ui->subpixWinHeightSpinBox, static_cast<void(QSpinBox::*)(int)>(&QSpinBox::valueChanged),
+                     m_patternFinder, &ZChessboardCalibrationPatternFinder::setSubPixWinHeight);
 
     ui->subpixZeroZoneWidthSpinBox->setValue(m_patternFinder->subPixZeroZoneWinWidth());
-    QObject::connect(ui->subpixZeroZoneWidthSpinBox, SIGNAL(valueChanged(int)),
-                     m_patternFinder, SLOT(setSubPixZeroZoneWinWidth(int)));
+    QObject::connect(ui->subpixZeroZoneWidthSpinBox, static_cast<void(QSpinBox::*)(int)>(&QSpinBox::valueChanged),
+                     m_patternFinder, &ZChessboardCalibrationPatternFinder::setSubPixZeroZoneWinWidth);
 
     ui->subpixZeroZoneHeightSpinBox->setValue(m_patternFinder->subPixZeroZoneWinHeight());
-    QObject::connect(ui->subpixZeroZoneHeightSpinBox, SIGNAL(valueChanged(int)),
-                     m_patternFinder, SLOT(setSubPixZeroZoneWinHeight(int)));
+    QObject::connect(ui->subpixZeroZoneHeightSpinBox, static_cast<void(QSpinBox::*)(int)>(&QSpinBox::valueChanged),
+                     m_patternFinder, &ZChessboardCalibrationPatternFinder::setSubPixZeroZoneWinHeight);
 
     ui->subpixMaxIterationsSpinBox->setValue(m_patternFinder->subPixMaxIter());
-    QObject::connect(ui->subpixMaxIterationsSpinBox, SIGNAL(valueChanged(int)),
-                     m_patternFinder, SLOT(setSubPixMaxIter(int)));
+    QObject::connect(ui->subpixMaxIterationsSpinBox, static_cast<void(QSpinBox::*)(int)>(&QSpinBox::valueChanged),
+                     m_patternFinder, &ZChessboardCalibrationPatternFinder::setSubPixMaxIter);
 
     ui->subpixEpsilonSpinBox->setValue(m_patternFinder->subPixEpsilon());
-    QObject::connect(ui->subpixEpsilonSpinBox, SIGNAL(valueChanged(double)),
-                     m_patternFinder, SLOT(setSubPixEpsilon(double)));
+    QObject::connect(ui->subpixEpsilonSpinBox, static_cast<void(QDoubleSpinBox::*)(double)>(&QDoubleSpinBox::valueChanged),
+                     m_patternFinder, &ZChessboardCalibrationPatternFinder::setSubPixEpsilon);
 }
 
 Z3D::ZChessboardCalibrationPatternFinderConfigWidget::~ZChessboardCalibrationPatternFinderConfigWidget()

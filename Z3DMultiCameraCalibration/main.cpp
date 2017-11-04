@@ -18,6 +18,7 @@
 // along with Z3D.  If not, see <http://www.gnu.org/licenses/>.
 //
 
+#include <QDebug>
 #include <QDir>
 #include <QSettings>
 #include <QSplashScreen>
@@ -25,6 +26,8 @@
 #include "zapplication.h"
 #include "zapplicationstyle.h"
 #include "zcalibrationpatternfinderprovider.h"
+#include "zcalibratedcameraprovider.h"
+#include "zcameracalibrationprovider.h"
 #include "zcameraprovider.h"
 #include "zmulticameracalibratorwidget.h"
 
@@ -69,7 +72,7 @@ int main(int argc, char* argv[])
         qDebug() << "trying to load config from:" << settingsFile;
         QSettings settings(settingsFile, QSettings::IniFormat);
 
-        std::vector<Z3D::ZCalibratedCamera::Ptr> cameras;
+        std::vector<Z3D::ZCalibratedCameraPtr> cameras;
         settings.beginGroup("Left");
         {
             cameras.push_back(Z3D::CalibratedCameraProvider::getCalibratedCamera(&settings));

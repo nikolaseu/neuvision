@@ -22,7 +22,7 @@
 
 #include "zpyloncamera.h"
 
-#include "pylon/PylonIncludes.h"
+#include <pylon/PylonIncludes.h>
 
 #include <QDebug>
 #include <QStringList>
@@ -45,7 +45,7 @@ QString ZPylonPlugin::id() const
     return QString("ZPylon");
 }
 
-QString ZPylonPlugin::name() const
+QString ZPylonPlugin::displayName() const
 {
     return QString("Basler Pylon SDK");
 }
@@ -77,7 +77,7 @@ QList<ZCameraInfo *> ZPylonPlugin::getConnectedCameras()
     return camerasList;
 }
 
-ZCameraInterface::Ptr ZPylonPlugin::getCamera(QVariantMap options)
+ZCameraPtr ZPylonPlugin::getCamera(QVariantMap options)
 {
     QString serialNumber = options.value("SerialNumber").toString();
     QString fullName;
@@ -103,7 +103,7 @@ ZCameraInterface::Ptr ZPylonPlugin::getCamera(QVariantMap options)
         return nullptr;
     }
 
-    ZCameraInterface::Ptr camera(new PylonCamera(device));
+    ZCameraPtr camera(new PylonCamera(device));
 
     if (options.contains("ConfigFile")) {
         QString configFileName = options.value("ConfigFile").toString();

@@ -19,22 +19,19 @@
 
 #pragma once
 
+#include "zcameracalibrator_fwd.h"
 #include "zcameracalibrator_global.h"
+
+#include <Z3DCameraCalibration>
 
 #include <QMetaType> // for Q_DECLARE_METATYPE, to use in QVariant
 #include <QObject>
 #include <QPixmap>
-#include <QPointer>
 
-#include <opencv2/core/core.hpp>
+#include <opencv2/core/mat.hpp>
 
 namespace Z3D
 {
-
-/// forward declarations
-class ZCalibrationPatternFinder;
-class ZCameraCalibration;
-
 
 class Z3D_CAMERACALIBRATOR_SHARED_EXPORT ZCalibrationImage : public QObject
 {
@@ -49,9 +46,6 @@ class Z3D_CAMERACALIBRATOR_SHARED_EXPORT ZCalibrationImage : public QObject
     Q_ENUMS(ImageViewStyle)
 
 public:
-    typedef std::shared_ptr<ZCalibrationImage> Ptr;
-    typedef QPointer<ZCalibrationImage> WeakPtr;
-
     enum ImageState {
         UnknownState      = 0x99,
         InvalidState      = 0x01,
@@ -132,4 +126,4 @@ protected:
 
 } // namespace Z3D
 
-Q_DECLARE_METATYPE(Z3D::ZCalibrationImage::Ptr) /// to use in QVariant
+Q_DECLARE_METATYPE(Z3D::ZCalibrationImagePtr) /// to use in QVariant

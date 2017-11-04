@@ -21,6 +21,8 @@
 #include "zdualcamerastereoslsconfigwidget.h"
 #include "ui_zdualcamerastereoslsconfigwidget.h"
 
+#include "zcalibratedcamera.h"
+#include "zcamerainterface.h"
 #include "zcameracalibratorwidget.h"
 #include "zcamerapreviewer.h"
 #include "zmulticameracalibratorwidget.h"
@@ -39,7 +41,7 @@ ZDualCameraStereoSLSConfigWidget::ZDualCameraStereoSLSConfigWidget(ZDualCameraSt
 
     /// Update UI
     connect(ui->calibrateSystemButton, &QPushButton::clicked, [&](){
-        std::vector<Z3D::ZCalibratedCamera::Ptr> cameras;
+        std::vector<Z3D::ZCalibratedCameraPtr> cameras;
         cameras.push_back(m_stereoSLS->leftCamera());
         cameras.push_back(m_stereoSLS->rightCamera());
         Z3D::ZMultiCameraCalibratorWidget *calibWidget = new Z3D::ZMultiCameraCalibratorWidget(cameras);

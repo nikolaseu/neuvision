@@ -26,28 +26,28 @@
 namespace Z3D
 {
 
-ZCircleGridCalibrationPatternFinderConfigWidget::ZCircleGridCalibrationPatternFinderConfigWidget(ZCircleGridCalibrationPatternFinder *patternFinder, QWidget *parent) :
-    QWidget(parent),
-    ui(new Ui::ZCircleGridCalibrationPatternFinderConfigWidget),
-    m_patternFinder(patternFinder)
+ZCircleGridCalibrationPatternFinderConfigWidget::ZCircleGridCalibrationPatternFinderConfigWidget(ZCircleGridCalibrationPatternFinder *patternFinder, QWidget *parent)
+    : QWidget(parent)
+    , ui(new Ui::ZCircleGridCalibrationPatternFinderConfigWidget)
+    , m_patternFinder(patternFinder)
 {
     ui->setupUi(this);
 
     ui->sizeColumnsSpinBox->setValue(m_patternFinder->columns());
-    QObject::connect(ui->sizeColumnsSpinBox, SIGNAL(valueChanged(int)),
-                     m_patternFinder, SLOT(setColumns(int)));
+    QObject::connect(ui->sizeColumnsSpinBox, static_cast<void(QSpinBox::*)(int)>(&QSpinBox::valueChanged),
+                     m_patternFinder, &ZCircleGridCalibrationPatternFinder::setColumns);
 
     ui->sizeColWidthSpinBox->setValue(m_patternFinder->colWidth());
-    QObject::connect(ui->sizeColWidthSpinBox, SIGNAL(valueChanged(double)),
-                     m_patternFinder, SLOT(setColWidth(double)));
+    QObject::connect(ui->sizeColWidthSpinBox, static_cast<void(QDoubleSpinBox::*)(double)>(&QDoubleSpinBox::valueChanged),
+                     m_patternFinder, &ZCircleGridCalibrationPatternFinder::setColWidth);
 
     ui->sizeRowsSpinBox->setValue(m_patternFinder->rows());
-    QObject::connect(ui->sizeRowsSpinBox, SIGNAL(valueChanged(int)),
-                     m_patternFinder, SLOT(setRows(int)));
+    QObject::connect(ui->sizeRowsSpinBox, static_cast<void(QSpinBox::*)(int)>(&QSpinBox::valueChanged),
+                     m_patternFinder, &ZCircleGridCalibrationPatternFinder::setRows);
 
     ui->sizeRowHeightSpinBox->setValue(m_patternFinder->rowHeight());
-    QObject::connect(ui->sizeRowHeightSpinBox, SIGNAL(valueChanged(double)),
-                     m_patternFinder, SLOT(setRowHeight(double)));
+    QObject::connect(ui->sizeRowHeightSpinBox, static_cast<void(QDoubleSpinBox::*)(double)>(&QDoubleSpinBox::valueChanged),
+                     m_patternFinder, &ZCircleGridCalibrationPatternFinder::setRowHeight);
 }
 
 ZCircleGridCalibrationPatternFinderConfigWidget::~ZCircleGridCalibrationPatternFinderConfigWidget()

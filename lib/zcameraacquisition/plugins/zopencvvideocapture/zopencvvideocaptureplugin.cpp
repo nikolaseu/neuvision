@@ -19,6 +19,8 @@
 //
 
 #include "zopencvvideocaptureplugin.h"
+
+#include "zcamerainfo.h"
 #include "zopencvvideocapturecamera.h"
 
 #include <QDebug>
@@ -36,19 +38,9 @@ ZOpenCVVideoCapturePlugin::~ZOpenCVVideoCapturePlugin()
 
 }
 
-QString ZOpenCVVideoCapturePlugin::id() const
-{
-    return QString("ZOpenCV");
-}
-
-QString ZOpenCVVideoCapturePlugin::name() const
+QString ZOpenCVVideoCapturePlugin::displayName() const
 {
     return QString("OpenCV VideoCapture");
-}
-
-QString ZOpenCVVideoCapturePlugin::version() const
-{
-    return QString(Z3D_VERSION_STR);
 }
 
 QList<ZCameraInfo *> ZOpenCVVideoCapturePlugin::getConnectedCameras()
@@ -80,7 +72,7 @@ QList<ZCameraInfo *> ZOpenCVVideoCapturePlugin::getConnectedCameras()
     return camerasList;
 }
 
-ZCameraInterface::Ptr ZOpenCVVideoCapturePlugin::getCamera(QVariantMap options)
+ZCameraPtr ZOpenCVVideoCapturePlugin::getCamera(QVariantMap options)
 {
     int cameraDeviceID = options.value("DeviceID").toInt();
 
@@ -97,12 +89,12 @@ ZCameraInterface::Ptr ZOpenCVVideoCapturePlugin::getCamera(QVariantMap options)
     }
 
     if (camera) {
-        return ZCameraInterface::Ptr(camera);
+        return ZCameraPtr(camera);
     }
 
     qDebug() << "opencv camera not found:" << options;
 
-    return ZCameraInterface::Ptr(nullptr);
+    return nullptr;
 }
 
 } // namespace Z3D

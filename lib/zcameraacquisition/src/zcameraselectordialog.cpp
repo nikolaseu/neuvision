@@ -32,8 +32,8 @@ ZCameraSelectorDialog::ZCameraSelectorDialog(QWidget *parent)
 
     ui->continueButton->setVisible(false);
 
-    QObject::connect(ui->cameraSelectorWidget, SIGNAL(cameraSelected(Z3D::ZCameraInterface::Ptr)),
-                     this, SLOT(onCameraSelected(Z3D::ZCameraInterface::Ptr)));
+    QObject::connect(ui->cameraSelectorWidget, &ZCameraSelectorWidget::cameraSelected,
+                     this, &ZCameraSelectorDialog::onCameraSelected);
 }
 
 ZCameraSelectorDialog::~ZCameraSelectorDialog()
@@ -41,24 +41,25 @@ ZCameraSelectorDialog::~ZCameraSelectorDialog()
     delete ui;
 }
 
-Z3D::ZCameraInterface::Ptr ZCameraSelectorDialog::getCamera() {
+ZCameraPtr ZCameraSelectorDialog::getCamera()
+{
     Z3D::ZCameraSelectorDialog cameraSelector;
     cameraSelector.setWindowModality(Qt::WindowModal);
     cameraSelector.show();
 
     QEventLoop eventLoop;
 
-    QObject::connect(cameraSelector.ui->continueButton, SIGNAL(clicked(bool)),
-                     &eventLoop, SLOT(quit()));
-    QObject::connect(&cameraSelector, SIGNAL(finished(int)),
-                     &eventLoop, SLOT(quit()));
+    QObject::connect(cameraSelector.ui->continueButton, &QPushButton::clicked,
+                     &eventLoop, &QEventLoop::quit);
+    QObject::connect(&cameraSelector, &ZCameraSelectorDialog::finished,
+                     &eventLoop, &QEventLoop::quit);
 
     eventLoop.exec();
 
     return cameraSelector.m_selectedCamera;
 }
 
-void ZCameraSelectorDialog::onCameraSelected(Z3D::ZCameraInterface::Ptr camera)
+void ZCameraSelectorDialog::onCameraSelected(ZCameraPtr camera)
 {
     m_selectedCamera = camera;
 

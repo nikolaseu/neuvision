@@ -20,6 +20,8 @@
 
 #include "zmulticalibrationimagemodel.h"
 
+#include "zmulticalibrationimage.h"
+
 #include <QDir>
 #include <QtConcurrent>
 
@@ -30,8 +32,8 @@ ZMultiCalibrationImageModel::ZMultiCalibrationImageModel(QObject *parent)
     : QAbstractListModel(parent)
 {
     /// to notify when the loading of images has finished
-    QObject::connect(&m_futureWatcher, SIGNAL(finished()),
-                     this, SIGNAL(newImagesAdded()));
+    QObject::connect(&m_futureWatcher, &QFutureWatcher<void>::finished,
+                     this, &ZMultiCalibrationImageModel::newImagesAdded);
 }
 
 ZMultiCalibrationImageModel::~ZMultiCalibrationImageModel()
@@ -59,7 +61,7 @@ QVariant ZMultiCalibrationImageModel::data(const QModelIndex &index, int role) c
     if (!index.isValid() || index.row() < 0 || index.row() >= m_images.size())
         return QVariant();
 
-    Z3D::ZMultiCalibrationImage::Ptr imageObject = imageAt(index.row());
+    Z3D::ZMultiCalibrationImagePtr imageObject = imageAt(index.row());
 
     switch (role) {
     case DataRole:
@@ -74,10 +76,10 @@ QVariant ZMultiCalibrationImageModel::data(const QModelIndex &index, int role) c
     return QVariant();
 }
 
-const QList<ZCalibrationImage::Ptr> &ZMultiCalibrationImageModel::images()
+const QList<ZCalibrationImagePtr> &ZMultiCalibrationImageModel::images()
 {
     m_allImagesList.clear();
-    foreach (ZMultiCalibrationImage::Ptr multiImage, m_images) {
+    for (const auto &multiImage : m_images) {
         m_allImagesList << multiImage->images();
     }
     return m_allImagesList;
@@ -127,14 +129,14 @@ void ZMultiCalibrationImageModel::addFolder(QString folder)
     m_imagesToLoad.reserve(imageFiles.size());
 
     /// images must be created from this thread, this is required by the Qml engine
-    foreach (QString file, imageFiles) {
-        QList<Z3D::ZCalibrationImage::Ptr> imagesList;
-        foreach (QString cameraFolder, cameraFolders) {
-            Z3D::ZCalibrationImage::Ptr image( new ZCalibrationImage(camerasDir.absoluteFilePath(QString("%1/%2").arg(cameraFolder).arg(file))) );
+    for (const auto &file : imageFiles) {
+        QList<Z3D::ZCalibrationImagePtr> imagesList;
+        for (const auto &cameraFolder : cameraFolders) {
+            Z3D::ZCalibrationImagePtr image( new ZCalibrationImage(camerasDir.absoluteFilePath(QString("%1/%2").arg(cameraFolder).arg(file))) );
             imagesList << image;
         }
 
-        Z3D::ZMultiCalibrationImage::Ptr images(new Z3D::ZMultiCalibrationImage(imagesList));
+        Z3D::ZMultiCalibrationImagePtr images(new Z3D::ZMultiCalibrationImage(imagesList));
         m_imagesToLoad.push_back(images);
     }
 
@@ -142,7 +144,7 @@ void ZMultiCalibrationImageModel::addFolder(QString folder)
     addImages(m_imagesToLoad);
 }
 
-void ZMultiCalibrationImageModel::addImage(ZMultiCalibrationImage::Ptr image)
+void ZMultiCalibrationImageModel::addImage(Z3D::ZMultiCalibrationImagePtr image)
 {
     /// we must wait for the previous task to finish
     /// because we use the static vector "images"
@@ -158,16 +160,16 @@ void ZMultiCalibrationImageModel::addImage(ZMultiCalibrationImage::Ptr image)
     addImages(m_imagesToLoad);
 }
 
-void ZMultiCalibrationImageModel::addImageThreadSafe(ZMultiCalibrationImage::Ptr image)
+void ZMultiCalibrationImageModel::addImageThreadSafe(ZMultiCalibrationImagePtr image)
 {
     /// executes addImpl from the object thread, not from the thread where this
     /// function is called. this is needed for the view to update correctly when
     /// we add images in parallel (like in addImages, using QtConcurrent::map)
     QMetaObject::invokeMethod(this, "addImpl", Qt::AutoConnection,
-                              Q_ARG(Z3D::ZMultiCalibrationImage::Ptr, image));
+                              Q_ARG(Z3D::ZMultiCalibrationImagePtr, image));
 }
 
-void ZMultiCalibrationImageModel::addImages(const QVector<ZMultiCalibrationImage::Ptr> &images)
+void ZMultiCalibrationImageModel::addImages(const QVector<ZMultiCalibrationImagePtr> &images)
 {
     /// parallelize the checking of image validity before adding to model
     m_futureWatcher.setFuture(QtConcurrent::map(images, [=](const auto &image) {
@@ -177,7 +179,7 @@ void ZMultiCalibrationImageModel::addImages(const QVector<ZMultiCalibrationImage
     }));
 }
 
-void ZMultiCalibrationImageModel::addImpl(ZMultiCalibrationImage::Ptr image)
+void ZMultiCalibrationImageModel::addImpl(ZMultiCalibrationImagePtr image)
 {
     /// to avoid entering this section from more than one thread at a time
     QMutexLocker mutexLocker(&m_mutex);
@@ -204,17 +206,17 @@ void ZMultiCalibrationImageModel::addImpl(ZMultiCalibrationImage::Ptr image)
     endInsertRows();
 
     //! connect to image signals
-    QObject::connect(image.get(), SIGNAL(stateChanged(Z3D::ZCalibrationImage::ImageState)),
-                     this, SLOT(onImageStateChanged()));
+    QObject::connect(image.get(), &ZMultiCalibrationImage::stateChanged,
+                     this, &ZMultiCalibrationImageModel::onImageStateChanged);
 }
 
-ZMultiCalibrationImage::Ptr ZMultiCalibrationImageModel::imageAt(int index) const
+ZMultiCalibrationImagePtr ZMultiCalibrationImageModel::imageAt(int index) const
 {
     if (index >= 0 && index < m_images.size()) {
         return m_images[index];
     } else {
         qCritical() << "invalid image index requested:" << index << " - model size:" << m_images.size();
-        return Z3D::ZMultiCalibrationImage::Ptr(nullptr);
+        return nullptr;
     }
 }
 

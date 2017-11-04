@@ -19,13 +19,14 @@
 
 #pragma once
 
+#include "zcameracalibrator_fwd.h"
 #include "zcameracalibrator_global.h"
 
-#include "zcalibrationpatternfinder.h"
-
 #include <Z3DCalibratedCamera>
+#include <Z3DCameraCalibration>
 
 #include "zwidget.h"
+
 #include <QModelIndex>
 
 class QProgressBar;
@@ -40,16 +41,12 @@ namespace Ui {
 class ZCameraCalibratorWidget;
 }
 
-class ZCalibrationImageModel;
-class ZCameraCalibratorWorker;
-class ZCameraCalibrator;
-
 class Z3D_CAMERACALIBRATOR_SHARED_EXPORT ZCameraCalibratorWidget : public ZWidget
 {
     Q_OBJECT
 
 public:
-    explicit ZCameraCalibratorWidget(Z3D::ZCalibratedCamera::Ptr camera = Z3D::ZCalibratedCamera::Ptr(nullptr), QWidget *parent = nullptr);
+    explicit ZCameraCalibratorWidget(Z3D::ZCalibratedCameraPtr camera = nullptr, QWidget *parent = nullptr);
     ~ZCameraCalibratorWidget();
 
 private slots:
@@ -67,7 +64,7 @@ private slots:
     void onCalibrationPatternTypeChanged(int index);
 
     void onProgressChanged(float progress, QString message);
-    void onCalibrationChanged(Z3D::ZCameraCalibration::Ptr newCalibration);
+    void onCalibrationChanged(Z3D::ZCameraCalibrationPtr newCalibration);
 
     void loadSession();
     void newSession();
@@ -97,14 +94,14 @@ private:
     ZCalibrationImageModel *m_model;
     QString m_sessionFolder;
 
-    QList<ZCalibrationPatternFinder::Ptr> m_patternFinderList;
+    QList<ZCalibrationPatternFinderPtr> m_patternFinderList;
     QList<ZCameraCalibrator *> m_cameraCalibratorList;
 
     ZCameraCalibratorWorker *m_calibratorWorker;
 
-    Z3D::ZCalibratedCamera::Ptr m_camera;
+    Z3D::ZCalibratedCameraPtr m_camera;
 
-    Z3D::ZCameraCalibration::Ptr m_currentCalibration;
+    Z3D::ZCameraCalibrationPtr m_currentCalibration;
 
     ObjectController *m_calibrationParamsController;
 

@@ -6,12 +6,15 @@ TARGET        = $$qtLibraryTarget(zcore)
 DESTDIR       = $$Z3D_BUILD_DIR
 VERSION       = $$Z3D_VERSION
 DEFINES      += Z3D_CORE_LIBRARY
+
 HEADERS += \
+    zcore_fwd.h \
     zcore_global.h \
-    zpluginloader.h \
     zcoreplugin.h \
-    zloghandler_p.h
+    zloghandler_p.h \
+    zpluginloader.h \
+
 SOURCES += \
-    zpluginloader.cpp \
     zcoreplugin.cpp \
-    zloghandler_p.cpp
+    zloghandler_p.cpp \
+    zpluginloader.cpp \

@@ -19,19 +19,16 @@
 
 #pragma once
 
-#include "zmulticalibrationimagemodel.h"
-#include "zcalibrationpatternfinder.h"
+#include "zcameracalibrator_fwd.h"
+#include "zcameracalibrator_global.h"
 
-#include "zcameracalibration.h"
-#include "zmulticameracalibration.h"
+#include <Z3DCameraCalibration>
 
 #include <QFutureWatcher>
 #include <QObject>
 
 namespace Z3D
 {
-
-class ZMultiCameraCalibrator;
 
 class Z3D_CAMERACALIBRATOR_SHARED_EXPORT ZMultiCameraCalibratorWorker : public QObject
 {
@@ -42,7 +39,7 @@ public:
     ~ZMultiCameraCalibratorWorker();
 
     Z3D::ZMultiCalibrationImageModel* imageModel();
-    ZCalibrationPatternFinder::Ptr patternFinder();
+    ZCalibrationPatternFinderPtr patternFinder();
     Z3D::ZMultiCameraCalibrator *cameraCalibrator();
 
     float progress() const;
@@ -54,11 +51,11 @@ signals:
     void progressChanged(float progress, QString message = QString());
 
     void calibrationFailed(QString message);
-    void calibrationChanged(Z3D::ZMultiCameraCalibration::Ptr multiCameraCalibrationResult);
+    void calibrationChanged(Z3D::ZMultiCameraCalibrationPtr multiCameraCalibrationResult);
 
 public slots:
     void setImageModel(Z3D::ZMultiCalibrationImageModel* imageModel);
-    void setPatternFinder(Z3D::ZCalibrationPatternFinder::Ptr patternFinder);
+    void setPatternFinder(Z3D::ZCalibrationPatternFinderPtr patternFinder);
     void setCameraCalibrator(Z3D::ZMultiCameraCalibrator *cameraCalibrator);
 
     void setProgress(float progress, QString message = QString());
@@ -66,13 +63,13 @@ public slots:
     void setProgressRange(int min, int max);
 
     void findCalibrationPattern();
-    void calibrate(std::vector<Z3D::ZCameraCalibration::Ptr> currentCalibrations);
+    void calibrate(std::vector<Z3D::ZCameraCalibrationPtr> currentCalibrations);
 
 protected:
-    void calibrateFunctionImpl(std::vector<ZCameraCalibration::Ptr> currentCalibrations);
+    void calibrateFunctionImpl(std::vector<ZCameraCalibrationPtr> currentCalibrations);
 
-    Z3D::ZMultiCalibrationImageModel::WeakPtr m_imageModel;
-    Z3D::ZCalibrationPatternFinder::Ptr m_patternFinder;
+    Z3D::ZMultiCalibrationImageModelWeakPtr m_imageModel;
+    Z3D::ZCalibrationPatternFinderPtr m_patternFinder;
     Z3D::ZMultiCameraCalibrator *m_cameraCalibrator;
 
     QFutureWatcher<void> m_patternFinderFutureWatcher;

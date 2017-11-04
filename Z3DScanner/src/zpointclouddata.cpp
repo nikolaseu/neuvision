@@ -20,9 +20,11 @@
 
 #include "zpointclouddata.h"
 
+#include "zsimplepointcloud.h"
+
 #include <QDebug>
 
-ZPointCloudData::ZPointCloudData(const Z3D::ZSimplePointCloud::Ptr &pointCloud)
+ZPointCloudData::ZPointCloudData(const Z3D::ZSimplePointCloudPtr &pointCloud)
     : m_count(0)
 {
     const auto &points = pointCloud->points;

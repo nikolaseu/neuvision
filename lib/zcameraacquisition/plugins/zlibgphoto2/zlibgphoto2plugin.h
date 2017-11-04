@@ -19,9 +19,6 @@
 
 #pragma once
 
-#include <QObject>
-
-#include "zcamerainterface.h"
 #include "zcameraplugininterface.h"
 
 #include <gphoto2/gphoto2-context.h>
@@ -29,7 +26,7 @@
 namespace Z3D
 {
 
-class ZLibGPhoto2Plugin : public ZCameraPluginInterface
+class ZLibGPhoto2Plugin : public QObject, public ZCameraPluginInterface
 {
     Q_OBJECT
     Q_PLUGIN_METADATA(IID "z3d.cameraacquisition.cameraplugininterface" FILE "zlibgphoto2.json")
@@ -40,13 +37,11 @@ public:
     ~ZLibGPhoto2Plugin();
 
     /// plugin information
-    QString id() const override;
-    QString name() const override;
-    QString version() const override;
+    QString displayName() const override;
 
     /// camera utilities
     QList<ZCameraInfo *> getConnectedCameras() override;
-    ZCameraInterface::Ptr getCamera(QVariantMap options) override;
+    ZCameraPtr getCamera(QVariantMap options) override;
 
 private:
     GPContext *context;

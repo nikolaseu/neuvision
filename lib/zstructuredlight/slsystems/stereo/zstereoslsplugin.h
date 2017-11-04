@@ -24,7 +24,7 @@
 namespace Z3D
 {
 
-class ZStereoSLSPlugin : public ZStructuredLightSystemPlugin
+class ZStereoSLSPlugin : public QObject, public ZStructuredLightSystemPlugin
 {
     Q_OBJECT
     Q_PLUGIN_METADATA(IID "z3d.zstructuredlight.zstructuredlightsystemplugin" FILE "zstereoslsplugin.json")
@@ -33,17 +33,10 @@ class ZStereoSLSPlugin : public ZStructuredLightSystemPlugin
 public:
     ZStereoSLSPlugin();
 
-    // ZCorePlugin interface
-public:
-    QString id() const override;
-    QString name() const override;
-    QString version() const override;
-
     // ZStructuredLightSystemPlugin interface
 public:
-    QList<QString> getAll() override;
-    ZStructuredLightSystem::Ptr get(QSettings *settings) override;
-    QWidget *getConfigWidget(ZStructuredLightSystem *structuredLightSystem) override;
+    ZStructuredLightSystemPtr get(QSettings *settings) override;
+    QWidget *getConfigWidget(ZStructuredLightSystemWeakPtr structuredLightSystem) override;
 
 private:
     std::map<ZStructuredLightSystem *, QWidget *> m_structuredLightSystemWidgets;

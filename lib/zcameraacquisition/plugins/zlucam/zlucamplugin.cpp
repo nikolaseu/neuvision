@@ -33,7 +33,7 @@ QString ZLuCamPlugin::id() const
     return QString("ZLuCam");
 }
 
-QString ZLuCamPlugin::name() const
+QString ZLuCamPlugin::displayName() const
 {
     return QString("Lumenera LuCam SDK");
 }
@@ -47,8 +47,8 @@ QList<ZCameraInfo *> ZLuCamPlugin::getConnectedCameras()
 {
     QList<ZCameraInfo *> camerasList;
 
-    QList<ZCameraInterface::Ptr> cameras =  LuCamCamera::getConnectedCameras();
-    foreach (ZCameraInterface::Ptr camera, cameras) {
+    QList<ZCameraPtr> cameras =  LuCamCamera::getConnectedCameras();
+    for (const ZCameraPtr camera : cameras) {
         QVariantMap extraData;
         extraData["Name"] = camera->uuid();
         camerasList << new ZCameraInfo(this, camera->uuid(), extraData);
@@ -57,10 +57,10 @@ QList<ZCameraInfo *> ZLuCamPlugin::getConnectedCameras()
     return camerasList;
 }
 
-ZCameraInterface::Ptr ZLuCamPlugin::getCamera(QVariantMap options)
+ZCameraPtr ZLuCamPlugin::getCamera(QVariantMap options)
 {
     QString cameraName = options.value("Name").toString();
-    ZCameraInterface::Ptr camera = LuCamCamera::getCameraByName(cameraName);
+    ZCameraPtr camera = LuCamCamera::getCameraByName(cameraName);
 
     if (camera && options.contains("ConfigFile")) {
         QString configFileName = options.value("ConfigFile").toString();

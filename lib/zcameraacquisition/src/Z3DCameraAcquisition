@@ -1,7 +1,1 @@
-#include "zcameraimage.h"
-#include "zcamerainterface.h"
-#include "zcamerapreviewer.h"
-#include "zcameraprovider.h"
-#include "zcameraframesrecorder.h"
-#include "zimageviewer.h"
-#include "zimageviewwidget.h"
+#include "zcameraacquisition_fwd.h"

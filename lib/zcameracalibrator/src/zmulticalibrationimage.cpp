@@ -26,16 +26,16 @@ namespace Z3D
 {
 
 //! FIXME esto no va acá
-static int _sharedPointerMetaTypeId = qRegisterMetaType< Z3D::ZMultiCalibrationImage::Ptr >("Z3D::ZMultiCalibrationImage::Ptr");
+static int _sharedPointerMetaTypeId = qRegisterMetaType< Z3D::ZMultiCalibrationImagePtr >("Z3D::ZMultiCalibrationImagePtr");
 
-ZMultiCalibrationImage::ZMultiCalibrationImage(QList<ZCalibrationImage::Ptr> images)
+ZMultiCalibrationImage::ZMultiCalibrationImage(QList<ZCalibrationImagePtr> images)
     : m_images(images)
     , m_state(ZCalibrationImage::UnknownState)
 {
     /// connect to each image state changes
-    foreach (ZCalibrationImage::Ptr image, m_images) {
-        QObject::connect(image.get(), SIGNAL(stateChanged(Z3D::ZCalibrationImage::ImageState)),
-                         this, SLOT(updateState()));
+    for (const auto &image : m_images) {
+        QObject::connect(image.get(), &ZCalibrationImage::stateChanged,
+                         this, &ZMultiCalibrationImage::updateState);
     }
     updateState();
 }
@@ -47,7 +47,7 @@ ZMultiCalibrationImage::~ZMultiCalibrationImage()
 
 bool ZMultiCalibrationImage::isValid()
 {
-    foreach (ZCalibrationImage::Ptr image, m_images) {
+    for (const auto &image : m_images) {
         if (!image->isValid())
             return false;
     }
@@ -66,7 +66,7 @@ QImage ZMultiCalibrationImage::thumbnail() const
     int maxWidth = 0;
     int minHeight = 9999999;
     QImage thumbImage;
-    foreach (ZCalibrationImage::Ptr img, m_images) {
+    for (const auto &img : m_images) {
         thumbImage = img->imageFromUrl(Z3D::ZCalibrationImage::ThumbnailImage);
         if (maxWidth < thumbImage.width())
             maxWidth = thumbImage.width();
@@ -80,7 +80,7 @@ QImage ZMultiCalibrationImage::thumbnail() const
     int lastPos = 0;
     const int separation = 2;
     for (int i=0; i<m_images.size(); ++i) {
-        ZCalibrationImage::Ptr img = m_images[i];
+        ZCalibrationImagePtr img = m_images[i];
         thumbImage = img->imageFromUrl(Z3D::ZCalibrationImage::ThumbnailImage);
         thumbImage = thumbImage.scaledToHeight(minHeight);
         painter.drawImage(lastPos, 0, thumbImage);
@@ -91,15 +91,15 @@ QImage ZMultiCalibrationImage::thumbnail() const
     return thumbnailImage.copy(0,0,lastPos-separation,minHeight).scaledToWidth(maxWidth);
 }
 
-const QList<ZCalibrationImage::Ptr> &ZMultiCalibrationImage::images() const
+const QList<ZCalibrationImagePtr> &ZMultiCalibrationImage::images() const
 {
     return m_images;
 }
 
-ZCalibrationImage::Ptr ZMultiCalibrationImage::image(int index) const
+ZCalibrationImagePtr ZMultiCalibrationImage::image(int index) const
 {
     if (index >= m_images.size())
-        return ZCalibrationImage::Ptr(nullptr);
+        return nullptr;
 
     return m_images[index];
 }
@@ -112,7 +112,7 @@ ZCalibrationImage::ImageState ZMultiCalibrationImage::state() const
 void ZMultiCalibrationImage::updateState()
 {
     ZCalibrationImage::ImageState worseState = ZCalibrationImage::UnknownState;
-    foreach (ZCalibrationImage::Ptr image, m_images) {
+    for (const auto &image : m_images) {
         if (image->state() < worseState)
             worseState = image->state();
     }

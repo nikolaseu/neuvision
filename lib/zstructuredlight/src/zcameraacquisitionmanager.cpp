@@ -19,12 +19,14 @@
 //
 
 #include "zcameraacquisitionmanager.h"
+#include "zcameraimage.h"
+#include "zcamerainterface.h"
 
 #include <QDir>
 
 namespace Z3D {
 
-ZCameraAcquisitionManager::ZCameraAcquisitionManager(std::vector<ZCameraInterface::Ptr> cameras, QObject *parent)
+ZCameraAcquisitionManager::ZCameraAcquisitionManager(ZCameraList cameras, QObject *parent)
     : QObject(parent)
     , m_cameras(cameras)
 {
@@ -72,13 +74,13 @@ void ZCameraAcquisitionManager::acquireSingle(QString id)
         cam->requestSnapshot();
     }
 
-    m_images.push_back(std::vector<Z3D::ZImageGrayscale::Ptr>());
+    m_images.push_back(std::vector<Z3D::ZCameraImagePtr>());
     auto &images = m_images.back();
     images.reserve(m_cameras.size());
 
     for (auto cam : m_cameras) {
         /// Retrieve the image, this will block until the snapshot is retrieved
-        ZImageGrayscale::Ptr imptr = cam->getSnapshot();
+        auto imptr = cam->getSnapshot();
 
         if (imptr) {
             /// create a deep copy, the camera might return a temporary
@@ -86,7 +88,7 @@ void ZCameraAcquisitionManager::acquireSingle(QString id)
 
             if (m_debugMode) {
                 /// save image
-                imptr->save(QString("%1/%2/%3")
+                ZCameraImage::save(imptr, QString("%1/%2/%3")
                             .arg(m_acquisitionId)
                             .arg(cam->uuid())
                             .arg(id));

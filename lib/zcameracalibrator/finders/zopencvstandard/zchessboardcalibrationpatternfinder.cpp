@@ -20,8 +20,8 @@
 
 #include "zchessboardcalibrationpatternfinder.h"
 
-#include <opencv2/calib3d/calib3d.hpp> // findChessboardCorners
-#include <opencv2/imgproc/imgproc.hpp> // cornerSubPix
+#include <opencv2/calib3d.hpp> // findChessboardCorners
+#include <opencv2/imgproc.hpp> // cornerSubPix
 
 namespace Z3D
 {
@@ -36,27 +36,26 @@ ZChessboardCalibrationPatternFinder::ZChessboardCalibrationPatternFinder(QObject
     , m_subPixMaxIter(50)
     , m_subPixEpsilon(1e-5)
 {
-    QObject::connect(this, SIGNAL(useAdaptiveThresholdChanged(bool)),
-                     this, SLOT(updateConfigHash()));
-    QObject::connect(this, SIGNAL(useFastCheckChanged(bool)),
-                     this, SLOT(updateConfigHash()));
-    QObject::connect(this, SIGNAL(filterQuadsChanged(bool)),
-                     this, SLOT(updateConfigHash()));
-    QObject::connect(this, SIGNAL(normalizeImageChanged(bool)),
-                     this, SLOT(updateConfigHash()));
-
-    QObject::connect(this, SIGNAL(subPixWinWidthChanged(int)),
-                     this, SLOT(updateConfigHash()));
-    QObject::connect(this, SIGNAL(subPixWinHeightChanged(int)),
-                     this, SLOT(updateConfigHash()));
-    QObject::connect(this, SIGNAL(subPixZeroZoneWinWidthChanged(int)),
-                     this, SLOT(updateConfigHash()));
-    QObject::connect(this, SIGNAL(subPixZeroZoneWinHeightChanged(int)),
-                     this, SLOT(updateConfigHash()));
-    QObject::connect(this, SIGNAL(subPixMaxIterChanged(int)),
-                     this, SLOT(updateConfigHash()));
-    QObject::connect(this, SIGNAL(subPixEpsilonChanged(double)),
-                     this, SLOT(updateConfigHash()));
+    QObject::connect(this, &ZChessboardCalibrationPatternFinder::useAdaptiveThresholdChanged,
+                     this, &ZChessboardCalibrationPatternFinder::updateConfigHash);
+    QObject::connect(this, &ZChessboardCalibrationPatternFinder::useFastCheckChanged,
+                     this, &ZChessboardCalibrationPatternFinder::updateConfigHash);
+    QObject::connect(this, &ZChessboardCalibrationPatternFinder::filterQuadsChanged,
+                     this, &ZChessboardCalibrationPatternFinder::updateConfigHash);
+    QObject::connect(this, &ZChessboardCalibrationPatternFinder::normalizeImageChanged,
+                     this, &ZChessboardCalibrationPatternFinder::updateConfigHash);
+    QObject::connect(this, &ZChessboardCalibrationPatternFinder::subPixWinWidthChanged,
+                     this, &ZChessboardCalibrationPatternFinder::updateConfigHash);
+    QObject::connect(this, &ZChessboardCalibrationPatternFinder::subPixWinHeightChanged,
+                     this, &ZChessboardCalibrationPatternFinder::updateConfigHash);
+    QObject::connect(this, &ZChessboardCalibrationPatternFinder::subPixZeroZoneWinWidthChanged,
+                     this, &ZChessboardCalibrationPatternFinder::updateConfigHash);
+    QObject::connect(this, &ZChessboardCalibrationPatternFinder::subPixZeroZoneWinHeightChanged,
+                     this, &ZChessboardCalibrationPatternFinder::updateConfigHash);
+    QObject::connect(this, &ZChessboardCalibrationPatternFinder::subPixMaxIterChanged,
+                     this, &ZChessboardCalibrationPatternFinder::updateConfigHash);
+    QObject::connect(this, &ZChessboardCalibrationPatternFinder::subPixEpsilonChanged,
+                     this, &ZChessboardCalibrationPatternFinder::updateConfigHash);
 
     /// generate current config hash
     updateConfigHash();

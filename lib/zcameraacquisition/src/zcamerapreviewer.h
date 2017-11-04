@@ -19,8 +19,8 @@
 
 #pragma once
 
+#include "zcameraacquisition_fwd.h"
 #include "zcameraacquisition_global.h"
-#include "zcamerainterface.h"
 
 #include "zwidget.h"
 
@@ -38,11 +38,11 @@ class Z3D_CAMERAACQUISITION_SHARED_EXPORT ZCameraPreviewer : public ZWidget
     
 public:
     explicit ZCameraPreviewer(QWidget *parent = nullptr);
-    explicit ZCameraPreviewer(Z3D::ZCameraInterface::Ptr camera, QWidget *parent = nullptr);
+    explicit ZCameraPreviewer(ZCameraPtr camera, QWidget *parent = nullptr);
     ~ZCameraPreviewer();
 
 public slots:
-    void setCamera(Z3D::ZCameraInterface::Ptr camera);
+    void setCamera(Z3D::ZCameraPtr camera);
 
 protected slots:
     void closeEvent(QCloseEvent *);
@@ -57,7 +57,7 @@ private slots:
 private:
     Ui::ZCameraPreviewer *ui;
 
-    Z3D::ZCameraInterface::Ptr m_camera;
+    Z3D::ZCameraPtr m_camera;
 };
 
 } // namespace Z3D

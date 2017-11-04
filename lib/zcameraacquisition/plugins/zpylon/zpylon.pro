@@ -24,3 +24,6 @@ include(3rdparty/pylon.pri)
 ###############################################################################
 # OpenCV
 include($$PWD/../../../../3rdparty/opencv.pri)
+
+DISTFILES += \
+    zpylon.json

@@ -20,8 +20,8 @@
 
 #include "zopencvstereocameracalibration.h"
 
-#include "opencv2/calib3d/calib3d.hpp"
-#include "opencv2/imgproc/imgproc.hpp"
+#include <opencv2/calib3d.hpp>
+#include <opencv2/imgproc.hpp>
 
 #include <QDateTime>
 #include <QDebug>
@@ -30,7 +30,7 @@
 namespace Z3D
 {
 
-ZOpenCVStereoCameraCalibration::ZOpenCVStereoCameraCalibration(std::vector<ZCameraCalibration::Ptr> calibrations,
+ZOpenCVStereoCameraCalibration::ZOpenCVStereoCameraCalibration(std::vector<ZCameraCalibrationPtr> calibrations,
                                                                std::vector<std::vector<cv::Point3f> > objectPoints,
                                                                std::vector<std::vector<std::vector<cv::Point2f> > > imagePoints,
                                                                cv::Mat cameraMatrix[2],
