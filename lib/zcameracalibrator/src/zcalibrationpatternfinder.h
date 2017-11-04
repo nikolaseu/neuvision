@@ -40,7 +40,7 @@ class Z3D_CAMERACALIBRATOR_SHARED_EXPORT ZCalibrationPatternFinder : public QObj
     Q_PROPERTY(float rowHeight READ rowHeight WRITE setRowHeight NOTIFY rowHeightChanged)
 
 public:
-    typedef QSharedPointer<ZCalibrationPatternFinder> Ptr;
+    typedef std::shared_ptr<ZCalibrationPatternFinder> Ptr;
     typedef QPointer<ZCalibrationPatternFinder> WeakPtr;
 
     explicit ZCalibrationPatternFinder(QObject *parent = nullptr);

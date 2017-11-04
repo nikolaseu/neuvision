@@ -30,7 +30,7 @@ namespace Z3D
 struct Z3D_STRUCTUREDLIGHT_SHARED_EXPORT ZProjectedPattern : public ZStructuredLightPattern
 {
 public:
-    typedef QSharedPointer<ZProjectedPattern> Ptr;
+    typedef std::shared_ptr<ZProjectedPattern> Ptr;
 
     explicit ZProjectedPattern(cv::Mat decodedImage,
                                std::map<int, std::vector<cv::Vec2f> > fringePointsList);

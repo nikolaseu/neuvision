@@ -27,7 +27,7 @@ namespace Z3D
 class Z3D_CAMERACALIBRATION_SHARED_EXPORT ZMultiCameraCalibration
 {
 public:
-    typedef QSharedPointer<Z3D::ZMultiCameraCalibration> Ptr;
+    typedef std::shared_ptr<Z3D::ZMultiCameraCalibration> Ptr;
 
     explicit ZMultiCameraCalibration(std::vector<ZCameraCalibration::Ptr> calibrations);
 

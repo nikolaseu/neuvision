@@ -42,7 +42,7 @@ class Z3D_STRUCTUREDLIGHT_SHARED_EXPORT ZStructuredLightSystem : public QObject
     Q_PROPERTY(bool debugShowDecodedImages READ debugShowDecodedImages WRITE setDebugShowDecodedImages NOTIFY debugShowDecodedImagesChanged)
 
 public:
-    typedef QSharedPointer<ZStructuredLightSystem> Ptr;
+    typedef std::shared_ptr<ZStructuredLightSystem> Ptr;
 
     explicit ZStructuredLightSystem(QObject *parent = nullptr);
     virtual ~ZStructuredLightSystem();

@@ -49,7 +49,7 @@ class Z3D_CAMERACALIBRATOR_SHARED_EXPORT ZCalibrationImage : public QObject
     Q_ENUMS(ImageViewStyle)
 
 public:
-    typedef QSharedPointer<ZCalibrationImage> Ptr;
+    typedef std::shared_ptr<ZCalibrationImage> Ptr;
     typedef QPointer<ZCalibrationImage> WeakPtr;
 
     enum ImageState {

@@ -41,7 +41,7 @@ class Z3D_CAMERAACQUISITION_SHARED_EXPORT ZCameraInterface : public QObject
     Q_PROPERTY(QStringList presets READ getPresets CONSTANT)
 
 public:
-    typedef QSharedPointer<Z3D::ZCameraInterface> Ptr;
+    typedef std::shared_ptr<Z3D::ZCameraInterface> Ptr;
     typedef QPointer<Z3D::ZCameraInterface> WeakPtr;
 
     enum CameraAttributeType {
