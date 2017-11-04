@@ -24,8 +24,6 @@
 
 #include "opencv2/core/core.hpp"
 
-#include <QSharedPointer>
-
 namespace Z3D
 {
 
@@ -34,7 +32,7 @@ struct Z3D_STRUCTUREDLIGHT_SHARED_EXPORT ZDecodedPattern : public ZStructuredLig
 public:
     static const uint16_t NO_VALUE = 0; //std::numeric_limits<uint16_t>::max();
 
-    typedef QSharedPointer<ZDecodedPattern> Ptr;
+    typedef std::shared_ptr<ZDecodedPattern> Ptr;
 
     explicit ZDecodedPattern(cv::Mat decodedImage,
                              cv::Mat intensityImg,

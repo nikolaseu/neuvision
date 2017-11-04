@@ -112,12 +112,12 @@ void MainWindow::initStructuredLightSystem()
     if (m_currentStructuredLightSystem) {
         m_currentStructuredLightSystem->setPatternProjection(m_currentPatternProjection);
 
-        connect(m_currentStructuredLightSystem.data(), &Z3D::ZStructuredLightSystem::readyChanged,
+        connect(m_currentStructuredLightSystem.get(), &Z3D::ZStructuredLightSystem::readyChanged,
                 ui->centralwidget, &QWidget::setEnabled);
-        connect(m_currentStructuredLightSystem.data(), &Z3D::ZStructuredLightSystem::scanFinished,
+        connect(m_currentStructuredLightSystem.get(), &Z3D::ZStructuredLightSystem::scanFinished,
                 this, &MainWindow::onScanFinished);
         connect(ui->startAcquisitionButton, &QPushButton::clicked,
-                m_currentStructuredLightSystem.data(), &Z3D::ZStructuredLightSystem::start);
+                m_currentStructuredLightSystem.get(), &Z3D::ZStructuredLightSystem::start);
 
         /// add config widget
         QWidget *currentWidget = Z3D::ZStructuredLightSystemProvider::getConfigWidget(m_currentStructuredLightSystem);

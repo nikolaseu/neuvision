@@ -32,7 +32,7 @@ class Z3D_CALIBRATEDCAMERA_SHARED_EXPORT ZCalibratedCamera : public QObject
     Q_OBJECT
 
 public:
-    typedef QSharedPointer<Z3D::ZCalibratedCamera> Ptr;
+    typedef std::shared_ptr<Z3D::ZCalibratedCamera> Ptr;
     typedef QPointer<Z3D::ZCalibratedCamera> WeakPtr;
 
     explicit ZCalibratedCamera(ZCameraInterface::Ptr camera, ZCameraCalibration::Ptr cameraCalibration);

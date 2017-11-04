@@ -34,7 +34,7 @@ ZMultiCalibrationImage::ZMultiCalibrationImage(QList<ZCalibrationImage::Ptr> ima
 {
     /// connect to each image state changes
     foreach (ZCalibrationImage::Ptr image, m_images) {
-        QObject::connect(image.data(), SIGNAL(stateChanged(Z3D::ZCalibrationImage::ImageState)),
+        QObject::connect(image.get(), SIGNAL(stateChanged(Z3D::ZCalibrationImage::ImageState)),
                          this, SLOT(updateState()));
     }
     updateState();

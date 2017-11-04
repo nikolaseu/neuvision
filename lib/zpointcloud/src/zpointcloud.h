@@ -26,7 +26,7 @@
 #include "pcl/search/kdtree.h"
 #include "pcl/visualization/point_cloud_handlers.h"
 
-#include <QSharedPointer>
+#include <QString>
 
 namespace Z3D
 {
@@ -34,7 +34,7 @@ namespace Z3D
 class Z3D_ZPOINTCLOUD_SHARED_EXPORT ZPointCloud
 {
 public:
-    typedef QSharedPointer<Z3D::ZPointCloud> Ptr;
+    typedef std::shared_ptr<Z3D::ZPointCloud> Ptr;
 
     explicit ZPointCloud();
     ZPointCloud(PointCloudPCLPtr pclPointCloud);

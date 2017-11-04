@@ -21,8 +21,6 @@
 
 #include "zcameraacquisition_global.h"
 
-#include <QSharedPointer>
-
 #include "opencv2/opencv.hpp"
 
 namespace Z3D
@@ -32,7 +30,7 @@ class Z3D_CAMERAACQUISITION_SHARED_EXPORT ZImageGrayscale
 {
 
 public:
-    typedef QSharedPointer<Z3D::ZImageGrayscale> Ptr;
+    typedef std::shared_ptr<Z3D::ZImageGrayscale> Ptr;
 
     /// create new image
     ZImageGrayscale(int width, int height, int xOffset = 0, int yOffset = 0, int bytesPerPixel = 1);

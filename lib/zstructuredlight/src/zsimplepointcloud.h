@@ -23,7 +23,6 @@
 #include "opencv2/core/types.hpp"
 
 #include <QObject>
-#include <QSharedPointer>
 
 namespace Z3D
 {
@@ -35,7 +34,7 @@ class Z3D_STRUCTUREDLIGHT_SHARED_EXPORT ZSimplePointCloud : public QObject
 public:
     typedef cv::Vec4f PointType;
     typedef std::vector<PointType> PointVector;
-    typedef QSharedPointer<Z3D::ZSimplePointCloud> Ptr;
+    typedef std::shared_ptr<Z3D::ZSimplePointCloud> Ptr;
 
     explicit ZSimplePointCloud(QObject *parent = nullptr);
 

@@ -34,7 +34,7 @@ class Z3D_CAMERAACQUISITION_SHARED_EXPORT ZCameraFramesRecorder : public QObject
     Q_OBJECT
 
 public:
-    typedef QSharedPointer<Z3D::ZCameraFramesRecorder> Ptr;
+    typedef std::shared_ptr<Z3D::ZCameraFramesRecorder> Ptr;
 
     explicit ZCameraFramesRecorder(QObject *parent = nullptr);
 

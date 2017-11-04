@@ -28,7 +28,7 @@
 class ZPointCloudData
 {
 public:
-    typedef QSharedPointer<ZPointCloudData> Ptr;
+    typedef std::shared_ptr<ZPointCloudData> Ptr;
 
     explicit ZPointCloudData(const Z3D::ZSimplePointCloud::Ptr &pointCloud);
     const GLfloat *constData() const { return m_data.constData(); }

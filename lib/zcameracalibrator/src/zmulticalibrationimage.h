@@ -33,7 +33,7 @@ class Z3D_CAMERACALIBRATOR_SHARED_EXPORT ZMultiCalibrationImage : public QObject
     Q_OBJECT
 
 public:
-    typedef QSharedPointer<ZMultiCalibrationImage> Ptr;
+    typedef std::shared_ptr<ZMultiCalibrationImage> Ptr;
 
     //explicit ZMultiCalibrationImage(QObject *parent = nullptr);
     ZMultiCalibrationImage(QList<Z3D::ZCalibrationImage::Ptr> images);

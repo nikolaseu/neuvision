@@ -182,7 +182,7 @@ void ZCalibrationImageModel::addImpl(Z3D::ZCalibrationImage::Ptr image)
     endInsertRows();
 
     //! connect to image signals
-    QObject::connect(image.data(), SIGNAL(stateChanged(Z3D::ZCalibrationImage::ImageState)),
+    QObject::connect(image.get(), SIGNAL(stateChanged(Z3D::ZCalibrationImage::ImageState)),
                      this, SLOT(onImageStateChanged()));
 }
 
@@ -200,7 +200,7 @@ void ZCalibrationImageModel::onImageStateChanged()
 {
     Z3D::ZCalibrationImage *changedImage = qobject_cast<Z3D::ZCalibrationImage*>(sender());
     for (int i=0; i<m_images.size(); ++i) {
-        if (m_images[i].data() == changedImage) {
+        if (m_images[i].get() == changedImage) {
             emit dataChanged(index(i), index(i));
             break;
         }

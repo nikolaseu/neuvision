@@ -119,15 +119,16 @@ void ZSimulatedCamera::loadImageFromFilename(QString fileName)
 
     if (!m_imageCache.contains(file)) {
         qDebug() << "image not found in cache:" << file;
+        //! FIXME why is this so complicated?
         ZImageGrayscale::Ptr* newImage = new ZImageGrayscale::Ptr(new ZImageGrayscale(file));
-        if (!newImage->data()->bufferSize()) {
+        if (!newImage->get()->bufferSize()) {
             qWarning() << "invalid image!" << fileName;
             return;
         }
 
         //newImage->setNumber(m_currentImageNumber++);
 
-        m_imageCache.insert(file, newImage, newImage->data()->bufferSize());
+        m_imageCache.insert(file, newImage, newImage->get()->bufferSize());
     } else {
         //qDebug() << "image loaded from cache:" << file;
     }

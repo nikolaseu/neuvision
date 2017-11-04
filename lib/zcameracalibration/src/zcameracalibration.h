@@ -22,7 +22,6 @@
 #include "zcameracalibration_global.h"
 
 #include <QPointer>
-#include <QSharedPointer>
 #include <QString>
 
 #include <vector>
@@ -45,7 +44,7 @@ public:
         UnknownCameraType
     };
 
-    typedef QSharedPointer<Z3D::ZCameraCalibration> Ptr;
+    typedef std::shared_ptr<Z3D::ZCameraCalibration> Ptr;
     typedef QPointer<Z3D::ZCameraCalibration> WeakPtr;
 
     explicit ZCameraCalibration(CameraModelType cameraModelType);

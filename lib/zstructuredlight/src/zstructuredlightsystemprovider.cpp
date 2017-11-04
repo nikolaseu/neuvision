@@ -83,7 +83,7 @@ ZStructuredLightSystem::Ptr ZStructuredLightSystemProvider::get(QSettings *setti
 QWidget *ZStructuredLightSystemProvider::getConfigWidget(ZStructuredLightSystem::Ptr structuredLightSystem)
 {
     for (auto *plugin : m_plugins) {
-        if (auto *widget = plugin->getConfigWidget(structuredLightSystem.data())) {
+        if (auto *widget = plugin->getConfigWidget(structuredLightSystem.get())) {
             return widget;
         }
     }
