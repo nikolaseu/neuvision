@@ -23,7 +23,6 @@
 #include "zcamerainterface.h"
 
 #include <QAbstractListModel>
-#include <QSharedPointer>
 
 namespace Z3D
 {

@@ -22,8 +22,6 @@
 #include "zstructuredlight_global.h"
 #include "zstructuredlightpattern.h"
 
-#include <QSharedPointer>
-
 namespace Z3D
 {
 

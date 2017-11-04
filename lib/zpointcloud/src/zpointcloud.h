@@ -26,7 +26,7 @@
 #include "pcl/search/kdtree.h"
 #include "pcl/visualization/point_cloud_handlers.h"
 
-#include <QSharedPointer>
+#include <QString>
 
 namespace Z3D
 {

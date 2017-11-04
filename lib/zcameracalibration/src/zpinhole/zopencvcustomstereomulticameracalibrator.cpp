@@ -80,7 +80,7 @@ ZMultiCameraCalibration::Ptr ZOpenCVCustomStereoMultiCameraCalibrator::getCalibr
 
     for (size_t ic = 0; ic < ncameras; ++ic) {
         /// check first! this only works for pinhole cameras!
-        Z3D::ZPinholeCameraCalibration *calibration = static_cast<Z3D::ZPinholeCameraCalibration*>(initialCameraCalibrations[ic].get());
+        auto calibration = std::dynamic_pointer_cast<Z3D::ZPinholeCameraCalibration>(initialCameraCalibrations[ic]);
         if (!calibration) {
             qWarning() << "invalid calibration! this only works for pinhole cameras!";
             return nullptr;

@@ -72,7 +72,7 @@ void ZDualCameraStereoSLS::setLeftCamera(ZCalibratedCamera::Ptr camera)
 {
     if (m_cameras[0] != camera) {
         /// check first! this only works for pinhole cameras!
-        auto *calibration = static_cast<Z3D::ZPinholeCameraCalibration*>(camera->calibration().get());
+        auto calibration = std::dynamic_pointer_cast<Z3D::ZPinholeCameraCalibration>(camera->calibration());
 
         if (!calibration) {
             qWarning() << "invalid calibration! this only works for pinhole cameras!";
@@ -97,7 +97,7 @@ void ZDualCameraStereoSLS::setRightCamera(ZCalibratedCamera::Ptr camera)
 {
     if (m_cameras[1] != camera) {
         /// check first! this only works for pinhole cameras!
-        auto *calibration = static_cast<Z3D::ZPinholeCameraCalibration*>(camera->calibration().get());
+        auto calibration = std::dynamic_pointer_cast<Z3D::ZPinholeCameraCalibration>(camera->calibration());
 
         if (!calibration) {
             qWarning() << "invalid calibration! this only works for pinhole cameras!";

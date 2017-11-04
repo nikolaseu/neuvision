@@ -244,14 +244,14 @@ ZImageGrayscale::Ptr ZCameraBase::getNextBufferImage(int width, int height, int 
     m_lastRetrievedImage = &m_imagesBuffer[index];
 
     /// if null or different size
-    if (!(m_lastRetrievedImage->get()) ||
+    if (!m_lastRetrievedImage->get() ||
             (*m_lastRetrievedImage)->width() != width ||
             (*m_lastRetrievedImage)->height() != height ||
             (*m_lastRetrievedImage)->xOffset() != xOffset ||
             (*m_lastRetrievedImage)->yOffset() != yOffset ||
             (*m_lastRetrievedImage)->bytesPerPixel() != bytesPerPixel) {
 
-        if (m_lastRetrievedImage->get())
+        if (!m_lastRetrievedImage->get())
             qDebug() << "last image was null";
         else
             qDebug() << "lastImage"

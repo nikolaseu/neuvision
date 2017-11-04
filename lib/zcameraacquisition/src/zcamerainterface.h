@@ -25,7 +25,6 @@
 #include <QDebug>
 #include <QObject>
 #include <QPointer>
-#include <QSharedPointer>
 #include <QStringList>
 #include <QVariant>
 

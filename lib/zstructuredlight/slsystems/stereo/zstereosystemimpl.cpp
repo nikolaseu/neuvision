@@ -620,7 +620,7 @@ void ZStereoSystemImpl::setLeftCameraCalibration(Z3D::ZCameraCalibration::Ptr ca
 {
     qDebug() << Q_FUNC_INFO;
 
-    auto *calibration = static_cast<Z3D::ZPinholeCameraCalibration*>(cameraCalibration.get());
+    auto calibration = std::dynamic_pointer_cast<Z3D::ZPinholeCameraCalibration>(cameraCalibration);
 
     if (!calibration) {
         qWarning() << "invalid calibration! this only works for pinhole cameras!";
@@ -629,10 +629,10 @@ void ZStereoSystemImpl::setLeftCameraCalibration(Z3D::ZCameraCalibration::Ptr ca
 
     if (mCal[0]) {
         disconnect(mCal[0], &Z3D::ZCameraCalibration::calibrationReadyChanged,
-                this, &ZStereoSystemImpl::stereoRectify);
+                   this, &ZStereoSystemImpl::stereoRectify);
     }
 
-    mCal[0] = calibration;
+    mCal[0] = calibration.get();
 
     connect(mCal[0], &Z3D::ZCameraCalibration::calibrationReadyChanged,
             this, &ZStereoSystemImpl::stereoRectify);
@@ -644,7 +644,7 @@ void ZStereoSystemImpl::setRightCameraCalibration(Z3D::ZCameraCalibration::Ptr c
 {
     qDebug() << Q_FUNC_INFO;
 
-    auto *calibration = static_cast<Z3D::ZPinholeCameraCalibration*>(cameraCalibration.get());
+    auto calibration = std::dynamic_pointer_cast<Z3D::ZPinholeCameraCalibration>(cameraCalibration);
 
     if (!calibration) {
         qWarning() << "invalid calibration! this only works for pinhole cameras!";
@@ -656,7 +656,7 @@ void ZStereoSystemImpl::setRightCameraCalibration(Z3D::ZCameraCalibration::Ptr c
                 this, &ZStereoSystemImpl::stereoRectify);
     }
 
-    mCal[1] = calibration;
+    mCal[1] = calibration.get();
 
     connect(mCal[1], &Z3D::ZCameraCalibration::calibrationReadyChanged,
             this, &ZStereoSystemImpl::stereoRectify);

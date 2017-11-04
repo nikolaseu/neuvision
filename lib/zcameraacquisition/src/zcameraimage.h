@@ -21,8 +21,6 @@
 
 #include "zcameraacquisition_global.h"
 
-#include <QSharedPointer>
-
 #include "opencv2/opencv.hpp"
 
 namespace Z3D

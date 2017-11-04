@@ -23,7 +23,6 @@
 
 #include <QObject>
 #include <QPointer>
-#include <QSharedPointer>
 
 #include <opencv2/core/core.hpp>
 

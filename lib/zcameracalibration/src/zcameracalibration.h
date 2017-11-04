@@ -22,7 +22,6 @@
 #include "zcameracalibration_global.h"
 
 #include <QPointer>
-#include <QSharedPointer>
 #include <QString>
 
 #include <vector>

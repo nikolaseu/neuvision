@@ -24,8 +24,6 @@
 
 #include "opencv2/core/core.hpp"
 
-#include <QSharedPointer>
-
 namespace Z3D
 {
 

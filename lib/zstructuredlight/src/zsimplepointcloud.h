@@ -23,7 +23,6 @@
 #include "opencv2/core/types.hpp"
 
 #include <QObject>
-#include <QSharedPointer>
 
 namespace Z3D
 {
