@@ -51,7 +51,7 @@ void MainWindow::onCameraSelected(Z3D::ZCameraInterface::Ptr camera)
 {
     m_selectedCamera = camera;
 
-    ui->finishButton->setVisible(m_selectedCamera);
+    ui->finishButton->setVisible(m_selectedCamera.get());
 }
 
 void MainWindow::onContinueButtonClicked()

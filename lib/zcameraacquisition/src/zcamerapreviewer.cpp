@@ -56,14 +56,14 @@ void ZCameraPreviewer::setCamera(ZCameraInterface::Ptr camera)
 {
     if (m_camera) {
         /// need to disconect previous camera
-        QObject::disconnect(m_camera.data(), SIGNAL(runningChanged()),
+        QObject::disconnect(m_camera.get(), SIGNAL(runningChanged()),
                             this, SLOT(onCameraRunningChanged()));
 
-        QObject::disconnect(m_camera.data(), SIGNAL(newImageReceived(Z3D::ZImageGrayscale::Ptr)),
+        QObject::disconnect(m_camera.get(), SIGNAL(newImageReceived(Z3D::ZImageGrayscale::Ptr)),
                             ui->imageView, SLOT(updateImage(Z3D::ZImageGrayscale::Ptr)));
 
         QObject::disconnect(ui->settingsButton, SIGNAL(clicked()),
-                            m_camera.data(), SLOT(showSettingsDialog()));
+                            m_camera.get(), SLOT(showSettingsDialog()));
     }
 
     m_camera = camera;
@@ -76,14 +76,14 @@ void ZCameraPreviewer::setCamera(ZCameraInterface::Ptr camera)
         /// updates acquisition button
         onCameraRunningChanged();
 
-        QObject::connect(m_camera.data(), SIGNAL(runningChanged()),
+        QObject::connect(m_camera.get(), SIGNAL(runningChanged()),
                          this, SLOT(onCameraRunningChanged()));
 
-        QObject::connect(m_camera.data(), SIGNAL(newImageReceived(Z3D::ZImageGrayscale::Ptr)),
+        QObject::connect(m_camera.get(), SIGNAL(newImageReceived(Z3D::ZImageGrayscale::Ptr)),
                          ui->imageView, SLOT(updateImage(Z3D::ZImageGrayscale::Ptr)));
 
         QObject::connect(ui->settingsButton, SIGNAL(clicked()),
-                         m_camera.data(), SLOT(showSettingsDialog()),
+                         m_camera.get(), SLOT(showSettingsDialog()),
                          Qt::DirectConnection); /// we don't want this to be executed from the camera thread...
     } else {
 //        setWindowTitle("NO CAMERA");

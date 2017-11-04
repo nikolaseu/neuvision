@@ -62,7 +62,7 @@ void ZCameraSelectorDialog::onCameraSelected(Z3D::ZCameraInterface::Ptr camera)
 {
     m_selectedCamera = camera;
 
-    ui->continueButton->setVisible(m_selectedCamera);
+    ui->continueButton->setVisible(m_selectedCamera.get());
 }
 
 } // namespace Z3D

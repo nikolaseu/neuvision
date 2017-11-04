@@ -119,7 +119,7 @@ void ZMultiCameraCalibratorWorker::setPatternFinder(ZCalibrationPatternFinder::P
     if (m_patternFinder != patternFinder) {
         if (m_patternFinder) {
             /// disconnect old signals
-            QObject::disconnect(m_patternFinder.data(), &ZCalibrationPatternFinder::configHashChanged,
+            QObject::disconnect(m_patternFinder.get(), &ZCalibrationPatternFinder::configHashChanged,
                                 this, &ZMultiCameraCalibratorWorker::findCalibrationPattern);
         }
 
@@ -128,7 +128,7 @@ void ZMultiCameraCalibratorWorker::setPatternFinder(ZCalibrationPatternFinder::P
 
         if (m_patternFinder) {
             /// connect new signals
-            QObject::connect(m_patternFinder.data(), &ZCalibrationPatternFinder::configHashChanged,
+            QObject::connect(m_patternFinder.get(), &ZCalibrationPatternFinder::configHashChanged,
                                 this, &ZMultiCameraCalibratorWorker::findCalibrationPattern);
         }
 
@@ -187,7 +187,7 @@ void ZMultiCameraCalibratorWorker::findCalibrationPattern()
     m_patternFinderFutureWatcher.setFuture(
                 QtConcurrent::map(m_imageModel->images(),
                                   [=](const Z3D::ZCalibrationImage::Ptr &image) {
-                                      image->findPattern(m_patternFinder.data());
+                                      image->findPattern(m_patternFinder.get());
                                   }));
 }
 

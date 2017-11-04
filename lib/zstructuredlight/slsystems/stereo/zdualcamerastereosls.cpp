@@ -72,7 +72,7 @@ void ZDualCameraStereoSLS::setLeftCamera(ZCalibratedCamera::Ptr camera)
 {
     if (m_cameras[0] != camera) {
         /// check first! this only works for pinhole cameras!
-        auto *calibration = static_cast<Z3D::ZPinholeCameraCalibration*>(camera->calibration().data());
+        auto *calibration = static_cast<Z3D::ZPinholeCameraCalibration*>(camera->calibration().get());
 
         if (!calibration) {
             qWarning() << "invalid calibration! this only works for pinhole cameras!";
@@ -80,13 +80,13 @@ void ZDualCameraStereoSLS::setLeftCamera(ZCalibratedCamera::Ptr camera)
         }
 
         if (m_cameras[0]) {
-            disconnect(m_cameras[0].data(), &Z3D::ZCalibratedCamera::calibrationChanged,
+            disconnect(m_cameras[0].get(), &Z3D::ZCalibratedCamera::calibrationChanged,
                        this, &ZDualCameraStereoSLS::setLeftCalibration);
         }
 
         m_cameras[0] = camera;
 
-        connect(m_cameras[0].data(), &Z3D::ZCalibratedCamera::calibrationChanged,
+        connect(m_cameras[0].get(), &Z3D::ZCalibratedCamera::calibrationChanged,
                 this, &ZDualCameraStereoSLS::setLeftCalibration);
 
         setLeftCalibration(camera->calibration());
@@ -97,7 +97,7 @@ void ZDualCameraStereoSLS::setRightCamera(ZCalibratedCamera::Ptr camera)
 {
     if (m_cameras[1] != camera) {
         /// check first! this only works for pinhole cameras!
-        auto *calibration = static_cast<Z3D::ZPinholeCameraCalibration*>(camera->calibration().data());
+        auto *calibration = static_cast<Z3D::ZPinholeCameraCalibration*>(camera->calibration().get());
 
         if (!calibration) {
             qWarning() << "invalid calibration! this only works for pinhole cameras!";
@@ -105,13 +105,13 @@ void ZDualCameraStereoSLS::setRightCamera(ZCalibratedCamera::Ptr camera)
         }
 
         if (m_cameras[1]) {
-            disconnect(m_cameras[1].data(), &Z3D::ZCalibratedCamera::calibrationChanged,
+            disconnect(m_cameras[1].get(), &Z3D::ZCalibratedCamera::calibrationChanged,
                        this, &ZDualCameraStereoSLS::setRightCalibration);
         }
 
         m_cameras[1] = camera;
 
-        connect(m_cameras[1].data(), &Z3D::ZCalibratedCamera::calibrationChanged,
+        connect(m_cameras[1].get(), &Z3D::ZCalibratedCamera::calibrationChanged,
                 this, &ZDualCameraStereoSLS::setRightCalibration);
 
         setRightCalibration(camera->calibration());

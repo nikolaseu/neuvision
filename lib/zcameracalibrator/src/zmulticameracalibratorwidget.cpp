@@ -64,7 +64,7 @@ ZMultiCameraCalibratorWidget::ZMultiCameraCalibratorWidget(std::vector<ZCalibrat
         /// set up camera image preview
         if (camera) {
             hasAnyRealCamera = true;
-            QObject::connect(camera->camera().data(), SIGNAL(newImageReceived(Z3D::ZImageGrayscale::Ptr)),
+            QObject::connect(camera->camera().get(), SIGNAL(newImageReceived(Z3D::ZImageGrayscale::Ptr)),
                              cameraImageViewer, SLOT(updateImage(Z3D::ZImageGrayscale::Ptr)));
         }
 
@@ -261,7 +261,7 @@ void ZMultiCameraCalibratorWidget::onCalibrationPatternTypeChanged(int index)
     /// remove previous config widget and hide it
     ZCalibrationPatternFinder::Ptr m_currentPatternFinder = m_calibratorWorker->patternFinder();
     if (m_currentPatternFinder) {
-        QWidget *previousWidget = ZCalibrationPatternFinderProvider::getConfigWidget(m_currentPatternFinder.data());
+        QWidget *previousWidget = ZCalibrationPatternFinderProvider::getConfigWidget(m_currentPatternFinder.get());
         previousWidget->setVisible(false);
         ui->calibrationPatternConfigLayout->removeWidget(previousWidget);
     }
@@ -271,7 +271,7 @@ void ZMultiCameraCalibratorWidget::onCalibrationPatternTypeChanged(int index)
     m_calibratorWorker->setPatternFinder(m_currentPatternFinder);
 
     /// add config widget
-    QWidget *currentWidget = ZCalibrationPatternFinderProvider::getConfigWidget(m_currentPatternFinder.data());
+    QWidget *currentWidget = ZCalibrationPatternFinderProvider::getConfigWidget(m_currentPatternFinder.get());
     currentWidget->setVisible(true);
     ui->calibrationPatternConfigLayout->addWidget(currentWidget);
 }
@@ -445,7 +445,7 @@ void ZMultiCameraCalibratorWidget::on_saveCameraImageButton_clicked()
                 /// only add if image is valid and the pattern is found
 
                 //! FIXME implementar busqueda de patron en paralelo!
-                if (isValid && calibrationImage->isValid() && calibrationImage->findPattern(m_calibratorWorker->patternFinder().data())) {
+                if (isValid && calibrationImage->isValid() && calibrationImage->findPattern(m_calibratorWorker->patternFinder().get())) {
                     calibrationImagesList << calibrationImage;
                 } else {
                     isValid = false;
