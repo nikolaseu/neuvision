@@ -1,14 +1,16 @@
 include(../../../NEUVision.pri)
 
 TEMPLATE      = lib
-# CONFIG       += plugin
 #QT           -= gui //we need gui because we use QImage, QScrollArea, etc
-QT += widgets
+QT           += widgets
 TARGET        = $$qtLibraryTarget(zcameraacquisition)
 DESTDIR       = $$Z3D_BUILD_DIR
 VERSION       = $$Z3D_VERSION
 DEFINES      += Z3D_CAMERAACQUISITION_LIBRARY
+
 HEADERS      += \
+    Z3DCameraAcquisition \
+    zcameraacquisition_fwd.h \
     zcameraacquisition_global.h \
     zcameraframesrecorder.h \
     zcameraimage.h \
@@ -19,11 +21,10 @@ HEADERS      += \
     zcameraplugininterface.h \
     zcamerapreviewer.h \
     zcameraprovider.h \
+    zcameraselectordialog.h \
     zcameraselectorwidget.h \
     zcamerasettingswidget.h \
     zimageviewer.h \
-    zimageviewwidget.h \
-    zcameraselectordialog.h
 
 SOURCES      += \
     zcameraframesrecorder.cpp \
@@ -33,20 +34,21 @@ SOURCES      += \
     zcameralistmodel.cpp \
     zcamerapreviewer.cpp \
     zcameraprovider.cpp \
+    zcameraselectordialog.cpp \
     zcameraselectorwidget.cpp \
     zcamerasettingswidget.cpp \
     zimageviewer.cpp \
-    zimageviewwidget.cpp \
-    zcameraselectordialog.cpp
 
 FORMS        += \
     zcamerapreviewer.ui \
+    zcameraselectordialog.ui \
     zcameraselectorwidget.ui \
     zcamerasettingswidget.ui \
-    zcameraselectordialog.ui
 
 RESOURCES += \
-    resources.qrc
+    resources.qrc \
+
+
 
 ###############################################################################
 # OpenCV

@@ -29,12 +29,12 @@
 namespace Z3D
 {
 
-ZCameraInterface::Ptr ZNIIMAQdxGrabCamera::getCameraByName(QString name)
+ZCameraPtr ZNIIMAQdxGrabCamera::getCameraByName(QString name)
 {
     ZNIIMAQdxGrabCameraPrivate *cameraPrivate = ZNIIMAQdxGrabCameraPrivate::getCameraByName(name);
 
     if (!cameraPrivate)
-        return ZCameraInterface::Ptr(nullptr);
+        return nullptr;
 
     ZNIIMAQdxGrabCamera *camera = new ZNIIMAQdxGrabCamera();
 
@@ -42,20 +42,20 @@ ZCameraInterface::Ptr ZNIIMAQdxGrabCamera::getCameraByName(QString name)
     camera->m_uuid = cameraPrivate->m_uuid;
     cameraPrivate->q_ptr = camera;
 
-    QObject::connect(cameraPrivate, SIGNAL(newImageReceived(Z3D::ZImageGrayscale::Ptr)),
-                     camera,        SIGNAL(newImageReceived(Z3D::ZImageGrayscale::Ptr)));
-    QObject::connect(cameraPrivate, SIGNAL(error(QString)),
-                     camera,        SIGNAL(error(QString)));
-    QObject::connect(cameraPrivate, SIGNAL(warning(QString)),
-                     camera,        SIGNAL(warning(QString)));
-    QObject::connect(cameraPrivate, SIGNAL(attributeChanged(QString,QVariant)),
-                     camera,        SIGNAL(attributeChanged(QString,QVariant)));
+    QObject::connect(cameraPrivate, &ZNIIMAQdxGrabCameraPrivate::newImageReceived,
+                     camera,        &ZNIIMAQdxGrabCamera::newImageReceived);
+    QObject::connect(cameraPrivate, &ZNIIMAQdxGrabCameraPrivate::error,
+                     camera,        &ZNIIMAQdxGrabCamera::error);
+    QObject::connect(cameraPrivate, &ZNIIMAQdxGrabCameraPrivate::warning,
+                     camera,        &ZNIIMAQdxGrabCamera::warning);
+    QObject::connect(cameraPrivate, &ZNIIMAQdxGrabCameraPrivate::attributeChanged,
+                     camera,        &ZNIIMAQdxGrabCamera::attributeChanged);
 
-    return ZCameraInterface::Ptr( camera );
+    return ZCameraPtr( camera );
 }
 
-ZNIIMAQdxGrabCamera::ZNIIMAQdxGrabCamera(QObject *parent) :
-    ZCameraBase(parent)
+ZNIIMAQdxGrabCamera::ZNIIMAQdxGrabCamera(QObject *parent)
+    : ZCameraBase(parent)
 {
 
 }

@@ -20,6 +20,7 @@
 
 #include "zcamerainterface_p.h"
 
+#include "zcameraimage.h"
 #include "zcamerasettingswidget.h"
 
 #include <QCoreApplication>
@@ -38,10 +39,10 @@ ZCameraBase::ZCameraBase(QObject *parent)
     , m_simultaneousCapturesCount(0)
     , m_settingsWidget(nullptr)
 {
-    QObject::connect(this, SIGNAL(acquisitionStarted()),
-                     this, SIGNAL(runningChanged()));
-    QObject::connect(this, SIGNAL(acquisitionStopped()),
-                     this, SIGNAL(runningChanged()));
+    QObject::connect(this, &ZCameraBase::acquisitionStarted,
+                     this, &ZCameraBase::runningChanged);
+    QObject::connect(this, &ZCameraBase::acquisitionStopped,
+                     this, &ZCameraBase::runningChanged);
 
     /// 50 images in buffer
     m_imagesBuffer.resize(50);
@@ -60,12 +61,12 @@ bool ZCameraBase::requestSnapshot()
     return true;
 }
 
-ZImageGrayscale::Ptr ZCameraBase::getSnapshot()
+ZCameraImagePtr ZCameraBase::getSnapshot()
 {
     if (isRunning()) {
         /// make a copy because after acquisition is stopped, buffer data _could_ be deleted
-        ZImageGrayscale::Ptr last = (*m_lastRetrievedImage);
-        ZImageGrayscale::Ptr snapshot(new ZImageGrayscale(last->width(), last->height(), last->xOffset(), last->yOffset(), last->bytesPerPixel()));
+        ZCameraImagePtr last = (*m_lastRetrievedImage);
+        ZCameraImagePtr snapshot(new ZImageGrayscale(last->width(), last->height(), last->xOffset(), last->yOffset(), last->bytesPerPixel()));
         snapshot->setBuffer( last->buffer() );
         snapshot->setNumber( last->number() );
         return snapshot;
@@ -73,15 +74,15 @@ ZImageGrayscale::Ptr ZCameraBase::getSnapshot()
         //! create an event loop and stop it when a image is received
         QEventLoop eventLoop;
 
-        QObject::connect(this, SIGNAL(newImageReceived(Z3D::ZImageGrayscale::Ptr)),
-                         &eventLoop, SLOT(quit()), Qt::DirectConnection);
+        QObject::connect(this, &ZCameraBase::newImageReceived,
+                         &eventLoop, &QEventLoop::quit, Qt::DirectConnection);
 
         startAcquisition();
         eventLoop.exec();
 
         /// make a copy because after acquisition is stopped, buffer data _could_ be deleted
-        ZImageGrayscale::Ptr last = (*m_lastRetrievedImage);
-        ZImageGrayscale::Ptr snapshot(new ZImageGrayscale(last->width(), last->height(), last->xOffset(), last->yOffset(), last->bytesPerPixel()));
+        ZCameraImagePtr last = (*m_lastRetrievedImage);
+        ZCameraImagePtr snapshot(new ZImageGrayscale(last->width(), last->height(), last->xOffset(), last->yOffset(), last->bytesPerPixel()));
         snapshot->setBuffer( last->buffer() );
         snapshot->setNumber( last->number() );
 
@@ -156,7 +157,7 @@ bool ZCameraBase::loadConfiguration(QString configFileName)
     QSettings settings(configFileName, QSettings::IniFormat);
 
     QStringList groupsList = settings.childGroups();
-    foreach (QString group, groupsList) {
+    for (const QString &group : groupsList) {
         CAMERA_DEBUG("Loading settings for preset: " + group)
 
         settings.beginGroup(group);
@@ -165,7 +166,7 @@ bool ZCameraBase::loadConfiguration(QString configFileName)
 
         QStringList settingsList = settings.childGroups();
 
-        foreach (QString settingIndex, settingsList) {
+        for (const QString &settingIndex : settingsList) {
             settings.beginGroup(settingIndex);
 
             ZCameraAttribute currAttr;
@@ -204,7 +205,7 @@ bool ZCameraBase::loadPresetConfiguration(QString presetName)
     if (m_cameraPresets.contains(presetName)) {
         CAMERA_DEBUG("Loading preset " + presetName);
         const QList<ZCameraAttribute> &presetAttributesList = m_cameraPresets[presetName];
-        foreach (ZCameraAttribute attr, presetAttributesList) {
+        for (const ZCameraAttribute &attr : presetAttributesList) {
             if (!setAttribute(attr.id, attr.value, false)) {
                 error = true;
 //                qWarning() << "unable to set attribute" << attr.name << "to" << attr.value;
@@ -233,7 +234,7 @@ bool ZCameraBase::setBufferSize(int bufferSize)
     return true;
 }
 
-ZImageGrayscale::Ptr ZCameraBase::getNextBufferImage(int width, int height, int xOffset, int yOffset, int bytesPerPixel, void *externalBuffer)
+ZCameraImagePtr ZCameraBase::getNextBufferImage(int width, int height, int xOffset, int yOffset, int bytesPerPixel, void *externalBuffer)
 {
     m_currentImageBufferIndex++;
 
@@ -261,14 +262,14 @@ ZImageGrayscale::Ptr ZCameraBase::getNextBufferImage(int width, int height, int 
 
         if (externalBuffer) {
             qDebug() << "creating new image from external buffer of size:" << width << "x" << height << " bytesPerPixel:" << bytesPerPixel;
-            ZImageGrayscale::Ptr newImage(new ZImageGrayscale(width, height,
+            ZCameraImagePtr newImage(new ZImageGrayscale(width, height,
                                                             xOffset, yOffset,
                                                             bytesPerPixel,
                                                             externalBuffer));
             m_lastRetrievedImage->swap( newImage );
         } else {
             qDebug() << "creating new image of size:" << width << "x" << height << " bytesPerPixel:" << bytesPerPixel;
-            ZImageGrayscale::Ptr newImage(new ZImageGrayscale(width, height,
+            ZCameraImagePtr newImage(new ZImageGrayscale(width, height,
                                                             xOffset, yOffset,
                                                             bytesPerPixel));
             m_lastRetrievedImage->swap( newImage );

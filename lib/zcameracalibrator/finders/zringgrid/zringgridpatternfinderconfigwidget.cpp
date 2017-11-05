@@ -26,40 +26,40 @@
 namespace Z3D
 {
 
-ZRingGridPatternFinderConfigWidget::ZRingGridPatternFinderConfigWidget(ZRingGridPatternFinder *patternFinder, QWidget *parent) :
-    QWidget(parent),
-    ui(new Ui::ZRingGridPatternFinderConfigWidget),
-    m_patternFinder(patternFinder)
+ZRingGridPatternFinderConfigWidget::ZRingGridPatternFinderConfigWidget(ZRingGridPatternFinder *patternFinder, QWidget *parent)
+    : QWidget(parent)
+    , ui(new Ui::ZRingGridPatternFinderConfigWidget)
+    , m_patternFinder(patternFinder)
 {
     ui->setupUi(this);
 
     ui->sizeColumnsSpinBox->setValue(m_patternFinder->columns());
-    QObject::connect(ui->sizeColumnsSpinBox, SIGNAL(valueChanged(int)),
-                     m_patternFinder, SLOT(setColumns(int)));
+    QObject::connect(ui->sizeColumnsSpinBox, static_cast<void(QSpinBox::*)(int)>(&QSpinBox::valueChanged),
+                     m_patternFinder, &ZRingGridPatternFinder::setColumns);
 
     ui->sizeColWidthSpinBox->setValue(m_patternFinder->colWidth());
-    QObject::connect(ui->sizeColWidthSpinBox, SIGNAL(valueChanged(double)),
-                     m_patternFinder, SLOT(setColWidth(double)));
+    QObject::connect(ui->sizeColWidthSpinBox, static_cast<void(QDoubleSpinBox::*)(double)>(&QDoubleSpinBox::valueChanged),
+                     m_patternFinder, &ZRingGridPatternFinder::setColWidth);
 
     ui->sizeRowsSpinBox->setValue(m_patternFinder->rows());
-    QObject::connect(ui->sizeRowsSpinBox, SIGNAL(valueChanged(int)),
-                     m_patternFinder, SLOT(setRows(int)));
+    QObject::connect(ui->sizeRowsSpinBox, static_cast<void(QSpinBox::*)(int)>(&QSpinBox::valueChanged),
+                     m_patternFinder, &ZRingGridPatternFinder::setRows);
 
     ui->sizeRowHeightSpinBox->setValue(m_patternFinder->rowHeight());
-    QObject::connect(ui->sizeRowHeightSpinBox, SIGNAL(valueChanged(double)),
-                     m_patternFinder, SLOT(setRowHeight(double)));
+    QObject::connect(ui->sizeRowHeightSpinBox, static_cast<void(QDoubleSpinBox::*)(double)>(&QDoubleSpinBox::valueChanged),
+                     m_patternFinder, &ZRingGridPatternFinder::setRowHeight);
 
     ui->maxSizeColumnsSpinBox->setValue(m_patternFinder->maxColumns());
-    QObject::connect(ui->maxSizeColumnsSpinBox, SIGNAL(valueChanged(int)),
-                     m_patternFinder, SLOT(setMaxColumns(int)));
+    QObject::connect(ui->maxSizeColumnsSpinBox, static_cast<void(QSpinBox::*)(int)>(&QSpinBox::valueChanged),
+                     m_patternFinder, &ZRingGridPatternFinder::setMaxColumns);
 
     ui->maxSizeRowsSpinBox->setValue(m_patternFinder->maxRows());
-    QObject::connect(ui->maxSizeRowsSpinBox, SIGNAL(valueChanged(int)),
-                     m_patternFinder, SLOT(setMaxRows(int)));
+    QObject::connect(ui->maxSizeRowsSpinBox, static_cast<void(QSpinBox::*)(int)>(&QSpinBox::valueChanged),
+                     m_patternFinder, &ZRingGridPatternFinder::setMaxRows);
 
     ui->refinePatternPointsCheckBox->setChecked(m_patternFinder->refinePatternPoints());
-    QObject::connect(ui->refinePatternPointsCheckBox, SIGNAL(toggled(bool)),
-                     m_patternFinder, SLOT(setRefinePatternPoints(bool)));
+    QObject::connect(ui->refinePatternPointsCheckBox, &QCheckBox::toggled,
+                     m_patternFinder, &ZRingGridPatternFinder::setRefinePatternPoints);
 }
 
 ZRingGridPatternFinderConfigWidget::~ZRingGridPatternFinderConfigWidget()

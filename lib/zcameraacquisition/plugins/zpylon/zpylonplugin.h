@@ -19,13 +19,12 @@
 
 #pragma once
 
-#include "zcamerainterface.h"
 #include "zcameraplugininterface.h"
 
 namespace Z3D
 {
 
-class ZPylonPlugin : public ZCameraPluginInterface
+class ZPylonPlugin : public QObject, public ZCameraPluginInterface
 {
     Q_OBJECT
     Q_PLUGIN_METADATA(IID "z3d.cameraacquisition.cameraplugininterface" FILE "zpylon.json")
@@ -37,12 +36,12 @@ public:
 
     /// plugin information
     QString id() const override;
-    QString name() const override;
+    QString displayName() const override;
     QString version() const override;
 
     /// camera utilities
     QList<ZCameraInfo *> getConnectedCameras() override;
-    ZCameraInterface::Ptr getCamera(QVariantMap options) override;
+    ZCameraPtr getCamera(QVariantMap options) override;
 };
 
 } // namespace Z3D

@@ -22,6 +22,7 @@
 
 #include "zcameracalibration.h"
 #include "zcameracalibrationplugininterface.h"
+#include "zcoreplugin.h"
 #include "zpinhole/zpinholecameracalibrationplugin.h"
 #include "zpluginloader.h"
 
@@ -32,20 +33,19 @@ namespace Z3D
 
 QMap< QString, ZCameraCalibrationPluginInterface *> ZCameraCalibrationProvider::m_plugins;
 
-void ZCameraCalibrationProvider::loadPlugins(QString folder)
+void ZCameraCalibrationProvider::loadPlugins()
 {
     /// add pinhole camera calibration plugin
     ZCameraCalibrationPluginInterface *pinholePlugin = new ZPinholeCameraCalibrationPlugin;
-    m_plugins.insert(pinholePlugin->name(), pinholePlugin);
+    m_plugins.insert(QLatin1String("Pinhole"), pinholePlugin);
 
-    const auto list = ZPluginLoader::plugins("cameracalibration");
+    const auto list = ZPluginLoader::plugins(QLatin1String("cameracalibration"));
 
-    for (auto pluginInstance : list) {
-        auto *plugin = qobject_cast<ZCameraCalibrationPluginInterface *>(pluginInstance);
+    for (auto pluginLoader : list) {
+        auto *plugin = pluginLoader->instance<ZCameraCalibrationPluginInterface>();
         if (plugin) {
-            qDebug() << "camera calibration plugin loaded. type:" << plugin->id()
-                     << "version:" << plugin->version();
-            m_plugins.insert(plugin->id(), plugin);
+            qDebug() << "camera calibration plugin loaded. type:" << pluginLoader->id();
+            m_plugins.insert(pluginLoader->id(), plugin);
         } else {
             qWarning() << "invalid camera calibration plugin:" << plugin;
         }
@@ -61,9 +61,9 @@ void ZCameraCalibrationProvider::unloadPlugins()
     m_plugins.clear();
 }
 
-ZCameraCalibration::Ptr ZCameraCalibrationProvider::getCalibration(QString pluginName, QVariantMap options)
+ZCameraCalibrationPtr ZCameraCalibrationProvider::getCalibration(QString pluginName, QVariantMap options)
 {
-    ZCameraCalibration::Ptr calibration;
+    ZCameraCalibrationPtr calibration;
 
     if (m_plugins.contains(pluginName)) {
         calibration = m_plugins[pluginName]->getCalibration(options);
@@ -74,7 +74,7 @@ ZCameraCalibration::Ptr ZCameraCalibrationProvider::getCalibration(QString plugi
     return calibration;
 }
 
-ZCameraCalibration::Ptr ZCameraCalibrationProvider::getCalibration(QSettings *settings)
+ZCameraCalibrationPtr ZCameraCalibrationProvider::getCalibration(QSettings *settings)
 {
     QVariantMap options;
     for (const auto &key : settings->allKeys()) {

@@ -20,6 +20,10 @@
 
 #include "zopencvvideocapturecamera.h"
 
+#include "zcameraimage.h"
+
+#include <opencv2/imgproc.hpp>
+
 #include <QDebug>
 #include <QSize>
 #include <QThread>
@@ -34,8 +38,8 @@ namespace Z3D
 // static var
 QMap<int, QString> OpenCVVideoCaptureCamera::m_opencvAttributeNames;
 
-OpenCVVideoCaptureCamera::OpenCVVideoCaptureCamera(int deviceId, QObject *parent) :
-    ZCameraBase(parent)
+OpenCVVideoCaptureCamera::OpenCVVideoCaptureCamera(int deviceId, QObject *parent)
+    : ZCameraBase(parent)
 {
     m_capture = new cv::VideoCapture(deviceId);
 
@@ -43,17 +47,6 @@ OpenCVVideoCaptureCamera::OpenCVVideoCaptureCamera(int deviceId, QObject *parent
 
     if (m_opencvAttributeNames.empty()) {
         /// attribute id <-> name map
-#if defined(CV_VERSION_EPOCH) && CV_VERSION_EPOCH < 3
-        m_opencvAttributeNames[CV_CAP_PROP_FRAME_WIDTH ] = "OpenCV::Frame::Width";
-        m_opencvAttributeNames[CV_CAP_PROP_FRAME_HEIGHT] = "OpenCV::Frame::Height";
-        m_opencvAttributeNames[CV_CAP_PROP_BRIGHTNESS  ] = "OpenCV::Brightness";
-        m_opencvAttributeNames[CV_CAP_PROP_CONTRAST    ] = "OpenCV::Contrast";
-        m_opencvAttributeNames[CV_CAP_PROP_SATURATION  ] = "OpenCV::Saturation";
-        m_opencvAttributeNames[CV_CAP_PROP_HUE         ] = "OpenCV::Hue";
-        m_opencvAttributeNames[CV_CAP_PROP_GAIN        ] = "OpenCV::Gain";
-        m_opencvAttributeNames[CV_CAP_PROP_EXPOSURE    ] = "OpenCV::Exposure";
-        m_opencvAttributeNames[CV_CAP_PROP_FPS         ] = "OpenCV::FPS";
-#else
         m_opencvAttributeNames[cv::CAP_PROP_FRAME_WIDTH ] = "OpenCV::Frame::Width";
         m_opencvAttributeNames[cv::CAP_PROP_FRAME_HEIGHT] = "OpenCV::Frame::Height";
         m_opencvAttributeNames[cv::CAP_PROP_BRIGHTNESS  ] = "OpenCV::Brightness";
@@ -63,7 +56,6 @@ OpenCVVideoCaptureCamera::OpenCVVideoCaptureCamera(int deviceId, QObject *parent
         m_opencvAttributeNames[cv::CAP_PROP_GAIN        ] = "OpenCV::Gain";
         m_opencvAttributeNames[cv::CAP_PROP_EXPOSURE    ] = "OpenCV::Exposure";
         m_opencvAttributeNames[cv::CAP_PROP_FPS         ] = "OpenCV::FPS";
-#endif
     }
 
     /*/// try to get supported frame sizes
@@ -122,7 +114,7 @@ bool OpenCVVideoCaptureCamera::startAcquisition()
 
     /// start running grab loop in the camera's thread
     m_stopThreadRequested = false;
-    QTimer::singleShot(0, this, SLOT(grabLoop()));
+    QTimer::singleShot(0, this, &OpenCVVideoCaptureCamera::grabLoop);
 
     return true;
 }
@@ -161,13 +153,9 @@ QList<ZCameraInterface::ZCameraAttribute> OpenCVVideoCaptureCamera::getAllAttrib
         qDebug() << "cv::CAP_PROP_SUPPORTED_PREVIEW_SIZES_STRING" << u.name;
     */
 
-#if defined(CV_VERSION_EPOCH) && CV_VERSION_EPOCH < 3
-    int currentWidth = (int) m_capture->get( CV_CAP_PROP_FRAME_WIDTH );
-    int currentHeight = (int) m_capture->get( CV_CAP_PROP_FRAME_HEIGHT );
-#else
     int currentWidth = (int) m_capture->get( cv::CAP_PROP_FRAME_WIDTH );
     int currentHeight = (int) m_capture->get( cv::CAP_PROP_FRAME_HEIGHT );
-#endif
+
     ZCameraInterface::ZCameraAttribute mode;
     mode.type = ZCameraInterface::CameraAttributeTypeEnum;
     mode.id = ATTR_MODE;
@@ -188,13 +176,9 @@ QList<ZCameraInterface::ZCameraAttribute> OpenCVVideoCaptureCamera::getAllAttrib
     mode.writable = true;
     attributeList << mode;
 
-    foreach (int key, m_opencvAttributeNames.keys()) {
+    for (int key : m_opencvAttributeNames.keys()) {
         ZCameraInterface::ZCameraAttribute attr;
-#if defined(CV_VERSION_EPOCH) && CV_VERSION_EPOCH < 3
-        if (key == CV_CAP_PROP_FRAME_WIDTH || key == CV_CAP_PROP_FRAME_HEIGHT) {
-#else
         if (key == cv::CAP_PROP_FRAME_WIDTH || key == cv::CAP_PROP_FRAME_HEIGHT) {
-#endif
             attr.type = ZCameraInterface::CameraAttributeTypeInt;
             attr.minimumValue = -999999;
             attr.maximumValue = 999999;
@@ -242,20 +226,6 @@ bool OpenCVVideoCaptureCamera::setAttribute(const QString &name, const QVariant 
                 int width = size[0].toInt();
                 int height = size[1].toInt();
 
-#if defined(CV_VERSION_EPOCH) && CV_VERSION_EPOCH < 3
-                /// set values
-                if (m_capture->get( CV_CAP_PROP_FRAME_WIDTH) != width || m_capture->get( CV_CAP_PROP_FRAME_HEIGHT) != height) {
-                    /// set both together, this values doesn't change independently,
-                    /// they are valid only in certain combinations supported by
-                    /// the device
-                    m_capture->set( CV_CAP_PROP_FRAME_WIDTH, width );
-                    m_capture->set( CV_CAP_PROP_FRAME_HEIGHT, height );
-
-                    /// check if both were configured correctly
-                    changed = m_capture->get( CV_CAP_PROP_FRAME_WIDTH) == width
-                            && m_capture->get( CV_CAP_PROP_FRAME_HEIGHT) == height;
-                }
-#else
                 /// set values
                 if (m_capture->get( cv::CAP_PROP_FRAME_WIDTH) != width || m_capture->get( cv::CAP_PROP_FRAME_HEIGHT) != height) {
                     /// set both together, this values doesn't change independently,
@@ -268,7 +238,6 @@ bool OpenCVVideoCaptureCamera::setAttribute(const QString &name, const QVariant 
                     changed = m_capture->get( cv::CAP_PROP_FRAME_WIDTH) == width
                             && m_capture->get( cv::CAP_PROP_FRAME_HEIGHT) == height;
                 }
-#endif
 
                 if (!changed)
                     qWarning() << "unable to change resolution to" << width << "x" << height;
@@ -325,9 +294,9 @@ void OpenCVVideoCaptureCamera::grabLoop()
             frame.convertTo(frame, CV_8UC1);
         }
 
-        ZImageGrayscale::Ptr currentImage = getNextBufferImage(frame.cols, frame.rows,
-                                                              0, 0,
-                                                              bytesPerPixel);
+        ZCameraImagePtr currentImage = getNextBufferImage(frame.cols, frame.rows,
+                                                             0, 0,
+                                                             bytesPerPixel);
 
         /// copy data
         currentImage->setBuffer(frame.data);

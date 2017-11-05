@@ -17,10 +17,11 @@
  * along with Z3D.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef Z3D_CAMERAACQUISITION_PLUGIN___OPENCVVIDEOCAPTURECAMERA_H
-#define Z3D_CAMERAACQUISITION_PLUGIN___OPENCVVIDEOCAPTURECAMERA_H
+#pragma once
 
 #include "zcamerainterface_p.h"
+
+#include <opencv2/videoio.hpp>
 
 #include <QMutex>
 
@@ -64,5 +65,3 @@ private:
 };
 
 } // namespace Z3D
-
-#endif // Z3D_CAMERAACQUISITION_PLUGIN___OPENCVVIDEOCAPTURECAMERA_H

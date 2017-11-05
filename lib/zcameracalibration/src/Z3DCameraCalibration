@@ -1,2 +1,1 @@
-#include "zcameracalibration.h"
-#include "zcameracalibrationprovider.h"
+#include "zcameracalibration_fwd.h"

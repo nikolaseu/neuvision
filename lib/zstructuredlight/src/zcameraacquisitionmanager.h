@@ -19,11 +19,11 @@
 
 #pragma once
 
-#include <QObject>
-
 #include "zstructuredlight_global.h"
-#include "zcameraimage.h"
-#include "zcamerainterface.h"
+
+#include <Z3DCameraAcquisition>
+
+#include <QObject>
 
 namespace Z3D {
 
@@ -32,12 +32,12 @@ class Z3D_STRUCTUREDLIGHT_SHARED_EXPORT ZCameraAcquisitionManager : public QObje
     Q_OBJECT
 
 public:
-    explicit ZCameraAcquisitionManager(std::vector<Z3D::ZCameraInterface::Ptr> cameras, QObject *parent = nullptr);
+    explicit ZCameraAcquisitionManager(ZCameraList cameras, QObject *parent = nullptr);
 
 signals:
     void acquisitionReady(QString acquisitionId);
-    void imagesAcquired(std::vector<Z3D::ZImageGrayscale::Ptr> &images, QString id);
-    void acquisitionFinished(std::vector< std::vector<Z3D::ZImageGrayscale::Ptr> > &acquiredImages, QString acquisitionId);
+    void imagesAcquired(std::vector<Z3D::ZCameraImagePtr> &images, QString id);
+    void acquisitionFinished(std::vector< std::vector<Z3D::ZCameraImagePtr> > &acquiredImages, QString acquisitionId);
 
 public slots:
     void prepareAcquisition(QString acquisitionId);
@@ -45,11 +45,11 @@ public slots:
     void finishAcquisition();
 
 private:
-    std::vector<Z3D::ZCameraInterface::Ptr> m_cameras;
+    Z3D::ZCameraList m_cameras;
 
     // 1st index: image number / order
     // 2nd index: camera index
-    std::vector< std::vector<Z3D::ZImageGrayscale::Ptr> > m_images;
+    std::vector< std::vector<Z3D::ZCameraImagePtr> > m_images;
 
     QString m_acquisitionId;
 

@@ -19,6 +19,8 @@
 //
 
 #include "zlibgphoto2plugin.h"
+
+#include "zcamerainfo.h"
 #include "zlibgphoto2camera.h"
 
 #include <gphoto2/gphoto2-camera.h>
@@ -148,19 +150,9 @@ ZLibGPhoto2Plugin::~ZLibGPhoto2Plugin()
 
 }
 
-QString ZLibGPhoto2Plugin::id() const
-{
-    return QString("Zlibgphoto2");
-}
-
-QString ZLibGPhoto2Plugin::name() const
+QString ZLibGPhoto2Plugin::displayName() const
 {
     return QString("gPhoto2");
-}
-
-QString ZLibGPhoto2Plugin::version() const
-{
-    return QString(Z3D_VERSION_STR);
 }
 
 QList<ZCameraInfo *> ZLibGPhoto2Plugin::getConnectedCameras()
@@ -171,17 +163,17 @@ QList<ZCameraInfo *> ZLibGPhoto2Plugin::getConnectedCameras()
     CameraList *list;
     int ret = gp_list_new(&list);
     if (ret < GP_OK) {
-        qWarning() << id() << "Error trying to create CameraList" << ret;
+        qWarning() << "Error trying to create CameraList" << ret;
         return camerasList;
     }
 
     int count = sample_autodetect(list, context);
     if (count < GP_OK) {
-        qWarning() << id() << "Error trying to detect cameras" << count;
+        qWarning() << "Error trying to detect cameras" << count;
         return camerasList;
     }
 
-    qDebug() << id() << "found" << count << "cameras.";
+    qDebug() << "found" << count << "cameras.";
     for (int i = 0; i < count; i++) {
         Camera *cam;
         const char *name, *value;
@@ -220,7 +212,7 @@ QList<ZCameraInfo *> ZLibGPhoto2Plugin::getConnectedCameras()
     return camerasList;
 }
 
-ZCameraInterface::Ptr ZLibGPhoto2Plugin::getCamera(QVariantMap options)
+ZCameraPtr ZLibGPhoto2Plugin::getCamera(QVariantMap options)
 {
     QString model = options.value("model").toString();
     QString port = options.value("port").toString();
@@ -232,7 +224,7 @@ ZCameraInterface::Ptr ZLibGPhoto2Plugin::getCamera(QVariantMap options)
         return nullptr;
     }
 
-    return ZCameraInterface::Ptr(new ZLibGPhoto2Camera(context, cam));
+    return ZCameraPtr(new ZLibGPhoto2Camera(context, cam));
 }
 
 } // namespace Z3D

@@ -21,7 +21,9 @@
 #include "zcameracalibratorworker.h"
 
 #include "zcalibrationimage.h"
-
+#include "zcalibrationimagemodel.h"
+#include "zcalibrationpatternfinder.h"
+#include "zcameracalibration.h"
 #include "zcameracalibrator.h"
 
 #include <QCoreApplication>
@@ -75,7 +77,7 @@ ZCalibrationImageModel *ZCameraCalibratorWorker::imageModel()
     return m_imageModel;
 }
 
-ZCalibrationPatternFinder::Ptr ZCameraCalibratorWorker::patternFinder()
+ZCalibrationPatternFinderPtr ZCameraCalibratorWorker::patternFinder()
 {
     return m_patternFinder;
 }
@@ -114,7 +116,7 @@ void ZCameraCalibratorWorker::setImageModel(ZCalibrationImageModel *imageModel)
     }
 }
 
-void ZCameraCalibratorWorker::setPatternFinder(ZCalibrationPatternFinder::Ptr patternFinder)
+void ZCameraCalibratorWorker::setPatternFinder(ZCalibrationPatternFinderPtr patternFinder)
 {
     if (m_patternFinder != patternFinder) {
         if (m_patternFinder) {
@@ -186,7 +188,7 @@ void ZCameraCalibratorWorker::findCalibrationPattern()
     /// execution on parallel in other threads (from the thread pool)
     m_patternFinderFutureWatcher.setFuture(
                 QtConcurrent::map(m_imageModel->images(),
-                                  [=](const Z3D::ZCalibrationImage::Ptr &image) {
+                                  [=](const auto &image) {
                                         image->findPattern(m_patternFinder.get());
                                   }));
 }
@@ -231,10 +233,10 @@ void ZCameraCalibratorWorker::calibrateFunctionImpl()
     int imageCount = m_imageModel->rowCount();
 
     /// get only the images where the calibration pattern was detected
-    QVector< Z3D::ZCalibrationImage::Ptr > validImages;
+    QVector< Z3D::ZCalibrationImagePtr > validImages;
     validImages.reserve(imageCount);
     for (int i=0; i<imageCount; ++i) {
-        Z3D::ZCalibrationImage::Ptr image = m_imageModel->imageAt(i);
+        auto image = m_imageModel->imageAt(i);
         if (image->state() == ZCalibrationImage::PatternFoundState) {
             validImages.push_back(image);
         }
@@ -249,7 +251,7 @@ void ZCameraCalibratorWorker::calibrateFunctionImpl()
         /// calibration end
         setProgress(1.f, tr("Calibration failed. Not enough calibration patterns found"));
         emit calibrationFailed(tr("Calibration failed. Not enough calibration patterns found"));
-        emit calibrationChanged(ZCameraCalibration::Ptr(nullptr));
+        emit calibrationChanged(nullptr);
 
         return;
     }
@@ -260,7 +262,7 @@ void ZCameraCalibratorWorker::calibrateFunctionImpl()
     std::vector<std::vector<cv::Point3f> > realWorldPoints;
     realWorldPoints.reserve(validImageCount);
     for (int i=0; i<validImageCount; ++i) {
-        Z3D::ZCalibrationImage::Ptr image = validImages[i];
+        auto image = validImages[i];
         /// detected calibration pattern points in image coordinates
         imagePoints.push_back( image->detectedPoints() );
         /// detected calibration pattern point in real world coordinates
@@ -274,7 +276,7 @@ void ZCameraCalibratorWorker::calibrateFunctionImpl()
     setProgress(0.4f, tr("Running camera calibration..."));
 
     /// get calibration
-    ZCameraCalibration::Ptr calibration = m_cameraCalibrator->getCalibration(imagePoints, realWorldPoints, imageSize);
+    ZCameraCalibrationPtr calibration = m_cameraCalibrator->getCalibration(imagePoints, realWorldPoints, imageSize);
 
     /// this function is run from a thread in the QThreadPool, we need to move
     /// the qobject to a thread that has an event loop running

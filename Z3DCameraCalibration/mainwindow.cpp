@@ -35,11 +35,11 @@ MainWindow::MainWindow(QWidget *parent)
 
     ui->finishButton->setVisible(false);
 
-    QObject::connect(ui->continueButton, SIGNAL(clicked(bool)),
-                     this, SLOT(onContinueButtonClicked()));
+    QObject::connect(ui->continueButton, &QPushButton::clicked,
+                     this, &MainWindow::onContinueButtonClicked);
 
-    QObject::connect(ui->finishButton, SIGNAL(clicked(bool)),
-                     this, SLOT(onFinishButtonClicked()));
+    QObject::connect(ui->finishButton, &QPushButton::clicked,
+                     this, &MainWindow::onFinishButtonClicked);
 }
 
 MainWindow::~MainWindow()
@@ -47,7 +47,7 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
-void MainWindow::onCameraSelected(Z3D::ZCameraInterface::Ptr camera)
+void MainWindow::onCameraSelected(Z3D::ZCameraPtr camera)
 {
     m_selectedCamera = camera;
 
@@ -58,15 +58,15 @@ void MainWindow::onContinueButtonClicked()
 {
     if (ui->calibrateFromFilesRadioButton->isChecked()) {
         /// open the camera calibration window directly, without a camera
-        m_selectedCamera = Z3D::ZCameraInterface::Ptr(nullptr);
+        m_selectedCamera = nullptr;
         onFinishButtonClicked();
     } else if (ui->calibrateOnlineRadioButton->isChecked()) {
         /// open the camera calibration window without a camera
         static Z3D::ZCameraSelectorWidget *cameraSelectorWidget = nullptr;
         if (!cameraSelectorWidget) {
             cameraSelectorWidget = new Z3D::ZCameraSelectorWidget(ui->pageCameraSelection);
-            QObject::connect(cameraSelectorWidget, SIGNAL(cameraSelected(Z3D::ZCameraInterface::Ptr)),
-                             this, SLOT(onCameraSelected(Z3D::ZCameraInterface::Ptr)));
+            QObject::connect(cameraSelectorWidget, &Z3D::ZCameraSelectorWidget::cameraSelected,
+                             this, &MainWindow::onCameraSelected);
 
             ui->cameraSelectionLayout->addWidget(cameraSelectorWidget);
         }
@@ -79,7 +79,7 @@ void MainWindow::onContinueButtonClicked()
 void MainWindow::onFinishButtonClicked()
 {
     if (m_selectedCamera) {
-        Z3D::ZCalibratedCamera::Ptr calibratedCamera(new Z3D::ZCalibratedCamera(m_selectedCamera, Z3D::ZCameraCalibration::Ptr(nullptr)));
+        Z3D::ZCalibratedCameraPtr calibratedCamera(new Z3D::ZCalibratedCamera(m_selectedCamera, nullptr));
         Z3D::ZCameraCalibratorWidget *calibratorWindow = new Z3D::ZCameraCalibratorWidget(calibratedCamera);
         calibratorWindow->show();
     } else {

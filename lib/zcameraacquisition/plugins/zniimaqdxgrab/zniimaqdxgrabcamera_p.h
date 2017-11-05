@@ -17,8 +17,7 @@
  * along with Z3D.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef Z3D_CAMERAACQUISITION_PLUGIN___ZNIIMAQDXGRABCAMERA_P_H
-#define Z3D_CAMERAACQUISITION_PLUGIN___ZNIIMAQDXGRABCAMERA_P_H
+#pragma once
 
 #include "zniimaqdxgrabcamera.h"
 
@@ -51,7 +50,7 @@ public:
     void attributeUpdatedEventCallbackInternal(IMAQdxSession id, const char* name, void* callbackData);
 
 signals:
-    void newImageReceived(Z3D::ZImageGrayscale::Ptr image);
+    void newImageReceived(Z3D::ZCameraImagePtr image);
     void warning(QString warningMessage);
     void error(QString errorMessage);
 
@@ -97,5 +96,3 @@ private:
 };
 
 } // namespace Z3D
-
-#endif // Z3D_CAMERAACQUISITION_PLUGIN___ZNIIMAQDXGRABCAMERA_P_H

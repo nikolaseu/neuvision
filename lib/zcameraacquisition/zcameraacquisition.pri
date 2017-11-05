@@ -12,7 +12,3 @@ macx: {
 
 INCLUDEPATH += $$PWD/src
 DEPENDPATH += $$PWD/src
-
-###############################################################################
-# Gui
-include($$PWD/../zgui/zgui.pri)

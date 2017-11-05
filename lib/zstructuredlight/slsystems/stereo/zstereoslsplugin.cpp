@@ -24,7 +24,9 @@
 #include "zdualcamerastereoslsconfigwidget.h"
 #include "zsinglecamerastereosls.h"
 
+#include <QDebug>
 #include <QLabel>
+#include <QSettings>
 
 namespace Z3D {
 
@@ -33,37 +35,15 @@ ZStereoSLSPlugin::ZStereoSLSPlugin()
 
 }
 
-QString ZStereoSLSPlugin::id() const
+ZStructuredLightSystemPtr ZStereoSLSPlugin::get(QSettings *settings)
 {
-    return "ZStereoSLS";
-}
-
-QString ZStereoSLSPlugin::name() const
-{
-    return "Stereo";
-}
-
-QString ZStereoSLSPlugin::version() const
-{
-    return Z3D_VERSION_STR;
-}
-
-QList<QString> ZStereoSLSPlugin::getAll()
-{
-    return QList<QString>()
-            << "DualCamera"
-            << "Projector+Camera";
-}
-
-ZStructuredLightSystem::Ptr ZStereoSLSPlugin::get(QSettings *settings)
-{
-    ZStructuredLightSystem::Ptr sls;
+    ZStructuredLightSystemPtr sls;
 
     const QString mode = settings->value("Mode").toString();
     if (mode == "DualCamera") {
-        sls = ZStructuredLightSystem::Ptr(new ZDualCameraStereoSLS());
+        sls = ZStructuredLightSystemPtr(new ZDualCameraStereoSLS());
     } else if (mode == "Projector+Camera") {
-        sls = ZStructuredLightSystem::Ptr(new ZSingleCameraStereoSLS());
+        sls = ZStructuredLightSystemPtr(new ZSingleCameraStereoSLS());
     } else {
         qWarning() << "unknown ZStereoSLS mode:" << mode;
     }
@@ -75,7 +55,7 @@ ZStructuredLightSystem::Ptr ZStereoSLSPlugin::get(QSettings *settings)
     return sls;
 }
 
-QWidget *ZStereoSLSPlugin::getConfigWidget(ZStructuredLightSystem *structuredLightSystem)
+QWidget *ZStereoSLSPlugin::getConfigWidget(ZStructuredLightSystemWeakPtr structuredLightSystem)
 {
     const auto item = m_structuredLightSystemWidgets.find(structuredLightSystem);
     if (item != m_structuredLightSystemWidgets.end()) {

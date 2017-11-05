@@ -22,6 +22,8 @@
 
 #include "zstereosystemimpl.h"
 
+#include <QDebug>
+
 namespace Z3D
 {
 
@@ -65,23 +67,23 @@ void ZStereoSLS::initialize()
             this, &ZStereoSLS::setReady);
 }
 
-void ZStereoSLS::setLeftCalibration(Z3D::ZCameraCalibration::Ptr cameraCalibration)
+void ZStereoSLS::setLeftCalibration(Z3D::ZCameraCalibrationPtr cameraCalibration)
 {
     m_stereoSystem->setLeftCameraCalibration(cameraCalibration);
 }
 
-void ZStereoSLS::setRightCalibration(Z3D::ZCameraCalibration::Ptr cameraCalibration)
+void ZStereoSLS::setRightCalibration(ZCameraCalibrationPtr cameraCalibration)
 {
     m_stereoSystem->setRightCameraCalibration(cameraCalibration);
 }
 
-ZSimplePointCloud::Ptr ZStereoSLS::triangulate(const cv::Mat &intensityImg,
+ZSimplePointCloudPtr ZStereoSLS::triangulate(const cv::Mat &intensityImg,
                                                const std::map<int, std::vector<cv::Vec2f> > &leftPoints,
                                                const std::map<int, std::vector<cv::Vec2f> > &rightPoints,
                                                int maxPosibleCloudPoints)
 {
     if (!m_stereoSystem) {
-        return Z3D::ZSimplePointCloud::Ptr(nullptr);
+        return nullptr;
     }
 
     return m_stereoSystem->triangulateOptimized(intensityImg, leftPoints, rightPoints, maxPosibleCloudPoints, m_maxValidDistance);

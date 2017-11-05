@@ -19,8 +19,8 @@
 
 #pragma once
 
+#include "zcameraacquisition_fwd.h"
 #include "zcameraacquisition_global.h"
-#include "zcameraimage.h"
 
 #include <QDebug>
 #include <QObject>
@@ -40,9 +40,6 @@ class Z3D_CAMERAACQUISITION_SHARED_EXPORT ZCameraInterface : public QObject
     Q_PROPERTY(QStringList presets READ getPresets CONSTANT)
 
 public:
-    typedef std::shared_ptr<Z3D::ZCameraInterface> Ptr;
-    typedef QPointer<Z3D::ZCameraInterface> WeakPtr;
-
     enum CameraAttributeType {
         CameraAttributeTypeUnknown = 0,
         CameraAttributeTypeBool,
@@ -55,17 +52,17 @@ public:
     };
 
     struct ZCameraAttribute {
-        ZCameraAttribute() :
-            id(),
-            path(),
-            label("UNKNOWN"),
-            value("UNKNOWN"),
-            readable(false),
-            writable(false),
-            type(CameraAttributeTypeUnknown),
-            maximumValue(DBL_MAX),
-            minimumValue(DBL_MIN),
-            enumValue(-1)
+        ZCameraAttribute()
+            : id()
+            , path()
+            , label("UNKNOWN")
+            , value("UNKNOWN")
+            , readable(false)
+            , writable(false)
+            , type(CameraAttributeTypeUnknown)
+            , maximumValue(std::numeric_limits<double>::max())
+            , minimumValue(std::numeric_limits<double>::min())
+            , enumValue(-1)
         {
 
         }
@@ -84,7 +81,9 @@ public:
         QStringList enumNames;
     };
 
-    explicit ZCameraInterface(QObject *parent = nullptr) : QObject(parent) {}
+    explicit ZCameraInterface(QObject *parent = nullptr)
+        : QObject(parent) {}
+
     virtual ~ZCameraInterface() {}
 
     virtual QString uuid() = 0;
@@ -92,7 +91,7 @@ public:
     virtual int bufferSize() = 0;
 
 signals:
-    void newImageReceived(Z3D::ZImageGrayscale::Ptr image);
+    void newImageReceived(Z3D::ZCameraImagePtr image);
 
     void message(QString message);
     void warning(QString warningMessage);
@@ -107,7 +106,7 @@ signals:
 
 public slots:
     virtual bool requestSnapshot() = 0;
-    virtual ZImageGrayscale::Ptr getSnapshot() = 0;
+    virtual ZCameraImagePtr getSnapshot() = 0;
 
     /// acquisition control
     Q_INVOKABLE virtual bool startAcquisition() = 0;

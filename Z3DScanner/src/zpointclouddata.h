@@ -17,10 +17,9 @@
  * along with Z3D.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef ZPOINTCLOUDDATA_H
-#define ZPOINTCLOUDDATA_H
+#pragma once
 
-#include "zsimplepointcloud.h"
+#include <Z3DStructuredLight>
 
 #include <qopengl.h>
 #include <QVector>
@@ -30,7 +29,7 @@ class ZPointCloudData
 public:
     typedef std::shared_ptr<ZPointCloudData> Ptr;
 
-    explicit ZPointCloudData(const Z3D::ZSimplePointCloud::Ptr &pointCloud);
+    explicit ZPointCloudData(const Z3D::ZSimplePointCloudPtr &pointCloud);
     const GLfloat *constData() const { return m_data.constData(); }
     int count() const { return m_count; }
     int vertexCount() const { return m_count / 6; }
@@ -41,5 +40,3 @@ private:
     QVector<GLfloat> m_data;
     int m_count;
 };
-
-#endif // ZPOINTCLOUDDATA_H

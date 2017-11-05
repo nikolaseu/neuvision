@@ -16,7 +16,3 @@ macx: {
 
 INCLUDEPATH += $$PWD/src
 DEPENDPATH += $$PWD/src
-
-###############################################################################
-# Core
-include($$PWD/../zcore/zcore.pri)

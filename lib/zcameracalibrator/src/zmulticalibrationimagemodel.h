@@ -19,7 +19,10 @@
 
 #pragma once
 
-#include "zmulticalibrationimage.h"
+#include "zcameracalibrator_fwd.h"
+#include "zcameracalibrator_global.h"
+
+#include <Z3DCameraCalibration>
 
 #include <QAbstractListModel>
 #include <QFutureWatcher>
@@ -33,8 +36,6 @@ class Z3D_CAMERACALIBRATOR_SHARED_EXPORT ZMultiCalibrationImageModel : public QA
     Q_OBJECT
 
 public:
-    typedef QPointer<ZMultiCalibrationImageModel> WeakPtr;
-
     enum ZMultiCalibrationImageModelRoles {
         DataRole = Qt::UserRole + 1,
         FilenameRole
@@ -49,7 +50,7 @@ public:
 
     QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const;
 
-    const QList<Z3D::ZCalibrationImage::Ptr> &images();
+    const QList<Z3D::ZCalibrationImagePtr> &images();
 
 signals:
     void newImagesAdded();
@@ -59,22 +60,22 @@ public slots:
 
     void addFolder(QString folder);
 
-    void addImage(Z3D::ZMultiCalibrationImage::Ptr image);
-    void addImageThreadSafe(Z3D::ZMultiCalibrationImage::Ptr image);
-    void addImages(const QVector<Z3D::ZMultiCalibrationImage::Ptr > &images);
+    void addImage(Z3D::ZMultiCalibrationImagePtr image);
+    void addImageThreadSafe(Z3D::ZMultiCalibrationImagePtr image);
+    void addImages(const QVector<Z3D::ZMultiCalibrationImagePtr > &images);
 
-    void addImpl(Z3D::ZMultiCalibrationImage::Ptr image);
+    void addImpl(Z3D::ZMultiCalibrationImagePtr image);
 
-    Z3D::ZMultiCalibrationImage::Ptr imageAt(int index) const;
+    Z3D::ZMultiCalibrationImagePtr imageAt(int index) const;
 
 protected slots:
     void onImageStateChanged();
 
 private:
-    QList<Z3D::ZMultiCalibrationImage::Ptr> m_images;
-    QList<Z3D::ZCalibrationImage::Ptr> m_allImagesList;
+    QList<Z3D::ZMultiCalibrationImagePtr> m_images;
+    QList<Z3D::ZCalibrationImagePtr> m_allImagesList;
 
-    QVector<Z3D::ZMultiCalibrationImage::Ptr> m_imagesToLoad;
+    QVector<Z3D::ZMultiCalibrationImagePtr> m_imagesToLoad;
     QFutureWatcher<void> m_futureWatcher;
 
     QMutex m_mutex;

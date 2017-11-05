@@ -22,18 +22,24 @@
 #include "ui_zmulticameracalibratorwidget.h"
 
 #include "zcalibrationimageviewer.h"
+#include "zcalibrationpatternfinder.h"
 #include "zcalibrationpatternfinderprovider.h"
-#include "zmulticalibrationimagemodel.h"
-#include "zmulticameracalibratorworker.h"
-
+#include "zcalibratedcamera.h"
+#include "zcameracalibrationprovider.h"
+#include "zcameraimage.h"
+#include "zcamerainterface.h"
 #include "zimageviewer.h"
+#include "zmulticalibrationimage.h"
+#include "zmulticalibrationimagemodel.h"
+#include "zmulticameracalibration.h"
+#include "zmulticameracalibrator.h"
+#include "zmulticameracalibratorworker.h"
+#include "zpinhole/zpinholecameracalibration.h"
 
 #include <QDateTime>
 #include <QFileDialog>
 #include <QProgressBar>
 #include <QThread>
-
-#include <zpinhole/zpinholecameracalibration.h>
 
 #define CALIBRATION_PATTERN_VIEW 0
 #define IMAGE_VIEW 1
@@ -43,7 +49,7 @@
 namespace Z3D
 {
 
-ZMultiCameraCalibratorWidget::ZMultiCameraCalibratorWidget(std::vector<ZCalibratedCamera::Ptr> cameras, QWidget *parent)
+ZMultiCameraCalibratorWidget::ZMultiCameraCalibratorWidget(std::vector<ZCalibratedCameraPtr> cameras, QWidget *parent)
     : ZWidget(parent)
     , ui(new Ui::ZMultiCameraCalibratorWidget)
     , m_model(new ZMultiCalibrationImageModel(this))
@@ -64,8 +70,8 @@ ZMultiCameraCalibratorWidget::ZMultiCameraCalibratorWidget(std::vector<ZCalibrat
         /// set up camera image preview
         if (camera) {
             hasAnyRealCamera = true;
-            QObject::connect(camera->camera().get(), SIGNAL(newImageReceived(Z3D::ZImageGrayscale::Ptr)),
-                             cameraImageViewer, SLOT(updateImage(Z3D::ZImageGrayscale::Ptr)));
+            QObject::connect(camera->camera().get(), &ZCameraInterface::newImageReceived,
+                             cameraImageViewer, static_cast<void(ZImageViewer::*)(Z3D::ZCameraImagePtr)>(&ZImageViewer::updateImage));
         }
 
         /// image views
@@ -89,14 +95,14 @@ ZMultiCameraCalibratorWidget::ZMultiCameraCalibratorWidget(std::vector<ZCalibrat
     ui->stackedWidget->setCurrentIndex(0);
 
     /// connect ui events
-    QObject::connect(ui->newSessionButton, SIGNAL(clicked()),
-                     this, SLOT(newSession()));
-    QObject::connect(ui->loadSessionButton, SIGNAL(clicked()),
-                     this, SLOT(loadSession()));
+    QObject::connect(ui->newSessionButton, &QPushButton::clicked,
+                     this, &ZMultiCameraCalibratorWidget::newSession);
+    QObject::connect(ui->loadSessionButton, &QPushButton::clicked,
+                     this, &ZMultiCameraCalibratorWidget::loadSession);
 
     /// to update current camera calibration model
-    QObject::connect(ui->cameraModelTypeComboBox, SIGNAL(currentIndexChanged(int)),
-                     this, SLOT(onCameraModelTypeChanged(int)));
+    QObject::connect(ui->cameraModelTypeComboBox, static_cast<void(QComboBox::*)(int)>(&QComboBox::currentIndexChanged),
+                     this, &ZMultiCameraCalibratorWidget::onCameraModelTypeChanged);
 
     /// available camera models
     m_cameraCalibratorList = ZCameraCalibrationProvider::getMultiCameraCalibrators();
@@ -105,22 +111,22 @@ ZMultiCameraCalibratorWidget::ZMultiCameraCalibratorWidget(std::vector<ZCalibrat
         ui->cameraModelTypeComboBox->addItem(calibrator->name());
 
     /// to update current pattern finder
-    QObject::connect(ui->calibrationPatternTypeComboBox, SIGNAL(currentIndexChanged(int)),
-                     this, SLOT(onCalibrationPatternTypeChanged(int)));
+    QObject::connect(ui->calibrationPatternTypeComboBox, static_cast<void(QComboBox::*)(int)>(&QComboBox::currentIndexChanged),
+                     this, &ZMultiCameraCalibratorWidget::onCalibrationPatternTypeChanged);
 
     /// load different calibration pattern finder types
     m_patternFinderList = ZCalibrationPatternFinderProvider::getAll();
 
-    for (ZCalibrationPatternFinder::Ptr patternFinder : m_patternFinderList)
+    for (auto patternFinder : m_patternFinderList)
         ui->calibrationPatternTypeComboBox->addItem(patternFinder->name());
 
     /// configure image list view
     ui->listView->setModel(m_model);
-    QObject::connect(ui->listView->selectionModel(), SIGNAL(currentChanged(QModelIndex,QModelIndex)),
-                     this, SLOT(onCurrentSelectionChanged(QModelIndex,QModelIndex)));
+    QObject::connect(ui->listView->selectionModel(), &QItemSelectionModel::currentChanged,
+                     this, &ZMultiCameraCalibratorWidget::onCurrentSelectionChanged);
     /// whenever someone clicks the list view, switch to image view
-    QObject::connect(ui->listView, SIGNAL(clicked(QModelIndex)),
-                     this, SLOT(on_imageViewPageButton_clicked()));
+    QObject::connect(ui->listView, &QListView::clicked,
+                     this, &ZMultiCameraCalibratorWidget::on_imageViewPageButton_clicked);
 
     /// set up image view type
     ui->imageViewTypeComboBox->addItem(tr("View calibration pattern"), ZCalibrationImageViewer::ShowMarkers);
@@ -140,9 +146,9 @@ ZMultiCameraCalibratorWidget::ZMultiCameraCalibratorWidget(std::vector<ZCalibrat
     m_calibratorWorker->moveToThread(m_workerThread);
 
     //! TODO esto es necesario?
-    for (ZMultiCameraCalibrator *cameraCalibrator : m_cameraCalibratorList)
+    for (auto cameraCalibrator : m_cameraCalibratorList)
         cameraCalibrator->moveToThread(m_workerThread);
-    for (ZCalibrationPatternFinder::Ptr patternFinder : m_patternFinderList)
+    for (auto patternFinder : m_patternFinderList)
         patternFinder->moveToThread(m_workerThread);
 
     m_workerThread->start();
@@ -216,14 +222,14 @@ void ZMultiCameraCalibratorWidget::onCurrentSelectionChanged(QModelIndex current
         return;
 
     QVariant variant = current.model()->data(current, ZMultiCalibrationImageModel::DataRole);
-    if (!variant.isValid() || !variant.canConvert<Z3D::ZMultiCalibrationImage::Ptr>())
+    if (!variant.isValid() || !variant.canConvert<Z3D::ZMultiCalibrationImagePtr>())
         return;
 
-    Z3D::ZMultiCalibrationImage::Ptr multiImage = variant.value<Z3D::ZMultiCalibrationImage::Ptr>();
+    auto multiImage = variant.value<Z3D::ZMultiCalibrationImagePtr>();
 
     if (multiImage) {
         for (size_t i=0; i<m_cameras.size(); ++i) {
-            Z3D::ZCalibrationImage::Ptr image = multiImage->image(i);
+            auto image = multiImage->image(i);
             if (image)
                 m_imageViewer[i]->updateCalibrationImage(image);
         }
@@ -259,7 +265,7 @@ void ZMultiCameraCalibratorWidget::onCameraModelTypeChanged(int index)
 void ZMultiCameraCalibratorWidget::onCalibrationPatternTypeChanged(int index)
 {
     /// remove previous config widget and hide it
-    ZCalibrationPatternFinder::Ptr m_currentPatternFinder = m_calibratorWorker->patternFinder();
+    auto m_currentPatternFinder = m_calibratorWorker->patternFinder();
     if (m_currentPatternFinder) {
         QWidget *previousWidget = ZCalibrationPatternFinderProvider::getConfigWidget(m_currentPatternFinder.get());
         previousWidget->setVisible(false);
@@ -287,14 +293,14 @@ void ZMultiCameraCalibratorWidget::onProgressChanged(float progress, QString mes
         ui->statusbar->showMessage(message, progress < 1 ? 0 : 5000);
 }
 
-void ZMultiCameraCalibratorWidget::onCalibrationChanged(ZMultiCameraCalibration::Ptr calibrationResult)
+void ZMultiCameraCalibratorWidget::onCalibrationChanged(ZMultiCameraCalibrationPtr calibrationResult)
 {
     if (calibrationResult) {
         const auto &newCalibrations = calibrationResult->calibrations();
         QString currentDateTime = QDateTime::currentDateTime().toString("yyyyMMddhhmmss");
         for (size_t i=0; i<m_cameras.size(); ++i) {
             const auto &camera = m_cameras[i];
-            Z3D::ZCameraCalibration::Ptr newCalibration = newCalibrations[i];
+            Z3D::ZCameraCalibrationPtr newCalibration = newCalibrations[i];
             QString fileName = QString("%1/%2__%3.cameracalib.ini")
                     .arg(m_sessionFolder)
                     .arg(currentDateTime)
@@ -381,7 +387,7 @@ void ZMultiCameraCalibratorWidget::on_runCalibrationButton_clicked()
     /// disable button until calibration has finished
     ui->runCalibrationButton->setEnabled(false);
 
-    std::vector<Z3D::ZCameraCalibration::Ptr> currentCalibrations;
+    std::vector<Z3D::ZCameraCalibrationPtr> currentCalibrations;
 
     for (size_t iCamera=0; iCamera<m_cameras.size(); ++iCamera) {
         const auto &camera = m_cameras[iCamera];
@@ -390,7 +396,7 @@ void ZMultiCameraCalibratorWidget::on_runCalibrationButton_clicked()
         } else {
             const auto &image = m_model->imageAt(0)->image(iCamera);
             auto *calibration = new ZPinholeCameraCalibration(image->width(), image->height());
-            currentCalibrations.push_back(ZCameraCalibration::Ptr(calibration));
+            currentCalibrations.push_back(ZCameraCalibrationPtr(calibration));
         }
     }
 
@@ -400,8 +406,9 @@ void ZMultiCameraCalibratorWidget::on_runCalibrationButton_clicked()
 void ZMultiCameraCalibratorWidget::on_imageViewTypeComboBox_currentIndexChanged(int index)
 {
     ZCalibrationImageViewer::DisplayMode displayMode = (ZCalibrationImageViewer::DisplayMode) ui->imageViewTypeComboBox->itemData(index).toInt();
-    foreach (ZCalibrationImageViewer *imageViewer, m_imageViewer)
+    for (auto *imageViewer : m_imageViewer) {
         imageViewer->setDisplayMode(displayMode);
+    }
 }
 
 void ZMultiCameraCalibratorWidget::on_calibrationPatternViewButton_clicked()
@@ -413,8 +420,8 @@ void ZMultiCameraCalibratorWidget::on_saveCameraImageButton_clicked()
 {
     QString currentDateTime = QDateTime::currentDateTime().toString("yyyyMMddhhmmsszzz");
 
-    QList<ZImageGrayscale::Ptr> imagesList;
-    QList<ZCalibrationImage::Ptr> calibrationImagesList;
+    QList<ZCameraImagePtr> imagesList;
+    QList<ZCalibrationImagePtr> calibrationImagesList;
 
     for (auto camera : m_cameras) {
         imagesList << camera->camera()->getSnapshot();
@@ -422,9 +429,9 @@ void ZMultiCameraCalibratorWidget::on_saveCameraImageButton_clicked()
 
     bool isValid = true;
 
-    for (int i=0; i<m_cameras.size(); ++i) {
-        Z3D::ZCalibratedCamera::Ptr camera = m_cameras[i];
-        ZImageGrayscale::Ptr image = imagesList[i];
+    for (size_t i=0; i<m_cameras.size(); ++i) {
+        Z3D::ZCalibratedCameraPtr camera = m_cameras[i];
+        ZCameraImagePtr image = imagesList[i];
 
         if (m_sessionFolder.isEmpty()) {
             newSession();
@@ -436,11 +443,11 @@ void ZMultiCameraCalibratorWidget::on_saveCameraImageButton_clicked()
                 .arg(camera ? camera->camera()->uuid() : QString("camera%1").arg(i))
                 .arg(currentDateTime);
 
-        if (image->save(fileName)) {
+        if (ZCameraImage::save(image, fileName)) {
             qDebug() << "saved image" << fileName;
 
             /// add to calibration images model
-            ZCalibrationImage::Ptr calibrationImage(new ZCalibrationImage(fileName));
+            ZCalibrationImagePtr calibrationImage(new ZCalibrationImage(fileName));
             if (ui->saveOnlyValidImagesCheckBox->isChecked()) {
                 /// only add if image is valid and the pattern is found
 
@@ -464,7 +471,7 @@ void ZMultiCameraCalibratorWidget::on_saveCameraImageButton_clicked()
     }
 
     if (isValid) {
-        ZMultiCalibrationImage::Ptr images(new ZMultiCalibrationImage(calibrationImagesList));
+        ZMultiCalibrationImagePtr images(new ZMultiCalibrationImage(calibrationImagesList));
         m_model->addImage(images);
     }
 }

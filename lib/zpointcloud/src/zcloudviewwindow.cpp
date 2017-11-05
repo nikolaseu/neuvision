@@ -21,33 +21,37 @@
 #include "zcloudviewwindow.h"
 #include "ui_zcloudviewwindow.h"
 
-#include <Z3DCameraAcquisition>
-#include <Z3DCameraCalibration>
+#include "zpointcloud.h"
+#include "zcalibratedcamera.h"
+#include "zcameraimage.h"
+#include "zcamerainterface.h"
+#include "zcameracalibration.h"
 
-#include "pcl/io/pcd_io.h"
-#include "pcl/io/ply_io.h"
-#include "pcl/filters/statistical_outlier_removal.h"
-#include "pcl/filters/voxel_grid.h"
-#include "pcl/surface/mls.h"
-#include "pcl/surface/gp3.h"
-#include "pcl/surface/grid_projection.h"
-#include "pcl/sample_consensus/method_types.h"
-#include "pcl/sample_consensus/model_types.h"
-#include "pcl/segmentation/sac_segmentation.h"
-#include "pcl/visualization/histogram_visualizer.h"
-#include "pcl/visualization/pcl_plotter.h"
+#include <opencv2/imgproc.hpp>
 
-#include "vtkRenderer.h"
-#include "vtkGenericOpenGLRenderWindow.h"
-#include "vtkCamera.h"
-#include "vtkRenderWindow.h"
+#include <pcl/io/pcd_io.h>
+#include <pcl/io/ply_io.h>
+#include <pcl/filters/statistical_outlier_removal.h>
+#include <pcl/filters/voxel_grid.h>
+#include <pcl/surface/mls.h>
+#include <pcl/surface/gp3.h>
+#include <pcl/surface/grid_projection.h>
+#include <pcl/sample_consensus/method_types.h>
+#include <pcl/sample_consensus/model_types.h>
+#include <pcl/segmentation/sac_segmentation.h>
+#include <pcl/visualization/histogram_visualizer.h>
+#include <pcl/visualization/pcl_plotter.h>
+
+#include <vtkRenderer.h>
+#include <vtkGenericOpenGLRenderWindow.h>
+#include <vtkCamera.h>
+#include <vtkRenderWindow.h>
 
 #include <QDebug>
 #include <QFileDialog>
 #include <QInputDialog>
 #include <QMessageBox>
 #include <QTime>
-
 #include <QCheckBox>
 #include <QComboBox>
 #include <QColorDialog>
@@ -85,12 +89,12 @@ bool writeData(QString fileName, const std::vector<T> &errorsInliers) {
 namespace Z3D
 {
 
-ZCloudViewWindow::ZCloudViewWindow(QWidget *parent) :
-    QMainWindow(parent),
-    ui(new Ui::ZCloudViewWindow),
-    m_renderer(vtkRenderer::New()),
-    m_renderWindow(vtkGenericOpenGLRenderWindow::New()),
-    m_pclViewer(new pcl::visualization::PCLVisualizer(m_renderer, m_renderWindow, "3D", false))
+ZCloudViewWindow::ZCloudViewWindow(QWidget *parent)
+    : QMainWindow(parent)
+    , ui(new Ui::ZCloudViewWindow)
+    , m_renderer(vtkRenderer::New())
+    , m_renderWindow(vtkGenericOpenGLRenderWindow::New())
+    , m_pclViewer(new pcl::visualization::PCLVisualizer(m_renderer, m_renderWindow, "3D", false))
 {
     ui->setupUi(this);
 
@@ -135,9 +139,9 @@ ZCloudViewWindow::~ZCloudViewWindow()
     delete ui;
 }
 
-void ZCloudViewWindow::showCameraSnapshot(Z3D::ZCalibratedCamera::Ptr pCamera)
+void ZCloudViewWindow::showCameraSnapshot(Z3D::ZCalibratedCameraPtr pCamera)
 {
-    Z3D::ZCameraCalibration::Ptr calibration = pCamera->calibration();
+    Z3D::ZCameraCalibrationPtr calibration = pCamera->calibration();
 
     cv::Mat intensityImg = pCamera->camera()->getSnapshot()->cvMat().clone();
 
@@ -218,9 +222,9 @@ void ZCloudViewWindow::showCameraSnapshot(Z3D::ZCalibratedCamera::Ptr pCamera)
     drawCameraFrustrum(pCamera, imageScale);
 }
 
-void ZCloudViewWindow::drawCameraFrustrum(Z3D::ZCalibratedCamera::Ptr cam, float scale)
+void ZCloudViewWindow::drawCameraFrustrum(Z3D::ZCalibratedCameraPtr cam, float scale)
 {
-    Z3D::ZCameraCalibration::Ptr calibration = cam->calibration();
+    Z3D::ZCameraCalibrationPtr calibration = cam->calibration();
 
     cv::Vec3d point;
 
@@ -258,7 +262,7 @@ void ZCloudViewWindow::drawCameraFrustrum(Z3D::ZCalibratedCamera::Ptr cam, float
 
 void ZCloudViewWindow::addPointCloud(PointCloudPCLPtr cloud, const QString &id)
 {
-    m_pointCloud = Z3D::ZPointCloud::Ptr(new Z3D::ZPointCloud(cloud));
+    m_pointCloud = Z3D::ZPointCloudPtr(new Z3D::ZPointCloud(cloud));
     m_pointCloud->setId(id);
 
     /// Display
@@ -359,8 +363,8 @@ void ZCloudViewWindow::on_actionToolsStatisticalOutlierRemoval_triggered()
     QDialogButtonBox buttonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel,
                                Qt::Horizontal, &dialog);
     form.addRow(&buttonBox);
-    QObject::connect(&buttonBox, SIGNAL(accepted()), &dialog, SLOT(accept()));
-    QObject::connect(&buttonBox, SIGNAL(rejected()), &dialog, SLOT(reject()));
+    QObject::connect(&buttonBox, &QDialogButtonBox::accepted, &dialog, &QDialog::accept);
+    QObject::connect(&buttonBox, &QDialogButtonBox::rejected, &dialog, &QDialog::reject);
 
     /// Show the dialog as modal
     if (dialog.exec() != QDialog::Accepted)
@@ -456,8 +460,8 @@ void ZCloudViewWindow::on_actionToolsMovingLeastSquares_triggered()
     QDialogButtonBox paramsButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel,
                                Qt::Horizontal, &paramsDialog);
     paramsDialogForm.addRow(&paramsButtonBox);
-    QObject::connect(&paramsButtonBox, SIGNAL(accepted()), &paramsDialog, SLOT(accept()));
-    QObject::connect(&paramsButtonBox, SIGNAL(rejected()), &paramsDialog, SLOT(reject()));
+    QObject::connect(&paramsButtonBox, &QDialogButtonBox::accepted, &paramsDialog, &QDialog::accept);
+    QObject::connect(&paramsButtonBox, &QDialogButtonBox::rejected, &paramsDialog, &QDialog::reject);
 
     /// Show the dialog as modal
     if (paramsDialog.exec() != QDialog::Accepted)
@@ -622,8 +626,8 @@ void ZCloudViewWindow::on_actionToolsGreedyTriangulation_triggered()
     QDialogButtonBox paramsButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel,
                                Qt::Horizontal, &paramsDialog);
     paramsDialogForm.addRow(&paramsButtonBox);
-    QObject::connect(&paramsButtonBox, SIGNAL(accepted()), &paramsDialog, SLOT(accept()));
-    QObject::connect(&paramsButtonBox, SIGNAL(rejected()), &paramsDialog, SLOT(reject()));
+    QObject::connect(&paramsButtonBox, &QDialogButtonBox::accepted, &paramsDialog, &QDialog::accept);
+    QObject::connect(&paramsButtonBox, &QDialogButtonBox::rejected, &paramsDialog, &QDialog::reject);
 
     /// Show the dialog as modal
     if (paramsDialog.exec() != QDialog::Accepted)
@@ -712,8 +716,8 @@ void ZCloudViewWindow::on_actionDownsample_triggered()
     QDialogButtonBox paramsButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel,
                                Qt::Horizontal, &paramsDialog);
     paramsDialogForm.addRow(&paramsButtonBox);
-    QObject::connect(&paramsButtonBox, SIGNAL(accepted()), &paramsDialog, SLOT(accept()));
-    QObject::connect(&paramsButtonBox, SIGNAL(rejected()), &paramsDialog, SLOT(reject()));
+    QObject::connect(&paramsButtonBox, &QDialogButtonBox::accepted, &paramsDialog, &QDialog::accept);
+    QObject::connect(&paramsButtonBox, &QDialogButtonBox::rejected, &paramsDialog, &QDialog::reject);
 
     /// Show the dialog as modal
     if (paramsDialog.exec() != QDialog::Accepted)
@@ -808,8 +812,8 @@ void ZCloudViewWindow::on_actionToolsFitCylinder_triggered()
     QDialogButtonBox paramsButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel,
                                Qt::Horizontal, &paramsDialog);
     paramsDialogForm.addRow(&paramsButtonBox);
-    QObject::connect(&paramsButtonBox, SIGNAL(accepted()), &paramsDialog, SLOT(accept()));
-    QObject::connect(&paramsButtonBox, SIGNAL(rejected()), &paramsDialog, SLOT(reject()));
+    QObject::connect(&paramsButtonBox, &QDialogButtonBox::accepted, &paramsDialog, &QDialog::accept);
+    QObject::connect(&paramsButtonBox, &QDialogButtonBox::rejected, &paramsDialog, &QDialog::reject);
 
     /// Show the dialog as modal
     if (paramsDialog.exec() != QDialog::Accepted)
@@ -998,8 +1002,8 @@ void ZCloudViewWindow::on_actionToolsFitCylinder_triggered()
     QDialogButtonBox resultsButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel,
                                Qt::Horizontal, &resultsDialog);
     resultsDialogForm.addRow(&resultsButtonBox);
-    QObject::connect(&resultsButtonBox, SIGNAL(accepted()), &resultsDialog, SLOT(accept()));
-    QObject::connect(&resultsButtonBox, SIGNAL(rejected()), &resultsDialog, SLOT(reject()));
+    QObject::connect(&resultsButtonBox, &QDialogButtonBox::accepted, &resultsDialog, &QDialog::accept);
+    QObject::connect(&resultsButtonBox, &QDialogButtonBox::rejected, &resultsDialog, &QDialog::reject);
 
     /// Show the dialog as modal
     if (resultsDialog.exec() != QDialog::Accepted)
@@ -1128,8 +1132,8 @@ void ZCloudViewWindow::on_actionToolsFitPlane_triggered()
     QDialogButtonBox paramsButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel,
                                Qt::Horizontal, &paramsDialog);
     paramsDialogForm.addRow(&paramsButtonBox);
-    QObject::connect(&paramsButtonBox, SIGNAL(accepted()), &paramsDialog, SLOT(accept()));
-    QObject::connect(&paramsButtonBox, SIGNAL(rejected()), &paramsDialog, SLOT(reject()));
+    QObject::connect(&paramsButtonBox, &QDialogButtonBox::accepted, &paramsDialog, &QDialog::accept);
+    QObject::connect(&paramsButtonBox, &QDialogButtonBox::rejected, &paramsDialog, &QDialog::reject);
 
     /// Show the dialog as modal
     if (paramsDialog.exec() != QDialog::Accepted)
@@ -1283,8 +1287,8 @@ void ZCloudViewWindow::on_actionToolsFitPlane_triggered()
     QDialogButtonBox resultsButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel,
                                Qt::Horizontal, &resultsDialog);
     resultsDialogForm.addRow(&resultsButtonBox);
-    QObject::connect(&resultsButtonBox, SIGNAL(accepted()), &resultsDialog, SLOT(accept()));
-    QObject::connect(&resultsButtonBox, SIGNAL(rejected()), &resultsDialog, SLOT(reject()));
+    QObject::connect(&resultsButtonBox, &QDialogButtonBox::accepted, &resultsDialog, &QDialog::accept);
+    QObject::connect(&resultsButtonBox, &QDialogButtonBox::rejected, &resultsDialog, &QDialog::reject);
 
     /// Show the dialog as modal
     if (resultsDialog.exec() != QDialog::Accepted)

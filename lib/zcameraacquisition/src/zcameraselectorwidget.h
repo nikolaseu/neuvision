@@ -19,8 +19,8 @@
 
 #pragma once
 
+#include "zcameraacquisition_fwd.h"
 #include "zcameraacquisition_global.h"
-#include "zcamerainterface.h"
 
 #include "zwidget.h"
 
@@ -45,7 +45,7 @@ public:
     ~ZCameraSelectorWidget();
 
 signals:
-    void cameraSelected(Z3D::ZCameraInterface::Ptr camera);
+    void cameraSelected(Z3D::ZCameraPtr camera);
 
 private slots:
     void onPluginIndexChanged(int index);
@@ -59,7 +59,7 @@ private:
 
     QList<Z3D::ZCameraInfo *> m_currentCameraList;
 
-    Z3D::ZCameraInterface::Ptr m_selectedCamera;
+    Z3D::ZCameraPtr m_selectedCamera;
 };
 
 } // namespace Z3D

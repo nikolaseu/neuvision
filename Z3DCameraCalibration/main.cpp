@@ -24,9 +24,9 @@
 
 #include "zapplication.h"
 #include "zapplicationstyle.h"
-#include <Z3DCameraProvider>
-#include <Z3DCameraCalibrationProvider>
 #include "zcalibrationpatternfinderprovider.h"
+#include "zcameracalibrationprovider.h"
+#include "zcameraprovider.h"
 
 
 int main(int argc, char* argv[])

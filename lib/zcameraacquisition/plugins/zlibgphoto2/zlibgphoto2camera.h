@@ -41,7 +41,7 @@ public slots:
     bool startAcquisition() override;
     bool stopAcquisition() override;
 
-    ZImageGrayscale::Ptr getSnapshot() override;
+    ZCameraImagePtr getSnapshot() override;
 
     /// camera attributes (settings)
     QList<ZCameraAttribute> getAllAttributes() override;

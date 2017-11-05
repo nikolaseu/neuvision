@@ -45,7 +45,7 @@ QString ZCameraInfo::name() const
 
 QString ZCameraInfo::pluginName() const
 {
-    return m_plugin->name();
+    return m_plugin->displayName();
 }
 
 QVariantMap ZCameraInfo::extraData() const
@@ -53,7 +53,7 @@ QVariantMap ZCameraInfo::extraData() const
     return m_extraData;
 }
 
-ZCameraInterface::Ptr ZCameraInfo::getCamera() const
+ZCameraPtr ZCameraInfo::getCamera() const
 {
     return m_plugin->getCamera(m_extraData);
 }

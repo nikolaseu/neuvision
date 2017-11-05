@@ -20,7 +20,7 @@
 
 #include "zcirclegridcalibrationpatternfinder.h"
 
-#include <opencv2/calib3d/calib3d.hpp>
+#include <opencv2/calib3d.hpp>
 
 namespace Z3D
 {

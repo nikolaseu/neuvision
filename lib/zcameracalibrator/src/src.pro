@@ -2,43 +2,48 @@ include(../../../NEUVision.pri)
 
 VERSION       = $$Z3D_VERSION
 TEMPLATE      = lib
-# CONFIG       += plugin
 #QT           -= gui // mientras use QPixmap necesito gui
 QT           += widgets concurrent
 TARGET        = $$qtLibraryTarget(zcameracalibrator)
 DESTDIR       = $$Z3D_BUILD_DIR
 DEFINES      += Z3D_CAMERACALIBRATOR_LIBRARY
+
 HEADERS      += \
-    zcameracalibrator_global.h \
+    3rdParty/objectcontroller.h \
     zcalibrationimage.h \
     zcalibrationimagemodel.h \
-    zcalibrationpatternfinder.h \
-    zcameracalibratorworker.h \
     zcalibrationimageviewer.h \
-    zmulticalibrationimage.h \
-    zmulticalibrationimagemodel.h \
-    zmulticameracalibratorworker.h \
-    3rdParty/objectcontroller.h \
+    zcalibrationpatternfinder.h \
     zcalibrationpatternfinderplugininterface.h \
     zcalibrationpatternfinderprovider.h \
+    zcameracalibrator_fwd.h \
+    zcameracalibrator_global.h \
     zcameracalibratorwidget.h \
-    zmulticameracalibratorwidget.h
+    zcameracalibratorworker.h \
+    zmulticalibrationimage.h \
+    zmulticalibrationimagemodel.h \
+    zmulticameracalibratorwidget.h \
+    zmulticameracalibratorworker.h \
+
 SOURCES      += \
+    3rdParty/objectcontroller.cpp \
     zcalibrationimage.cpp \
     zcalibrationimagemodel.cpp \
-    zcalibrationpatternfinder.cpp \
-    zcameracalibratorworker.cpp \
     zcalibrationimageviewer.cpp \
-    zmulticalibrationimage.cpp \
-    zmulticalibrationimagemodel.cpp \
-    zmulticameracalibratorworker.cpp \
-    3rdParty/objectcontroller.cpp \
+    zcalibrationpatternfinder.cpp \
     zcalibrationpatternfinderprovider.cpp \
     zcameracalibratorwidget.cpp \
-    zmulticameracalibratorwidget.cpp
+    zcameracalibratorworker.cpp \
+    zmulticalibrationimage.cpp \
+    zmulticalibrationimagemodel.cpp \
+    zmulticameracalibratorwidget.cpp \
+    zmulticameracalibratorworker.cpp \
+
 FORMS += \
     zcameracalibratorwidget.ui \
-    zmulticameracalibratorwidget.ui
+    zmulticameracalibratorwidget.ui \
+
+
 
 ###############################################################################
 # OpenCV

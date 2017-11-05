@@ -18,11 +18,12 @@
 // along with Z3D.  If not, see <http://www.gnu.org/licenses/>.
 //
 
+#include <QDebug>
 #include <QSplashScreen>
 
 #include "zapplication.h"
 #include "zapplicationstyle.h"
-#include <Z3DCameraProvider>
+#include "zcameraprovider.h"
 #include "zcameraselectorwidget.h"
 
 

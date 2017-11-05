@@ -20,8 +20,8 @@
 
 #include "zringgridpatternfinder.h"
 
-#include "opencv2/imgproc/imgproc.hpp"
-#include "opencv2/calib3d/calib3d.hpp"
+#include <opencv2/imgproc.hpp>
+#include <opencv2/calib3d.hpp>
 
 #include <QDebug>
 
@@ -30,7 +30,7 @@
 
 #if defined(DEBUG_REFERENCE_DETECTOR) || defined(DEBUG_PERSPECTIVE_TRANSFORMATION)
 #  include <QDir>
-#  include "opencv2/highgui/highgui.hpp" //to use imwrite, imshow
+#  include "opencv2/highgui.hpp" //to use imwrite, imshow
 #endif
 
 
@@ -53,12 +53,12 @@ ZRingGridPatternFinder::ZRingGridPatternFinder(QObject *parent)
     setColumns(4);
     setRows(4);
 
-    QObject::connect(this, SIGNAL(maxColumnsChanged(int)),
-                     this, SLOT(updateConfigHash()));
-    QObject::connect(this, SIGNAL(maxRowsChanged(int)),
-                     this, SLOT(updateConfigHash()));
-    QObject::connect(this, SIGNAL(refinePatternPointsChanged(bool)),
-                     this, SLOT(updateConfigHash()));
+    QObject::connect(this, &ZRingGridPatternFinder::maxColumnsChanged,
+                     this, &ZRingGridPatternFinder::updateConfigHash);
+    QObject::connect(this, &ZRingGridPatternFinder::maxRowsChanged,
+                     this, &ZRingGridPatternFinder::updateConfigHash);
+    QObject::connect(this, &ZRingGridPatternFinder::refinePatternPointsChanged,
+                     this, &ZRingGridPatternFinder::updateConfigHash);
 
     /// generate current config hash
     updateConfigHash();
@@ -178,15 +178,7 @@ bool ZRingGridPatternFinder::findCalibrationPattern(cv::Mat image, std::vector<c
 
     std::vector<cv::KeyPoint> keypoints;
 
-#ifdef CV_VERSION_EPOCH
-#  if CV_VERSION_EPOCH < 3 // OpenCV 2
-    cv::Ptr<cv::FeatureDetector> blobDetector( new cv::SimpleBlobDetector() );
-#  else // OpenCV 3
     cv::Ptr<cv::FeatureDetector> blobDetector = cv::SimpleBlobDetector::create();
-#  endif
-#else // OpenCV 3
-    cv::Ptr<cv::FeatureDetector> blobDetector = cv::SimpleBlobDetector::create();
-#endif
 
 #ifdef DEBUG_REFERENCE_DETECTOR
     cv::imwrite(qPrintable(QString("tmp/debug/rectDetector_%1_roi.bmp").arg(currentIndex)), roi);

@@ -1,6 +1,6 @@
 TEMPLATE  = subdirs
 
-SUBDIRS   = src
+SUBDIRS  += src
 
 SUBDIRS  += finders
 finders.depends = src

@@ -19,10 +19,8 @@
 
 #pragma once
 
+#include "zcameracalibration_fwd.h"
 #include "zcameracalibration_global.h"
-#include "zcameracalibration.h"
-#include "zcameracalibrator.h"
-#include "zmulticameracalibrator.h"
 
 #include <QMap>
 #include <QSettings>
@@ -31,18 +29,16 @@
 namespace Z3D
 {
 
-class ZCameraCalibrationPluginInterface;
-
 class Z3D_CAMERACALIBRATION_SHARED_EXPORT ZCameraCalibrationProvider
 {
 
 public:
-    static void loadPlugins(QString folder = QString());
+    static void loadPlugins();
     static void unloadPlugins();
 
-    static ZCameraCalibration::Ptr getCalibration(QString pluginName, QVariantMap options);
+    static ZCameraCalibrationPtr getCalibration(QString pluginName, QVariantMap options);
 
-    static ZCameraCalibration::Ptr getCalibration(QSettings *settings);
+    static ZCameraCalibrationPtr getCalibration(QSettings *settings);
 
     static QList<ZCameraCalibrator *> getCameraCalibrators();
     static QWidget *getConfigWidget(ZCameraCalibrator *cameraCalibrator);

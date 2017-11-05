@@ -21,10 +21,16 @@
 #include "zcameracalibratorwidget.h"
 #include "ui_zcameracalibratorwidget.h"
 
-#include "zcameracalibratorworker.h"
-
 #include "zcalibrationimagemodel.h"
+#include "zcalibrationpatternfinder.h"
 #include "zcalibrationpatternfinderprovider.h"
+#include "zcalibratedcamera.h"
+#include "zcameracalibration.h"
+#include "zcameracalibrationprovider.h"
+#include "zcameracalibrator.h"
+#include "zcameracalibratorworker.h"
+#include "zcameraimage.h"
+#include "zcamerainterface.h"
 
 #include "3rdParty/objectcontroller.h"
 
@@ -44,7 +50,7 @@
 namespace Z3D
 {
 
-ZCameraCalibratorWidget::ZCameraCalibratorWidget(ZCalibratedCamera::Ptr camera, QWidget *parent)
+ZCameraCalibratorWidget::ZCameraCalibratorWidget(ZCalibratedCameraPtr camera, QWidget *parent)
     : ZWidget(parent)
     , ui(new Ui::ZCameraCalibratorWidget)
     , m_model(new ZCalibrationImageModel(this))
@@ -88,7 +94,7 @@ ZCameraCalibratorWidget::ZCameraCalibratorWidget(ZCalibratedCamera::Ptr camera, 
 
     /// load different calibration pattern finder types
     m_patternFinderList = ZCalibrationPatternFinderProvider::getAll();
-    for (ZCalibrationPatternFinder::Ptr finder : m_patternFinderList) {
+    for (const auto &finder : m_patternFinderList) {
         ui->calibrationPatternTypeComboBox->addItem(finder->name());
     }
 
@@ -136,7 +142,7 @@ ZCameraCalibratorWidget::ZCameraCalibratorWidget(ZCalibratedCamera::Ptr camera, 
     if (m_camera) {
         /// set up camera image preview
         QObject::connect(m_camera->camera().get(), &ZCameraInterface::newImageReceived,
-                         ui->cameraImageViewer, static_cast<void (ZImageViewer::*)(ZImageGrayscale::Ptr)>(&ZImageViewer::updateImage));
+                         ui->cameraImageViewer, static_cast<void (ZImageViewer::*)(ZCameraImagePtr)>(&ZImageViewer::updateImage));
 
         /// show current calibration, but a copy of it
         /// we don't want to change anything from the original, unless the user
@@ -261,10 +267,10 @@ void ZCameraCalibratorWidget::onCurrentSelectionChanged(QModelIndex current, QMo
         return;
 
     QVariant variant = current.model()->data(current, ZCalibrationImageModel::DataRole);
-    if (!variant.isValid() || !variant.canConvert<Z3D::ZCalibrationImage::Ptr>())
+    if (!variant.isValid() || !variant.canConvert<Z3D::ZCalibrationImagePtr>())
         return;
 
-    Z3D::ZCalibrationImage::Ptr image = variant.value<Z3D::ZCalibrationImage::Ptr>();
+    auto image = variant.value<Z3D::ZCalibrationImagePtr>();
 
     if (image) {
         ui->imageViewer->updateCalibrationImage(image);
@@ -300,7 +306,7 @@ void ZCameraCalibratorWidget::onCameraModelTypeChanged(int index)
 void ZCameraCalibratorWidget::onCalibrationPatternTypeChanged(int index)
 {
     /// remove previous config widget and hide it
-    ZCalibrationPatternFinder::Ptr m_currentPatternFinder = m_calibratorWorker->patternFinder();
+    auto m_currentPatternFinder = m_calibratorWorker->patternFinder();
     if (m_currentPatternFinder) {
         QWidget *previousWidget = ZCalibrationPatternFinderProvider::getConfigWidget(m_currentPatternFinder.get());
         previousWidget->setVisible(false);
@@ -329,7 +335,7 @@ void ZCameraCalibratorWidget::onProgressChanged(float progress, QString /*messag
         */
 }
 
-void ZCameraCalibratorWidget::onCalibrationChanged(Z3D::ZCameraCalibration::Ptr newCalibration)
+void ZCameraCalibratorWidget::onCalibrationChanged(ZCameraCalibrationPtr newCalibration)
 {
     if (newCalibration) {
         m_currentCalibration = newCalibration;
@@ -418,7 +424,7 @@ void ZCameraCalibratorWidget::on_imageViewTypeComboBox_currentIndexChanged(int i
 
 void ZCameraCalibratorWidget::on_saveCameraImageButton_clicked()
 {
-    ZImageGrayscale::Ptr image = m_camera->camera()->getSnapshot();
+    ZCameraImagePtr image = m_camera->camera()->getSnapshot();
 
     if (m_sessionFolder.isEmpty()) {
         newSession();
@@ -428,11 +434,11 @@ void ZCameraCalibratorWidget::on_saveCameraImageButton_clicked()
             .arg(m_sessionFolder)
             .arg(QDateTime::currentDateTime().toString("yyyyMMddhhmmsszzz"));
 
-    if (image->save(fileName)) {
+    if (ZCameraImage::save(image, fileName)) {
         qDebug() << "saved image" << fileName;
 
         /// add to calibration images model
-        ZCalibrationImage::Ptr calibrationImage(new ZCalibrationImage(fileName));
+        ZCalibrationImagePtr calibrationImage(new ZCalibrationImage(fileName));
         if (ui->saveOnlyValidImagesCheckBox->isChecked()) {
             /// only add if image is valid and the pattern is found
             if (calibrationImage->isValid() && calibrationImage->findPattern(m_calibratorWorker->patternFinder().get()))

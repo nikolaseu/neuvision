@@ -19,11 +19,8 @@
 
 #pragma once
 
+#include "zcameraacquisition_fwd.h"
 #include "zcameraacquisition_global.h"
-#include "zcamerainfo.h"
-#include "zcamerainterface.h"
-
-#include "zcoreplugin.h"
 
 #include <QtPlugin>
 #include <QList>
@@ -32,16 +29,17 @@
 namespace Z3D
 {
 
-class Z3D_CAMERAACQUISITION_SHARED_EXPORT ZCameraPluginInterface : public ZCorePlugin
+class Z3D_CAMERAACQUISITION_SHARED_EXPORT ZCameraPluginInterface
 {
-    Q_OBJECT
-
 public:
     virtual ~ZCameraPluginInterface() {}
 
+    /// plugin info
+    virtual QString displayName() const = 0;
+
     /// camera utilities
     virtual QList<ZCameraInfo *> getConnectedCameras() = 0;
-    virtual ZCameraInterface::Ptr getCamera(QVariantMap options) = 0;
+    virtual ZCameraPtr getCamera(QVariantMap options) = 0;
 };
 
 } // namespace Z3D

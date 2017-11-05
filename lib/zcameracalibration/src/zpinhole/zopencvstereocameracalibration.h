@@ -22,13 +22,15 @@
 #include "zcameracalibration_global.h"
 #include "zmulticameracalibration.h"
 
+#include <opencv2/core/mat.hpp>
+
 namespace Z3D
 {
 
 class Z3D_CAMERACALIBRATION_SHARED_EXPORT ZOpenCVStereoCameraCalibration : public ZMultiCameraCalibration
 {
 public:
-    explicit ZOpenCVStereoCameraCalibration(std::vector<ZCameraCalibration::Ptr> calibrations,
+    explicit ZOpenCVStereoCameraCalibration(std::vector<ZCameraCalibrationPtr> calibrations,
                                             std::vector<std::vector<cv::Point3f>> objectPoints,
                                             std::vector<std::vector<std::vector<cv::Point2f>>> imagePoints,
                                             cv::Mat cameraMatrix[2],

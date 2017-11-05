@@ -20,8 +20,14 @@
 
 #include "zstructuredlightsystem.h"
 
+#include "zcameraacquisitionmanager.h"
+#include "zdecodedpattern.h"
 #include "zimageviewer.h"
+#include "zpatternprojection.h"
 
+#include <opencv2/core.hpp>
+
+#include <QDebug>
 #include <QTimer>
 
 namespace Z3D
@@ -58,12 +64,12 @@ bool ZStructuredLightSystem::start()
         return false;
     }
 
-    QTimer::singleShot(0, m_patternProjection, &ZPatternProjection::beginScan);
+    QTimer::singleShot(0, m_patternProjection.get(), &ZPatternProjection::beginScan);
 
     return true;
 }
 
-void ZStructuredLightSystem::setAcquisitionManager(ZCameraAcquisitionManager *acquisitionManager)
+void ZStructuredLightSystem::setAcquisitionManager(ZCameraAcquisitionManagerPtr acquisitionManager)
 {
     if (m_acqManager == acquisitionManager) {
         return;
@@ -76,7 +82,7 @@ void ZStructuredLightSystem::setAcquisitionManager(ZCameraAcquisitionManager *ac
     setupConnections();
 }
 
-void ZStructuredLightSystem::setPatternProjection(ZPatternProjection *patternProjection)
+void ZStructuredLightSystem::setPatternProjection(ZPatternProjectionPtr patternProjection)
 {
     if (m_patternProjection == patternProjection) {
         return;
@@ -109,7 +115,7 @@ void ZStructuredLightSystem::setDebugShowDecodedImages(bool debugShowDecodedImag
     emit debugShowDecodedImagesChanged(debugShowDecodedImages);
 }
 
-void ZStructuredLightSystem::onPatternsDecodedDebug(std::vector<ZDecodedPattern::Ptr> patterns)
+void ZStructuredLightSystem::onPatternsDecodedDebug(std::vector<ZDecodedPatternPtr> patterns)
 {
     if (!m_debugShowDecodedImages) {
         return;
@@ -179,21 +185,21 @@ void ZStructuredLightSystem::setupConnections()
         return;
     }
 
-    connect(m_patternProjection, &ZPatternProjection::prepareAcquisition,
-            m_acqManager, &ZCameraAcquisitionManager::prepareAcquisition);
-    connect(m_patternProjection, &ZPatternProjection::acquireSingle,
-            m_acqManager, &ZCameraAcquisitionManager::acquireSingle);
-    connect(m_patternProjection, &ZPatternProjection::finishAcquisition,
-            m_acqManager, &ZCameraAcquisitionManager::finishAcquisition);
+    connect(m_patternProjection.get(), &ZPatternProjection::prepareAcquisition,
+            m_acqManager.get(), &ZCameraAcquisitionManager::prepareAcquisition);
+    connect(m_patternProjection.get(), &ZPatternProjection::acquireSingle,
+            m_acqManager.get(), &ZCameraAcquisitionManager::acquireSingle);
+    connect(m_patternProjection.get(), &ZPatternProjection::finishAcquisition,
+            m_acqManager.get(), &ZCameraAcquisitionManager::finishAcquisition);
 
-    connect(m_acqManager, &ZCameraAcquisitionManager::acquisitionFinished,
-            m_patternProjection, &ZPatternProjection::processImages);
+    connect(m_acqManager.get(), &ZCameraAcquisitionManager::acquisitionFinished,
+            m_patternProjection.get(), &ZPatternProjection::processImages);
 
-    connect(m_patternProjection, &ZPatternProjection::patternProjected,
+    connect(m_patternProjection.get(), &ZPatternProjection::patternProjected,
             this, &ZStructuredLightSystem::onPatternProjected);
-    connect(m_patternProjection, &ZPatternProjection::patternsDecoded,
+    connect(m_patternProjection.get(), &ZPatternProjection::patternsDecoded,
             this, &ZStructuredLightSystem::onPatternsDecodedDebug);
-    connect(m_patternProjection, &ZPatternProjection::patternsDecoded,
+    connect(m_patternProjection.get(), &ZPatternProjection::patternsDecoded,
             this, &ZStructuredLightSystem::onPatternsDecoded);
 }
 
@@ -203,21 +209,21 @@ void ZStructuredLightSystem::discardConnections()
         return;
     }
 
-    disconnect(m_patternProjection, &ZPatternProjection::prepareAcquisition,
-               m_acqManager, &ZCameraAcquisitionManager::prepareAcquisition);
-    disconnect(m_patternProjection, &ZPatternProjection::acquireSingle,
-               m_acqManager, &ZCameraAcquisitionManager::acquireSingle);
-    disconnect(m_patternProjection, &ZPatternProjection::finishAcquisition,
-               m_acqManager, &ZCameraAcquisitionManager::finishAcquisition);
+    disconnect(m_patternProjection.get(), &ZPatternProjection::prepareAcquisition,
+               m_acqManager.get(), &ZCameraAcquisitionManager::prepareAcquisition);
+    disconnect(m_patternProjection.get(), &ZPatternProjection::acquireSingle,
+               m_acqManager.get(), &ZCameraAcquisitionManager::acquireSingle);
+    disconnect(m_patternProjection.get(), &ZPatternProjection::finishAcquisition,
+               m_acqManager.get(), &ZCameraAcquisitionManager::finishAcquisition);
 
-    disconnect(m_acqManager, &ZCameraAcquisitionManager::acquisitionFinished,
-               m_patternProjection, &ZPatternProjection::processImages);
+    disconnect(m_acqManager.get(), &ZCameraAcquisitionManager::acquisitionFinished,
+               m_patternProjection.get(), &ZPatternProjection::processImages);
 
-    disconnect(m_patternProjection, &ZPatternProjection::patternProjected,
+    disconnect(m_patternProjection.get(), &ZPatternProjection::patternProjected,
             this, &ZStructuredLightSystem::onPatternProjected);
-    disconnect(m_patternProjection, &ZPatternProjection::patternsDecoded,
+    disconnect(m_patternProjection.get(), &ZPatternProjection::patternsDecoded,
                this, &ZStructuredLightSystem::onPatternsDecodedDebug);
-    disconnect(m_patternProjection, &ZPatternProjection::patternsDecoded,
+    disconnect(m_patternProjection.get(), &ZPatternProjection::patternsDecoded,
                this, &ZStructuredLightSystem::onPatternsDecoded);
 }
 

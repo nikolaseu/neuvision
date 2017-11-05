@@ -2,28 +2,27 @@ include(../../../../NEUVision.pri)
 
 TEMPLATE      = lib
 CONFIG       += plugin
-greaterThan(QT_MAJOR_VERSION, 4) {
-    QT -= gui
-    QT += widgets concurrent
-}
+QT           -= gui
+QT           += widgets concurrent
 TARGET        = $$qtLibraryTarget(zslstereoplugin)
 DESTDIR       = $$Z3D_BUILD_DIR/plugins/structuredlight
 VERSION       = $$Z3D_VERSION
+
 HEADERS       = \
-    zstereosls.h \
-    zstereosystemimpl.h \
-    zstereoslsplugin.h \
-    zsinglecamerastereosls.h \
     zdualcamerastereosls.h \
-    zdualcamerastereoslsconfigwidget.h
+    zdualcamerastereoslsconfigwidget.h \
+    zsinglecamerastereosls.h \
+    zstereosls.h \
+    zstereoslsplugin.h \
+    zstereosystemimpl.h \
 
 SOURCES       = \
-    zstereosls.cpp \
-    zstereosystemimpl.cpp \
-    zstereoslsplugin.cpp \
-    zsinglecamerastereosls.cpp \
     zdualcamerastereosls.cpp \
-    zdualcamerastereoslsconfigwidget.cpp
+    zdualcamerastereoslsconfigwidget.cpp \
+    zsinglecamerastereosls.cpp \
+    zstereosls.cpp \
+    zstereoslsplugin.cpp \
+    zstereosystemimpl.cpp \
 
 FORMS        += \
     zdualcamerastereoslsconfigwidget.ui

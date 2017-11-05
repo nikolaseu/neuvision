@@ -19,7 +19,7 @@
 
 #pragma once
 
-#include <QtCore/qglobal.h>
+#include <QtCore/QtGlobal>
 
 #if defined(Z3D_GUI_LIBRARY)
 #  define Z3D_GUI_SHARED_EXPORT Q_DECL_EXPORT

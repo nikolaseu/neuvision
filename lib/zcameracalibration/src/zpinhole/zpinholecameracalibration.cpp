@@ -20,8 +20,8 @@
 
 #include "zpinholecameracalibration.h"
 
-#include <opencv2/imgproc/imgproc.hpp> // undistortPoints
-#include <opencv2/calib3d/calib3d.hpp> // rodrigues, solvePnP
+#include <opencv2/imgproc.hpp> // undistortPoints
+#include <opencv2/calib3d.hpp> // rodrigues, solvePnP
 
 #include <iostream>
 
@@ -34,21 +34,15 @@
 namespace Z3D
 {
 
+const QLatin1String PINHOLE_CALIB_NAME("Pinhole");
+
 ZPinholeCameraCalibration::ZPinholeCameraCalibration()
     : ZCameraCalibration(ZCameraCalibration::CentralCameraType)
 {
     m_cvCameraMatrix.create(3, 3, CV_64F);
 
-#if defined(CV_VERSION_EPOCH) && CV_VERSION_EPOCH < 3
-    /// In OpenCV < 3, when using rational model, max size is (1x8)
-    m_cvDistortionCoeffs.create(1, 8, CV_64F);
-#else
     /// In OpenCV 3, when using rational model, max size seems to be (1x12)
     m_cvDistortionCoeffs.create(1, 12, CV_64F);
-#endif
-
-    //m_cvCameraMatrix = cv::Mat::zeros(3, 3, CV_64F);
-    //m_cvDistortionCoeffs = cv::Mat::zeros(1, 12, CV_64F);
 
     for (int r=0; r<m_cvDistortionCoeffs.rows; ++r) {
         for (int c=0; c<m_cvDistortionCoeffs.cols; ++c) {
@@ -56,11 +50,11 @@ ZPinholeCameraCalibration::ZPinholeCameraCalibration()
         }
     }
 
-    QObject::connect(this, SIGNAL(calibrationChanged()),
-                     this, SIGNAL(pinholeCalibrationChanged()));
+    QObject::connect(this, &ZPinholeCameraCalibration::calibrationChanged,
+                     this, &ZPinholeCameraCalibration::pinholeCalibrationChanged);
 
-    QObject::connect(this, SIGNAL(calibrationChanged()),
-                     this, SLOT(onCalibrationChanged()));
+    QObject::connect(this, &ZPinholeCameraCalibration::calibrationChanged,
+                     this, &ZPinholeCameraCalibration::onCalibrationChanged);
 }
 
 ZPinholeCameraCalibration::ZPinholeCameraCalibration(cv::Mat cameraMatrix, cv::Mat distCoeffs, cv::Size imageSize)
@@ -96,11 +90,11 @@ ZPinholeCameraCalibration::ZPinholeCameraCalibration(cv::Mat cameraMatrix, cv::M
         }
     }
 
-    QObject::connect(this, SIGNAL(calibrationChanged()),
-                     this, SIGNAL(pinholeCalibrationChanged()));
+    QObject::connect(this, &ZPinholeCameraCalibration::calibrationChanged,
+                     this, &ZPinholeCameraCalibration::pinholeCalibrationChanged);
 
-    QObject::connect(this, SIGNAL(calibrationChanged()),
-                     this, SLOT(onCalibrationChanged()));
+    QObject::connect(this, &ZPinholeCameraCalibration::calibrationChanged,
+                     this, &ZPinholeCameraCalibration::onCalibrationChanged);
 
     emit calibrationChanged();
 }
@@ -115,10 +109,9 @@ ZPinholeCameraCalibration::ZPinholeCameraCalibration(int imageWidth, int imageHe
     m_cvDistortionCoeffs = cv::Mat::zeros(1, 12, CV_64F);
 }
 
-ZCameraCalibration::Ptr ZPinholeCameraCalibration::clone() const
+ZCameraCalibrationPtr ZPinholeCameraCalibration::clone() const
 {
-    ZCameraCalibration::Ptr clon(new ZPinholeCameraCalibration(m_cvCameraMatrix.clone(), m_cvDistortionCoeffs.clone(), cv::Size(m_sensorWidth, m_sensorHeight)));
-    return clon;
+    return ZCameraCalibrationPtr(new ZPinholeCameraCalibration(m_cvCameraMatrix.clone(), m_cvDistortionCoeffs.clone(), cv::Size(m_sensorWidth, m_sensorHeight)));
 }
 
 bool ZPinholeCameraCalibration::getCalibratedPixel(int x, int y, float *calibratedX, float *calibratedY)

@@ -21,8 +21,8 @@
 
 #include "zcamerainterface_p.h"
 
-#include "pylon/PylonIncludes.h"
-#include "pylon/usb/BaslerUsbInstantCamera.h"
+#include <pylon/PylonIncludes.h>
+#include <pylon/usb/BaslerUsbInstantCamera.h>
 
 #include <vector>
 
@@ -61,7 +61,7 @@ private:
     Pylon::CBaslerUsbInstantCamera m_camera;
     BaslerImageHandler* m_image_handler;
 
-    std::vector<ZImageGrayscale::Ptr> m_imagesBuffer;
+    std::vector<ZCameraImagePtr> m_imagesBuffer;
     int m_currentImageBufferIndex;
 
     int m_acquisitionCounter;

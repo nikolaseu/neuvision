@@ -19,27 +19,21 @@
 
 #pragma once
 
+#include "zcameracalibrationplugininterface.h"
+
 #include <QObject>
 #include <QVariantMap>
-
-#include "zcameracalibrationplugininterface.h"
 
 namespace Z3D
 {
 
-class ZPinholeCameraCalibrationPlugin : public ZCameraCalibrationPluginInterface
+class ZPinholeCameraCalibrationPlugin : public QObject, public ZCameraCalibrationPluginInterface
 {
     Q_OBJECT
 
-    // ZCorePlugin interface
-public:
-    QString id() const override;
-    QString name() const override;
-    QString version() const override;
-
     // ZCameraCalibrationPluginInterface interface
 public:
-    ZCameraCalibration::Ptr getCalibration(QVariantMap options) override;
+    ZCameraCalibrationPtr getCalibration(QVariantMap options) override;
     QList<ZCameraCalibrator *> getCameraCalibrators() override;
     QWidget *getConfigWidget(ZCameraCalibrator *cameraCalibrator) override;
     QList<ZMultiCameraCalibrator *> getMultiCameraCalibrators() override;

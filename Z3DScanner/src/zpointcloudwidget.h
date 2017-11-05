@@ -38,15 +38,15 @@
 **
 ****************************************************************************/
 
-#ifndef ZPOINTCLOUDWIDGET_H
-#define ZPOINTCLOUDWIDGET_H
+#pragma once
+
+#include "zpointclouddata.h"
 
 #include <QOpenGLWidget>
 #include <QOpenGLFunctions>
 #include <QOpenGLVertexArrayObject>
 #include <QOpenGLBuffer>
 #include <QMatrix4x4>
-#include "zpointclouddata.h"
 
 QT_FORWARD_DECLARE_CLASS(QOpenGLShaderProgram)
 
@@ -115,5 +115,3 @@ private:
     QMatrix4x4 m_camera;
     QMatrix4x4 m_world;
 };
-
-#endif // ZPOINTCLOUDWIDGET_H

@@ -17,16 +17,14 @@
  * along with Z3D.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef Z3D_CAMERAACQUISITION_PLUGIN___ZLUCAMPLUGIN_H
-#define Z3D_CAMERAACQUISITION_PLUGIN___ZLUCAMPLUGIN_H
+#pragma once
 
-#include "zcamerainterface.h"
 #include "zcameraplugininterface.h"
 
 namespace Z3D
 {
 
-class ZLuCamPlugin : public ZCameraPluginInterface
+class ZLuCamPlugin : public QObject, public ZCameraPluginInterface
 {
     Q_OBJECT
     Q_PLUGIN_METADATA(IID "z3d.cameraacquisition.cameraplugininterface" FILE "zlucam.json")
@@ -35,14 +33,12 @@ class ZLuCamPlugin : public ZCameraPluginInterface
 public:
     /// plugin information
     QString id() const override;
-    QString name() const override;
+    QString displayName() const override;
     QString version() const override;
 
     /// camera utilities
     QList<ZCameraInfo *> getConnectedCameras() override;
-    ZCameraInterface::Ptr getCamera(QVariantMap options) override;
+    ZCameraPtr getCamera(QVariantMap options) override;
 };
 
 } // namespace Z3D
-
-#endif // Z3D_CAMERAACQUISITION_PLUGIN___ZLUCAMPLUGIN_H

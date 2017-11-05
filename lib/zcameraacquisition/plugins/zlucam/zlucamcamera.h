@@ -17,8 +17,7 @@
  * along with Z3D.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef Z3D_CAMERAACQUISITION_PLUGIN___LUCAMCAMERA_H
-#define Z3D_CAMERAACQUISITION_PLUGIN___LUCAMCAMERA_H
+#pragma once
 
 #include "zcamerainterface_p.h"
 
@@ -35,8 +34,8 @@ class LuCamCamera : public ZCameraBase
     Q_OBJECT
 
 public:
-    static QList<ZCameraInterface::Ptr> getConnectedCameras();
-    static ZCameraInterface::Ptr getCameraByName(QString name);
+    static QList<ZCameraPtr> getConnectedCameras();
+    static ZCameraPtr getCameraByName(QString name);
 
     explicit LuCamCamera(HANDLE cameraHandle, QObject *parent = nullptr);
     ~LuCamCamera();
@@ -68,7 +67,7 @@ private:
 
     LUCAM_VERSION m_lucamVersion;
 
-    std::vector<ZImageGrayscale::Ptr> m_imagesBuffer;
+    std::vector<ZCameraImagePtr> m_imagesBuffer;
     int m_currentImageBufferIndex;
 
     int m_acquisitionCounter;
@@ -76,5 +75,3 @@ private:
 };
 
 } // namespace Z3D
-
-#endif // Z3D_CAMERAACQUISITION_PLUGIN___LUCAMCAMERA_H

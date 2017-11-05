@@ -17,8 +17,7 @@
  * along with Z3D.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef Z3D_CAMERAACQUISITION_PLUGIN___ZPLEORAEBUSCAMERA_H
-#define Z3D_CAMERAACQUISITION_PLUGIN___ZPLEORAEBUSCAMERA_H
+#pragma once
 
 #include "zcamerainterface_p.h"
 
@@ -32,7 +31,7 @@ class ZPleoraeBUSCamera : public ZCameraBase
     Q_OBJECT
 
 public:
-    static ZCameraInterface::Ptr getCameraByMAC(QString name);
+    static ZCameraPtr getCameraByMAC(QString name);
 
     explicit ZPleoraeBUSCamera(QObject *parent = nullptr);
     virtual ~ZPleoraeBUSCamera();
@@ -56,5 +55,3 @@ private:
 };
 
 } // namespace Z3D
-
-#endif // Z3D_CAMERAACQUISITION_PLUGIN___ZPLEORAEBUSCAMERA_H

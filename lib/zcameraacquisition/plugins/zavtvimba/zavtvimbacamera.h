@@ -17,8 +17,7 @@
  * along with Z3D.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef Z3D_CAMERAACQUISITION_PLUGIN___AVTVIMBACAMERA_H
-#define Z3D_CAMERAACQUISITION_PLUGIN___AVTVIMBACAMERA_H
+#pragma once
 
 #include "zcamerainterface_p.h"
 
@@ -130,5 +129,3 @@ private:
 };
 
 } // namespace Z3D
-
-#endif // Z3D_CAMERAACQUISITION_PLUGIN___AVTVIMBACAMERA_H

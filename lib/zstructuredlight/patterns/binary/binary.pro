@@ -2,30 +2,30 @@ include(../../../../NEUVision.pri)
 
 TEMPLATE      = lib
 CONFIG       += plugin
-greaterThan(QT_MAJOR_VERSION, 4) {
-    QT -= gui
-    QT += widgets quick
-}
+QT           -= gui
+QT           += widgets quick
 TARGET        = $$qtLibraryTarget(zbinaryprojectionplugin)
 DESTDIR       = $$Z3D_BUILD_DIR/plugins/structuredlightpatterns
 VERSION       = $$Z3D_VERSION
+
 HEADERS       = \
     zbinarypatterndecoder.h \
     zbinarypatternprojection.h \
     zbinarypatternprojectionconfigwidget.h \
-    zbinarypatternprojectionplugin.h
+    zbinarypatternprojectionplugin.h \
 
 SOURCES       = \
     zbinarypatterndecoder.cpp \
     zbinarypatternprojection.cpp \
     zbinarypatternprojectionconfigwidget.cpp \
-    zbinarypatternprojectionplugin.cpp
+    zbinarypatternprojectionplugin.cpp \
 
 FORMS        += \
     zbinarypatternprojectionconfigwidget.ui
 
 RESOURCES    += \
     resources.qrc
+
 
 
 ###############################################################################

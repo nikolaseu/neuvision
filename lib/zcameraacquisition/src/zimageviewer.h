@@ -19,8 +19,10 @@
 
 #pragma once
 
+#include "zcameraacquisition_fwd.h"
 #include "zcameraacquisition_global.h"
-#include "zcameraimage.h"
+
+#include <opencv2/core/mat.hpp>
 
 #include <QGraphicsView>
 
@@ -40,7 +42,7 @@ public:
     ~ZImageViewer();
 
 public slots:
-    void updateImage(Z3D::ZImageGrayscale::Ptr image);
+    void updateImage(Z3D::ZCameraImagePtr image);
     void updateImage(cv::Mat image);
     void updateImage(QImage image);
 

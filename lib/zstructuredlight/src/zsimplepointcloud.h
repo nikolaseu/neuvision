@@ -19,8 +19,10 @@
 
 #pragma once
 
+#include "zstructuredlight_fwd.h"
 #include "zstructuredlight_global.h"
-#include "opencv2/core/types.hpp"
+
+#include <opencv2/core/matx.hpp>
 
 #include <QObject>
 
@@ -34,7 +36,6 @@ class Z3D_STRUCTUREDLIGHT_SHARED_EXPORT ZSimplePointCloud : public QObject
 public:
     typedef cv::Vec4f PointType;
     typedef std::vector<PointType> PointVector;
-    typedef std::shared_ptr<Z3D::ZSimplePointCloud> Ptr;
 
     explicit ZSimplePointCloud(QObject *parent = nullptr);
 

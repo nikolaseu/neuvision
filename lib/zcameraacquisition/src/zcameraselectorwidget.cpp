@@ -23,6 +23,7 @@
 
 #include "zcameraprovider.h"
 #include "zcameraplugininterface.h"
+#include "zcamerainfo.h"
 
 namespace Z3D
 {
@@ -34,20 +35,20 @@ ZCameraSelectorWidget::ZCameraSelectorWidget(QWidget *parent)
 {
     ui->setupUi(this);
 
-    m_pluginList = Z3D::ZCameraProvider::availablePlugins();
+    m_pluginList = ZCameraProvider::availablePlugins();
 
-    foreach (Z3D::ZCameraPluginInterface *plugin, m_pluginList) {
-        ui->pluginsComboBox->addItem(plugin->name());
+    for (auto *plugin : m_pluginList) {
+        ui->pluginsComboBox->addItem(plugin->displayName());
     }
 
-    QObject::connect(this, SIGNAL(cameraSelected(Z3D::ZCameraInterface::Ptr)),
-                     ui->cameraPreview, SLOT(setCamera(Z3D::ZCameraInterface::Ptr)));
+    QObject::connect(this, &ZCameraSelectorWidget::cameraSelected,
+                     ui->cameraPreview, &ZCameraPreviewer::setCamera);
 
-    QObject::connect(ui->pluginsComboBox, SIGNAL(currentIndexChanged(int)),
-                     this, SLOT(onPluginIndexChanged(int)));
+    QObject::connect(ui->pluginsComboBox, static_cast<void(QComboBox::*)(int)>(&QComboBox::currentIndexChanged),
+                     this, &ZCameraSelectorWidget::onPluginIndexChanged);
 
-    QObject::connect(ui->cameraListWidget, SIGNAL(currentRowChanged(int)),
-                     this, SLOT(onCameraIndexChanged(int)));
+    QObject::connect(ui->cameraListWidget, &QListWidget::currentRowChanged,
+                     this, &ZCameraSelectorWidget::onCameraIndexChanged);
 }
 
 ZCameraSelectorWidget::~ZCameraSelectorWidget()
@@ -63,8 +64,9 @@ void ZCameraSelectorWidget::onPluginIndexChanged(int index)
 
     m_currentCameraList = plugin->getConnectedCameras();
 
-    foreach (Z3D::ZCameraInfo *cameraInfo, m_currentCameraList)
+    for (const Z3D::ZCameraInfo *cameraInfo : m_currentCameraList) {
         ui->cameraListWidget->addItem(cameraInfo->name());
+    }
 }
 
 void ZCameraSelectorWidget::onCameraIndexChanged(int index)
@@ -72,7 +74,7 @@ void ZCameraSelectorWidget::onCameraIndexChanged(int index)
     if (index >= 0 && index < m_currentCameraList.size()) {
         m_selectedCamera = m_currentCameraList[index]->getCamera();
     } else {
-        m_selectedCamera = Z3D::ZCameraInterface::Ptr(nullptr);
+        m_selectedCamera = nullptr;
     }
 
     emit cameraSelected(m_selectedCamera);

@@ -20,17 +20,19 @@
 
 #include "zcalibratedcamera.h"
 
+#include "zcalibratedcamera_fwd.h"
+
 #include <QDebug>
 #include <QMetaType>
 
 namespace Z3D
 {
 
-static int z3dCalibratedCameraListPtrTypeId = qRegisterMetaType< QList<Z3D::ZCalibratedCamera::Ptr> >("QList<Z3D::ZCalibratedCamera::Ptr>");
+static int z3dCalibratedCameraListPtrTypeId = qRegisterMetaType< QList<Z3D::ZCalibratedCameraPtr> >("QList<Z3D::ZCalibratedCameraPtr>");
 
-ZCalibratedCamera::ZCalibratedCamera(ZCameraInterface::Ptr camera, ZCameraCalibration::Ptr cameraCalibration) :
-    m_camera(camera),
-    m_cameraCalibration(cameraCalibration)
+ZCalibratedCamera::ZCalibratedCamera(ZCameraPtr camera, ZCameraCalibrationPtr cameraCalibration)
+    : m_camera(camera)
+    , m_cameraCalibration(cameraCalibration)
 {
 
 }
@@ -40,7 +42,7 @@ ZCalibratedCamera::~ZCalibratedCamera()
 //    qDebug() << Q_FUNC_INFO;
 }
 
-void ZCalibratedCamera::setCalibration(ZCameraCalibration::Ptr newCalibration)
+void ZCalibratedCamera::setCalibration(ZCameraCalibrationPtr newCalibration)
 {
     if (m_cameraCalibration == newCalibration)
         return;

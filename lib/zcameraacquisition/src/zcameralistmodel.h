@@ -19,8 +19,8 @@
 
 #pragma once
 
+#include "zcameraacquisition_fwd.h"
 #include "zcameraacquisition_global.h"
-#include "zcamerainterface.h"
 
 #include <QAbstractListModel>
 
@@ -47,13 +47,13 @@ public:
 signals:
 
 public slots:
-    void add(ZCameraInterface *camera);
+    void add(ZCameraPtr camera);
 
 protected slots:
     void onCameraDeleted(QObject *object);
 
 protected:
-    QList<Z3D::ZCameraInterface*> m_cameraList;
+    ZCameraList m_cameraList;
 };
 
 } // namespace Z3D

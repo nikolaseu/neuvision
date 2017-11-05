@@ -19,13 +19,13 @@
 
 #pragma once
 
+#include "zcameraacquisition_fwd.h"
 #include "zcameraacquisition_global.h"
-#include "zcamerainterface.h"
+
+#include "zwidget.h"
 
 #include <QtProperty>
 #include <QtStringPropertyManager>
-
-#include "zwidget.h"
 
 namespace Z3D
 {
@@ -39,7 +39,7 @@ class Z3D_CAMERAACQUISITION_SHARED_EXPORT ZCameraSettingsWidget : public ZWidget
     Q_OBJECT
 
 public:
-    explicit ZCameraSettingsWidget(ZCameraInterface::WeakPtr camera, QWidget *parent = nullptr);
+    explicit ZCameraSettingsWidget(ZCameraWeakPtr camera, QWidget *parent = nullptr);
     ~ZCameraSettingsWidget();
 
 protected slots:
@@ -51,7 +51,7 @@ protected slots:
 private:
     Ui::ZCameraSettingsWidget *ui;
 
-    ZCameraInterface::WeakPtr m_camera;
+    ZCameraWeakPtr m_camera;
 
     QMap<QString, QtProperty*> m_propertiesList;
 

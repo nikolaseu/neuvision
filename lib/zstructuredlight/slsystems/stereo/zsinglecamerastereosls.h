@@ -19,8 +19,9 @@
 
 #pragma once
 
-#include "zcalibratedcamera.h"
 #include "zstereosls.h"
+
+#include <Z3DCalibratedCamera>
 
 namespace Z3D
 {
@@ -36,11 +37,11 @@ public:
 private:
     void processPatterns();
 
-    ZCalibratedCamera::Ptr camera;
-    ZCameraCalibration::Ptr projectorCalibration;
+    ZCalibratedCameraPtr camera;
+    ZCameraCalibrationPtr projectorCalibration;
 
-    ZProjectedPattern::Ptr projectedPattern;
-    std::vector<ZDecodedPattern::Ptr> decodedPatterns;
+    ZProjectedPatternPtr projectedPattern;
+    std::vector<ZDecodedPatternPtr> decodedPatterns;
 
     // ZStructuredLightSystem interface
 public:
@@ -50,8 +51,8 @@ public:
     virtual void init(QSettings *settings) override;
 
 protected slots:
-    virtual void onPatternProjected(ZProjectedPattern::Ptr pattern) override;
-    virtual void onPatternsDecoded(std::vector<ZDecodedPattern::Ptr> patterns) override;
+    virtual void onPatternProjected(ZProjectedPatternPtr pattern) override;
+    virtual void onPatternsDecoded(std::vector<ZDecodedPatternPtr> patterns) override;
 };
 
 } // namespace Z3D

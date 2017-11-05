@@ -17,7 +17,7 @@ win32: {
         SUBDIRS  += zavtvimba
         SUBDIRS  += zflycapture2
         SUBDIRS  += zlucam
-        #SUBDIRS  += zniimaqdxgrab
+        SUBDIRS  += zniimaqdxgrab
         SUBDIRS  += zpleoraebus
     } else {
         ## Windows x64 (64bit) specific build here

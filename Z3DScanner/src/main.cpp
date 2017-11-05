@@ -20,14 +20,15 @@
 
 #include "ui/mainwindow.h"
 
+#include <QDebug>
 #include <QSplashScreen>
 #include <QSurfaceFormat>
 
 #include "zapplication.h"
 #include "zapplicationstyle.h"
-#include <Z3DCameraProvider>
-#include <Z3DCameraCalibrationProvider>
 #include "zcalibrationpatternfinderprovider.h"
+#include "zcameracalibrationprovider.h"
+#include "zcameraprovider.h"
 #include "zpatternprojectionprovider.h"
 #include "zstructuredlightsystemprovider.h"
 

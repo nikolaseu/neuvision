@@ -19,17 +19,12 @@
 
 #pragma once
 
+#include "zstructuredlight_fwd.h"
 #include "zstructuredlight_global.h"
-#include "zcameraacquisitionmanager.h"
-#include "zdecodedpattern.h"
-#include "zpatternprojection.h"
-#include "zsimplepointcloud.h"
 
 #include <QObject>
 
-QT_BEGIN_NAMESPACE
 class QSettings;
-QT_END_NAMESPACE
 
 namespace Z3D
 {
@@ -42,8 +37,6 @@ class Z3D_STRUCTUREDLIGHT_SHARED_EXPORT ZStructuredLightSystem : public QObject
     Q_PROPERTY(bool debugShowDecodedImages READ debugShowDecodedImages WRITE setDebugShowDecodedImages NOTIFY debugShowDecodedImagesChanged)
 
 public:
-    typedef std::shared_ptr<ZStructuredLightSystem> Ptr;
-
     explicit ZStructuredLightSystem(QObject *parent = nullptr);
     virtual ~ZStructuredLightSystem();
 
@@ -59,30 +52,30 @@ signals:
     void readyChanged(bool ready);
     void debugShowDecodedImagesChanged(bool debugShowDecodedImages);
 
-    void scanFinished(Z3D::ZSimplePointCloud::Ptr cloud);
+    void scanFinished(Z3D::ZSimplePointCloudPtr cloud);
 
 public slots:
     bool start();
 
-    virtual void setAcquisitionManager(Z3D::ZCameraAcquisitionManager *acquisitionManager);
-    virtual void setPatternProjection(Z3D::ZPatternProjection *patternProjection);
+    virtual void setAcquisitionManager(ZCameraAcquisitionManagerPtr acquisitionManager);
+    virtual void setPatternProjection(ZPatternProjectionPtr patternProjection);
 
     void setReady(bool ready);
     void setDebugShowDecodedImages(bool debugShowDecodedImages);
 
 protected slots:
-    virtual void onPatternProjected(Z3D::ZProjectedPattern::Ptr pattern) = 0;
-    virtual void onPatternsDecoded(std::vector<Z3D::ZDecodedPattern::Ptr> patterns) = 0;
+    virtual void onPatternProjected(Z3D::ZProjectedPatternPtr pattern) = 0;
+    virtual void onPatternsDecoded(std::vector<Z3D::ZDecodedPatternPtr> patterns) = 0;
 
 private slots:
-    void onPatternsDecodedDebug(std::vector<Z3D::ZDecodedPattern::Ptr> patterns);
+    void onPatternsDecodedDebug(std::vector<Z3D::ZDecodedPatternPtr> patterns);
 
 private:
     void setupConnections();
     void discardConnections();
 
-    QPointer<Z3D::ZCameraAcquisitionManager> m_acqManager;
-    QPointer<Z3D::ZPatternProjection> m_patternProjection;
+    ZCameraAcquisitionManagerPtr m_acqManager;
+    ZPatternProjectionPtr m_patternProjection;
 
     bool m_ready;
 

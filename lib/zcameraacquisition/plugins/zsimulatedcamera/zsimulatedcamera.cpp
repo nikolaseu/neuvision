@@ -20,6 +20,8 @@
 
 #include "zsimulatedcamera.h"
 
+#include "zcameraimage.h"
+
 #include <QDebug>
 #include <QTimer>
 
@@ -68,7 +70,7 @@ bool ZSimulatedCamera::startAcquisition()
         return false;
     }
 
-    QTimer::singleShot(100, this, SLOT(emitNewImage()));
+    QTimer::singleShot(100, this, &ZSimulatedCamera::emitNewImage);
 
     return true;
 }
@@ -120,20 +122,20 @@ void ZSimulatedCamera::loadImageFromFilename(QString fileName)
     if (!m_imageCache.contains(file)) {
         qDebug() << "image not found in cache:" << file;
         //! FIXME why is this so complicated?
-        ZImageGrayscale::Ptr* newImage = new ZImageGrayscale::Ptr(new ZImageGrayscale(file));
-        if (!newImage->get()->bufferSize()) {
+        auto newImage = ZCameraImage::fromFile(file);
+        if (!newImage) {
             qWarning() << "invalid image!" << fileName;
             return;
         }
 
-        //newImage->setNumber(m_currentImageNumber++);
+        auto *item = new CacheItem { newImage };
 
-        m_imageCache.insert(file, newImage, newImage->get()->bufferSize());
+        m_imageCache.insert(file, item, newImage->bufferSize());
     } else {
         //qDebug() << "image loaded from cache:" << file;
     }
 
-    ZImageGrayscale::Ptr newImage = *m_imageCache[file];
+    auto newImage = m_imageCache[file]->image;
     newImage->setNumber(m_currentImageNumber++);
 
     m_lastRetrievedImage->swap(newImage);
@@ -163,7 +165,7 @@ void ZSimulatedCamera::emitNewImage()
     if (isRunning()) {
         emit newImageReceived(*m_lastRetrievedImage);
 
-        QTimer::singleShot(100, this, SLOT(emitNewImage()));
+        QTimer::singleShot(100, this, &ZSimulatedCamera::emitNewImage);
     }
 }
 

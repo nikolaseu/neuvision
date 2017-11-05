@@ -7,16 +7,23 @@ QT           += opengl #gui #
 TARGET        = $$qtLibraryTarget(zpointcloud)
 DESTDIR       = $$Z3D_BUILD_DIR
 DEFINES      += Z3D_ZPOINTCLOUD_LIBRARY
+
 HEADERS      += \
+    Z3DPointCloud \
+    zcloudviewwindow.h \
     zpointcloud.h \
-    zpointcloud_typedefs.h \
+    zpointcloud_fwd.h \
     zpointcloud_global.h \
-    zcloudviewwindow.h
+    zpointcloud_typedefs.h \
+
 SOURCES      += \
+    zcloudviewwindow.cpp \
     zpointcloud.cpp \
-    zcloudviewwindow.cpp
+
 FORMS        += \
     zcloudviewwindow.ui
+
+
 
 ###############################################################################
 # Camera acquisition

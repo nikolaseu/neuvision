@@ -17,8 +17,7 @@
  * along with Z3D.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef MAINWINDOW_H
-#define MAINWINDOW_H
+#pragma once
 
 #include "zcamerainterface.h"
 
@@ -38,7 +37,7 @@ public:
     ~MainWindow();
 
 private slots:
-    void onCameraSelected(Z3D::ZCameraInterface::Ptr camera);
+    void onCameraSelected(Z3D::ZCameraPtr camera);
 
     void onContinueButtonClicked();
     void onFinishButtonClicked();
@@ -46,7 +45,5 @@ private slots:
 private:
     Ui::MainWindow *ui;
 
-    Z3D::ZCameraInterface::Ptr m_selectedCamera;
+    Z3D::ZCameraPtr m_selectedCamera;
 };
-
-#endif // MAINWINDOW_H

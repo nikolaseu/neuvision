@@ -23,25 +23,40 @@
 
 #include <QObject>
 
+class QPluginLoader;
+
 namespace Z3D
 {
 
-class Z3D_CORE_SHARED_EXPORT ZCorePlugin : public QObject
+class Z3D_CORE_SHARED_EXPORT ZCorePlugin
 {
-    Q_OBJECT
 
 public:
-    explicit ZCorePlugin(QObject *parent = nullptr);
-    virtual ~ZCorePlugin() {}
+    explicit ZCorePlugin(QString fileName);
+    virtual ~ZCorePlugin();
 
     /// plugin information
-    virtual QString id() const = 0;
-    virtual QString name() const = 0;
-    virtual QString version() const = 0;
+    QString id() const;
+    QString version() const;
+    QJsonObject metaData() const;
 
-signals:
+    /// Loads the plugin and returns true if the plugin was loaded successfully;
+    /// otherwise returns false
+    bool load();
 
-public slots:
+    /// Returns a text string with the description of the last error that occurred
+    QString errorString();
+
+    /// plugin instance
+    template <class ZPlugin>
+    ZPlugin *instance() const
+    {
+        return qobject_cast<ZPlugin *>(m_pluginInstance);
+    }
+
+private:
+    QPluginLoader *m_loader;
+    QObject *m_pluginInstance;
 };
 
 } // namespace Z3D

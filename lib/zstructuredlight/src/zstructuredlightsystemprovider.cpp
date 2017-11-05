@@ -20,6 +20,7 @@
 
 #include "zstructuredlightsystemprovider.h"
 
+#include "zcoreplugin.h"
 #include "zpluginloader.h"
 #include "zstructuredlightsystemplugin.h"
 
@@ -29,18 +30,17 @@
 namespace Z3D
 {
 
-QMap<QString, ZStructuredLightSystemPlugin *> ZStructuredLightSystemProvider::m_plugins;
+std::map<QString, ZStructuredLightSystemPlugin *> ZStructuredLightSystemProvider::m_plugins;
 
 void ZStructuredLightSystemProvider::loadPlugins()
 {
     auto list = ZPluginLoader::plugins("structuredlight");
 
-    for (auto pluginInstance : list) {
-        ZStructuredLightSystemPlugin *plugin = qobject_cast<ZStructuredLightSystemPlugin *>(pluginInstance);
+    for (auto pluginLoader : list) {
+        ZStructuredLightSystemPlugin *plugin = pluginLoader->instance<ZStructuredLightSystemPlugin>();
         if (plugin) {
-            qDebug() << "structured light system plugin loaded. type:" << plugin->id()
-                     << "version:" << plugin->version();
-            m_plugins.insert(plugin->id(), plugin);
+            qDebug() << "structured light system plugin loaded. type:" << pluginLoader->id();
+            m_plugins[pluginLoader->id()] = plugin;
         } else {
             qWarning() << "invalid structured light system plugin:" << plugin;
         }
@@ -52,24 +52,15 @@ void ZStructuredLightSystemProvider::unloadPlugins()
 
 }
 
-QList<QString> ZStructuredLightSystemProvider::getAll()
+ZStructuredLightSystemPtr ZStructuredLightSystemProvider::get(QSettings *settings)
 {
-    QList<QString> list;
-    for (auto plugin : m_plugins.values()) {
-        list << plugin->name();
-    }
-    return list;
-}
-
-ZStructuredLightSystem::Ptr ZStructuredLightSystemProvider::get(QSettings *settings)
-{
-    ZStructuredLightSystem::Ptr structuredLightSystem;
+    ZStructuredLightSystemPtr structuredLightSystem;
 
     settings->beginGroup("StructuredLightSystem");
     {
         const QString pluginId = settings->value("Type").toString();
-        if (m_plugins.contains(pluginId)) {
-            const auto plugin = m_plugins.value(pluginId);
+        if (m_plugins.find(pluginId) != m_plugins.end()) {
+            const auto plugin = m_plugins[pluginId];
             structuredLightSystem = plugin->get(settings);
         } else {
             qWarning() << "structured light type not found:" << pluginId;
@@ -80,10 +71,10 @@ ZStructuredLightSystem::Ptr ZStructuredLightSystemProvider::get(QSettings *setti
     return structuredLightSystem;
 }
 
-QWidget *ZStructuredLightSystemProvider::getConfigWidget(ZStructuredLightSystem::Ptr structuredLightSystem)
+QWidget *ZStructuredLightSystemProvider::getConfigWidget(ZStructuredLightSystemWeakPtr structuredLightSystem)
 {
-    for (auto *plugin : m_plugins) {
-        if (auto *widget = plugin->getConfigWidget(structuredLightSystem.get())) {
+    for (auto item : m_plugins) {
+        if (auto *widget = item.second->getConfigWidget(structuredLightSystem)) {
             return widget;
         }
     }

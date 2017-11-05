@@ -24,7 +24,7 @@
 
 #include <map>
 
-#include <opencv2/imgproc/imgproc.hpp>
+#include <opencv2/imgproc.hpp>
 
 #include <QDebug>
 

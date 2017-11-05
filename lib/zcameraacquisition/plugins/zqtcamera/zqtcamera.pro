@@ -25,3 +25,6 @@ include(../../zcameraacquisition.pri)
 ###############################################################################
 # OpenCV
 include($$PWD/../../../../3rdparty/opencv.pri)
+
+DISTFILES += \
+    zqtcamera.json

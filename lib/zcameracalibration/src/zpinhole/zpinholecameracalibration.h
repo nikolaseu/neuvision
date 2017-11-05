@@ -22,7 +22,7 @@
 #include "zcameracalibration_global.h"
 #include "zcameracalibration.h"
 
-#include "opencv2/core/core.hpp"
+#include <opencv2/core/mat.hpp>
 
 #include <QPointF>
 
@@ -59,7 +59,7 @@ public:
     explicit ZPinholeCameraCalibration(cv::Mat cameraMatrix, cv::Mat distortionCoeffs, cv::Size imageSize);
     explicit ZPinholeCameraCalibration(int imageWidth, int imageHeight);
 
-    ZCameraCalibration::Ptr clone() const override;
+    ZCameraCalibrationPtr clone() const override;
 
     bool getCalibratedPixel(int x, int y,
                             float *calibratedX, float *calibratedY) override;

@@ -40,8 +40,8 @@ public:
     virtual QString id() const override;
     virtual QString name() const override;
 
-    virtual ZMultiCameraCalibration::Ptr getCalibration(
-            std::vector<ZCameraCalibration::Ptr> &initialCameraCalibrations,
+    virtual ZMultiCameraCalibrationPtr getCalibration(
+            std::vector<ZCameraCalibrationPtr> &initialCameraCalibrations,
             std::vector<std::vector<std::vector<cv::Point2f> > > &imagePoints,
             std::vector<std::vector<cv::Point3f> > &objectPoints) const override;
 

@@ -19,23 +19,19 @@
 
 #pragma once
 
+#include "zstructuredlight_fwd.h"
 #include "zstructuredlight_global.h"
-#include "zcoreplugin.h"
 
 namespace Z3D
 {
 
-class ZPatternProjection;
-
-class Z3D_STRUCTUREDLIGHT_SHARED_EXPORT ZPatternProjectionPlugin : public ZCorePlugin
+class Z3D_STRUCTUREDLIGHT_SHARED_EXPORT ZPatternProjectionPlugin
 {
-    Q_OBJECT
-
 public:
     virtual ~ZPatternProjectionPlugin() {}
 
-    virtual QList<ZPatternProjection *> getAll() = 0;
-    virtual QWidget *getConfigWidget(ZPatternProjection* patternProjection) = 0;
+    virtual std::vector<ZPatternProjectionPtr> getAll() = 0;
+    virtual QWidget *getConfigWidget(ZPatternProjectionWeakPtr patternProjection) = 0;
 };
 
 } // namespace Z3D

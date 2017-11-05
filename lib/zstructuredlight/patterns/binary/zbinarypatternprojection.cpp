@@ -21,10 +21,11 @@
 #include "zbinarypatternprojection.h"
 
 #include "zbinarypatterndecoder.h"
+#include "zcameraimage.h"
+#include "zdecodedpattern.h"
+#include "zprojectedpattern.h"
 
-#include <Z3DCameraAcquisition>
-
-#include <opencv2/imgproc/imgproc.hpp>
+#include <opencv2/imgcodecs.hpp>
 
 #include <QCoreApplication>
 #include <QDateTime>
@@ -181,7 +182,7 @@ void ZBinaryPatternProjection::beginScan()
     }
     qDebug() << "pattern has" << fringePoints.size() << "fringes";
 
-    const Z3D::ZProjectedPattern::Ptr pattern(new Z3D::ZProjectedPattern(cv::Mat(), fringePoints));
+    const Z3D::ZProjectedPatternPtr pattern(new Z3D::ZProjectedPattern(cv::Mat(), fringePoints));
 
     /// notify possible listeners
     emit patternProjected(pattern);
@@ -190,7 +191,7 @@ void ZBinaryPatternProjection::beginScan()
     setPreviewEnabled(previewWasEnabled);
 }
 
-void ZBinaryPatternProjection::processImages(std::vector< std::vector<Z3D::ZImageGrayscale::Ptr> > acquiredImages, QString scanId)
+void ZBinaryPatternProjection::processImages(std::vector<std::vector<ZCameraImagePtr> > acquiredImages, QString scanId)
 {
     /// acquiredImages indexing
     ///     1st index: image number / order
@@ -222,7 +223,7 @@ void ZBinaryPatternProjection::processImages(std::vector< std::vector<Z3D::ZImag
     QTime decodeTime;
     decodeTime.start();
 
-    std::vector<Z3D::ZDecodedPattern::Ptr> decodedPatternList;
+    std::vector<Z3D::ZDecodedPatternPtr> decodedPatternList;
 
     for (unsigned int iCam=0; iCam<numCameras; ++iCam) {
         /// decode images
@@ -260,7 +261,7 @@ void ZBinaryPatternProjection::processImages(std::vector< std::vector<Z3D::ZImag
         std::map<int, std::vector<cv::Vec2f> > fringePoints;
         Z3D::ZBinaryPatternDecoder::simplifyBinaryPatternData(decoded, maskImg, fringePoints);
 
-        Z3D::ZDecodedPattern::Ptr decodedPattern(new Z3D::ZDecodedPattern(decoded, intensityImg, fringePoints));
+        Z3D::ZDecodedPatternPtr decodedPattern(new Z3D::ZDecodedPattern(decoded, intensityImg, fringePoints));
         decodedPatternList.push_back(decodedPattern);
     }
 

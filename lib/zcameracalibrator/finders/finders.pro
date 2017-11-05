@@ -1,5 +1,5 @@
 TEMPLATE  = subdirs
 
-SUBDIRS += zopencvstandard
-SUBDIRS += zincompletecirclegrid
-SUBDIRS += zringgrid
+SUBDIRS  += zopencvstandard
+SUBDIRS  += zincompletecirclegrid
+SUBDIRS  += zringgrid

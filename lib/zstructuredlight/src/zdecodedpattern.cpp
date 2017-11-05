@@ -20,12 +20,14 @@
 
 #include "zdecodedpattern.h"
 
+#include "zstructuredlight_fwd.h"
+
 #include <QMetaType>
 
 namespace Z3D
 {
 
-static int z3dDecodedPatternPtrTypeId = qRegisterMetaType<Z3D::ZDecodedPattern::Ptr>("Z3D::DecodedPattern::Ptr");
+static int z3dDecodedPatternPtrTypeId = qRegisterMetaType<Z3D::ZDecodedPatternPtr>("Z3D::ZDecodedPatternPtr");
 
 ZDecodedPattern::ZDecodedPattern(cv::Mat decodedImage,
                                  cv::Mat intensityImg,

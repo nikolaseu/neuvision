@@ -17,8 +17,7 @@
  * along with Z3D.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef Z3D_CAMERAACQUISITION_PLUGIN___FLYCAPTURE2CAMERA_H
-#define Z3D_CAMERAACQUISITION_PLUGIN___FLYCAPTURE2CAMERA_H
+#pragma once
 
 #include "zcamerainterface_p.h"
 
@@ -33,8 +32,8 @@ class ZFlyCapture2Camera : public ZCameraBase
     Q_OBJECT
 
 public:
-    static QList<ZCameraInterface::Ptr> getConnectedCameras();
-    static ZCameraInterface::Ptr getCameraByName(QString name);
+    static QList<ZCameraPtr> getConnectedCameras();
+    static ZCameraPtr getCameraByName(QString name);
 
     ~ZFlyCapture2Camera();
     
@@ -75,5 +74,3 @@ public:
 };
 
 } // namespace Z3D
-
-#endif // Z3D_CAMERAACQUISITION_PLUGIN___FLYCAPTURE2CAMERA_H

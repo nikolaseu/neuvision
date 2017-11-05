@@ -1,40 +1,41 @@
 include(../../../NEUVision.pri)
 
 TEMPLATE      = lib
-greaterThan(QT_MAJOR_VERSION, 4) {
-    QT -= gui
-    QT += widgets quick concurrent
-}
+QT           -= gui
+QT           += widgets quick concurrent
 TARGET        = $$qtLibraryTarget(zstructuredlight)
 DESTDIR       = $$Z3D_BUILD_DIR
 VERSION       = $$Z3D_VERSION
 DEFINES      += Z3D_STRUCTUREDLIGHT_LIBRARY
-SOURCES += \
-    zpatternprojectionprovider.cpp \
-    zcameraacquisitionmanager.cpp \
-    zdecodedpattern.cpp \
-    zgeometryutils.cpp \
-    zpatternprojection.cpp \
-    zsimplepointcloud.cpp \
-    zstructuredlightsystem.cpp \
-    zstructuredlightsystemprovider.cpp \
-    zprojectedpattern.cpp \
-    zstructuredlightpattern.cpp
 
 HEADERS += \
-    zpatternprojectionprovider.h \
-    zstructuredlight_global.h \
+    Z3DStructuredLight \
     zcameraacquisitionmanager.h \
     zdecodedpattern.h \
     zgeometryutils.h \
     zpatternprojection.h \
-    zsimplepointcloud.h \
-    zstructuredlightsystem.h \
     zpatternprojectionplugin.h \
+    zpatternprojectionprovider.h \
+    zprojectedpattern.h \
+    zsimplepointcloud.h \
+    zstructuredlight_fwd.h \
+    zstructuredlight_global.h \
+    zstructuredlightpattern.h \
+    zstructuredlightsystem.h \
     zstructuredlightsystemplugin.h \
     zstructuredlightsystemprovider.h \
-    zprojectedpattern.h \
-    zstructuredlightpattern.h
+
+SOURCES += \
+    zcameraacquisitionmanager.cpp \
+    zdecodedpattern.cpp \
+    zgeometryutils.cpp \
+    zpatternprojection.cpp \
+    zpatternprojectionprovider.cpp \
+    zprojectedpattern.cpp \
+    zsimplepointcloud.cpp \
+    zstructuredlightpattern.cpp \
+    zstructuredlightsystem.cpp \
+    zstructuredlightsystemprovider.cpp \
 
 RESOURCES += \
     resources.qrc

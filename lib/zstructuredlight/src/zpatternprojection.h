@@ -19,10 +19,10 @@
 
 #pragma once
 
+#include "zstructuredlight_fwd.h"
 #include "zstructuredlight_global.h"
-#include "zcameraimage.h"
-#include "zdecodedpattern.h"
-#include "zprojectedpattern.h"
+
+#include <Z3DCameraAcquisition>
 
 #include <QObject>
 
@@ -44,13 +44,13 @@ signals:
     void acquireSingle(QString id);
     void finishAcquisition();
 
-    void patternProjected(Z3D::ZProjectedPattern::Ptr pattern);
+    void patternProjected(Z3D::ZProjectedPatternPtr pattern);
 
-    void patternsDecoded(std::vector<Z3D::ZDecodedPattern::Ptr> pattern);
+    void patternsDecoded(std::vector<Z3D::ZDecodedPatternPtr> pattern);
 
 public slots:
     virtual void beginScan() = 0;
-    virtual void processImages(std::vector< std::vector<Z3D::ZImageGrayscale::Ptr> > acquiredImages, QString acquisitionId) = 0;
+    virtual void processImages(std::vector< std::vector<Z3D::ZCameraImagePtr> > acquiredImages, QString acquisitionId) = 0;
 };
 
 } // namespace Z3D

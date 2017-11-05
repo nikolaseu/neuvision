@@ -19,7 +19,8 @@
 
 #pragma once
 
-#include "zcameracalibration.h"
+#include "zcameracalibration_fwd.h"
+#include "zcameracalibration_global.h"
 
 namespace Z3D
 {
@@ -27,14 +28,12 @@ namespace Z3D
 class Z3D_CAMERACALIBRATION_SHARED_EXPORT ZMultiCameraCalibration
 {
 public:
-    typedef std::shared_ptr<Z3D::ZMultiCameraCalibration> Ptr;
+    explicit ZMultiCameraCalibration(std::vector<ZCameraCalibrationPtr> calibrations);
 
-    explicit ZMultiCameraCalibration(std::vector<ZCameraCalibration::Ptr> calibrations);
-
-    std::vector<ZCameraCalibration::Ptr> calibrations() const;
+    std::vector<ZCameraCalibrationPtr> calibrations() const;
 
 private:
-    const std::vector<ZCameraCalibration::Ptr> m_calibrations;
+    const std::vector<ZCameraCalibrationPtr> m_calibrations;
 };
 
 } // namespace Z3D

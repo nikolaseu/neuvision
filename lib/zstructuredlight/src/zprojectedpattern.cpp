@@ -20,12 +20,14 @@
 
 #include "zprojectedpattern.h"
 
+#include "zstructuredlight_fwd.h"
+
 #include <QMetaType>
 
 namespace Z3D
 {
 
-static int z3dDecodedPatternPtrTypeId = qRegisterMetaType<Z3D::ZProjectedPattern::Ptr>("Z3D::ZProjectedPattern::Ptr");
+static int z3dDecodedPatternPtrTypeId = qRegisterMetaType<Z3D::ZProjectedPatternPtr>("Z3D::ZProjectedPatternPtr");
 
 ZProjectedPattern::ZProjectedPattern(cv::Mat decodedImage,
                                      std::map<int, std::vector<cv::Vec2f> > fringePointsList)

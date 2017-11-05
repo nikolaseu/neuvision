@@ -74,9 +74,9 @@ ZFlyCapture2Camera::ZFlyCapture2Camera(FlyCapture2::Camera* cameraHandle)
     }
 }
 
-QList<ZCameraInterface::Ptr> ZFlyCapture2Camera::getConnectedCameras()
+QList<ZCameraPtr> ZFlyCapture2Camera::getConnectedCameras()
 {
-    QList<ZCameraInterface::Ptr> cameras;
+    QList<ZCameraPtr> cameras;
 
     FlyCapture2::Error error;
     FlyCapture2::BusManager busMgr;
@@ -128,13 +128,13 @@ QList<ZCameraInterface::Ptr> ZFlyCapture2Camera::getConnectedCameras()
 
         qDebug() << "[FlyCapture2Camera] Connected to camera" << iCam;
 
-        cameras << Z3D::ZCameraInterface::Ptr(new ZFlyCapture2Camera(cameraHandle));
+        cameras << Z3D::ZCameraPtr(new ZFlyCapture2Camera(cameraHandle));
     }
 
     return cameras;
 }
 
-ZCameraInterface::Ptr ZFlyCapture2Camera::getCameraByName(QString name)
+ZCameraPtr ZFlyCapture2Camera::getCameraByName(QString name)
 {
 //    FlyCapture2::Error error;
 //    FlyCapture2::BusManager busMgr;
@@ -143,11 +143,11 @@ ZCameraInterface::Ptr ZFlyCapture2Camera::getCameraByName(QString name)
 //    busMgr.GetCameraFromIPAddress();
 //    busMgr.GetCameraFromSerialNumber();
 
-    QList<ZCameraInterface::Ptr> cameraList = getConnectedCameras();
+    QList<ZCameraPtr> cameraList = getConnectedCameras();
     if (cameraList.size())
         return cameraList.first();
 
-    return ZCameraInterface::Ptr(nullptr);
+    return nullptr;
 }
 
 ZFlyCapture2Camera::~ZFlyCapture2Camera()
@@ -239,7 +239,7 @@ void ZFlyCapture2Camera::imageEventCallbackInternal(FlyCapture2::Image *pImage)
     }
 
     /// get image from buffer
-    ZImageGrayscale::Ptr currentImage = getNextBufferImage(m_processedImage.GetCols(), m_processedImage.GetRows(),
+    ZCameraImagePtr currentImage = getNextBufferImage(m_processedImage.GetCols(), m_processedImage.GetRows(),
                                                            0, 0, //offset x e y
                                                            m_processedImage.GetBitsPerPixel() / 8 ); //1); //bytes per pixel
 

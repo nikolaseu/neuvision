@@ -22,9 +22,9 @@
 #include "zpointcloud_global.h"
 #include "zpointcloud_typedefs.h"
 
-#include "pcl/PolygonMesh.h"
-#include "pcl/search/kdtree.h"
-#include "pcl/visualization/point_cloud_handlers.h"
+#include <pcl/PolygonMesh.h>
+#include <pcl/search/kdtree.h>
+#include <pcl/visualization/point_cloud_handlers.h>
 
 #include <QString>
 
@@ -34,8 +34,6 @@ namespace Z3D
 class Z3D_ZPOINTCLOUD_SHARED_EXPORT ZPointCloud
 {
 public:
-    typedef std::shared_ptr<Z3D::ZPointCloud> Ptr;
-
     explicit ZPointCloud();
     ZPointCloud(PointCloudPCLPtr pclPointCloud);
 

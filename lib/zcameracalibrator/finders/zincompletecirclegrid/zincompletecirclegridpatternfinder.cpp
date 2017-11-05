@@ -20,8 +20,8 @@
 
 #include "zincompletecirclegridpatternfinder.h"
 
-#include "opencv2/imgproc/imgproc.hpp"
-#include "opencv2/calib3d/calib3d.hpp"
+#include <opencv2/imgproc.hpp>
+#include <opencv2/calib3d.hpp>
 
 #include <QDebug>
 
@@ -30,7 +30,7 @@
 
 #if defined(DEBUG_RECTANGLE_DETECTOR) || defined(DEBUG_PERSPECTIVE_TRANSFORMATION)
 #  include <QDir>
-#  include "opencv2/highgui/highgui.hpp" //to use imwrite, imshow
+#  include "opencv2/highgui.hpp" //to use imwrite, imshow
 #endif
 
 
@@ -67,14 +67,14 @@ ZIncompleteCircleGridPatternFinder::ZIncompleteCircleGridPatternFinder(QObject *
     , m_isAsymmetricGrid(false)
     , m_refinePatternPoints(false)
 {
-    QObject::connect(this, SIGNAL(maxColumnsChanged(int)),
-                     this, SLOT(updateConfigHash()));
-    QObject::connect(this, SIGNAL(maxRowsChanged(int)),
-                     this, SLOT(updateConfigHash()));
-    QObject::connect(this, SIGNAL(isAsymmetricGridChanged(bool)),
-                     this, SLOT(updateConfigHash()));
-    QObject::connect(this, SIGNAL(refinePatternPointsChanged(bool)),
-                     this, SLOT(updateConfigHash()));
+    QObject::connect(this, &ZIncompleteCircleGridPatternFinder::maxColumnsChanged,
+                     this, &ZIncompleteCircleGridPatternFinder::updateConfigHash);
+    QObject::connect(this, &ZIncompleteCircleGridPatternFinder::maxRowsChanged,
+                     this, &ZIncompleteCircleGridPatternFinder::updateConfigHash);
+    QObject::connect(this, &ZIncompleteCircleGridPatternFinder::isAsymmetricGridChanged,
+                     this, &ZIncompleteCircleGridPatternFinder::updateConfigHash);
+    QObject::connect(this, &ZIncompleteCircleGridPatternFinder::refinePatternPointsChanged,
+                     this, &ZIncompleteCircleGridPatternFinder::updateConfigHash);
 
     /// generate current config hash
     updateConfigHash();
@@ -253,15 +253,7 @@ bool ZIncompleteCircleGridPatternFinder::findCalibrationPattern(cv::Mat image, s
             cv::SimpleBlobDetector::Params blobDetectorParams;
             blobDetectorParams.filterByArea = false;
 
-#ifdef CV_VERSION_EPOCH
-#  if CV_VERSION_EPOCH < 3 // OpenCV 2
-            cv::Ptr<cv::FeatureDetector> blobDetector( new cv::SimpleBlobDetector() );
-#  else // OpenCV 3
             cv::Ptr<cv::FeatureDetector> blobDetector = cv::SimpleBlobDetector::create();
-#  endif
-#else // OpenCV 3
-            cv::Ptr<cv::FeatureDetector> blobDetector = cv::SimpleBlobDetector::create();
-#endif
 
 #ifdef DEBUG_RECTANGLE_DETECTOR
             //cv::imwrite(qPrintable(QString("tmp/debug/rectDetector_%1_roi.bmp").arg(currentIndex)), roiClean);
@@ -300,15 +292,7 @@ bool ZIncompleteCircleGridPatternFinder::findCalibrationPattern(cv::Mat image, s
 
                 /// detect all possible pattern points
                 std::vector<cv::KeyPoint> keypoints;
-//#ifdef CV_VERSION_EPOCH
-//#  if CV_VERSION_EPOCH < 3 // OpenCV 2
-//                cv::Ptr<cv::FeatureDetector> blobDetector( new cv::SimpleBlobDetector() );
-//#  else // OpenCV 3
-//                cv::Ptr<cv::FeatureDetector> blobDetector = cv::SimpleBlobDetector::create();
-//#  endif
-//#else // OpenCV 3
-//                cv::Ptr<cv::FeatureDetector> blobDetector = cv::SimpleBlobDetector::create();
-//#endif
+
                 blobDetector->detect(gray, keypoints);
                 std::vector<cv::Point2f> detectedPatternPoints;
                 for (size_t i = 0; i < keypoints.size(); i++) {

@@ -45,8 +45,8 @@ void ZScannerInitialConfigWizard::on_pushButton_clicked()
         static Z3D::ZCameraSelectorWidget *m_leftCameraSelectorWidget = nullptr;
         if (!m_leftCameraSelectorWidget) {
             m_leftCameraSelectorWidget = new Z3D::ZCameraSelectorWidget(ui->pageLeftCameraSelection);
-            //QObject::connect(m_leftCameraSelectorWidget, SIGNAL(cameraSelected(Z3D::ZCameraInterface::Ptr)),
-            //                 this, SLOT(onCameraSelected(Z3D::ZCameraInterface::Ptr)));
+            //QObject::connect(m_leftCameraSelectorWidget, SIGNAL(cameraSelected(Z3D::ZCameraInterfacePtr)),
+            //                 this, SLOT(onCameraSelected(Z3D::ZCameraInterfacePtr)));
 
             QVBoxLayout *layout = new QVBoxLayout(ui->pageLeftCameraSelection);
             layout->setMargin(0);
@@ -63,8 +63,8 @@ void ZScannerInitialConfigWizard::on_pushButton_clicked()
         static Z3D::ZCameraSelectorWidget *m_rightCameraSelectorWidget = nullptr;
         if (!m_rightCameraSelectorWidget) {
             m_rightCameraSelectorWidget = new Z3D::ZCameraSelectorWidget(ui->pageRightCameraSelection);
-            //QObject::connect(m_rightCameraSelectorWidget, SIGNAL(cameraSelected(Z3D::ZCameraInterface::Ptr)),
-            //                 this, SLOT(onCameraSelected(Z3D::ZCameraInterface::Ptr)));
+            //QObject::connect(m_rightCameraSelectorWidget, SIGNAL(cameraSelected(Z3D::ZCameraInterfacePtr)),
+            //                 this, SLOT(onCameraSelected(Z3D::ZCameraInterfacePtr)));
 
             QVBoxLayout *layout = new QVBoxLayout(ui->pageRightCameraSelection);
             layout->setMargin(0);

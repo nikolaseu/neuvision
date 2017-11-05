@@ -149,11 +149,11 @@ LuCamCamera::LuCamCamera(HANDLE cameraHandle, QObject *parent)
     m_streamingCallbackId = LucamAddStreamingCallback(m_cameraHandle, &LuCamCamera::imageEventCallback, this);
 }
 
-QList<ZCameraInterface::Ptr> LuCamCamera::getConnectedCameras()
+QList<ZCameraPtr> LuCamCamera::getConnectedCameras()
 {
     ULONG ncam = LucamNumCameras();
 
-    QList<ZCameraInterface::Ptr> cameras;
+    QList<ZCameraPtr> cameras;
     cameras.reserve(ncam);
 
     for (ULONG iCam = 1; iCam <= ncam; ++iCam) {
@@ -164,19 +164,19 @@ QList<ZCameraInterface::Ptr> LuCamCamera::getConnectedCameras()
             continue;
         }
 
-        cameras.push_back(ZCameraInterface::Ptr(new LuCamCamera(cameraHandle)));
+        cameras.push_back(ZCameraPtr(new LuCamCamera(cameraHandle)));
     }
 
     return cameras;
 }
 
-ZCameraInterface::Ptr LuCamCamera::getCameraByName(QString name)
+ZCameraPtr LuCamCamera::getCameraByName(QString name)
 {
-    QList<ZCameraInterface::Ptr> cameraList = getConnectedCameras();
+    QList<ZCameraPtr> cameraList = getConnectedCameras();
     if (cameraList.size())
         return cameraList.first();
 
-    return ZCameraInterface::Ptr(nullptr);
+    return nullptr;
 }
 
 LuCamCamera::~LuCamCamera()
@@ -280,7 +280,7 @@ void LuCamCamera::imageEventCallbackInternal(BYTE *data, ULONG dataLenght)
 */
 
     /// get image from buffer
-    ZImageGrayscale::Ptr currentImage = getNextBufferImage(m_frameFormat.width, m_frameFormat.height,
+    ZCameraImagePtr currentImage = getNextBufferImage(m_frameFormat.width, m_frameFormat.height,
                                                           m_frameFormat.xOffset, m_frameFormat.yOffset,
                                                           bytesPerPixel);
 

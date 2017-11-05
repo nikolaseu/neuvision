@@ -19,27 +19,19 @@
 
 #pragma once
 
+#include "zcameracalibration_fwd.h"
 #include "zcameracalibration_global.h"
-#include "zcameracalibration.h"
-#include "zcameracalibrator.h"
-#include "zmulticameracalibrator.h"
-
-#include "zcoreplugin.h"
 
 namespace Z3D
 {
 
-class Z3D_CAMERACALIBRATION_SHARED_EXPORT ZCameraCalibrationPluginInterface : public ZCorePlugin
+class Z3D_CAMERACALIBRATION_SHARED_EXPORT ZCameraCalibrationPluginInterface
 {
-    Q_OBJECT
-
 public:
-    explicit ZCameraCalibrationPluginInterface(QObject *parent = nullptr);
-
     virtual ~ZCameraCalibrationPluginInterface() {}
 
     /// calibration utilities
-    virtual ZCameraCalibration::Ptr getCalibration(QVariantMap options) = 0;
+    virtual ZCameraCalibrationPtr getCalibration(QVariantMap options) = 0;
 
     virtual QList<ZCameraCalibrator *> getCameraCalibrators() = 0;
 

@@ -20,9 +20,11 @@
 #pragma once
 
 #include "zcalibratedcamera_global.h"
-#include "zcalibratedcamera.h"
+#include "zcalibratedcamera_fwd.h"
 
 #include <QList>
+
+class QSettings;
 
 namespace Z3D
 {
@@ -30,12 +32,12 @@ namespace Z3D
 class Z3D_CALIBRATEDCAMERA_SHARED_EXPORT CalibratedCameraProvider
 {
 public:
-    static QList<Z3D::ZCalibratedCamera::Ptr> loadCameras(QString folder = QString());
+    static QList<Z3D::ZCalibratedCameraPtr> loadCameras(QString folder = QString());
 
-    static Z3D::ZCalibratedCamera::Ptr getCalibratedCamera(QSettings *settings);
+    static Z3D::ZCalibratedCameraPtr getCalibratedCamera(QSettings *settings);
 
 protected:
-    CalibratedCameraProvider();
+    explicit CalibratedCameraProvider();
 };
 
 } // namespace Z3D

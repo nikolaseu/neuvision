@@ -26,7 +26,7 @@
 #include <QDebug>
 #include <QDir>
 #include <QFileInfo>
-#include <QPluginLoader>
+#include <QJsonObject>
 
 namespace Z3D
 {
@@ -110,14 +110,12 @@ void ZPluginLoader::loadPlugins(QString folder)
             float progress = (float(folderIndex) + float(fileIndex)/fileCount) / folderCount;
             emit progressChanged(progress, tr("Loading %1").arg(fileName));
 
-            QPluginLoader loader(pluginFileName);
-            QObject *pluginInstance = loader.instance();
-            ZCorePlugin *plugin = qobject_cast<ZCorePlugin *>(pluginInstance);
-            if (plugin) {
-                qDebug() << "plugin:" << pluginFileName << "\n"
-                         << "id:" << plugin->id() << "\n"
-                         << "version:" << plugin->version() << "\n"
-                         << "metaData:" << loader.metaData();
+            ZCorePlugin *plugin = new ZCorePlugin(pluginFileName);
+            if (plugin->load()) {
+                qDebug() << "\nplugin:" << pluginFileName
+                         << "\nid:" << plugin->id()
+                         << "\nversion:" << plugin->version()
+                         << "\nmetaData:" << plugin->metaData();
 #if defined(Q_OS_ANDROID)
                 QString pluginType = fileName.section('_', 1, 1);
                 m_plugins[pluginType] << plugin;
@@ -125,7 +123,8 @@ void ZPluginLoader::loadPlugins(QString folder)
                 m_plugins[folderName] << plugin;
 #endif
             } else {
-                qWarning() << "error loading plugin" << fileName << "->" << loader.errorString();
+                delete plugin;
+                qWarning() << "error loading plugin" << fileName << "->" << plugin->errorString();
             }
         }
     }
@@ -138,14 +137,14 @@ void ZPluginLoader::unloadPlugins()
 
 }
 
-const QList<QObject *> ZPluginLoader::plugins(const QString &pluginType)
+const QList<ZCorePlugin *> ZPluginLoader::plugins(const QString &pluginType)
 {
     auto &plugins = instance()->m_plugins;
     if (plugins.find(pluginType) != plugins.end()) {
         return plugins.at(pluginType);
     }
 
-    return QList<QObject *>();
+    return QList<ZCorePlugin *>();
 }
 
 ZPluginLoader::ZPluginLoader(QObject *parent)

@@ -19,13 +19,15 @@
 
 #pragma once
 
+#include "zcameracalibrator_fwd.h"
 #include "zcameracalibrator_global.h"
 
-#include "zcalibrationpatternfinder.h"
-
 #include <Z3DCalibratedCamera>
+#include <Z3DCameraAcquisition>
+#include <Z3DCameraCalibration>
 
 #include "zwidget.h"
+
 #include <QModelIndex>
 
 class QProgressBar;
@@ -37,19 +39,12 @@ namespace Ui {
 class ZMultiCameraCalibratorWidget;
 }
 
-class ZCalibrationDistortionPlot;
-class ZImageViewer;
-class ZCalibrationImageViewer;
-class ZMultiCameraCalibratorWorker;
-class ZMultiCalibrationImageModel;
-class ZMultiCameraCalibrator;
-
 class Z3D_CAMERACALIBRATOR_SHARED_EXPORT ZMultiCameraCalibratorWidget : public ZWidget
 {
     Q_OBJECT
 
 public:
-    explicit ZMultiCameraCalibratorWidget(std::vector<ZCalibratedCamera::Ptr> cameras, QWidget *parent = nullptr);
+    explicit ZMultiCameraCalibratorWidget(std::vector<ZCalibratedCameraPtr> cameras, QWidget *parent = nullptr);
     ~ZMultiCameraCalibratorWidget();
 
 private slots:
@@ -65,7 +60,7 @@ private slots:
     void onCalibrationPatternTypeChanged(int index);
 
     void onProgressChanged(float progress, QString message);
-    void onCalibrationChanged(ZMultiCameraCalibration::Ptr calibrationResult);
+    void onCalibrationChanged(ZMultiCameraCalibrationPtr calibrationResult);
 
     void loadSession();
     void newSession();
@@ -93,12 +88,12 @@ private:
     Z3D::ZMultiCalibrationImageModel *m_model;
     QString m_sessionFolder;
 
-    QList<Z3D::ZCalibrationPatternFinder::Ptr> m_patternFinderList;
+    QList<Z3D::ZCalibrationPatternFinderPtr> m_patternFinderList;
     QList<Z3D::ZMultiCameraCalibrator *> m_cameraCalibratorList;
 
     Z3D::ZMultiCameraCalibratorWorker *m_calibratorWorker;
 
-    std::vector<Z3D::ZCalibratedCamera::Ptr> m_cameras;
+    std::vector<Z3D::ZCalibratedCameraPtr> m_cameras;
 
     std::vector<Z3D::ZImageViewer *> m_cameraImageViewer;
     std::vector<Z3D::ZCalibrationImageViewer *> m_imageViewer;

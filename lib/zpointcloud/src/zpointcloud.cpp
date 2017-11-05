@@ -20,13 +20,15 @@
 
 #include "zpointcloud.h"
 
-#include "pcl/features/normal_3d_omp.h"
+#include "zpointcloud_fwd.h"
+
+#include <pcl/features/normal_3d_omp.h>
 
 #include <QDebug>
 #include <QMetaType>
 #include <QTime>
 
-static int z3dPointCloudPtrTypeId = qRegisterMetaType<Z3D::ZPointCloud::Ptr>("Z3D::PointCloud::Ptr");
+static int z3dPointCloudPtrTypeId = qRegisterMetaType<Z3D::ZPointCloudPtr>("Z3D::ZPointCloudPtr");
 
 namespace Z3D
 {

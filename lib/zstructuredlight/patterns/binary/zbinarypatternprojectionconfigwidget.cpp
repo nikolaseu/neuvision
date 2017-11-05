@@ -28,99 +28,98 @@
 namespace Z3D
 {
 
-ZBinaryPatternProjectionConfigWidget::ZBinaryPatternProjectionConfigWidget(
-        ZBinaryPatternProjection *binaryPatternProjection, QWidget *parent) :
-    QWidget(parent),
-    ui(new Ui::ZBinaryPatternProjectionConfigWidget),
-    m_binaryPatternProjection(binaryPatternProjection)
+ZBinaryPatternProjectionConfigWidget::ZBinaryPatternProjectionConfigWidget(ZBinaryPatternProjection *binaryPatternProjection, QWidget *parent)
+    : QWidget(parent)
+    , ui(new Ui::ZBinaryPatternProjectionConfigWidget)
+    , m_binaryPatternProjection(binaryPatternProjection)
 {
     ui->setupUi(this);
 
     /// use binary/gray binary
-    QObject::connect(m_binaryPatternProjection, SIGNAL(useGrayBinaryChanged(bool)),
-                     ui->useGrayBinaryCheckBox, SLOT(setChecked(bool)));
-    QObject::connect(ui->useGrayBinaryCheckBox, SIGNAL(toggled(bool)),
-                     m_binaryPatternProjection, SLOT(setUseGrayBinary(bool)));
+    QObject::connect(m_binaryPatternProjection, &ZBinaryPatternProjection::useGrayBinaryChanged,
+                     ui->useGrayBinaryCheckBox, &QCheckBox::setChecked);
+    QObject::connect(ui->useGrayBinaryCheckBox, &QCheckBox::toggled,
+                     m_binaryPatternProjection, &ZBinaryPatternProjection::setUseGrayBinary);
 
     /// num patterns
-    QObject::connect(m_binaryPatternProjection, SIGNAL(numPatternsChanged(int)),
-                     ui->patternCountSpinBox, SLOT(setValue(int)));
-    QObject::connect(ui->patternCountSpinBox, SIGNAL(valueChanged(int)),
-                     m_binaryPatternProjection, SLOT(setNumPatterns(int)));
+    QObject::connect(m_binaryPatternProjection, &ZBinaryPatternProjection::numPatternsChanged,
+                     ui->patternCountSpinBox, &QSpinBox::setValue);
+    QObject::connect(ui->patternCountSpinBox, static_cast<void(QSpinBox::*)(int)>(&QSpinBox::valueChanged),
+                     m_binaryPatternProjection, &ZBinaryPatternProjection::setNumPatterns);
 
     /// current pattern
-    QObject::connect(m_binaryPatternProjection, SIGNAL(currentPatternChanged(int)),
-                     ui->currentPatternSpinBox, SLOT(setValue(int)));
-    QObject::connect(ui->currentPatternSpinBox, SIGNAL(valueChanged(int)),
-                     m_binaryPatternProjection, SLOT(setCurrentPattern(int)));
+    QObject::connect(m_binaryPatternProjection, &ZBinaryPatternProjection::currentPatternChanged,
+                     ui->currentPatternSpinBox, &QSpinBox::setValue);
+    QObject::connect(ui->currentPatternSpinBox, static_cast<void(QSpinBox::*)(int)>(&QSpinBox::valueChanged),
+                     m_binaryPatternProjection, &ZBinaryPatternProjection::setCurrentPattern);
 
     /// vertical/horizontal
-    QObject::connect(m_binaryPatternProjection, SIGNAL(verticalChanged(bool)),
-                     ui->verticalCheckBox, SLOT(setChecked(bool)));
-    QObject::connect(ui->verticalCheckBox, SIGNAL(toggled(bool)),
-                     m_binaryPatternProjection, SLOT(setVertical(bool)));
+    QObject::connect(m_binaryPatternProjection, &ZBinaryPatternProjection::verticalChanged,
+                     ui->verticalCheckBox, &QCheckBox::setChecked);
+    QObject::connect(ui->verticalCheckBox, &QCheckBox::toggled,
+                     m_binaryPatternProjection, &ZBinaryPatternProjection::setVertical);
 
     /// automatic pattern count
-    QObject::connect(m_binaryPatternProjection, SIGNAL(automaticPatternCountChanged(bool)),
-                     ui->automaticPatternCountCheckBox, SLOT(setChecked(bool)));
-    QObject::connect(ui->automaticPatternCountCheckBox, SIGNAL(toggled(bool)),
-                     m_binaryPatternProjection, SLOT(setAutomaticPatternCount(bool)));
+    QObject::connect(m_binaryPatternProjection, &ZBinaryPatternProjection::automaticPatternCountChanged,
+                     ui->automaticPatternCountCheckBox, &QCheckBox::setChecked);
+    QObject::connect(ui->automaticPatternCountCheckBox, &QCheckBox::toggled,
+                     m_binaryPatternProjection, &ZBinaryPatternProjection::setAutomaticPatternCount);
     /// dependant of automatic pattern state
-    QObject::connect(ui->automaticPatternCountCheckBox, SIGNAL(toggled(bool)),
-                     ui->patternCountSpinBox, SLOT(setDisabled(bool)));
-    QObject::connect(ui->automaticPatternCountCheckBox, SIGNAL(toggled(bool)),
-                     ui->patternCountLabel, SLOT(setDisabled(bool)));
+    QObject::connect(ui->automaticPatternCountCheckBox, &QCheckBox::toggled,
+                     ui->patternCountSpinBox, &QSpinBox::setDisabled);
+    QObject::connect(ui->automaticPatternCountCheckBox, &QCheckBox::toggled,
+                     ui->patternCountLabel, &QLabel::setDisabled);
 
     /// inverted
-    QObject::connect(m_binaryPatternProjection, SIGNAL(invertedChanged(bool)),
-                     ui->invertedCheckBox, SLOT(setChecked(bool)));
-    QObject::connect(ui->invertedCheckBox, SIGNAL(toggled(bool)),
-                     m_binaryPatternProjection, SLOT(setInverted(bool)));
+    QObject::connect(m_binaryPatternProjection, &ZBinaryPatternProjection::invertedChanged,
+                     ui->invertedCheckBox, &QCheckBox::setChecked);
+    QObject::connect(ui->invertedCheckBox, &QCheckBox::toggled,
+                     m_binaryPatternProjection, &ZBinaryPatternProjection::setInverted);
 
     /// inter photo delay
-    QObject::connect(m_binaryPatternProjection, SIGNAL(delayMsChanged(int)),
-                     ui->interPhotoDelaySpinBox, SLOT(setValue(int)));
-    QObject::connect(ui->interPhotoDelaySpinBox, SIGNAL(valueChanged(int)),
-                     m_binaryPatternProjection, SLOT(setDelayMs(int)));
+    QObject::connect(m_binaryPatternProjection, &ZBinaryPatternProjection::delayMsChanged,
+                     ui->interPhotoDelaySpinBox, &QSpinBox::setValue);
+    QObject::connect(ui->interPhotoDelaySpinBox, static_cast<void(QSpinBox::*)(int)>(&QSpinBox::valueChanged),
+                     m_binaryPatternProjection, &ZBinaryPatternProjection::setDelayMs);
 
     /// noise threshold
-    QObject::connect(m_binaryPatternProjection, SIGNAL(noiseThresholdChanged(int)),
-                     ui->noiseThresholdSpinBox, SLOT(setValue(int)));
-    QObject::connect(ui->noiseThresholdSpinBox, SIGNAL(valueChanged(int)),
-                     m_binaryPatternProjection, SLOT(setNoiseThreshold(int)));
+    QObject::connect(m_binaryPatternProjection, &ZBinaryPatternProjection::noiseThresholdChanged,
+                     ui->noiseThresholdSpinBox, &QSpinBox::setValue);
+    QObject::connect(ui->noiseThresholdSpinBox, static_cast<void(QSpinBox::*)(int)>(&QSpinBox::valueChanged),
+                     m_binaryPatternProjection, &ZBinaryPatternProjection::setNoiseThreshold);
 
     /// intensity
-    QObject::connect(m_binaryPatternProjection, SIGNAL(intensityChanged(double)),
-                     ui->intensitySpinBox, SLOT(setValue(double)));
-    QObject::connect(ui->intensitySpinBox, SIGNAL(valueChanged(double)),
-                     m_binaryPatternProjection, SLOT(setIntensity(double)));
+    QObject::connect(m_binaryPatternProjection, &ZBinaryPatternProjection::intensityChanged,
+                     ui->intensitySpinBox, &QDoubleSpinBox::setValue);
+    QObject::connect(ui->intensitySpinBox, static_cast<void(QDoubleSpinBox::*)(double)>(&QDoubleSpinBox::valueChanged),
+                     m_binaryPatternProjection, &ZBinaryPatternProjection::setIntensity);
 
     /// debug mode
-    QObject::connect(m_binaryPatternProjection, SIGNAL(debugModeChanged(bool)),
-                     ui->debugModeCheckBox, SLOT(setChecked(bool)));
-    QObject::connect(ui->debugModeCheckBox, SIGNAL(toggled(bool)),
-                     m_binaryPatternProjection, SLOT(setDebugMode(bool)));
+    QObject::connect(m_binaryPatternProjection, &ZBinaryPatternProjection::debugModeChanged,
+                     ui->debugModeCheckBox, &QCheckBox::setChecked);
+    QObject::connect(ui->debugModeCheckBox, &QCheckBox::toggled,
+                     m_binaryPatternProjection, &ZBinaryPatternProjection::setDebugMode);
 
     /// preview
-    QObject::connect(m_binaryPatternProjection, SIGNAL(previewEnabledChanged(bool)),
-                     ui->patternProjectionPreviewCheckBox, SLOT(setChecked(bool)));
-    QObject::connect(ui->patternProjectionPreviewCheckBox, SIGNAL(toggled(bool)),
-                     m_binaryPatternProjection, SLOT(setPreviewEnabled(bool)), Qt::DirectConnection);
+    QObject::connect(m_binaryPatternProjection, &ZBinaryPatternProjection::previewEnabledChanged,
+                     ui->patternProjectionPreviewCheckBox, &QCheckBox::setChecked);
+    QObject::connect(ui->patternProjectionPreviewCheckBox, &QCheckBox::toggled,
+                     m_binaryPatternProjection, &ZBinaryPatternProjection::setPreviewEnabled, Qt::DirectConnection);
     /// dependant of preview state
-    QObject::connect(ui->patternProjectionPreviewCheckBox, SIGNAL(toggled(bool)),
-                     ui->invertedCheckBox, SLOT(setEnabled(bool)));
-    QObject::connect(ui->patternProjectionPreviewCheckBox, SIGNAL(toggled(bool)),
-                     ui->currentPatternSpinBox, SLOT(setEnabled(bool)));
+    QObject::connect(ui->patternProjectionPreviewCheckBox, &QCheckBox::toggled,
+                     ui->invertedCheckBox, &QCheckBox::setEnabled);
+    QObject::connect(ui->patternProjectionPreviewCheckBox, &QCheckBox::toggled,
+                     ui->currentPatternSpinBox, &QSpinBox::setEnabled);
 
     /// screens
-    QObject::connect(ui->patternScreenComboBox, SIGNAL(currentIndexChanged(int)),
-                     this, SLOT(onSelectedScreenChanged(int)));
-    QObject::connect(QApplication::desktop(), SIGNAL(screenCountChanged(int)),
-                     this, SLOT(updateScreens()));
-    QObject::connect(QApplication::desktop(), SIGNAL(resized(int)),
-                     this, SLOT(updateScreens()));
-    QObject::connect(QApplication::desktop(), SIGNAL(workAreaResized(int)),
-                     this, SLOT(updateScreens()));
+    QObject::connect(ui->patternScreenComboBox, static_cast<void(QComboBox::*)(int)>(&QComboBox::currentIndexChanged),
+                     this, &ZBinaryPatternProjectionConfigWidget::onSelectedScreenChanged);
+    QObject::connect(QApplication::desktop(), &QDesktopWidget::screenCountChanged,
+                     this, &ZBinaryPatternProjectionConfigWidget::updateScreens);
+    QObject::connect(QApplication::desktop(), &QDesktopWidget::resized,
+                     this, &ZBinaryPatternProjectionConfigWidget::updateScreens);
+    QObject::connect(QApplication::desktop(), &QDesktopWidget::workAreaResized,
+                     this, &ZBinaryPatternProjectionConfigWidget::updateScreens);
     updateScreens();
 
     /// set current values

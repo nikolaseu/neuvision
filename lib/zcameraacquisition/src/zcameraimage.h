@@ -19,9 +19,10 @@
 
 #pragma once
 
+#include "zcameraacquisition_fwd.h"
 #include "zcameraacquisition_global.h"
 
-#include "opencv2/opencv.hpp"
+#include <opencv2/core/mat.hpp>
 
 namespace Z3D
 {
@@ -30,21 +31,19 @@ class Z3D_CAMERAACQUISITION_SHARED_EXPORT ZImageGrayscale
 {
 
 public:
-    typedef std::shared_ptr<Z3D::ZImageGrayscale> Ptr;
-
     /// create new image
-    ZImageGrayscale(int width, int height, int xOffset = 0, int yOffset = 0, int bytesPerPixel = 1);
+    explicit ZImageGrayscale(int width, int height, int xOffset = 0, int yOffset = 0, int bytesPerPixel = 1);
 
-    /// create new image from image file
-    ZImageGrayscale(QString filename);
+    /// create new image from OpenCV cv::Mat
+    explicit ZImageGrayscale(cv::Mat mat);
 
-    /// create new image from externally managed  buffer
-    ZImageGrayscale(int width, int height, int xOffset, int yOffset, int bytesPerPixel, void *externalBuffer);
+    /// create new image from externally managed buffer
+    explicit ZImageGrayscale(int width, int height, int xOffset, int yOffset, int bytesPerPixel, void *externalBuffer);
 
     ~ZImageGrayscale();
 
     /// creates a complete copy of the instance
-    ZImageGrayscale::Ptr clone();
+    ZCameraImagePtr clone();
 
     inline cv::Mat cvMat() const { return m_cvMat; }
 
@@ -66,17 +65,19 @@ public:
 
     inline int bufferSize() const { return m_width * m_height * m_bytesPerPixel; }
 
-    bool save(QString fileName);
-
 private:
-    long m_number;
-    int m_width;
-    int m_height;
-    int m_xOffset;
-    int m_yOffset;
-    int m_bytesPerPixel;
-
     cv::Mat m_cvMat;
+    const int m_width;
+    const int m_height;
+    const int m_xOffset;
+    const int m_yOffset;
+    const int m_bytesPerPixel;
+    long m_number;
 };
+
+namespace ZCameraImage {
+Z3D_CAMERAACQUISITION_SHARED_EXPORT ZCameraImagePtr fromFile(QString fileName);
+Z3D_CAMERAACQUISITION_SHARED_EXPORT bool save(ZCameraImagePtr image, QString fileName);
+} // namespace ZCameraImage
 
 } // namespace Z3D

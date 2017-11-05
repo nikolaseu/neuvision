@@ -66,7 +66,7 @@ void ZCalibrationImageViewer::setDisplayMode(ZCalibrationImageViewer::DisplayMod
     }
 }
 
-void ZCalibrationImageViewer::updateCalibrationImage(ZCalibrationImage::Ptr image)
+void ZCalibrationImageViewer::updateCalibrationImage(ZCalibrationImagePtr image)
 {
     for (std::vector<QGraphicsItem*>::iterator it = m_calibrationPoints.begin(); it != m_calibrationPoints.end(); ++it) {
         m_scene->removeItem(*it);

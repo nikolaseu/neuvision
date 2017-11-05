@@ -30,7 +30,7 @@ QString ZFlyCapture2Plugin::id() const
     return QString("ZFlyCapture2");
 }
 
-QString ZFlyCapture2Plugin::name() const
+QString ZFlyCapture2Plugin::displayName() const
 {
     return QString("PGR FlyCapture2 SDK");
 }
@@ -48,13 +48,13 @@ QList<ZCameraInfo *> ZFlyCapture2Plugin::getConnectedCameras()
     return list;
 }
 
-ZCameraInterface::Ptr ZFlyCapture2Plugin::getCamera(QVariantMap options)
+ZCameraPtr ZFlyCapture2Plugin::getCamera(QVariantMap options)
 {
-    QList<ZCameraInterface::Ptr> cameraList = ZFlyCapture2Camera::getConnectedCameras();
+    QList<ZCameraPtr> cameraList = ZFlyCapture2Camera::getConnectedCameras();
     if (cameraList.size())
         return cameraList.first();
 
-    return ZCameraInterface::Ptr(nullptr);
+    return nullptr;
 }
 
 } // namespace Z3D

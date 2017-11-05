@@ -21,11 +21,7 @@
 
 #include "zpatternprojection.h"
 
-#if QT_VERSION < 0x050000
-class QDeclarativeView;
-#else
 class QQuickView;
-#endif
 
 namespace Z3D
 {
@@ -71,7 +67,7 @@ signals:
 public slots:
     // from ZPatternProjection
     virtual void beginScan() override;
-    virtual void processImages(std::vector< std::vector<Z3D::ZImageGrayscale::Ptr> > acquiredImages, QString scanId) override;
+    virtual void processImages(std::vector< std::vector<Z3D::ZCameraImagePtr> > acquiredImages, QString scanId) override;
 
     void showProjectionWindow();
     void hideProjectionWindow();
@@ -113,11 +109,7 @@ public slots:
 protected:
     void updateMaxUsefulPatterns();
 
-#if QT_VERSION < 0x050000
-    QDeclarativeView *m_dlpview;
-#else
     QQuickView *m_dlpview;
-#endif
 
     int m_delayMs;
     int m_noiseThreshold;

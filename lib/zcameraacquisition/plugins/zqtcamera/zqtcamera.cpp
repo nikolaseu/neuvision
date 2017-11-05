@@ -20,6 +20,11 @@
 
 #include "zqtcamera.h"
 
+#include "zcameraimage.h"
+
+#include <opencv2/core/mat.hpp>
+#include <opencv2/imgproc.hpp>
+
 #include <QCameraViewfinder>
 #include <QDir>
 #include <QFile>
@@ -103,7 +108,7 @@ QList<ZCameraInterface::ZCameraAttribute> ZQtCamera::getAllAttributes()
     attrRes.label = "Resolution";
     QList<QSize> supportedResolutions = m_qcameraImageCapture->supportedResolutions();
     int currentIndex = 0;
-    foreach(const QSize &resolution, supportedResolutions) {
+    for(const QSize &resolution : supportedResolutions) {
         attrRes.enumNames << QString("%1x%2").arg(resolution.width()).arg(resolution.height());
         if (resolution == m_qcameraImageCapture->encodingSettings().resolution()) {
             attrRes.enumValue = currentIndex;
@@ -120,7 +125,7 @@ QList<ZCameraInterface::ZCameraAttribute> ZQtCamera::getAllAttributes()
     attrCodec.path = "Codec";
     attrCodec.label = "Codec";
     currentIndex = 0;
-    foreach(const QString &codecName, m_qcameraImageCapture->supportedImageCodecs()) {
+    for (const QString &codecName : m_qcameraImageCapture->supportedImageCodecs()) {
         attrCodec.enumNames << codecName;
         if (codecName == m_qcameraImageCapture->encodingSettings().codec()) {
             attrCodec.enumValue = currentIndex;
@@ -213,12 +218,7 @@ void ZQtCamera::onImageCaptured(int id, const QImage &preview)
     }
 
     if (!cvImage8UC1.empty()) {
-        ZImageGrayscale::Ptr currentImage = this->getNextBufferImage(
-                    imgWidth,
-                    imgHeight,
-                    0,
-                    0,
-                    1);
+        ZCameraImagePtr currentImage = this->getNextBufferImage(imgWidth, imgHeight, 0, 0, 1);
 
         currentImage->setBuffer((void *)cvImage8UC1.data);
 
@@ -230,7 +230,9 @@ void ZQtCamera::onImageCaptured(int id, const QImage &preview)
     }
 
     if (m_isCapturing) {
-        QTimer::singleShot(0, m_qcameraImageCapture, SLOT(capture()));
+        QTimer::singleShot(0, [=](){
+            m_qcameraImageCapture->capture();
+        });
     }
 }
 
@@ -245,6 +247,7 @@ void ZQtCamera::onImageSaved(int id, const QString &fileName)
 
 void ZQtCamera::onImageAvailable(int id, const QVideoFrame &buffer)
 {
+    Q_UNUSED(buffer)
     qDebug() << "imageAvailable:" << id;
 }
 
@@ -252,14 +255,15 @@ void ZQtCamera::onCaptureError(int id, QCameraImageCapture::Error error, QString
 {
     qDebug() << "captureError:" << id << error << message;
     if (QCameraImageCapture::NotReadyError == error && m_isCapturing) {
-        QTimer::singleShot(100, m_qcameraImageCapture, SLOT(capture()));
+        QTimer::singleShot(100, [=](){
+            m_qcameraImageCapture->capture();
+        });
     }
 }
 
 void ZQtCamera::onReadyForCaptureChanged(bool ready)
 {
     qDebug() << "readyForCaptureChanged:" << ready;
-    //QTimer::singleShot(0, m_qcameraImageCapture, SLOT(capture()));
 }
 
 } // namespace Z3D

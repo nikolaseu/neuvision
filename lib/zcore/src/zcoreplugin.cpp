@@ -20,12 +20,60 @@
 
 #include "zcoreplugin.h"
 
+#include <QPluginLoader>
+
 namespace Z3D
 {
 
-ZCorePlugin::ZCorePlugin(QObject *parent) : QObject(parent)
+ZCorePlugin::ZCorePlugin(QString fileName)
+    : m_loader(new QPluginLoader(fileName))
 {
 
+}
+
+ZCorePlugin::~ZCorePlugin()
+{
+    delete m_loader;
+}
+
+QString ZCorePlugin::id() const
+{
+    QJsonObject data = metaData();
+    if (!data.contains("id")) {
+        return instance<QObject>()->metaObject()->className();
+    }
+
+    return data["id"].toString();
+}
+
+QString ZCorePlugin::version() const
+{
+    QJsonObject data = metaData();
+    if (!data.contains("version")) {
+        return QLatin1String(Z3D_VERSION_STR);
+    }
+
+    return data["version"].toString();
+}
+
+QJsonObject ZCorePlugin::metaData() const
+{
+    return m_loader->metaData()["MetaData"].toObject();
+}
+
+bool ZCorePlugin::load()
+{
+    if (!m_loader->load()) {
+        return false;
+    }
+
+    m_pluginInstance = m_loader->instance();
+    return true;
+}
+
+QString ZCorePlugin::errorString()
+{
+    return m_loader->errorString();
 }
 
 } // namespace Z3D

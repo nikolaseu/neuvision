@@ -1,3 +1,6 @@
 TEMPLATE  = subdirs
-SUBDIRS   = src \
-            plugins
+
+SUBDIRS  += src
+
+SUBDIRS  += plugins
+plugins.depends = src

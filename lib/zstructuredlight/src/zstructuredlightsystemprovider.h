@@ -19,14 +19,13 @@
 
 #pragma once
 
+#include "zstructuredlight_fwd.h"
 #include "zstructuredlight_global.h"
 
-#include "zstructuredlightsystem.h"
+class QSettings;
 
 namespace Z3D
 {
-
-class ZStructuredLightSystemPlugin;
 
 class Z3D_STRUCTUREDLIGHT_SHARED_EXPORT ZStructuredLightSystemProvider
 {
@@ -34,15 +33,13 @@ public:
     static void loadPlugins();
     static void unloadPlugins();
 
-    static QList<QString> getAll();
-
-    static ZStructuredLightSystem::Ptr get(QSettings *settings);
-    static QWidget *getConfigWidget(ZStructuredLightSystem::Ptr structuredLightSystem);
+    static ZStructuredLightSystemPtr get(QSettings *settings);
+    static QWidget *getConfigWidget(ZStructuredLightSystemWeakPtr structuredLightSystem);
 
 private:
     explicit ZStructuredLightSystemProvider();
 
-    static QMap< QString, ZStructuredLightSystemPlugin *> m_plugins;
+    static std::map< QString, ZStructuredLightSystemPlugin *> m_plugins;
 };
 
 } // namespace Z3D

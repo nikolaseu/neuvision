@@ -23,9 +23,7 @@
 #include "zpinholecameracalibration.h"
 #include "zpinholecameracalibratorconfigwidget.h"
 
-#include "opencv2/core/core.hpp"
-#include "opencv2/calib3d/calib3d.hpp" // calibrateCamera
-//#include <opencv2/imgproc/imgproc.hpp> // undistortPoints
+#include <opencv2/calib3d.hpp>
 
 #include <iostream>
 
@@ -68,7 +66,7 @@ QString ZPinholeCameraCalibrator::name() const
     return QLatin1String("Pinhole + distorsion (radial & tangential)");
 }
 
-ZCameraCalibration::Ptr ZPinholeCameraCalibrator::getCalibration(
+ZCameraCalibrationPtr ZPinholeCameraCalibrator::getCalibration(
         std::vector<std::vector<cv::Point2f> > &imagePoints,
         std::vector<std::vector<cv::Point3f> > &realWorldPoints,
         cv::Size &imageSize)
@@ -122,9 +120,7 @@ ZCameraCalibration::Ptr ZPinholeCameraCalibrator::getCalibration(
         qDebug() << "Error:" << errorRms;
     }
 
-    ZCameraCalibration::Ptr calib(new Z3D::ZPinholeCameraCalibration(cameraMatrix, distortionCoeffs, imageSize));
-
-    return calib;
+    return ZCameraCalibrationPtr(new Z3D::ZPinholeCameraCalibration(cameraMatrix, distortionCoeffs, imageSize));
 }
 
 bool ZPinholeCameraCalibrator::useIntrinsicGuess() const

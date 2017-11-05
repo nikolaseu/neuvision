@@ -26,84 +26,84 @@
 namespace Z3D
 {
 
-ZPinholeCameraCalibratorConfigWidget::ZPinholeCameraCalibratorConfigWidget(ZPinholeCameraCalibrator *calibrator, QWidget *parent) :
-    QWidget(parent),
-    ui(new Ui::ZPinholeCameraCalibratorConfigWidget),
-    m_cameraCalibrator(calibrator)
+ZPinholeCameraCalibratorConfigWidget::ZPinholeCameraCalibratorConfigWidget(ZPinholeCameraCalibrator *calibrator, QWidget *parent)
+    : QWidget(parent)
+    , ui(new Ui::ZPinholeCameraCalibratorConfigWidget)
+    , m_cameraCalibrator(calibrator)
 {
     ui->setupUi(this);
 
     ui->zeroTangentialDistortionCheckBox->setChecked(m_cameraCalibrator->zeroTangentialDistortion());
-    QObject::connect(m_cameraCalibrator, SIGNAL(zeroTangentialDistortionChanged(bool)),
-                     ui->zeroTangentialDistortionCheckBox, SLOT(setChecked(bool)));
-    QObject::connect(ui->zeroTangentialDistortionCheckBox, SIGNAL(toggled(bool)),
-                     m_cameraCalibrator, SLOT(setZeroTangentialDistortion(bool)));
+    QObject::connect(m_cameraCalibrator, &ZPinholeCameraCalibrator::zeroTangentialDistortionChanged,
+                     ui->zeroTangentialDistortionCheckBox, &QCheckBox::setChecked);
+    QObject::connect(ui->zeroTangentialDistortionCheckBox, &QCheckBox::toggled,
+                     m_cameraCalibrator, &ZPinholeCameraCalibrator::setZeroTangentialDistortion);
 
     ui->useRationalModelCheckBox->setChecked(m_cameraCalibrator->useRationalModel());
-    QObject::connect(m_cameraCalibrator, SIGNAL(useRationalModelChanged(bool)),
-                     ui->useRationalModelCheckBox, SLOT(setChecked(bool)));
-    QObject::connect(ui->useRationalModelCheckBox, SIGNAL(toggled(bool)),
-                     m_cameraCalibrator, SLOT(setUseRationalModel(bool)));
+    QObject::connect(m_cameraCalibrator, &ZPinholeCameraCalibrator::useRationalModelChanged,
+                     ui->useRationalModelCheckBox, &QCheckBox::setChecked);
+    QObject::connect(ui->useRationalModelCheckBox, &QCheckBox::toggled,
+                     m_cameraCalibrator, &ZPinholeCameraCalibrator::setUseRationalModel);
 
     ui->fixK1CheckBox->setChecked(m_cameraCalibrator->fixK1());
-    QObject::connect(m_cameraCalibrator, SIGNAL(fixK1Changed(bool)),
-                     ui->fixK1CheckBox, SLOT(setChecked(bool)));
-    QObject::connect(ui->fixK1CheckBox, SIGNAL(toggled(bool)),
-                     m_cameraCalibrator, SLOT(setFixK1(bool)));
+    QObject::connect(m_cameraCalibrator, &ZPinholeCameraCalibrator::fixK1Changed,
+                     ui->fixK1CheckBox, &QCheckBox::setChecked);
+    QObject::connect(ui->fixK1CheckBox, &QCheckBox::toggled,
+                     m_cameraCalibrator, &ZPinholeCameraCalibrator::setFixK1);
 
     ui->fixK2CheckBox->setChecked(m_cameraCalibrator->fixK2());
-    QObject::connect(m_cameraCalibrator, SIGNAL(fixK2Changed(bool)),
-                     ui->fixK2CheckBox, SLOT(setChecked(bool)));
-    QObject::connect(ui->fixK2CheckBox, SIGNAL(toggled(bool)),
-                     m_cameraCalibrator, SLOT(setFixK2(bool)));
+    QObject::connect(m_cameraCalibrator, &ZPinholeCameraCalibrator::fixK2Changed,
+                     ui->fixK2CheckBox, &QCheckBox::setChecked);
+    QObject::connect(ui->fixK2CheckBox, &QCheckBox::toggled,
+                     m_cameraCalibrator, &ZPinholeCameraCalibrator::setFixK2);
 
     ui->fixK3CheckBox->setChecked(m_cameraCalibrator->fixK3());
-    QObject::connect(m_cameraCalibrator, SIGNAL(fixK3Changed(bool)),
-                     ui->fixK3CheckBox, SLOT(setChecked(bool)));
-    QObject::connect(ui->fixK3CheckBox, SIGNAL(toggled(bool)),
-                     m_cameraCalibrator, SLOT(setFixK3(bool)));
+    QObject::connect(m_cameraCalibrator, &ZPinholeCameraCalibrator::fixK3Changed,
+                     ui->fixK3CheckBox, &QCheckBox::setChecked);
+    QObject::connect(ui->fixK3CheckBox, &QCheckBox::toggled,
+                     m_cameraCalibrator, &ZPinholeCameraCalibrator::setFixK3);
 
     ui->fixK4CheckBox->setChecked(m_cameraCalibrator->fixK4());
-    QObject::connect(m_cameraCalibrator, SIGNAL(fixK4Changed(bool)),
-                     ui->fixK4CheckBox, SLOT(setChecked(bool)));
-    QObject::connect(ui->fixK4CheckBox, SIGNAL(toggled(bool)),
-                     m_cameraCalibrator, SLOT(setFixK4(bool)));
+    QObject::connect(m_cameraCalibrator, &ZPinholeCameraCalibrator::fixK4Changed,
+                     ui->fixK4CheckBox, &QCheckBox::setChecked);
+    QObject::connect(ui->fixK4CheckBox, &QCheckBox::toggled,
+                     m_cameraCalibrator, &ZPinholeCameraCalibrator::setFixK4);
 
     ui->fixK5CheckBox->setChecked(m_cameraCalibrator->fixK5());
-    QObject::connect(m_cameraCalibrator, SIGNAL(fixK5Changed(bool)),
-                     ui->fixK5CheckBox, SLOT(setChecked(bool)));
-    QObject::connect(ui->fixK5CheckBox, SIGNAL(toggled(bool)),
-                     m_cameraCalibrator, SLOT(setFixK5(bool)));
+    QObject::connect(m_cameraCalibrator, &ZPinholeCameraCalibrator::fixK5Changed,
+                     ui->fixK5CheckBox, &QCheckBox::setChecked);
+    QObject::connect(ui->fixK5CheckBox, &QCheckBox::toggled,
+                     m_cameraCalibrator, &ZPinholeCameraCalibrator::setFixK5);
 
     ui->fixK6CheckBox->setChecked(m_cameraCalibrator->fixK6());
-    QObject::connect(m_cameraCalibrator, SIGNAL(fixK6Changed(bool)),
-                     ui->fixK6CheckBox, SLOT(setChecked(bool)));
-    QObject::connect(ui->fixK6CheckBox, SIGNAL(toggled(bool)),
-                     m_cameraCalibrator, SLOT(setFixK6(bool)));
+    QObject::connect(m_cameraCalibrator, &ZPinholeCameraCalibrator::fixK6Changed,
+                     ui->fixK6CheckBox, &QCheckBox::setChecked);
+    QObject::connect(ui->fixK6CheckBox, &QCheckBox::toggled,
+                     m_cameraCalibrator, &ZPinholeCameraCalibrator::setFixK6);
 
     ui->fixPrincipalPointCheckBox->setChecked(m_cameraCalibrator->fixPrincipalPoint());
-    QObject::connect(m_cameraCalibrator, SIGNAL(fixPrincipalPointChanged(bool)),
-                     ui->fixPrincipalPointCheckBox, SLOT(setChecked(bool)));
-    QObject::connect(ui->fixPrincipalPointCheckBox, SIGNAL(toggled(bool)),
-                     m_cameraCalibrator, SLOT(setFixPrincipalPoint(bool)));
+    QObject::connect(m_cameraCalibrator, &ZPinholeCameraCalibrator::fixPrincipalPointChanged,
+                     ui->fixPrincipalPointCheckBox, &QCheckBox::setChecked);
+    QObject::connect(ui->fixPrincipalPointCheckBox, &QCheckBox::toggled,
+                     m_cameraCalibrator, &ZPinholeCameraCalibrator::setFixPrincipalPoint);
 
     ui->fixAspectRatioCheckBox->setChecked(m_cameraCalibrator->fixAspectRatio());
-    QObject::connect(m_cameraCalibrator, SIGNAL(fixAspectRatioChanged(bool)),
-                     ui->fixAspectRatioCheckBox, SLOT(setChecked(bool)));
-    QObject::connect(ui->fixAspectRatioCheckBox, SIGNAL(toggled(bool)),
-                     m_cameraCalibrator, SLOT(setFixAspectRatio(bool)));
+    QObject::connect(m_cameraCalibrator, &ZPinholeCameraCalibrator::fixAspectRatioChanged,
+                     ui->fixAspectRatioCheckBox, &QCheckBox::setChecked);
+    QObject::connect(ui->fixAspectRatioCheckBox, &QCheckBox::toggled,
+                     m_cameraCalibrator, &ZPinholeCameraCalibrator::setFixAspectRatio);
 
     ui->termMaxIterationsSpinBox->setValue(m_cameraCalibrator->termCriteriaMaxIterations());
-    QObject::connect(m_cameraCalibrator, SIGNAL(termCriteriaMaxIterationsChanged(int)),
-                     ui->termMaxIterationsSpinBox, SLOT(setValue(int)));
-    QObject::connect(ui->termMaxIterationsSpinBox, SIGNAL(valueChanged(int)),
-                     m_cameraCalibrator, SLOT(setTermCriteriaMaxIterations(int)));
+    QObject::connect(m_cameraCalibrator, &ZPinholeCameraCalibrator::termCriteriaMaxIterationsChanged,
+                     ui->termMaxIterationsSpinBox, &QSpinBox::setValue);
+    QObject::connect(ui->termMaxIterationsSpinBox, static_cast<void(QSpinBox::*)(int)>(&QSpinBox::valueChanged),
+                     m_cameraCalibrator, &ZPinholeCameraCalibrator::setTermCriteriaMaxIterations);
 
     ui->termEpsilonSpinBox->setValue(m_cameraCalibrator->termCriteriaEpsilon());
-    QObject::connect(m_cameraCalibrator, SIGNAL(termCriteriaEpsilonChanged(double)),
-                     ui->termEpsilonSpinBox, SLOT(setValue(double)));
-    QObject::connect(ui->termEpsilonSpinBox, SIGNAL(valueChanged(double)),
-                     m_cameraCalibrator, SLOT(setTermCriteriaEpsilon(double)));
+    QObject::connect(m_cameraCalibrator, &ZPinholeCameraCalibrator::termCriteriaEpsilonChanged,
+                     ui->termEpsilonSpinBox, &QDoubleSpinBox::setValue);
+    QObject::connect(ui->termEpsilonSpinBox, static_cast<void(QDoubleSpinBox::*)(double)>(&QDoubleSpinBox::valueChanged),
+                     m_cameraCalibrator, &ZPinholeCameraCalibrator::setTermCriteriaEpsilon);
 }
 
 ZPinholeCameraCalibratorConfigWidget::~ZPinholeCameraCalibratorConfigWidget()

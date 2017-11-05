@@ -11,15 +11,17 @@ DESTDIR       = $$Z3D_BUILD_DIR/plugins/calibrationpatternfinder
 HEADERS       = \
     zincompletecirclegridpatternfinder.h \
     zincompletecirclegridpatternfinderconfigwidget.h \
-    zincompletecirclegridpatternfinderplugin.h
+    zincompletecirclegridpatternfinderplugin.h \
     
 SOURCES       = \
     zincompletecirclegridpatternfinder.cpp \
     zincompletecirclegridpatternfinderconfigwidget.cpp \
-    zincompletecirclegridpatternfinderplugin.cpp
+    zincompletecirclegridpatternfinderplugin.cpp \
 
 FORMS += \
-    zincompletecirclegridpatternfinderconfigwidget.ui
+    zincompletecirclegridpatternfinderconfigwidget.ui \
+
+
 
 ###############################################################################
 # Core

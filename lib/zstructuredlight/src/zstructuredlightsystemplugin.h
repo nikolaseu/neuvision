@@ -19,29 +19,22 @@
 
 #pragma once
 
+#include "zstructuredlight_fwd.h"
 #include "zstructuredlight_global.h"
-#include "zcoreplugin.h"
 
-#include "zstructuredlightsystem.h"
-
-QT_BEGIN_NAMESPACE
 class QSettings;
-QT_END_NAMESPACE
 
 namespace Z3D
 {
 
-class Z3D_STRUCTUREDLIGHT_SHARED_EXPORT ZStructuredLightSystemPlugin : public ZCorePlugin
+class Z3D_STRUCTUREDLIGHT_SHARED_EXPORT ZStructuredLightSystemPlugin
 {
-    Q_OBJECT
-
 public:
     virtual ~ZStructuredLightSystemPlugin() {}
 
-    virtual QList<QString> getAll() = 0;
-    virtual QWidget *getConfigWidget(ZStructuredLightSystem *structuredLightSystem) = 0;
+    virtual QWidget *getConfigWidget(ZStructuredLightSystemWeakPtr structuredLightSystem) = 0;
 
-    virtual ZStructuredLightSystem::Ptr get(QSettings *settings) = 0;
+    virtual ZStructuredLightSystemPtr get(QSettings *settings) = 0;
 };
 
 } // namespace Z3D

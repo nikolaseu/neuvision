@@ -81,13 +81,13 @@ ZNIIMAQdxGrabCameraPrivate *ZNIIMAQdxGrabCameraPrivate::getCameraByName(QString 
     return new ZNIIMAQdxGrabCameraPrivate(session);
 }
 
-ZNIIMAQdxGrabCameraPrivate::ZNIIMAQdxGrabCameraPrivate(SESSION_ID sessionId, QObject *parent) :
-    QObject(parent),
-    m_session(sessionId),
-    m_imaqImage(nullptr),
-    m_imaqBufferSize(20),
-    m_acquisitionCounter(0),
-    m_stopThreadRequested(true)
+ZNIIMAQdxGrabCameraPrivate::ZNIIMAQdxGrabCameraPrivate(SESSION_ID sessionId, QObject *parent)
+    : QObject(parent)
+    , m_session(sessionId)
+    , m_imaqImage(nullptr)
+    , m_imaqBufferSize(20)
+    , m_acquisitionCounter(0)
+    , m_stopThreadRequested(true)
 {
     /// obtain properties to generate unique camera id
     char buffer[IMAQDX_MAX_API_STRING_LENGTH] = { 0 };
@@ -707,7 +707,7 @@ void ZNIIMAQdxGrabCameraPrivate::processImage()
         */
 
         /// This is without copying data, use same buffer
-        ZImageGrayscale::Ptr currentImage = q_ptr->getNextBufferImage(imageInfo.xRes, imageInfo.yRes,
+        ZCameraImagePtr currentImage = q_ptr->getNextBufferImage(imageInfo.xRes, imageInfo.yRes,
                                                                      imageInfo.xOffset, imageInfo.yOffset,
                                                                      bytesPerPixel,
                                                                      imageInfo.imageStart);
@@ -780,25 +780,6 @@ void ZNIIMAQdxGrabCameraPrivate::saveCameraAttributes() const
             }
         }
     }
-
-    /*QSettings settings(
-                mUUID + QString(".config.ini"),
-                QSettings::IniFormat);
-
-    settings.beginGroup("config");
-    for (int i = 0; i < setts.size(); ++i) {
-        settings.beginGroup(QString("%1").arg(i, 4, 10, QLatin1Char('0')));
-        settings.setValue("name", setts.at(i).name);
-        settings.setValue("value", setts.at(i).value);
-        settings.endGroup();
-    }
-    settings.endGroup();
-
-    settings.sync();
-
-    foreach (QString key, settings.allKeys()) {
-        qDebug() << key << settings.value(key);
-    }*/
 
     /// delete attribute array
     delete [] attributeArray;

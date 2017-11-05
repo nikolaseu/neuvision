@@ -23,15 +23,15 @@
 namespace Z3D
 {
 
-static const int ZMultiCameraCalibrationPtrId = qRegisterMetaType<Z3D::ZMultiCameraCalibration::Ptr>("Z3D::ZMultiCameraCalibration::Ptr");
+static const int ZMultiCameraCalibrationPtrId = qRegisterMetaType<Z3D::ZMultiCameraCalibrationPtr>("Z3D::ZMultiCameraCalibrationPtr");
 
-ZMultiCameraCalibration::ZMultiCameraCalibration(std::vector<ZCameraCalibration::Ptr> calibrations)
+ZMultiCameraCalibration::ZMultiCameraCalibration(std::vector<ZCameraCalibrationPtr> calibrations)
     : m_calibrations(calibrations)
 {
 
 }
 
-std::vector<ZCameraCalibration::Ptr> ZMultiCameraCalibration::calibrations() const
+std::vector<ZCameraCalibrationPtr> ZMultiCameraCalibration::calibrations() const
 {
     return m_calibrations;
 }

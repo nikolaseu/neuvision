@@ -19,14 +19,13 @@
 
 #pragma once
 
-#include "zcalibratedcamera.h"
-#include "zsimplepointcloud.h"
+#include "zstructuredlight_fwd.h"
 
-#include "zpinhole/zpinholecameracalibration.h"
+#include <Z3DCameraCalibration>
 
 #include <QObject>
 
-#include "opencv2/core/types.hpp"
+#include <opencv2/core/mat.hpp>
 
 namespace Z3D
 {
@@ -56,14 +55,14 @@ public slots:
 //    cv::Mat getRectifiedSnapshot2D();
     //Z3D::ZSimplePointCloud::Ptr getRectifiedSnapshot3D(int cameraIndex, float imageScale = 50, int lod_step = 4);
 
-    Z3D::ZSimplePointCloud::Ptr triangulateOptimized(const cv::Mat &intensityImg,
+    Z3D::ZSimplePointCloudPtr triangulateOptimized(const cv::Mat &intensityImg,
             const std::map<int, std::vector<cv::Vec2f> > &leftPoints,
             const std::map<int, std::vector<cv::Vec2f> > &rightPoints,
             int maxPosibleCloudPoints,
             float maxValidDistanceThreshold);
 
-    void setLeftCameraCalibration(Z3D::ZCameraCalibration::Ptr cameraCalibration);
-    void setRightCameraCalibration(Z3D::ZCameraCalibration::Ptr cameraCalibration);
+    void setLeftCameraCalibration(Z3D::ZCameraCalibrationPtr cameraCalibration);
+    void setRightCameraCalibration(Z3D::ZCameraCalibrationPtr cameraCalibration);
 
 protected slots:
     void precomputeOptimizations();
@@ -73,7 +72,7 @@ protected slots:
     void setReady(bool arg);
 
 protected:
-    std::vector<QPointer<Z3D::ZPinholeCameraCalibration> > mCal;
+    std::vector<Z3D::ZPinholeCameraCalibrationWeakPtr > mCal;
 
     std::vector< std::vector<cv::Vec3d> > m_undistortedRays;
     //std::vector< std::vector<cv::Vec3d> > m_undistortedWorldRays;

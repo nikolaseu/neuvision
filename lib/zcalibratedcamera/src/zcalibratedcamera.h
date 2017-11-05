@@ -21,7 +21,7 @@
 
 #include "zcalibratedcamera_global.h"
 
-#include <Z3DCameraInterface>
+#include <Z3DCameraAcquisition>
 #include <Z3DCameraCalibration>
 
 namespace Z3D
@@ -32,23 +32,20 @@ class Z3D_CALIBRATEDCAMERA_SHARED_EXPORT ZCalibratedCamera : public QObject
     Q_OBJECT
 
 public:
-    typedef std::shared_ptr<Z3D::ZCalibratedCamera> Ptr;
-    typedef QPointer<Z3D::ZCalibratedCamera> WeakPtr;
-
-    explicit ZCalibratedCamera(ZCameraInterface::Ptr camera, ZCameraCalibration::Ptr cameraCalibration);
+    explicit ZCalibratedCamera(ZCameraPtr camera, ZCameraCalibrationPtr cameraCalibration);
     ~ZCalibratedCamera();
 
-    ZCameraInterface::Ptr camera() const { return m_camera; }
-    ZCameraCalibration::Ptr calibration() const { return m_cameraCalibration; }
+    ZCameraPtr camera() const { return m_camera; }
+    ZCameraCalibrationPtr calibration() const { return m_cameraCalibration; }
 
-    void setCalibration(Z3D::ZCameraCalibration::Ptr newCalibration);
+    void setCalibration(Z3D::ZCameraCalibrationPtr newCalibration);
 
 signals:
-    void calibrationChanged(Z3D::ZCameraCalibration::Ptr newCalibration);
+    void calibrationChanged(Z3D::ZCameraCalibrationPtr newCalibration);
 
 protected:
-    ZCameraInterface::Ptr m_camera;
-    ZCameraCalibration::Ptr m_cameraCalibration;
+    ZCameraPtr m_camera;
+    ZCameraCalibrationPtr m_cameraCalibration;
 };
 
 } // namespace Z3D

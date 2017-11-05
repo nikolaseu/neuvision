@@ -21,10 +21,7 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 
-#include <Z3DCalibratedCamera>
-#include <Z3DCameraAcquisition>
-
-
+#include "zsimplepointcloud.h"
 #include "zpatternprojection.h"
 #include "zpatternprojectionprovider.h"
 #include "zstructuredlightsystem.h"
@@ -37,9 +34,8 @@
 #include <QDir>
 #include <QFileDialog>
 #include <QMessageBox>
+#include <QSettings>
 #include <QTimer>
-
-
 
 
 
@@ -63,11 +59,6 @@ MainWindow::MainWindow(QWidget *parent)
 
 MainWindow::~MainWindow()
 {
-    qDebug() << "deleting pattern projection instances...";
-    for (auto *patternProjection : m_patternProjectionList) {
-        delete patternProjection;
-    }
-
     qDebug() << "deleting ui...";
     delete ui;
 
@@ -79,12 +70,12 @@ void MainWindow::init()
     initStructuredLightSystem();
 
     /// connect combobox to slot
-    connect(ui->patternTypeComboBox, SIGNAL(currentIndexChanged(int)),
-            this, SLOT(onPatternProjectionTypeChanged(int)));
+    connect(ui->patternTypeComboBox, static_cast<void(QComboBox::*)(int)>(&QComboBox::currentIndexChanged),
+            this, &MainWindow::onPatternProjectionTypeChanged);
 
     /// add types of pattern projection
-    m_patternProjectionList << Z3D::ZPatternProjectionProvider::getAll();
-    for (const auto *patternProjection : m_patternProjectionList) {
+    m_patternProjectionList = Z3D::ZPatternProjectionProvider::getAll();
+    for (const auto patternProjection : m_patternProjectionList) {
         ui->patternTypeComboBox->addItem(patternProjection->displayName());
     }
 }
@@ -120,7 +111,7 @@ void MainWindow::initStructuredLightSystem()
                 m_currentStructuredLightSystem.get(), &Z3D::ZStructuredLightSystem::start);
 
         /// add config widget
-        QWidget *currentWidget = Z3D::ZStructuredLightSystemProvider::getConfigWidget(m_currentStructuredLightSystem);
+        QWidget *currentWidget = Z3D::ZStructuredLightSystemProvider::getConfigWidget(m_currentStructuredLightSystem.get());
         ui->structuredLightSystemConfigLayout->addWidget(currentWidget);
         currentWidget->setVisible(true);
 
@@ -138,7 +129,7 @@ void MainWindow::onPatternProjectionTypeChanged(int index)
 {
     /// remove previous config widget and hide it
     if (m_currentPatternProjection) {
-        QWidget *previousWidget = Z3D::ZPatternProjectionProvider::getConfigWidget(m_currentPatternProjection);
+        QWidget *previousWidget = Z3D::ZPatternProjectionProvider::getConfigWidget(m_currentPatternProjection.get());
         previousWidget->setVisible(false);
         ui->patternProjectionConfigLayout->removeWidget(previousWidget);
     }
@@ -150,12 +141,12 @@ void MainWindow::onPatternProjectionTypeChanged(int index)
     }
 
     /// add config widget
-    QWidget *currentWidget = Z3D::ZPatternProjectionProvider::getConfigWidget(m_currentPatternProjection);
+    QWidget *currentWidget = Z3D::ZPatternProjectionProvider::getConfigWidget(m_currentPatternProjection.get());
     ui->patternProjectionConfigLayout->addWidget(currentWidget);
     currentWidget->setVisible(true);
 }
 
-void MainWindow::onScanFinished(Z3D::ZSimplePointCloud::Ptr cloud)
+void MainWindow::onScanFinished(Z3D::ZSimplePointCloudPtr cloud)
 {
     if (!cloud) {
         QMessageBox::warning(this, tr("Scan error"),

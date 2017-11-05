@@ -24,8 +24,10 @@
 
 #include <iostream>
 
-static int z3dCameraCalibrationPtrTypeId = qRegisterMetaType<Z3D::ZCameraCalibration::Ptr>("Z3D::ZCameraCalibration::Ptr");
-static int z3dCameraCalibrationPtrVectorTypeId = qRegisterMetaType<std::vector<Z3D::ZCameraCalibration::Ptr> >("std::vector<Z3D::ZCameraCalibration::Ptr>");
+#include <opencv2/core.hpp>
+
+static int z3dCameraCalibrationPtrTypeId = qRegisterMetaType<Z3D::ZCameraCalibrationPtr>("Z3D::ZCameraCalibrationPtr");
+static int z3dCameraCalibrationPtrVectorTypeId = qRegisterMetaType<std::vector<Z3D::ZCameraCalibrationPtr> >("std::vector<Z3D::ZCameraCalibrationPtr>");
 
 namespace Z3D
 {
