@@ -123,8 +123,8 @@ void ZPluginLoader::loadPlugins(QString folder)
                 m_plugins[folderName] << plugin;
 #endif
             } else {
-                delete plugin;
                 qWarning() << "error loading plugin" << fileName << "->" << plugin->errorString();
+                delete plugin;
             }
         }
     }
