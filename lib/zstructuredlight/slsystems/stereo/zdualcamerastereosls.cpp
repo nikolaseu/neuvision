@@ -20,137 +20,38 @@
 
 #include "zdualcamerastereosls.h"
 
-#include "zcalibratedcamera.h"
-#include "zcalibratedcameraprovider.h"
-#include "zcameraacquisitionmanager.h"
+#include "zcamerainterface.h"
 #include "zdecodedpattern.h"
-#include "zpinhole/zpinholecameracalibration.h"
+#include "zsimplepointcloud.h"
 
 #include <QDebug>
 #include <QSettings>
+#include <QTime>
 
 namespace Z3D
 {
 
-ZDualCameraStereoSLS::ZDualCameraStereoSLS(QObject *parent)
-    : ZStereoSLS(parent)
+ZDualCameraStereoSLS::ZDualCameraStereoSLS(ZCameraList cameras,
+                                           ZMultiCameraCalibrationPtr stereoCalibration,
+                                           ZPatternProjectionPtr patternProjection,
+                                           QObject *parent)
+    : ZStereoSLS(cameras, stereoCalibration, patternProjection, parent)
+    , m_cameras(cameras)
 {
-
+    if (m_cameras.size() != 2) {
+        qWarning() << "there must be exactly 2 cameras!";
+        return;
+    }
 }
 
 ZDualCameraStereoSLS::~ZDualCameraStereoSLS()
 {
-    qDebug() << "deleting cameras...";
-    m_cameras.clear();
+
 }
 
-ZCalibratedCameraPtr ZDualCameraStereoSLS::leftCamera() const
+ZCameraList ZDualCameraStereoSLS::cameras() const
 {
-    return m_cameras[0];
-}
-
-Z3D::ZCalibratedCameraPtr ZDualCameraStereoSLS::rightCamera() const
-{
-    return m_cameras[1];
-}
-
-void ZDualCameraStereoSLS::addCameras(QList<Z3D::ZCalibratedCameraPtr> cameras)
-{
-    setReady(false);
-
-    /// add cameras to list
-    m_cameras.clear();
-
-    if (cameras.size() >= 2) {
-        m_cameras.resize(2);
-        setLeftCamera(cameras[0]);
-        setRightCamera(cameras[1]);
-    }
-
-    Z3D::ZCameraList camerasVector;
-    for (const auto &cam : cameras) {
-        camerasVector.push_back(cam->camera());
-    }
-    setAcquisitionManager(ZCameraAcquisitionManagerPtr(new ZCameraAcquisitionManager(camerasVector)));
-}
-
-void ZDualCameraStereoSLS::setLeftCamera(Z3D::ZCalibratedCameraPtr camera)
-{
-    if (m_cameras[0] != camera) {
-        /// check first! this only works for pinhole cameras!
-        auto calibration = std::dynamic_pointer_cast<Z3D::ZPinholeCameraCalibration>(camera->calibration());
-
-        if (!calibration) {
-            qWarning() << "invalid calibration! this only works for pinhole cameras!";
-            return;
-        }
-
-        if (m_cameras[0]) {
-            disconnect(m_cameras[0].get(), &Z3D::ZCalibratedCamera::calibrationChanged,
-                       this, &ZDualCameraStereoSLS::setLeftCalibration);
-        }
-
-        m_cameras[0] = camera;
-
-        connect(m_cameras[0].get(), &Z3D::ZCalibratedCamera::calibrationChanged,
-                this, &ZDualCameraStereoSLS::setLeftCalibration);
-
-        setLeftCalibration(camera->calibration());
-    }
-}
-
-void ZDualCameraStereoSLS::setRightCamera(ZCalibratedCameraPtr camera)
-{
-    if (m_cameras[1] != camera) {
-        /// check first! this only works for pinhole cameras!
-        auto calibration = std::dynamic_pointer_cast<Z3D::ZPinholeCameraCalibration>(camera->calibration());
-
-        if (!calibration) {
-            qWarning() << "invalid calibration! this only works for pinhole cameras!";
-            return;
-        }
-
-        if (m_cameras[1]) {
-            disconnect(m_cameras[1].get(), &Z3D::ZCalibratedCamera::calibrationChanged,
-                       this, &ZDualCameraStereoSLS::setRightCalibration);
-        }
-
-        m_cameras[1] = camera;
-
-        connect(m_cameras[1].get(), &Z3D::ZCalibratedCamera::calibrationChanged,
-                this, &ZDualCameraStereoSLS::setRightCalibration);
-
-        setRightCalibration(camera->calibration());
-    }
-}
-
-QString ZDualCameraStereoSLS::id() const
-{
-    return QString("DualCamera");
-}
-
-QString ZDualCameraStereoSLS::displayName() const
-{
-    return QString("Dual cameras");
-}
-
-void ZDualCameraStereoSLS::init(QSettings *settings)
-{
-    QList<ZCalibratedCameraPtr> cameras;
-
-    settings->beginGroup("Left");
-    {
-        cameras << CalibratedCameraProvider::getCalibratedCamera(settings);
-    }
-    settings->endGroup();
-
-    settings->beginGroup("Right");
-    {
-        cameras << CalibratedCameraProvider::getCalibratedCamera(settings);
-    }
-    settings->endGroup();
-
-    addCameras(cameras);
+    return m_cameras;
 }
 
 void ZDualCameraStereoSLS::onPatternProjected(ZProjectedPatternPtr pattern)
@@ -160,26 +61,19 @@ void ZDualCameraStereoSLS::onPatternProjected(ZProjectedPatternPtr pattern)
 
 void ZDualCameraStereoSLS::onPatternsDecoded(std::vector<ZDecodedPatternPtr> decodedPatterns)
 {
-    /// is there something to process?
-    for (auto decodedPattern : decodedPatterns) {
-        if (decodedPattern->estimatedCloudPoints() < 1) {
-            return;
-        }
-    }
+    QTime startTime;
+    startTime.start();
 
-    int estimatedCloudPoints = 0;
-    for (const auto &decodedPattern : decodedPatterns) {
-        estimatedCloudPoints += decodedPattern->estimatedCloudPoints();
-    }
-
-    Z3D::ZSimplePointCloudPtr cloud = triangulate(
-                decodedPatterns[0]->intensityImg(),
-                decodedPatterns[0]->fringePointsList(),
-            decodedPatterns[1]->fringePointsList(),
-            estimatedCloudPoints);
+    Z3D::ZSimplePointCloudPtr cloud = triangulate(decodedPatterns[0]->intensityImg(),
+            decodedPatterns[0]->decodedImage(),
+            decodedPatterns[1]->decodedImage());
 
     if (cloud) {
+        qDebug() << "finished calculating point cloud with" << cloud->points.size()
+                 << "points in" << startTime.elapsed() << "msecs";
         emit scanFinished(cloud);
+    } else {
+        qDebug() << "finished calculating point cloud in" << startTime.elapsed() << "msecs";
     }
 }
 

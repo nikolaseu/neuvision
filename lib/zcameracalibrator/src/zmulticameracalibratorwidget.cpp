@@ -49,7 +49,7 @@
 namespace Z3D
 {
 
-ZMultiCameraCalibratorWidget::ZMultiCameraCalibratorWidget(std::vector<ZCalibratedCameraPtr> cameras, QWidget *parent)
+ZMultiCameraCalibratorWidget::ZMultiCameraCalibratorWidget(ZCameraList cameras, QWidget *parent)
     : ZWidget(parent)
     , ui(new Ui::ZMultiCameraCalibratorWidget)
     , m_model(new ZMultiCalibrationImageModel(this))
@@ -70,7 +70,7 @@ ZMultiCameraCalibratorWidget::ZMultiCameraCalibratorWidget(std::vector<ZCalibrat
         /// set up camera image preview
         if (camera) {
             hasAnyRealCamera = true;
-            QObject::connect(camera->camera().get(), &ZCameraInterface::newImageReceived,
+            QObject::connect(camera.get(), &ZCameraInterface::newImageReceived,
                              cameraImageViewer, static_cast<void(ZImageViewer::*)(Z3D::ZCameraImagePtr)>(&ZImageViewer::updateImage));
         }
 
@@ -160,7 +160,7 @@ ZMultiCameraCalibratorWidget::~ZMultiCameraCalibratorWidget()
 
     for (auto camera : m_cameras) {
         if (camera && ui->stackedWidget->currentIndex() == CAMERA_VIEW)
-            camera->camera()->stopAcquisition();
+            camera->stopAcquisition();
     }
 
     delete ui;
@@ -188,7 +188,7 @@ void ZMultiCameraCalibratorWidget::setCurrentView(int newView)
 
     for (auto camera : m_cameras) {
         if (camera && ui->stackedWidget->currentIndex() == CAMERA_VIEW && newView != CAMERA_VIEW)
-            camera->camera()->stopAcquisition();
+            camera->stopAcquisition();
     }
 
     switch (newView) {
@@ -203,7 +203,7 @@ void ZMultiCameraCalibratorWidget::setCurrentView(int newView)
         ui->stackedWidget->setCurrentIndex(newView);
         for (auto camera : m_cameras) {
             if (camera)
-                camera->camera()->startAcquisition();
+                camera->startAcquisition();
         }
         break;
     case CALIBRATION_VIEW:
@@ -296,17 +296,29 @@ void ZMultiCameraCalibratorWidget::onProgressChanged(float progress, QString mes
 void ZMultiCameraCalibratorWidget::onCalibrationChanged(ZMultiCameraCalibrationPtr calibrationResult)
 {
     if (calibrationResult) {
-        const auto &newCalibrations = calibrationResult->calibrations();
         QString currentDateTime = QDateTime::currentDateTime().toString("yyyyMMddhhmmss");
+
+        //! save multi camera calibration
+        const QString fileName = QString("%1/%2.multicameracalib")
+                .arg(m_sessionFolder)
+                .arg(currentDateTime);
+        if (!ZCameraCalibrationProvider::saveCameraCalibration(fileName, calibrationResult)) {
+            qWarning() << "unable to save multi calibration to file:" << fileName;
+        }
+
+        //! save individual camera calibration
+        const auto &newCalibrations = calibrationResult->calibrations();
+
         for (size_t i=0; i<m_cameras.size(); ++i) {
             const auto &camera = m_cameras[i];
             Z3D::ZCameraCalibrationPtr newCalibration = newCalibrations[i];
-            QString fileName = QString("%1/%2__%3.cameracalib.ini")
+            const QString fileName = QString("%1/%2__%3.cameracalib.ini")
                     .arg(m_sessionFolder)
                     .arg(currentDateTime)
-                    .arg(camera ? camera->camera()->uuid() : QString("camera%1").arg(i));
-            if (!newCalibration->saveToFile(fileName))
+                    .arg(camera ? camera->uuid() : QString("camera%1").arg(i));
+            if (!newCalibration->saveToFile(fileName)) {
                 qWarning() << "unable to save calibration to file:" << fileName;
+            }
 
             //! TODO show calibration results!
         }
@@ -355,7 +367,7 @@ void ZMultiCameraCalibratorWidget::newSession()
         QString cameraFolder = QString("%1/%2__%3")
                 .arg(m_sessionFolder)
                 .arg(i, 2, 10, QLatin1Char('0'))
-                .arg(camera ? camera->camera()->uuid() : QString("camera%1").arg(i));
+                .arg(camera ? camera->uuid() : QString("camera%1").arg(i));
 
         if (!QDir::current().mkpath(cameraFolder)) {
             qWarning() << "unable to create folder" << cameraFolder;
@@ -390,14 +402,9 @@ void ZMultiCameraCalibratorWidget::on_runCalibrationButton_clicked()
     std::vector<Z3D::ZCameraCalibrationPtr> currentCalibrations;
 
     for (size_t iCamera=0; iCamera<m_cameras.size(); ++iCamera) {
-        const auto &camera = m_cameras[iCamera];
-        if (camera) {
-            currentCalibrations.push_back(camera->calibration());
-        } else {
-            const auto &image = m_model->imageAt(0)->image(iCamera);
-            auto *calibration = new ZPinholeCameraCalibration(image->width(), image->height());
-            currentCalibrations.push_back(ZCameraCalibrationPtr(calibration));
-        }
+        const auto &image = m_model->imageAt(0)->image(iCamera);
+        auto *calibration = new ZPinholeCameraCalibration(image->width(), image->height());
+        currentCalibrations.push_back(ZCameraCalibrationPtr(calibration));
     }
 
     m_calibratorWorker->calibrate(currentCalibrations);
@@ -424,13 +431,13 @@ void ZMultiCameraCalibratorWidget::on_saveCameraImageButton_clicked()
     QList<ZCalibrationImagePtr> calibrationImagesList;
 
     for (auto camera : m_cameras) {
-        imagesList << camera->camera()->getSnapshot();
+        imagesList << camera->getSnapshot();
     }
 
     bool isValid = true;
 
     for (size_t i=0; i<m_cameras.size(); ++i) {
-        Z3D::ZCalibratedCameraPtr camera = m_cameras[i];
+        auto camera = m_cameras[i];
         ZCameraImagePtr image = imagesList[i];
 
         if (m_sessionFolder.isEmpty()) {
@@ -440,7 +447,7 @@ void ZMultiCameraCalibratorWidget::on_saveCameraImageButton_clicked()
         QString fileName = QString("%1/%2__%3/%4.png")
                 .arg(m_sessionFolder)
                 .arg(i, 2, 10, QLatin1Char('0'))
-                .arg(camera ? camera->camera()->uuid() : QString("camera%1").arg(i))
+                .arg(camera ? camera->uuid() : QString("camera%1").arg(i))
                 .arg(currentDateTime);
 
         if (ZCameraImage::save(image, fileName)) {
@@ -479,8 +486,9 @@ void ZMultiCameraCalibratorWidget::on_saveCameraImageButton_clicked()
 void ZMultiCameraCalibratorWidget::on_cameraSettingsButton_clicked()
 {
     for (auto camera : m_cameras) {
-        if (camera)
-            camera->camera()->showSettingsDialog();
+        if (camera) {
+            camera->showSettingsDialog();
+        }
     }
 }
 

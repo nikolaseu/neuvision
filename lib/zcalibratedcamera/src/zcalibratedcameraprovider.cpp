@@ -31,12 +31,12 @@
 namespace Z3D
 {
 
-CalibratedCameraProvider::CalibratedCameraProvider()
+ZCalibratedCameraProvider::ZCalibratedCameraProvider()
 {
 
 }
 
-QList<ZCalibratedCameraPtr> CalibratedCameraProvider::loadCameras(QString folder)
+QList<ZCalibratedCameraPtr> ZCalibratedCameraProvider::loadCameras(QString folder)
 {
     auto configDir = QDir(folder);
 
@@ -87,7 +87,7 @@ QList<ZCalibratedCameraPtr> CalibratedCameraProvider::loadCameras(QString folder
     return cameraList;
 }
 
-ZCalibratedCameraPtr CalibratedCameraProvider::getCalibratedCamera(QSettings *settings)
+ZCalibratedCameraPtr ZCalibratedCameraProvider::getCalibratedCamera(QSettings *settings)
 {
     Z3D::ZCameraPtr camera;
     Z3D::ZCameraCalibrationPtr cameraCalibration;

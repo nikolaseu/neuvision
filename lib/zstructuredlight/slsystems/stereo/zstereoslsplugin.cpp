@@ -20,8 +20,11 @@
 
 #include "zstereoslsplugin.h"
 
+#include "zcameracalibrationprovider.h"
+#include "zcameraprovider.h"
 #include "zdualcamerastereosls.h"
 #include "zdualcamerastereoslsconfigwidget.h"
+#include "zpatternprojectionprovider.h"
 #include "zsinglecamerastereosls.h"
 
 #include <QDebug>
@@ -37,22 +40,58 @@ ZStereoSLSPlugin::ZStereoSLSPlugin()
 
 ZStructuredLightSystemPtr ZStereoSLSPlugin::get(QSettings *settings)
 {
-    ZStructuredLightSystemPtr sls;
-
     const QString mode = settings->value("Mode").toString();
+
+    settings->beginGroup("StereoCalibration");
+    auto stereoCalibration = ZCameraCalibrationProvider::getMultiCameraCalibration(settings);
+    settings->endGroup();
+
+    if (!stereoCalibration) {
+        qWarning() << "failed to load stereo calibration for" << mode;
+        return nullptr;
+    }
+
+    auto patternProjection = ZPatternProjectionProvider::get(settings);
+    if (!patternProjection) {
+        qWarning() << "failed to load pattern projection for" << mode;
+        return nullptr;
+    }
+
     if (mode == "DualCamera") {
-        sls = ZStructuredLightSystemPtr(new ZDualCameraStereoSLS());
+        ZCameraList cameras;
+        settings->beginGroup("Cameras");
+            settings->beginGroup("Left");
+                cameras.push_back(ZCameraProvider::getCamera(settings));
+            settings->endGroup();
+
+            settings->beginGroup("Right");
+                cameras.push_back(ZCameraProvider::getCamera(settings));
+            settings->endGroup();
+        settings->endGroup();
+
+        for (auto camera : cameras) {
+            if (!camera) {
+                qWarning() << "failed to load cameras for" << mode;
+                return nullptr;
+            }
+        }
+
+        return ZStructuredLightSystemPtr(new ZDualCameraStereoSLS(cameras, stereoCalibration, patternProjection));
     } else if (mode == "Projector+Camera") {
-        sls = ZStructuredLightSystemPtr(new ZSingleCameraStereoSLS());
+        settings->beginGroup("Camera");
+        auto camera = ZCameraProvider::getCamera(settings);
+        settings->endGroup();
+
+        if (!camera) {
+            qWarning() << "failed to load camera for" << mode;
+            return nullptr;
+        }
+
+        return ZStructuredLightSystemPtr(new ZSingleCameraStereoSLS(camera, stereoCalibration, patternProjection));
     } else {
         qWarning() << "unknown ZStereoSLS mode:" << mode;
+        return nullptr;
     }
-
-    if (sls) {
-        sls->init(settings);
-    }
-
-    return sls;
 }
 
 QWidget *ZStereoSLSPlugin::getConfigWidget(ZStructuredLightSystemWeakPtr structuredLightSystem)

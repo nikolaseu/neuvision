@@ -122,8 +122,8 @@ void ZPointCloudWidget::setPointSize(int pointSize)
 void ZPointCloudWidget::cleanup()
 {
     makeCurrent();
-    if (m_pointCloud)
-        m_pointCloudVbo.destroy();
+//    if (m_pointCloud) /// FIXME this was crashing when closing the app
+//        m_pointCloudVbo.destroy();
     delete m_program;
     m_program = nullptr;
     doneCurrent();

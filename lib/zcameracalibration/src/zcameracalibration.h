@@ -132,13 +132,6 @@ public:
                                             cv::Point3d &translation) = 0;          /// out
 
     ///
-    /// \brief loadCalibration load calibration from file
-    /// \param fileName
-    /// \return true on success
-    ///
-    virtual bool loadFromFile(const QString &fileName) = 0;
-
-    ///
     /// \brief saveCalibration saves calibration to file
     /// \param fileName
     /// \return true on success

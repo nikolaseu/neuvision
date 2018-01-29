@@ -69,16 +69,6 @@ ZBinaryPatternProjection::~ZBinaryPatternProjection()
     }
 }
 
-QString ZBinaryPatternProjection::id() const
-{
-    return QString(metaObject()->className());
-}
-
-QString ZBinaryPatternProjection::displayName() const
-{
-    return tr("Binary");
-}
-
 void ZBinaryPatternProjection::showProjectionWindow()
 {
     m_dlpview->showNormal();

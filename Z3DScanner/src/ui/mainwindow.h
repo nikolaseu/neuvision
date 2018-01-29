@@ -45,21 +45,14 @@ signals:
 
 private slots:
     void init();
-    void initStructuredLightSystem();
 
     virtual void closeEvent(QCloseEvent *event);
-
-    void onPatternProjectionTypeChanged(int index);
 
     void onScanFinished(Z3D::ZSimplePointCloudPtr cloud);
 
 private:
     Ui::MainWindow *ui;
 
-    std::vector<Z3D::ZPatternProjectionPtr> m_patternProjectionList;
-    Z3D::ZPatternProjectionPtr m_currentPatternProjection;
-
-    QList<Z3D::ZStructuredLightSystem *> m_structuredLightList;
     Z3D::ZStructuredLightSystemPtr m_currentStructuredLightSystem;
 
     ZPointCloudWidget *m_pointCloudWidget;

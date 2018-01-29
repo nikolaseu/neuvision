@@ -26,7 +26,7 @@
 #include "zapplication.h"
 #include "zapplicationstyle.h"
 #include "zcalibrationpatternfinderprovider.h"
-#include "zcalibratedcameraprovider.h"
+#include "zcameraprovider.h"
 #include "zcameracalibrationprovider.h"
 #include "zcameraprovider.h"
 #include "zmulticameracalibratorwidget.h"
@@ -72,16 +72,16 @@ int main(int argc, char* argv[])
         qDebug() << "trying to load config from:" << settingsFile;
         QSettings settings(settingsFile, QSettings::IniFormat);
 
-        std::vector<Z3D::ZCalibratedCameraPtr> cameras;
+        Z3D::ZCameraList cameras;
         settings.beginGroup("Left");
         {
-            cameras.push_back(Z3D::CalibratedCameraProvider::getCalibratedCamera(&settings));
+            cameras.push_back(Z3D::ZCameraProvider::getCamera(&settings));
         }
         settings.endGroup();
 
         settings.beginGroup("Right");
         {
-            cameras.push_back(Z3D::CalibratedCameraProvider::getCalibratedCamera(&settings));
+            cameras.push_back(Z3D::ZCameraProvider::getCamera(&settings));
         }
         settings.endGroup();
 

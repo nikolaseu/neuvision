@@ -37,16 +37,16 @@ class Z3D_STRUCTUREDLIGHT_SHARED_EXPORT ZStructuredLightSystem : public QObject
     Q_PROPERTY(bool debugShowDecodedImages READ debugShowDecodedImages WRITE setDebugShowDecodedImages NOTIFY debugShowDecodedImagesChanged)
 
 public:
-    explicit ZStructuredLightSystem(QObject *parent = nullptr);
+    explicit ZStructuredLightSystem(ZCameraAcquisitionManagerPtr acquisitionManager,
+                                    ZPatternProjectionPtr patternProjection,
+                                    QObject *parent = nullptr);
+
     virtual ~ZStructuredLightSystem();
-
-    virtual QString id() const = 0;
-    virtual QString displayName() const = 0;
-
-    virtual void init(QSettings *settings) = 0;
 
     bool ready() const;
     bool debugShowDecodedImages() const;
+
+    ZPatternProjectionPtr patternProjection() const;
 
 signals:
     void readyChanged(bool ready);
@@ -56,9 +56,6 @@ signals:
 
 public slots:
     bool start();
-
-    virtual void setAcquisitionManager(ZCameraAcquisitionManagerPtr acquisitionManager);
-    virtual void setPatternProjection(ZPatternProjectionPtr patternProjection);
 
     void setReady(bool ready);
     void setDebugShowDecodedImages(bool debugShowDecodedImages);

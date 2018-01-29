@@ -30,16 +30,24 @@ namespace Z3D
 class Z3D_CAMERACALIBRATION_SHARED_EXPORT ZOpenCVStereoCameraCalibration : public ZMultiCameraCalibration
 {
 public:
-    explicit ZOpenCVStereoCameraCalibration(std::vector<ZCameraCalibrationPtr> calibrations,
-                                            std::vector<std::vector<cv::Point3f>> objectPoints,
-                                            std::vector<std::vector<std::vector<cv::Point2f>>> imagePoints,
-                                            cv::Mat cameraMatrix[2],
-                                            cv::Mat distCoeffs[2],
-                                            cv::Size imageSize[2],
-                                            cv::Mat R,
-                                            cv::Mat T,
-                                            cv::Mat E,
-                                            cv::Mat F);
+    explicit ZOpenCVStereoCameraCalibration(const std::vector<ZCameraCalibrationPtr> &calibrations,
+                                            const std::vector<std::vector<cv::Point3f> > &objectPoints,
+                                            const std::vector<std::vector<std::vector<cv::Point2f> > > &imagePoints,
+                                            const cv::Mat cameraMatrix[],
+                                            const cv::Mat distCoeffs[],
+                                            const cv::Size imageSize[],
+                                            const cv::Mat &R,
+                                            const cv::Mat &T,
+                                            const cv::Mat &E,
+                                            const cv::Mat &F);
+
+    explicit ZOpenCVStereoCameraCalibration(const cv::Mat cameraMatrix[2],
+                                            const cv::Mat distCoeffs[2],
+                                            const cv::Size imageSize[2],
+                                            const cv::Mat &R,
+                                            const cv::Mat &T,
+                                            const cv::Mat &E,
+                                            const cv::Mat &F);
 
     const std::vector<std::vector<cv::Point3f>> objectPoints;
     const std::vector<std::vector<std::vector<cv::Point2f>>> imagePoints;

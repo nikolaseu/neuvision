@@ -29,7 +29,7 @@ class QSettings;
 namespace Z3D
 {
 
-class Z3D_CALIBRATEDCAMERA_SHARED_EXPORT CalibratedCameraProvider
+class Z3D_CALIBRATEDCAMERA_SHARED_EXPORT ZCalibratedCameraProvider
 {
 public:
     static QList<Z3D::ZCalibratedCameraPtr> loadCameras(QString folder = QString());
@@ -37,7 +37,7 @@ public:
     static Z3D::ZCalibratedCameraPtr getCalibratedCamera(QSettings *settings);
 
 protected:
-    explicit CalibratedCameraProvider();
+    explicit ZCalibratedCameraProvider();
 };
 
 } // namespace Z3D

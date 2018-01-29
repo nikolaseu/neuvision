@@ -27,6 +27,7 @@
 #include "zpluginloader.h"
 
 #include <QDebug>
+#include <QSettings>
 
 namespace Z3D
 {
@@ -63,15 +64,12 @@ void ZCameraCalibrationProvider::unloadPlugins()
 
 ZCameraCalibrationPtr ZCameraCalibrationProvider::getCalibration(QString pluginName, QVariantMap options)
 {
-    ZCameraCalibrationPtr calibration;
-
-    if (m_plugins.contains(pluginName)) {
-        calibration = m_plugins[pluginName]->getCalibration(options);
-    } else {
+    if (!m_plugins.contains(pluginName)) {
         qWarning() << "camera calibration plugin not found:" << pluginName;
+        return nullptr;
     }
 
-    return calibration;
+    return m_plugins[pluginName]->getCalibration(options);
 }
 
 ZCameraCalibrationPtr ZCameraCalibrationProvider::getCalibration(QSettings *settings)
@@ -106,6 +104,40 @@ QWidget *ZCameraCalibrationProvider::getConfigWidget(ZCameraCalibrator *cameraCa
     }
 
     return nullptr;
+}
+
+ZMultiCameraCalibrationPtr ZCameraCalibrationProvider::getMultiCameraCalibration(QString pluginName, QVariantMap options)
+{
+    if (!m_plugins.contains(pluginName)) {
+        qWarning() << "camera calibration plugin not found:" << pluginName;
+        return nullptr;
+    }
+
+    return m_plugins[pluginName]->getMultiCameraCalibration(options);
+}
+
+ZMultiCameraCalibrationPtr ZCameraCalibrationProvider::getMultiCameraCalibration(QSettings *settings)
+{
+    QVariantMap options;
+    for (const auto &key : settings->allKeys()) {
+        options[key] = settings->value(key);
+    }
+
+    QString pluginName = options["Type"].toString();
+
+    return getMultiCameraCalibration(pluginName, options);
+}
+
+bool ZCameraCalibrationProvider::saveCameraCalibration(const QString &fileName, ZMultiCameraCalibrationPtr calibration)
+{
+    //! FIXME not really the best way
+    for (auto *plugin : m_plugins.values()) {
+        if (plugin->saveCalibration(fileName, calibration)) {
+            return true;
+        }
+    }
+
+    return false;
 }
 
 QList<ZMultiCameraCalibrator *> ZCameraCalibrationProvider::getMultiCameraCalibrators()

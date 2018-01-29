@@ -30,13 +30,6 @@ ZBinaryPatternProjectionPlugin::ZBinaryPatternProjectionPlugin()
 
 }
 
-std::vector<ZPatternProjectionPtr> ZBinaryPatternProjectionPlugin::getAll()
-{
-    return std::vector<ZPatternProjectionPtr> {
-        ZPatternProjectionPtr(new ZBinaryPatternProjection())
-    };
-}
-
 QWidget *ZBinaryPatternProjectionPlugin::getConfigWidget(ZPatternProjectionWeakPtr patternProjection)
 {
     const auto item = m_patternProjectionWidgets.find(patternProjection);
@@ -57,6 +50,13 @@ QWidget *ZBinaryPatternProjectionPlugin::getConfigWidget(ZPatternProjectionWeakP
     }
 
     return widget;
+}
+
+ZPatternProjectionPtr ZBinaryPatternProjectionPlugin::get(QSettings *settings)
+{
+    Q_UNUSED(settings)
+
+    return ZPatternProjectionPtr(new ZBinaryPatternProjection());
 }
 
 } // namespace Z3D

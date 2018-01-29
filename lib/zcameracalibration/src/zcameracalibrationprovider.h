@@ -23,8 +23,9 @@
 #include "zcameracalibration_global.h"
 
 #include <QMap>
-#include <QSettings>
 #include <QVariantMap>
+
+class QSettings;
 
 namespace Z3D
 {
@@ -37,11 +38,14 @@ public:
     static void unloadPlugins();
 
     static ZCameraCalibrationPtr getCalibration(QString pluginName, QVariantMap options);
-
     static ZCameraCalibrationPtr getCalibration(QSettings *settings);
 
     static QList<ZCameraCalibrator *> getCameraCalibrators();
     static QWidget *getConfigWidget(ZCameraCalibrator *cameraCalibrator);
+
+    static ZMultiCameraCalibrationPtr getMultiCameraCalibration(QString pluginName, QVariantMap options);
+    static ZMultiCameraCalibrationPtr getMultiCameraCalibration(QSettings *settings);
+    static bool saveCameraCalibration(const QString &fileName, ZMultiCameraCalibrationPtr calibration);
 
     static QList<ZMultiCameraCalibrator *> getMultiCameraCalibrators();
     static QWidget *getConfigWidget(ZMultiCameraCalibrator *multiCameraCalibrator);

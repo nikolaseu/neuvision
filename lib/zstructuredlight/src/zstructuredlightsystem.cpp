@@ -33,14 +33,32 @@
 namespace Z3D
 {
 
-ZStructuredLightSystem::ZStructuredLightSystem(QObject *parent)
+ZStructuredLightSystem::ZStructuredLightSystem(
+        ZCameraAcquisitionManagerPtr acquisitionManager,
+        ZPatternProjectionPtr patternProjection,
+        QObject *parent)
     : QObject(parent)
-    , m_acqManager(nullptr)
-    , m_patternProjection(nullptr)
+    , m_acqManager(acquisitionManager)
+    , m_patternProjection(patternProjection)
     , m_ready(false)
     , m_debugShowDecodedImages(false)
 {
+    connect(m_patternProjection.get(), &ZPatternProjection::prepareAcquisition,
+            m_acqManager.get(), &ZCameraAcquisitionManager::prepareAcquisition);
+    connect(m_patternProjection.get(), &ZPatternProjection::acquireSingle,
+            m_acqManager.get(), &ZCameraAcquisitionManager::acquireSingle);
+    connect(m_patternProjection.get(), &ZPatternProjection::finishAcquisition,
+            m_acqManager.get(), &ZCameraAcquisitionManager::finishAcquisition);
 
+    connect(m_acqManager.get(), &ZCameraAcquisitionManager::acquisitionFinished,
+            m_patternProjection.get(), &ZPatternProjection::processImages);
+
+    connect(m_patternProjection.get(), &ZPatternProjection::patternProjected,
+            this, &ZStructuredLightSystem::onPatternProjected);
+    connect(m_patternProjection.get(), &ZPatternProjection::patternsDecoded,
+            this, &ZStructuredLightSystem::onPatternsDecodedDebug);
+    connect(m_patternProjection.get(), &ZPatternProjection::patternsDecoded,
+            this, &ZStructuredLightSystem::onPatternsDecoded);
 }
 
 ZStructuredLightSystem::~ZStructuredLightSystem()
@@ -58,41 +76,16 @@ bool ZStructuredLightSystem::debugShowDecodedImages() const
     return m_debugShowDecodedImages;
 }
 
+ZPatternProjectionPtr ZStructuredLightSystem::patternProjection() const
+{
+    return m_patternProjection;
+}
+
 bool ZStructuredLightSystem::start()
 {
-    if (!m_acqManager || !m_patternProjection) {
-        return false;
-    }
-
     QTimer::singleShot(0, m_patternProjection.get(), &ZPatternProjection::beginScan);
 
     return true;
-}
-
-void ZStructuredLightSystem::setAcquisitionManager(ZCameraAcquisitionManagerPtr acquisitionManager)
-{
-    if (m_acqManager == acquisitionManager) {
-        return;
-    }
-
-    discardConnections();
-
-    m_acqManager = acquisitionManager;
-
-    setupConnections();
-}
-
-void ZStructuredLightSystem::setPatternProjection(ZPatternProjectionPtr patternProjection)
-{
-    if (m_patternProjection == patternProjection) {
-        return;
-    }
-
-    discardConnections();
-
-    m_patternProjection = patternProjection;
-
-    setupConnections();
 }
 
 void ZStructuredLightSystem::setReady(bool ready)
@@ -177,54 +170,6 @@ void ZStructuredLightSystem::onPatternsDecodedDebug(std::vector<ZDecodedPatternP
         imageWidget->updateImage(decodedVisibleImage);
         imageWidget->show();
     }
-}
-
-void ZStructuredLightSystem::setupConnections()
-{
-    if (!m_acqManager || !m_patternProjection) {
-        return;
-    }
-
-    connect(m_patternProjection.get(), &ZPatternProjection::prepareAcquisition,
-            m_acqManager.get(), &ZCameraAcquisitionManager::prepareAcquisition);
-    connect(m_patternProjection.get(), &ZPatternProjection::acquireSingle,
-            m_acqManager.get(), &ZCameraAcquisitionManager::acquireSingle);
-    connect(m_patternProjection.get(), &ZPatternProjection::finishAcquisition,
-            m_acqManager.get(), &ZCameraAcquisitionManager::finishAcquisition);
-
-    connect(m_acqManager.get(), &ZCameraAcquisitionManager::acquisitionFinished,
-            m_patternProjection.get(), &ZPatternProjection::processImages);
-
-    connect(m_patternProjection.get(), &ZPatternProjection::patternProjected,
-            this, &ZStructuredLightSystem::onPatternProjected);
-    connect(m_patternProjection.get(), &ZPatternProjection::patternsDecoded,
-            this, &ZStructuredLightSystem::onPatternsDecodedDebug);
-    connect(m_patternProjection.get(), &ZPatternProjection::patternsDecoded,
-            this, &ZStructuredLightSystem::onPatternsDecoded);
-}
-
-void ZStructuredLightSystem::discardConnections()
-{
-    if (!m_acqManager || !m_patternProjection) {
-        return;
-    }
-
-    disconnect(m_patternProjection.get(), &ZPatternProjection::prepareAcquisition,
-               m_acqManager.get(), &ZCameraAcquisitionManager::prepareAcquisition);
-    disconnect(m_patternProjection.get(), &ZPatternProjection::acquireSingle,
-               m_acqManager.get(), &ZCameraAcquisitionManager::acquireSingle);
-    disconnect(m_patternProjection.get(), &ZPatternProjection::finishAcquisition,
-               m_acqManager.get(), &ZCameraAcquisitionManager::finishAcquisition);
-
-    disconnect(m_acqManager.get(), &ZCameraAcquisitionManager::acquisitionFinished,
-               m_patternProjection.get(), &ZPatternProjection::processImages);
-
-    disconnect(m_patternProjection.get(), &ZPatternProjection::patternProjected,
-            this, &ZStructuredLightSystem::onPatternProjected);
-    disconnect(m_patternProjection.get(), &ZPatternProjection::patternsDecoded,
-               this, &ZStructuredLightSystem::onPatternsDecodedDebug);
-    disconnect(m_patternProjection.get(), &ZPatternProjection::patternsDecoded,
-               this, &ZStructuredLightSystem::onPatternsDecoded);
 }
 
 } // namespace Z3D
