@@ -25,21 +25,15 @@
 
 namespace Z3D {
 
-class ZRingGrid2PatternFinderPlugin : public ZCalibrationPatternFinderPluginInterface
+class ZRingGrid2PatternFinderPlugin : public QObject, public ZCalibrationPatternFinderPluginInterface
 {
     Q_OBJECT
     Q_PLUGIN_METADATA(IID "z3d.cameracalibrator.calibrationpatternfinderplugininterface" FILE "zringgrid2.json")
     Q_INTERFACES(Z3D::ZCalibrationPatternFinderPluginInterface)
 
-    // ZCorePlugin interface
-public:
-    QString id() const override;
-    QString name() const override;
-    QString version() const override;
-
     // ZCalibrationPatternFinderPluginInterface interface
 public:
-    QList<ZCalibrationPatternFinder::Ptr> getPatternFinders() override;
+    QList<ZCalibrationPatternFinderPtr> getPatternFinders() override;
     QWidget *getConfigWidget(ZCalibrationPatternFinder *patternFinder) override;
 
 private:

@@ -25,24 +25,9 @@
 
 namespace Z3D {
 
-QString ZRingGrid2PatternFinderPlugin::id() const
+QList<ZCalibrationPatternFinderPtr> ZRingGrid2PatternFinderPlugin::getPatternFinders()
 {
-    return QString(metaObject()->className());
-}
-
-QString ZRingGrid2PatternFinderPlugin::name() const
-{
-    return QString(metaObject()->className());
-}
-
-QString ZRingGrid2PatternFinderPlugin::version() const
-{
-    return QString(Z3D_VERSION_STR);
-}
-
-QList<ZCalibrationPatternFinder::Ptr> ZRingGrid2PatternFinderPlugin::getPatternFinders()
-{
-    return QList<ZCalibrationPatternFinder::Ptr>() << ZCalibrationPatternFinder::Ptr(new ZRingGrid2PatternFinder());
+    return QList<ZCalibrationPatternFinderPtr>() << ZCalibrationPatternFinderPtr(new ZRingGrid2PatternFinder());
 }
 
 QWidget *ZRingGrid2PatternFinderPlugin::getConfigWidget(ZCalibrationPatternFinder *patternFinder)
