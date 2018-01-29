@@ -84,7 +84,7 @@ public:
     /// \param fileName: read calibration from this file
     /// \return true if calibration is loaded successfully
     ///
-    bool loadFromFile(const QString &fileName) override;
+    bool loadFromFile(const QString &fileName);
 
     bool saveToFile(const QString &fileName) override;
 

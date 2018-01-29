@@ -41,10 +41,7 @@ ZDualCameraStereoSLSConfigWidget::ZDualCameraStereoSLSConfigWidget(ZDualCameraSt
 
     /// Update UI
     connect(ui->calibrateSystemButton, &QPushButton::clicked, [&](){
-        std::vector<Z3D::ZCalibratedCameraPtr> cameras;
-        cameras.push_back(m_stereoSLS->leftCamera());
-        cameras.push_back(m_stereoSLS->rightCamera());
-        Z3D::ZMultiCameraCalibratorWidget *calibWidget = new Z3D::ZMultiCameraCalibratorWidget(cameras);
+        Z3D::ZMultiCameraCalibratorWidget *calibWidget = new Z3D::ZMultiCameraCalibratorWidget(m_stereoSLS->cameras());
         calibWidget->show();
     });
 
@@ -65,20 +62,14 @@ ZDualCameraStereoSLSConfigWidget::ZDualCameraStereoSLSConfigWidget(ZDualCameraSt
     QMenu *leftCameraMenu = new QMenu(this);
     QAction *leftPreviewAction = leftCameraMenu->addAction(tr("Preview..."));
     connect(leftPreviewAction, &QAction::triggered, [&](){
-        auto camera = m_stereoSLS->leftCamera()->camera();
+        auto camera = m_stereoSLS->cameras()[0];
         auto *previewDialog = new Z3D::ZCameraPreviewer(camera);
         previewDialog->show();
     });
     QAction *leftSettingsAction = leftCameraMenu->addAction(tr("Settings..."));
     connect(leftSettingsAction, &QAction::triggered, [&](){
-        auto camera = m_stereoSLS->leftCamera()->camera();
+        auto camera = m_stereoSLS->cameras()[0];
         camera->showSettingsDialog();
-    });
-    QAction *leftCalibrationAction = leftCameraMenu->addAction(tr("Calibration..."));
-    connect(leftCalibrationAction, &QAction::triggered, [&](){
-        auto camera = m_stereoSLS->leftCamera();
-        auto *calibrator = new Z3D::ZCameraCalibratorWidget(camera);
-        calibrator->show();
     });
     ui->leftCameraButton->setMenu(leftCameraMenu);
 
@@ -86,20 +77,14 @@ ZDualCameraStereoSLSConfigWidget::ZDualCameraStereoSLSConfigWidget(ZDualCameraSt
     QMenu *rightCameraMenu = new QMenu(this);
     QAction *rightPreviewAction = rightCameraMenu->addAction(tr("Preview..."));
     connect(rightPreviewAction, &QAction::triggered, [&](){
-        auto camera = m_stereoSLS->rightCamera()->camera();
+        auto camera = m_stereoSLS->cameras()[1];
         auto *previewDialog = new Z3D::ZCameraPreviewer(camera);
         previewDialog->show();
     });
     QAction *rightSettingsAction = rightCameraMenu->addAction(tr("Settings..."));
     connect(rightSettingsAction, &QAction::triggered, [&](){
-        auto camera = m_stereoSLS->rightCamera()->camera();
+        auto camera = m_stereoSLS->cameras()[1];
         camera->showSettingsDialog();
-    });
-    QAction *rightCalibrationAction = rightCameraMenu->addAction(tr("Calibration..."));
-    connect(rightCalibrationAction, &QAction::triggered, [&](){
-        auto camera = m_stereoSLS->rightCamera();
-        auto *calibrator = new Z3D::ZCameraCalibratorWidget(camera);
-        calibrator->show();
     });
     ui->rightCameraButton->setMenu(rightCameraMenu);
 }

@@ -19,27 +19,26 @@
 //
 
 #include "zopencvstereocameracalibration.h"
+#include "zpinholecameracalibration.h"
 
 #include <opencv2/calib3d.hpp>
 #include <opencv2/imgproc.hpp>
 
-#include <QDateTime>
 #include <QDebug>
-#include <QDir>
 
 namespace Z3D
 {
 
-ZOpenCVStereoCameraCalibration::ZOpenCVStereoCameraCalibration(std::vector<ZCameraCalibrationPtr> calibrations,
-                                                               std::vector<std::vector<cv::Point3f> > objectPoints,
-                                                               std::vector<std::vector<std::vector<cv::Point2f> > > imagePoints,
-                                                               cv::Mat cameraMatrix[2],
-                                                               cv::Mat distCoeffs[2],
-                                                               cv::Size imageSize[2],
-                                                               cv::Mat R,
-                                                               cv::Mat T,
-                                                               cv::Mat E,
-                                                               cv::Mat F)
+ZOpenCVStereoCameraCalibration::ZOpenCVStereoCameraCalibration(const std::vector<ZCameraCalibrationPtr> &calibrations,
+                                                               const std::vector<std::vector<cv::Point3f> > &objectPoints,
+                                                               const std::vector<std::vector<std::vector<cv::Point2f> > > &imagePoints,
+                                                               const cv::Mat cameraMatrix[],
+                                                               const cv::Mat distCoeffs[],
+                                                               const cv::Size imageSize[],
+                                                               const cv::Mat &R,
+                                                               const cv::Mat &T,
+                                                               const cv::Mat &E,
+                                                               const cv::Mat &F)
     : ZMultiCameraCalibration(calibrations)
     , objectPoints(objectPoints)
     , imagePoints(imagePoints)
@@ -51,8 +50,8 @@ ZOpenCVStereoCameraCalibration::ZOpenCVStereoCameraCalibration(std::vector<ZCame
     , E(E)
     , F(F)
 {
-    const auto ncameras = imagePoints.size();
-    const auto nimages = imagePoints[0].size();
+    const auto ncameras = 2;
+    const auto nimages = imagePoints.empty() ? 0 : imagePoints[0].size();
     imagePointsEpipolarError.resize(ncameras);
     for (size_t cam=0; cam<ncameras; ++cam) {
         imagePointsEpipolarError[cam].resize(nimages);
@@ -101,91 +100,18 @@ ZOpenCVStereoCameraCalibration::ZOpenCVStereoCameraCalibration(std::vector<ZCame
     qDebug() << "average reprojection error:"
              << err/npoints
              << "pixels (sum of error is" << err << "for" << npoints << "points)";
+}
 
-    /// create folder where the debug images will be saved
-    const QString timeStr = QDateTime::currentDateTime().toString("yyyy.MM.dd_hh.mm.ss");
-    const QString calibFolder = QString("./tmp/debug/stereo/%1/").arg(timeStr);
-    QDir::current().mkpath(calibFolder);
-    QDir calibDir = QDir(calibFolder);
+ZOpenCVStereoCameraCalibration::ZOpenCVStereoCameraCalibration(const cv::Mat cameraMatrix[],
+                                                               const cv::Mat distCoeffs[],
+                                                               const cv::Size imageSize[],
+                                                               const cv::Mat &R,
+                                                               const cv::Mat &T,
+                                                               const cv::Mat &E,
+                                                               const cv::Mat &F)
+    : ZOpenCVStereoCameraCalibration({ ZCameraCalibrationPtr(new ZPinholeCameraCalibration(cameraMatrix[0], distCoeffs[0], imageSize[0])), ZCameraCalibrationPtr(new ZPinholeCameraCalibration(cameraMatrix[1], distCoeffs[1], imageSize[1])) }, {}, {}, cameraMatrix, distCoeffs, imageSize, R, T, E, F)
+{
 
-    // save intrinsic parameters
-    const QString intrinsicsFileName = calibDir.absoluteFilePath("intrinsics.yml");
-    cv::FileStorage fs(qPrintable(intrinsicsFileName), cv::FileStorage::WRITE);
-    if (fs.isOpened()) {
-        fs << "M1" << cameraMatrix[0] << "D1" << distCoeffs[0]
-           << "M2" << cameraMatrix[1] << "D2" << distCoeffs[1];
-        fs.release();
-    } else {
-        qWarning() << "Error: cannot save the intrinsic parameters to" << intrinsicsFileName;
-    }
-
-    cv::Mat R1, R2, P1, P2, Q;
-    cv::Rect validRoi[2];
-
-    cv::Size newImageSize = imageSize[0]; // keep same size
-
-    cv::stereoRectify(cameraMatrix[0], distCoeffs[0], // left camera calibration params
-            cameraMatrix[1], distCoeffs[1], // right camera calibration params
-            imageSize[0], // input image size
-            R, T, R1, R2, P1, P2, Q,
-            /**
-             * Operation flags that may be zero or CALIB_ZERO_DISPARITY . If the flag is set,
-             * the function makes the principal points of each camera have the same pixel coordinates in the
-             * rectified views. And if the flag is not set, the function may still shift the images in the
-             * horizontal or vertical direction (depending on the orientation of epipolar lines) to maximize the
-             * useful image area.
-             */
-            0, // flags
-            /**
-             * Free scaling parameter. If it is -1 or absent, the function performs the default
-             * scaling. Otherwise, the parameter should be between 0 and 1. alpha=0 means that the rectified
-             * images are zoomed and shifted so that only valid pixels are visible (no black areas after
-             * rectification). alpha=1 means that the rectified image is decimated and shifted so that all the
-             * pixels from the original images from the cameras are retained in the rectified images (no source
-             * image pixels are lost). Obviously, any intermediate value yields an intermediate result between
-             * those two extreme cases.
-             */
-            -1, // alpha = 0 means only valid (visible from both cameras) image points are kept, and we get a validROI == newImageSize
-            /**
-             * New image resolution after rectification. The same size should be passed to
-             * initUndistortRectifyMap (see the stereo_calib.cpp sample in OpenCV samples directory). When (0,0)
-             * is passed (default), it is set to the original imageSize . Setting it to larger value can help you
-             * preserve details in the original image, especially when there is a big radial distortion.
-             */
-            newImageSize, // keep same size
-            /**
-             * Optional output rectangles inside the rectified images where all the pixels
-             * are valid. If alpha=0 , the ROIs cover the whole images. Otherwise, they are likely to be smaller
-             */
-            &validRoi[0], &validRoi[1]);
-
-    const QString extrinsicsFileName = calibDir.absoluteFilePath("extrinsics.yml");
-    fs.open(qPrintable(extrinsicsFileName), cv::FileStorage::WRITE);
-    if (fs.isOpened()) {
-        fs << "R" << R << "T" << T
-           << "R1" << R1 << "R2" << R2
-           << "P1" << P1 << "P2" << P2
-           << "Q" << Q;
-        fs.release();
-    } else {
-        qWarning() << "Error: cannot save the extrinsic parameters to" << extrinsicsFileName;
-    }
-
-    cv::Mat rmap[2][2];
-    cv::initUndistortRectifyMap(cameraMatrix[0], distCoeffs[0], R1, P1, imageSize[0], CV_16SC2, rmap[0][0], rmap[0][1]);
-    cv::initUndistortRectifyMap(cameraMatrix[1], distCoeffs[1], R2, P2, imageSize[1], CV_16SC2, rmap[1][0], rmap[1][1]);
-
-    const QString rectifyMapFileName = calibDir.absoluteFilePath("rmap.yml");
-    fs.open(qPrintable(rectifyMapFileName), cv::FileStorage::WRITE);
-    if (fs.isOpened()) {
-        fs << "M00" << rmap[0][0]
-           << "M01" << rmap[0][1]
-           << "M10" << rmap[1][0]
-           << "M11" << rmap[1][1];
-        fs.release();
-    } else {
-        qWarning() << "Error: cannot save the rectify map parameters to" << rectifyMapFileName;
-    }
 }
 
 } // namespace Z3D

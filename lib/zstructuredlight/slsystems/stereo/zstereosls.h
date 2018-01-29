@@ -21,6 +21,7 @@
 
 #include "zstructuredlightsystem.h"
 
+#include <Z3DCameraAcquisition>
 #include <Z3DCameraCalibration>
 
 #include <opencv2/core/mat.hpp>
@@ -37,7 +38,11 @@ class ZStereoSLS : public ZStructuredLightSystem
     Q_PROPERTY(double maxValidDistance READ maxValidDistance WRITE setMaxValidDistance NOTIFY maxValidDistanceChanged)
 
 public:
-    explicit ZStereoSLS(QObject *parent = nullptr);
+    explicit ZStereoSLS(ZCameraList cameras,
+                        ZMultiCameraCalibrationPtr stereoCalibration,
+                        ZPatternProjectionPtr patternProjection,
+                        QObject *parent = nullptr);
+
     ~ZStereoSLS();
 
     double maxValidDistance() const;
@@ -49,15 +54,9 @@ public slots:
     void setMaxValidDistance(double maxValidDistance);
 
 protected slots:
-    void initialize();
-
-    void setLeftCalibration(Z3D::ZCameraCalibrationPtr cameraCalibration);
-    void setRightCalibration(Z3D::ZCameraCalibrationPtr cameraCalibration);
-
-    Z3D::ZSimplePointCloudPtr triangulate(const cv::Mat &intensityImg,
-            const std::map<int, std::vector<cv::Vec2f> > &leftPoints,
-            const std::map<int, std::vector<cv::Vec2f> > &rightPoints,
-            int maxPosibleCloudPoints);
+    Z3D::ZSimplePointCloudPtr triangulate(const cv::Mat &colorImg,
+                                          const cv::Mat &leftDecodedImage,
+                                          const cv::Mat &rightDecodedImage);
 
 private:
     double m_maxValidDistance;

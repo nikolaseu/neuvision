@@ -25,11 +25,12 @@
 #include "zpatternprojectionplugin.h"
 
 #include <QDebug>
+#include <QSettings>
 
 namespace Z3D
 {
 
-QList<ZPatternProjectionPlugin*> ZPatternProjectionProvider::m_list;
+std::map< QString, ZPatternProjectionPlugin *> ZPatternProjectionProvider::m_plugins;
 
 void ZPatternProjectionProvider::loadPlugins()
 {
@@ -39,7 +40,7 @@ void ZPatternProjectionProvider::loadPlugins()
         auto *plugin = pluginLoader->instance<ZPatternProjectionPlugin>();
         if (plugin) {
             qDebug() << "pattern projection plugin loaded. type:" << pluginLoader->id();
-            m_list << plugin;
+            m_plugins[pluginLoader->id()] = plugin;
         } else {
             qWarning() << "invalid pattern projection plugin:" << plugin;
         }
@@ -51,21 +52,29 @@ void ZPatternProjectionProvider::unloadPlugins()
 
 }
 
-std::vector<ZPatternProjectionPtr> ZPatternProjectionProvider::getAll()
+ZPatternProjectionPtr ZPatternProjectionProvider::get(QSettings *settings)
 {
-    std::vector<ZPatternProjectionPtr> list;
-    for (auto plugin : m_list) {
-        for (auto patternProjection : plugin->getAll()) {
-            list.push_back(patternProjection);
+    ZPatternProjectionPtr patternProjection;
+
+    settings->beginGroup("PatternProjection");
+    {
+        const QString pluginId = settings->value("Type").toString();
+        if (m_plugins.find(pluginId) != m_plugins.end()) {
+            const auto plugin = m_plugins[pluginId];
+            patternProjection = plugin->get(settings);
+        } else {
+            qWarning() << "pattern projection type not found:" << pluginId;
         }
     }
-    return list;
+    settings->endGroup();
+
+    return patternProjection;
 }
 
 QWidget *ZPatternProjectionProvider::getConfigWidget(ZPatternProjectionWeakPtr patternProjection)
 {
-    for (auto plugin : m_list) {
-        if (auto *widget = plugin->getConfigWidget(patternProjection)) {
+    for (auto item : m_plugins) {
+        if (auto *widget = item.second->getConfigWidget(patternProjection)) {
             return widget;
         }
     }

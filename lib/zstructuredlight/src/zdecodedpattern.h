@@ -31,11 +31,11 @@ namespace Z3D
 struct Z3D_STRUCTUREDLIGHT_SHARED_EXPORT ZDecodedPattern : public ZStructuredLightPattern
 {
 public:
-    static const uint16_t NO_VALUE = 0; //std::numeric_limits<uint16_t>::max();
+    static const uint16_t NO_VALUE = std::numeric_limits<uint16_t>::quiet_NaN();
 
     explicit ZDecodedPattern(cv::Mat decodedImage,
                              cv::Mat intensityImg,
-                             std::map<int, std::vector<cv::Vec2f> > fringePointsList);
+                             std::map<int, std::vector<cv::Vec2f> > fringePointsList = std::map<int, std::vector<cv::Vec2f> >());
 
     cv::Mat intensityImg() const;
 

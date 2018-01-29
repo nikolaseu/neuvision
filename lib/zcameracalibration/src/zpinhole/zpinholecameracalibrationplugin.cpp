@@ -20,14 +20,17 @@
 
 #include "zpinholecameracalibrationplugin.h"
 
-#include "zpinholecameracalibration.h"
-
-#include "zpinholecameracalibrator.h"
 #include "zopencvcustomstereomulticameracalibrator.h"
+#include "zopencvstereocameracalibration.h"
 #include "zopencvstereomulticameracalibrator.h"
-#include "zpinholecameracalibratorconfigwidget.h"
 #include "zopencvstereomulticameracalibratorconfigwidget.h"
+#include "zpinholecameracalibration.h"
+#include "zpinholecameracalibrator.h"
+#include "zpinholecameracalibratorconfigwidget.h"
 
+#include <opencv2/core/persistence.hpp>
+
+#include <QDebug>
 #include <QGroupBox>
 #include <QLabel>
 #include <QVBoxLayout>
@@ -35,25 +38,64 @@
 namespace Z3D
 {
 
-ZCameraCalibrationPtr ZPinholeCameraCalibrationPlugin::getCalibration(QVariantMap options)
+ZMultiCameraCalibrationPtr readStereoCalibrationFile(QString fileName)
 {
-    ZCameraCalibrationPtr calibration(new ZPinholeCameraCalibration);
-
-    if (calibration && options.contains("ConfigFile")) {
-        QString configFileName = options.value("ConfigFile").toString();
-        calibration->loadFromFile(configFileName);
+    cv::FileStorage fs(qPrintable(fileName), cv::FileStorage::READ);
+    if (!fs.isOpened()) {
+        qWarning() << "cannot read stereo calibration file" << fileName;
+        return nullptr;
     }
 
-    return calibration;
+    cv::Mat cameraMatrix[2];
+    cv::Mat distCoeffs[2];
+    cv::Size imageSize[2];
+    cv::Mat R;
+    cv::Mat T;
+    cv::Mat E;
+    cv::Mat F;
+
+    fs["leftCameraMatrix"] >> cameraMatrix[0];
+    fs["leftDistortionCoeffs"] >> distCoeffs[0];
+    std::vector<int> imageSizeVec;
+    fs["leftImageSize"] >> imageSizeVec;
+    imageSize[0] = cv::Size(imageSizeVec[0], imageSizeVec[1]);
+
+    fs["rightCameraMatrix"] >> cameraMatrix[1];
+    fs["rightDistortionCoeffs"] >> distCoeffs[1];
+    imageSizeVec.clear();
+    fs["rightImageSize"] >> imageSizeVec;
+    imageSize[1] = cv::Size(imageSizeVec[0], imageSizeVec[1]);
+
+    fs["R"] >> R;
+    fs["T"] >> T;
+    fs["E"] >> E;
+    fs["F"] >> F;
+
+    fs.release();
+
+    return ZMultiCameraCalibrationPtr(
+                new ZOpenCVStereoCameraCalibration(cameraMatrix, distCoeffs, imageSize, R, T, E, F));
+}
+
+ZCameraCalibrationPtr ZPinholeCameraCalibrationPlugin::getCalibration(QVariantMap options)
+{
+    if (!options.contains("ConfigFile")) {
+        return nullptr;
+    }
+
+    QString configFileName = options.value("ConfigFile").toString();
+
+    auto calibration = new ZPinholeCameraCalibration();
+    calibration->loadFromFile(configFileName);
+
+    return ZCameraCalibrationPtr(calibration);
 }
 
 QList<ZCameraCalibrator *> ZPinholeCameraCalibrationPlugin::getCameraCalibrators()
 {
-    QList<ZCameraCalibrator *> list;
-
-    list << new ZPinholeCameraCalibrator();
-
-    return list;
+    return {
+        new ZPinholeCameraCalibrator()
+    };
 }
 
 QWidget *ZPinholeCameraCalibrationPlugin::getConfigWidget(ZCameraCalibrator *cameraCalibrator)
@@ -78,14 +120,58 @@ QWidget *ZPinholeCameraCalibrationPlugin::getConfigWidget(ZCameraCalibrator *cam
     return widget;
 }
 
+ZMultiCameraCalibrationPtr ZPinholeCameraCalibrationPlugin::getMultiCameraCalibration(QVariantMap options)
+{
+    if (!options.contains("ConfigFile")) {
+        return nullptr;
+    }
+
+    QString configFileName = options.value("ConfigFile").toString();
+    return readStereoCalibrationFile(configFileName);
+}
+
+bool ZPinholeCameraCalibrationPlugin::saveCalibration(const QString &fileName, ZMultiCameraCalibrationPtr calibration)
+{
+    auto stereoCalibration = std::dynamic_pointer_cast<ZOpenCVStereoCameraCalibration>(calibration);
+    if (!stereoCalibration) {
+        return false;
+    }
+
+    QString fileNameYML = fileName;
+    if (!fileName.endsWith(".yml")) {
+        fileNameYML += ".yml";
+    }
+
+    cv::FileStorage fs(qPrintable(fileNameYML), cv::FileStorage::WRITE);
+    if (!fs.isOpened()) {
+        qWarning() << "cannot save stereo calibration: cannot open file" << fileNameYML;
+        return false;
+    }
+
+    fs << "leftCameraMatrix" << stereoCalibration->cameraMatrix[0];
+    fs << "leftDistortionCoeffs" << stereoCalibration->distCoeffs[0];
+    fs << "leftImageSize" << stereoCalibration->imageSize[0];
+
+    fs << "rightCameraMatrix" << stereoCalibration->cameraMatrix[1];
+    fs << "rightDistortionCoeffs" << stereoCalibration->distCoeffs[1];
+    fs << "rightImageSize" << stereoCalibration->imageSize[1];
+
+    fs << "R" << stereoCalibration->R;
+    fs << "T" << stereoCalibration->T;
+    fs << "E" << stereoCalibration->E;
+    fs << "F" << stereoCalibration->F;
+
+    fs.release();
+
+    return true;
+}
+
 QList<ZMultiCameraCalibrator *> ZPinholeCameraCalibrationPlugin::getMultiCameraCalibrators()
 {
-    QList<ZMultiCameraCalibrator *> list;
-
-    list << new ZOpenCVStereoMultiCameraCalibrator();
-    list << new ZOpenCVCustomStereoMultiCameraCalibrator();
-
-    return list;
+    return {
+        new ZOpenCVStereoMultiCameraCalibrator(),
+        new ZOpenCVCustomStereoMultiCameraCalibrator()
+    };
 }
 
 QWidget *ZPinholeCameraCalibrationPlugin::getConfigWidget(ZMultiCameraCalibrator *multiCameraCalibrator)

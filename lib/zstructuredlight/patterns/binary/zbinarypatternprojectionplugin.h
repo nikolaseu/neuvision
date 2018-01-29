@@ -35,8 +35,9 @@ public:
 
     // ZPatternProjectionPlugin interface
 public:
-    std::vector<ZPatternProjectionPtr> getAll() override;
     QWidget *getConfigWidget(ZPatternProjectionWeakPtr patternProjection) override;
+
+    ZPatternProjectionPtr get(QSettings *settings) override;
 
 private:
     std::map<ZPatternProjection *, QWidget *> m_patternProjectionWidgets;

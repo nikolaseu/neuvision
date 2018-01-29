@@ -36,6 +36,10 @@ public:
     ZCameraCalibrationPtr getCalibration(QVariantMap options) override;
     QList<ZCameraCalibrator *> getCameraCalibrators() override;
     QWidget *getConfigWidget(ZCameraCalibrator *cameraCalibrator) override;
+
+    ZMultiCameraCalibrationPtr getMultiCameraCalibration(QVariantMap options) override;
+    bool saveCalibration(const QString &fileName, ZMultiCameraCalibrationPtr calibration) override;
+
     QList<ZMultiCameraCalibrator *> getMultiCameraCalibrators() override;
     QWidget *getConfigWidget(ZMultiCameraCalibrator *multiCameraCalibrator) override;
 

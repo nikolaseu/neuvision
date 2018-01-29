@@ -20,6 +20,7 @@
 
 #include "zstereosls.h"
 
+#include "zcameraacquisitionmanager.h"
 #include "zstereosystemimpl.h"
 
 #include <QDebug>
@@ -27,21 +28,22 @@
 namespace Z3D
 {
 
-ZStereoSLS::ZStereoSLS(QObject *parent)
-    : ZStructuredLightSystem(parent)
+ZStereoSLS::ZStereoSLS(ZCameraList cameras,
+                       ZMultiCameraCalibrationPtr stereoCalibration,
+                       ZPatternProjectionPtr patternProjection,
+                       QObject *parent)
+    : ZStructuredLightSystem(ZCameraAcquisitionManagerPtr(new ZCameraAcquisitionManager(cameras)), patternProjection, parent)
     , m_maxValidDistance(0.001)
-    , m_stereoSystem(nullptr)
+    , m_stereoSystem(new ZStereoSystemImpl(stereoCalibration))
 {
-    /// finish initialization
-    initialize();
+    connect(m_stereoSystem, &ZStereoSystemImpl::readyChanged,
+            this, &ZStereoSLS::setReady);
 }
 
 ZStereoSLS::~ZStereoSLS()
 {
     qDebug() << "deleting stereo system...";
-    if (m_stereoSystem) {
-        delete m_stereoSystem;
-    }
+    delete m_stereoSystem;
 }
 
 double ZStereoSLS::maxValidDistance() const
@@ -59,34 +61,11 @@ void ZStereoSLS::setMaxValidDistance(double maxValidDistance)
     emit maxValidDistanceChanged(maxValidDistance);
 }
 
-void ZStereoSLS::initialize()
+ZSimplePointCloudPtr ZStereoSLS::triangulate(const cv::Mat &colorImg,
+                                             const cv::Mat &leftDecodedImage,
+                                             const cv::Mat &rightDecodedImage)
 {
-    m_stereoSystem = new ZStereoSystemImpl();
-
-    connect(m_stereoSystem, &ZStereoSystemImpl::readyChanged,
-            this, &ZStereoSLS::setReady);
-}
-
-void ZStereoSLS::setLeftCalibration(Z3D::ZCameraCalibrationPtr cameraCalibration)
-{
-    m_stereoSystem->setLeftCameraCalibration(cameraCalibration);
-}
-
-void ZStereoSLS::setRightCalibration(ZCameraCalibrationPtr cameraCalibration)
-{
-    m_stereoSystem->setRightCameraCalibration(cameraCalibration);
-}
-
-ZSimplePointCloudPtr ZStereoSLS::triangulate(const cv::Mat &intensityImg,
-                                               const std::map<int, std::vector<cv::Vec2f> > &leftPoints,
-                                               const std::map<int, std::vector<cv::Vec2f> > &rightPoints,
-                                               int maxPosibleCloudPoints)
-{
-    if (!m_stereoSystem) {
-        return nullptr;
-    }
-
-    return m_stereoSystem->triangulateOptimized(intensityImg, leftPoints, rightPoints, maxPosibleCloudPoints, m_maxValidDistance);
+    return m_stereoSystem->triangulate(colorImg, leftDecodedImage, rightDecodedImage);
 }
 
 } // namespace Z3D

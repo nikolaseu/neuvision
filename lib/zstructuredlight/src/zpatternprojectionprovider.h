@@ -22,6 +22,7 @@
 #include "zstructuredlight_fwd.h"
 #include "zstructuredlight_global.h"
 
+class QSettings;
 class QWidget;
 
 namespace Z3D
@@ -34,13 +35,13 @@ public:
     static void loadPlugins();
     static void unloadPlugins();
 
-    static std::vector<ZPatternProjectionPtr> getAll();
+    static ZPatternProjectionPtr get(QSettings *settings);
     static QWidget *getConfigWidget(ZPatternProjectionWeakPtr patternProjection);
 
 private:
     explicit ZPatternProjectionProvider();
 
-    static QList<ZPatternProjectionPlugin *> m_list;
+    static std::map< QString, ZPatternProjectionPlugin *> m_plugins;
 };
 
 } // namespace Z3D

@@ -93,7 +93,11 @@ padding: 8px;</string>
                 </property>
                 <layout class="QGridLayout" name="gridLayout_4">
                  <item row="0" column="0">
-                  <widget class="QComboBox" name="patternTypeComboBox"/>
+                  <widget class="QLabel" name="patternTypeLabel">
+                   <property name="text">
+                    <string>patternTypeLabel</string>
+                   </property>
+                  </widget>
                  </item>
                 </layout>
                </widget>
@@ -132,7 +136,11 @@ padding: 8px;</string>
                 </property>
                 <layout class="QGridLayout" name="gridLayout_2">
                  <item row="0" column="0">
-                  <widget class="QComboBox" name="structuredLightSystemComboBox"/>
+                  <widget class="QLabel" name="structuredLightSystemLabel">
+                   <property name="text">
+                    <string>structuredLightSystemLabel</string>
+                   </property>
+                  </widget>
                  </item>
                 </layout>
                </widget>

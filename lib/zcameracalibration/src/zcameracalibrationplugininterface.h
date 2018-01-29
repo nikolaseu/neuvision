@@ -37,6 +37,9 @@ public:
 
     virtual QWidget *getConfigWidget(ZCameraCalibrator *cameraCalibrator) = 0;
 
+    virtual ZMultiCameraCalibrationPtr getMultiCameraCalibration(QVariantMap options) = 0;
+    virtual bool saveCalibration(const QString &fileName, ZMultiCameraCalibrationPtr calibration) = 0;
+
     virtual QList<ZMultiCameraCalibrator *> getMultiCameraCalibrators() = 0;
 
     virtual QWidget *getConfigWidget(ZMultiCameraCalibrator *multiCameraCalibrator) = 0;

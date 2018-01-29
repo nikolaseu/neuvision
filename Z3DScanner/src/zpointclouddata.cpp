@@ -45,12 +45,6 @@ ZPointCloudData::ZPointCloudData(const Z3D::ZSimplePointCloudPtr &pointCloud)
              << "max: (" << max[0] << "," << max[1] << "," << max[2] << ")"
              << "center: (" << cen[0] << "," << cen[1] << "," << cen[2] << ")";
 
-    uint32_t rgb = (static_cast<uint32_t>(255) << 24 |
-                    static_cast<uint32_t>(255) << 16 |
-                    static_cast<uint32_t>(255) <<  8 |
-                    static_cast<uint32_t>(255));
-    qDebug() << rgb;
-
     // add points
     for (const auto &point : points) {
         const uint32_t rgb = *reinterpret_cast<const uint32_t*>(&point[3]);

@@ -48,9 +48,6 @@ public:
     explicit ZBinaryPatternProjection(QObject *parent = nullptr);
     ~ZBinaryPatternProjection();
 
-    virtual QString id() const override;
-    virtual QString displayName() const override;
-
 signals:
     void intensityChanged(double);
     void currentPatternChanged(int);
