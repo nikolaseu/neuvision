@@ -1,0 +1,20 @@
+language: cpp
+
+compiler:
+    - clang++
+
+os:
+    - osx
+
+osx_image: xcode9.3
+
+before_install:
+    # https://github.com/travis-ci/travis-ci/issues/6688
+    - /usr/bin/yes | pip2 uninstall numpy
+    - brew update && brew bundle
+
+script:
+    - mkdir build
+    - cd build
+    - $(brew --prefix qt)/bin/qmake ../NEUVision.pro
+    - make
