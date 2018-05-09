@@ -20,7 +20,5 @@ zcameracalibrator.depends = zcalibratedcamera zcameraacquisition zcameracalibrat
 SUBDIRS  += zstructuredlight
 zstructuredlight.depends = zcore zcalibratedcamera zcameraacquisition zcameracalibration zcameracalibrator
 
-!android:!macx{
-    SUBDIRS  += zpointcloud
-    zpointcloud.depends = zcalibratedcamera zcameraacquisition zcameracalibration
-}
+#SUBDIRS  += zpointcloud
+#zpointcloud.depends = zcalibratedcamera zcameraacquisition zcameracalibration

@@ -14,7 +14,6 @@ before_install:
     - brew update && brew bundle
 
 script:
-    - mkdir build
     - cd build
     - $(brew --prefix qt)/bin/qmake ../NEUVision.pro
     - make

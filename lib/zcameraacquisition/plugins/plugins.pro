@@ -8,19 +8,12 @@ unix:!android: {
     SUBDIRS += zlibgphoto2
 }
 
-win32: {
-    ## Windows build here
-    SUBDIRS  += zpylon
+## Uncomment the ones you want to build
+#SUBDIRS  += zpylon
+#SUBDIRS  += zavtvimba
+#SUBDIRS  += zflycapture2
+#SUBDIRS  += zlucam
+#SUBDIRS  += zniimaqdxgrab
+#SUBDIRS  += zpleoraebus
 
-    !contains(QMAKE_TARGET.arch, x86_64) {
-        ## Windows x86 (32bit) specific build here
-        SUBDIRS  += zavtvimba
-        SUBDIRS  += zflycapture2
-        SUBDIRS  += zlucam
-        SUBDIRS  += zniimaqdxgrab
-        SUBDIRS  += zpleoraebus
-    } else {
-        ## Windows x64 (64bit) specific build here
-        message('Building only x86_64 compatible camera acquisition plugins')
-    }
-}
+message('Configured for building camera acquisition plugins:' $$SUBDIRS)

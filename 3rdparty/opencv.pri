@@ -2,15 +2,16 @@
 
 # Windows
 win32 {
-    OPENCV_INCLUDE_DIR = $$(THIRDPARTY)/Release/include
+    # using vcpkg, useful for CI (appveyor)
+    OPENCV_DIR = C:/Tools/vcpkg/installed/x64-windows
+    OPENCV_VER = 341
 
+    OPENCV_INCLUDE_DIR = $$OPENCV_DIR/include
     CONFIG(release, debug|release) {
-        OPENCV_LIB_DIR = $$(THIRDPARTY)/Release/x64/vc14/lib
+        OPENCV_LIB_DIR = $$OPENCV_DIR/lib
     } else {
-        OPENCV_LIB_DIR = $$(THIRDPARTY)/Debug/x64/vc14/lib
+        OPENCV_LIB_DIR = $$OPENCV_DIR/debug/lib
     }
-
-    OPENCV_VER = 330
 }
 
 # Linux

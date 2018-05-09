@@ -1,0 +1,52 @@
+version: 0.1.0-{build}
+image:
+- Visual Studio 2015
+platform: x64
+configuration: Release
+pull_requests:
+  do_not_increment_build_number: true
+#init:
+#  # To get RDP details for the current build worker
+#  - ps: iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
+#on_finish:
+#  # If you need to investigate worker on build finish add $blockRdp = $true; to display Remote Desktop connection details and pause the build until a special “lock” file on VM desktop is deleted:
+#  - ps: $blockRdp = $true; iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
+environment:
+  APPVEYOR_SAVE_CACHE_ON_ERROR: true
+cache:
+- C:\Tools\vcpkg\installed\
+install:
+#- choco install OpenCV --params="'/Environment'"
+- vcpkg install opencv:x64-windows
+#- vcpkg install vtk:x64-windows
+#- vcpkg install pcl:x64-windows
+build_script:
+- dir "C:/Tools/vcpkg/installed/x64-windows"
+- dir "C:/Tools/vcpkg/installed/x64-windows/include"
+- dir "C:/Tools/vcpkg/installed/x64-windows/lib"
+- dir "C:/Tools/vcpkg/installed/x64-windows/bin"
+- cd build
+- call "C:\Program Files\Microsoft SDKs\Windows\v7.1\Bin\SetEnv.cmd" /x64
+- call "C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\vcvarsall.bat" x86_amd64
+- call "C:\Qt\5.10.1\msvc2015_64\bin\qmake.exe" ..\neuvision.pro -spec win32-msvc
+- call "C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\bin\nmake.exe"
+after_build:
+- cd %APPVEYOR_BUILD_FOLDER%/bin/release5
+- call "C:\Qt\5.10.1\msvc2015_64\bin\windeployqt.exe" -concurrent Z3DScanner.exe
+- cp "C:/Tools/vcpkg/installed/x64-windows/bin"/*.dll .
+artifacts:
+  # pushing entire folder as a zip archive
+  - path: bin/release5
+    name: NEUVision-Windows-x64-v$(appveyor_build_version)
+deploy:
+  release: NEUVision-Windows-x64-v$(appveyor_build_version)
+  description: 'Automatic snapshot release from CI'
+  provider: GitHub
+  auth_token:
+    secure: aHV+YRaW2BChwsCNWDuyIcIMS6WLL8Y/owvslumt0sXRrtbtPHHj3p7/7OdToJ5t
+  artifact: /.*\.zip/            # upload all zip packages to release assets
+  draft: true
+  prerelease: true
+  on:
+    branch: master               # release from master branch only
+#    appveyor_repo_tag: true      # deploy on tag push only

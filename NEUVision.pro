@@ -17,7 +17,5 @@ Z3DCameraViewer.depends = lib
 SUBDIRS  += Z3DScanner
 Z3DScanner.depends = lib
 
-!android:!macx{
-    SUBDIRS  += Z3DCloudViewer
-    Z3DCloudViewer.depends = lib
-}
+#SUBDIRS  += Z3DCloudViewer
+#Z3DCloudViewer.depends = lib
