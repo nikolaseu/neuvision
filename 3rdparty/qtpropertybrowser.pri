@@ -4,3 +4,5 @@ else:unix: LIBS += -L$$Z3D_BUILD_DIR -lQtSolutionsPropertyBrowser
 
 INCLUDEPATH += $$PWD/qtpropertybrowser/src
 DEPENDPATH += $$PWD/qtpropertybrowser/src
+
+DEFINES += QT_QTPROPERTYBROWSER_IMPORT
