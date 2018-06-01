@@ -1,14 +1,11 @@
 include(../NEUVision.pri)
 
-TEMPLATE = app
-
-TARGET = Z3DScanner
-
 QT += core gui opengl multimedia widgets quick qml concurrent
-
 #CONFIG += console
-
 DESTDIR = $$Z3D_BUILD_DIR
+TARGET = Z3DScanner
+VERSION = $$Z3D_VERSION
+TEMPLATE = app
 
 win32:LIBS += opengl32.lib # to use "real" OpenGL on windows
 

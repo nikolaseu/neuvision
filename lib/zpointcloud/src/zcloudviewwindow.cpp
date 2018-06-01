@@ -39,13 +39,13 @@
 #include <pcl/sample_consensus/method_types.h>
 #include <pcl/sample_consensus/model_types.h>
 #include <pcl/segmentation/sac_segmentation.h>
-#include <pcl/visualization/histogram_visualizer.h>
 #include <pcl/visualization/pcl_plotter.h>
 
 #include <vtkRenderer.h>
 #include <vtkGenericOpenGLRenderWindow.h>
 #include <vtkCamera.h>
 #include <vtkRenderWindow.h>
+#include <vtkLegendScaleActor.h>
 
 #include <QDebug>
 #include <QFileDialog>
@@ -94,7 +94,8 @@ ZCloudViewWindow::ZCloudViewWindow(QWidget *parent)
     , ui(new Ui::ZCloudViewWindow)
     , m_renderer(vtkRenderer::New())
     , m_renderWindow(vtkGenericOpenGLRenderWindow::New())
-    , m_pclViewer(new pcl::visualization::PCLVisualizer(m_renderer, m_renderWindow, "3D", false))
+//    , m_pclViewer(new pcl::visualization::PCLVisualizer(m_renderer, m_renderWindow, "3D", false))
+    , m_pclViewer(new pcl::visualization::PCLVisualizer("3D", false))
 {
     ui->setupUi(this);
 
@@ -129,9 +130,9 @@ ZCloudViewWindow::ZCloudViewWindow(QWidget *parent)
     camera->SetParallelScale(1000);
 
     /// add scale
-    /*vtkSmartPointer<vtkLegendScaleActor> grid_actor_ = vtkSmartPointer<vtkLegendScaleActor>::New();
+    vtkSmartPointer<vtkLegendScaleActor> grid_actor_ = vtkSmartPointer<vtkLegendScaleActor>::New();
     grid_actor_->TopAxisVisibilityOn ();
-    renderer->AddViewProp (grid_actor_);*/
+    m_renderer->AddViewProp (grid_actor_);
 }
 
 ZCloudViewWindow::~ZCloudViewWindow()
@@ -916,14 +917,6 @@ void ZCloudViewWindow::on_actionToolsFitCylinder_triggered()
               errorsInliers))
         qWarning() << "unable to save error data";
 
-
-
-
-    boost::shared_ptr<pcl::visualization::PCLHistogramVisualizer> histogram (new pcl::visualization::PCLHistogramVisualizer);
-    //sensor_msgs::PointCloud2 rosCloud;
-    //pcl::toROSMsg<PointType>(m_pointCloud->pclPointCloud(), rosCloud);
-    histogram->addFeatureHistogram(*m_pointCloud->pclPointCloud(), "x", 2, "cloud_hist_x", 800, 600);
-    histogram->setBackgroundColor(255,255,255);
 
     pcl::visualization::PCLPlotter plotter;
 

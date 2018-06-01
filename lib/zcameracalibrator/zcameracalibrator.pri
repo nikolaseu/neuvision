@@ -1,6 +1,6 @@
 win32: {
-    CONFIG(release, debug|release): LIBS += -L$$Z3D_BUILD_DIR -lzcameracalibrator1
-    CONFIG(debug, debug|release):   LIBS += -L$$Z3D_BUILD_DIR -lzcameracalibratord1
+    CONFIG(release, debug|release): LIBS += -L$$Z3D_BUILD_DIR -lzcameracalibrator$$Z3D_VERSION_MAJOR
+    CONFIG(debug, debug|release):   LIBS += -L$$Z3D_BUILD_DIR -lzcameracalibratord$$Z3D_VERSION_MAJOR
 }
 
 unix:!macx: LIBS += -L$$Z3D_BUILD_DIR -lzcameracalibrator

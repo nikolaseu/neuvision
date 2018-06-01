@@ -1,6 +1,6 @@
 win32: {
-    CONFIG(release, debug|release): LIBS += -L$$Z3D_BUILD_DIR -lzcore1
-    CONFIG(debug, debug|release):   LIBS += -L$$Z3D_BUILD_DIR -lzcored1
+    CONFIG(release, debug|release): LIBS += -L$$Z3D_BUILD_DIR -lzcore$$Z3D_VERSION_MAJOR
+    CONFIG(debug, debug|release):   LIBS += -L$$Z3D_BUILD_DIR -lzcored$$Z3D_VERSION_MAJOR
 }
 
 unix:!macx: LIBS += -L$$Z3D_BUILD_DIR -lzcore

@@ -1,13 +1,11 @@
 include(../NEUVision.pri)
 
 QT       += core gui widgets opengl
-
-TARGET = Z3DCloudViewer
-TEMPLATE = app
-
 #CONFIG += console
-
 DESTDIR = $$Z3D_BUILD_DIR
+TARGET = Z3DCloudViewer
+VERSION = $$Z3D_VERSION
+TEMPLATE = app
 
 SOURCES += \
     main.cpp \
@@ -35,6 +33,10 @@ include($$PWD/../lib/zcalibratedcamera/zcalibratedcamera.pri)
 ###############################################################################
 # Points clouds
 include($$PWD/../lib/zpointcloud/zpointcloud.pri)
+
+###############################################################################
+# VTK
+include($$PWD/../3rdparty/vtk.pri)
 
 ###############################################################################
 # Point Cloud Library
