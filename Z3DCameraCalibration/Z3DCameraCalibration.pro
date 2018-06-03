@@ -1,12 +1,10 @@
 include(../NEUVision.pri)
 
 QT       += core gui widgets
-
 #CONFIG += console
-
 DESTDIR = $$Z3D_BUILD_DIR
-
 TARGET = Z3DCameraCalibration
+VERSION = $$Z3D_VERSION
 TEMPLATE = app
 
 ###############################################################################

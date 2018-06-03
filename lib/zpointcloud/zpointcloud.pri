@@ -1,6 +1,6 @@
 win32: {
-    CONFIG(release, debug|release): LIBS += -L$$Z3D_BUILD_DIR -lzpointcloud1
-    CONFIG(debug, debug|release):   LIBS += -L$$Z3D_BUILD_DIR -lzpointcloudd1
+    CONFIG(release, debug|release): LIBS += -L$$Z3D_BUILD_DIR -lzpointcloud$$Z3D_VERSION_MAJOR
+    CONFIG(debug, debug|release):   LIBS += -L$$Z3D_BUILD_DIR -lzpointcloudd$$Z3D_VERSION_MAJOR
 }
 
 unix:!macx: LIBS += -L$$Z3D_BUILD_DIR -lzpointcloud
@@ -12,3 +12,7 @@ macx: {
 
 INCLUDEPATH += $$PWD/src
 DEPENDPATH += $$PWD/src
+
+###############################################################################
+# VTK Qt support without having to build VTK explicitly with Qt support
+INCLUDEPATH += $$PWD/../../3rdparty/VTK/GUISupport/Qt

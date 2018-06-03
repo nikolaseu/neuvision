@@ -1,6 +1,6 @@
 win32: {
-    CONFIG(release, debug|release): LIBS += -L$$Z3D_BUILD_DIR -lzcameraacquisition1
-    CONFIG(debug, debug|release):   LIBS += -L$$Z3D_BUILD_DIR -lzcameraacquisitiond1
+    CONFIG(release, debug|release): LIBS += -L$$Z3D_BUILD_DIR -lzcameraacquisition$$Z3D_VERSION_MAJOR
+    CONFIG(debug, debug|release):   LIBS += -L$$Z3D_BUILD_DIR -lzcameraacquisitiond$$Z3D_VERSION_MAJOR
 }
 
 unix:!macx: LIBS += -L$$Z3D_BUILD_DIR -lzcameraacquisition

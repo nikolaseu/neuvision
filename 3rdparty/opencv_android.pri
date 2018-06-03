@@ -2,7 +2,6 @@
 OPENCV_SDK_DIR = "/Users/nikolaseu/dev/OpenCV-android-sdk/sdk"
 OPENCV_INCLUDE_DIR = $$OPENCV_SDK_DIR/native/jni/include
 OPENCV_LIB_DIR = $$OPENCV_SDK_DIR/native/libs/armeabi-v7a
-OPENCV_VER = 300
 
 # These are only for android
 LIBS += \
