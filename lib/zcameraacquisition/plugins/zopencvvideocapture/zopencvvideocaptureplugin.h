@@ -32,7 +32,7 @@ class ZOpenCVVideoCapturePlugin : public QObject, public ZCameraPluginInterface
 
 public:
     explicit ZOpenCVVideoCapturePlugin();
-    ~ZOpenCVVideoCapturePlugin();
+    ~ZOpenCVVideoCapturePlugin() override;
 
     /// plugin information
     QString displayName() const override;

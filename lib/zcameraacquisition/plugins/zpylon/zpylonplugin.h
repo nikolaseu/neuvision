@@ -32,12 +32,10 @@ class ZPylonPlugin : public QObject, public ZCameraPluginInterface
 
 public:
     explicit ZPylonPlugin();
-    ~ZPylonPlugin();
+    ~ZPylonPlugin() override;
 
     /// plugin information
-    QString id() const override;
     QString displayName() const override;
-    QString version() const override;
 
     /// camera utilities
     QList<ZCameraInfo *> getConnectedCameras() override;

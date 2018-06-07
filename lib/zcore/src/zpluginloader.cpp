@@ -107,15 +107,16 @@ void ZPluginLoader::loadPlugins(QString folder)
             fileIndex++;
             QString pluginFileName = currentPluginsDir.absoluteFilePath(fileName);
 
+            ZCorePlugin *plugin = new ZCorePlugin(pluginFileName);
+
             float progress = (float(folderIndex) + float(fileIndex)/fileCount) / folderCount;
             emit progressChanged(progress, tr("Loading %1").arg(fileName));
 
-            ZCorePlugin *plugin = new ZCorePlugin(pluginFileName);
+            qDebug() << "trying to load plugin from:" << pluginFileName
+                     << "metaData:\n" << plugin->metaData();
             if (plugin->load()) {
-                qDebug() << "\nplugin:" << pluginFileName
-                         << "\nid:" << plugin->id()
-                         << "\nversion:" << plugin->version()
-                         << "\nmetaData:" << plugin->metaData();
+                qDebug() << "loaded plugin id:" << plugin->id()
+                         << "version:" << plugin->version();
 #if defined(Q_OS_ANDROID)
                 QString pluginType = fileName.section('_', 1, 1);
                 m_plugins[pluginType] << plugin;

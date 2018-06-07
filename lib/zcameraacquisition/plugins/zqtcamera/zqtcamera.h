@@ -33,7 +33,7 @@ class ZQtCamera : public ZCameraBase
 
 public:
     explicit ZQtCamera(QCamera *qcamera);
-    ~ZQtCamera();
+    ~ZQtCamera() override;
 
 public slots:
     virtual bool startAcquisition() override;

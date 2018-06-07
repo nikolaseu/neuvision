@@ -32,7 +32,7 @@ namespace Z3D
 class Z3D_CAMERAACQUISITION_SHARED_EXPORT ZCameraPluginInterface
 {
 public:
-    virtual ~ZCameraPluginInterface() {}
+    virtual ~ZCameraPluginInterface();
 
     /// plugin info
     virtual QString displayName() const = 0;

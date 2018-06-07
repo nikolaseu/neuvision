@@ -38,22 +38,31 @@ ZCorePlugin::~ZCorePlugin()
 
 QString ZCorePlugin::id() const
 {
-    QJsonObject data = metaData();
-    if (!data.contains("id")) {
-        return instance<QObject>()->metaObject()->className();
+    const QJsonObject data = metaData();
+    if (data.contains("id")) {
+        /// if id set explicitly by plugin developer in metadata, use it
+        return data["id"].toString();
     }
 
-    return data["id"].toString();
+    if (auto inst = instance<QObject>()) {
+        /// otherwise, if plugin is loaded, use class name
+        return inst->metaObject()->className();
+    }
+
+    /// as last resort use filename
+    return m_loader->fileName();
 }
 
 QString ZCorePlugin::version() const
 {
-    QJsonObject data = metaData();
-    if (!data.contains("version")) {
-        return QLatin1String(Z3D_VERSION_STR);
+    const QJsonObject data = metaData();
+    if (data.contains("version")) {
+        /// if version set explicitly by plugin developer in metadata, use it
+        return data["version"].toString();
     }
 
-    return data["version"].toString();
+    /// otherwise use library version
+    return QLatin1String(Z3D_VERSION_STR);
 }
 
 QJsonObject ZCorePlugin::metaData() const

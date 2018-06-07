@@ -9,7 +9,7 @@ unix:!android: {
 }
 
 ## Uncomment the ones you want to build
-#SUBDIRS  += zpylon
+win32:SUBDIRS  += zpylon
 #SUBDIRS  += zavtvimba
 #SUBDIRS  += zflycapture2
 #SUBDIRS  += zlucam

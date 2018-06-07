@@ -20,6 +20,8 @@
 
 #include "zpyloncamera.h"
 
+#include "zcameraimage.h"
+
 #include <QDebug>
 
 #include <GenApi/INodeMap.h>

@@ -34,7 +34,7 @@ class ZLibGPhoto2Plugin : public QObject, public ZCameraPluginInterface
 
 public:
     explicit ZLibGPhoto2Plugin();
-    ~ZLibGPhoto2Plugin();
+    ~ZLibGPhoto2Plugin() override;
 
     /// plugin information
     QString displayName() const override;

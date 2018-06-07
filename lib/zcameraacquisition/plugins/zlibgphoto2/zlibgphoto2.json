@@ -1,1 +1,3 @@
-{}
+{
+    "notes": "Requires libgphoto2 installed & available on the system"
+}
