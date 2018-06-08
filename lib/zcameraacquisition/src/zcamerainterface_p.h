@@ -77,7 +77,7 @@ protected:
 
     ZCameraImagePtr *m_lastRetrievedImage;
 
-    ZCameraImagePtr getNextBufferImage(int width, int height, int xOffset, int yOffset, int bytesPerPixel, void *externalBuffer = 0);
+    ZCameraImagePtr getNextBufferImage(int width, int height, int xOffset, int yOffset, int bytesPerPixel, void *externalBuffer = nullptr);
 
 private:
     std::vector<ZCameraImagePtr> m_imagesBuffer;

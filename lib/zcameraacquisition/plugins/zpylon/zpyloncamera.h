@@ -45,17 +45,17 @@ class PylonCamera : public ZCameraBase
 
 public:
     explicit PylonCamera(Pylon::IPylonDevice* device, QObject *parent = nullptr);
-    ~PylonCamera();
+    ~PylonCamera() override;
 
 public slots:
-    virtual bool startAcquisition();
-    virtual bool stopAcquisition();
+    virtual bool startAcquisition() override;
+    virtual bool stopAcquisition() override;
 
-    virtual QList<ZCameraAttribute> getAllAttributes();
-    virtual QVariant getAttribute(const QString &name) const;
+    virtual QList<ZCameraAttribute> getAllAttributes() override;
+    virtual QVariant getAttribute(const QString &name) const override;
 
 protected slots:
-    virtual bool setAttribute(const QString &name, const QVariant &value, bool notify);
+    virtual bool setAttribute(const QString &name, const QVariant &value, bool notify) override;
 
 private:
     Pylon::CBaslerUsbInstantCamera m_camera;

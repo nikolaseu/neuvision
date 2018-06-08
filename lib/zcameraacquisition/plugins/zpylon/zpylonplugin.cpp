@@ -21,6 +21,7 @@
 #include "zpylonplugin.h"
 
 #include "zpyloncamera.h"
+#include "zcamerainfo.h"
 
 #include <pylon/PylonIncludes.h>
 
@@ -40,19 +41,9 @@ ZPylonPlugin::~ZPylonPlugin()
     Pylon::PylonTerminate();
 }
 
-QString ZPylonPlugin::id() const
-{
-    return QString("ZPylon");
-}
-
 QString ZPylonPlugin::displayName() const
 {
     return QString("Basler Pylon SDK");
-}
-
-QString ZPylonPlugin::version() const
-{
-    return QString(Z3D_VERSION_STR);
 }
 
 QList<ZCameraInfo *> ZPylonPlugin::getConnectedCameras()

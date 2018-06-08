@@ -31,8 +31,8 @@ class ZLibGPhoto2Camera : public ZCameraBase
     Q_OBJECT
 
 public:
-    explicit ZLibGPhoto2Camera(GPContext *context, Camera *camera, QObject *parent = 0);
-    ~ZLibGPhoto2Camera();
+    explicit ZLibGPhoto2Camera(GPContext *context, Camera *camera, QObject *parent = nullptr);
+    ~ZLibGPhoto2Camera() override;
 
 signals:
 

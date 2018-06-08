@@ -34,21 +34,21 @@ class OpenCVVideoCaptureCamera : public ZCameraBase
 
 public:
     explicit OpenCVVideoCaptureCamera(int deviceId, QObject *parent = nullptr);
-    ~OpenCVVideoCaptureCamera();
+    ~OpenCVVideoCaptureCamera() override;
 
 signals:
 
 public slots:
     /// acquisition control
-    virtual bool startAcquisition();
-    virtual bool stopAcquisition();
+    virtual bool startAcquisition() override;
+    virtual bool stopAcquisition() override;
 
     /// camera attributes (settings)
-    virtual QList<ZCameraAttribute> getAllAttributes();
-    virtual QVariant getAttribute(const QString &deviceID) const;
+    virtual QList<ZCameraAttribute> getAllAttributes() override;
+    virtual QVariant getAttribute(const QString &deviceID) const override;
 
 protected slots:
-    virtual bool setAttribute(const QString &name, const QVariant &value, bool notify);
+    virtual bool setAttribute(const QString &name, const QVariant &value, bool notify) override;
 
     void grabLoop();
 

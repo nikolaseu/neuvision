@@ -32,6 +32,7 @@ SOURCES      += \
     zcamerainfo.cpp \
     zcamerainterface_p.cpp \
     zcameralistmodel.cpp \
+    zcameraplugininterface.cpp \
     zcamerapreviewer.cpp \
     zcameraprovider.cpp \
     zcameraselectordialog.cpp \

@@ -33,22 +33,22 @@ class ZSimulatedCamera : public ZCameraBase
 
 public:
     explicit ZSimulatedCamera(QVariantMap options, QObject *parent = nullptr);
-    ~ZSimulatedCamera();
+    ~ZSimulatedCamera() override;
 
 signals:
 
 public slots:
-    virtual bool startAcquisition();
-    virtual bool stopAcquisition();
+    virtual bool startAcquisition() override;
+    virtual bool stopAcquisition() override;
 
-    virtual QList<ZCameraAttribute> getAllAttributes();
-    virtual QVariant getAttribute(const QString &name) const;
+    virtual QList<ZCameraAttribute> getAllAttributes() override;
+    virtual QVariant getAttribute(const QString &name) const override;
 
     /// this is unique, only for simulated camera
     void loadImageFromFilename(QString fileName);
 
 protected slots:
-    virtual bool setAttribute(const QString &name, const QVariant &value, bool notify);
+    virtual bool setAttribute(const QString &name, const QVariant &value, bool notify) override;
 
     void emitNewImage();
 

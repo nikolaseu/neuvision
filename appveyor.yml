@@ -16,6 +16,19 @@ install: # scripts that run after cloning repository
   - cmd: |
       for /f %%a in ('"git describe --always --tags --broken --long"') do set gitVersion=%%a
       appveyor UpdateBuild -Version "%gitVersion%-build-%APPVEYOR_BUILD_NUMBER%"
+  # Download plugin deps: Basler pylon
+  - appveyor DownloadFile "%PYLON_DEV_LIBS_ZIP%" -FileName pylon.zip
+  - dir
+  - md .pylon
+  - cd .pylon
+  - pwd
+  - dir
+  - 7z x ..\pylon.zip > nul
+  - dir
+  - set PYLON_DEV_DIR=C:\projects\neuvision\.pylon
+  - cd ..
+  - pwd
+  - dir
   # Download/install deps
   # we update vcpkg/installed folder manually since it takes too long
   # next runs should use appveyor cache and work ... we need to automate this!
