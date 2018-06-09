@@ -20,11 +20,12 @@
 
 #include "zavtvimbacamera.h"
 
+#include "zcameraimage.h"
+
 #include <QDebug>
 #include <QThread>
 
-//#include "VimbaCPP/Include/Camera.h"
-//#include <sstream>
+#include <sstream>
 
 namespace Z3D
 {
@@ -315,13 +316,16 @@ QList<ZCameraInterface::ZCameraAttribute> AVTVimbaCamera::getAllAttributes()
             }
         }
 
-        if (VmbErrorSuccess == feature->GetName(stdstring))
-            attribute.name = QString("Device::%1::%2")
+        if (VmbErrorSuccess == feature->GetName(stdstring)) {
+            attribute.id = QString::fromStdString(stdstring);
+            attribute.path = QString("Device::%1::%2")
                     .arg(qcategory.replace('/', "::"))
                     .arg(QString::fromStdString(stdstring));
+        }
 
-        if (VmbErrorSuccess == feature->GetDescription(stdstring))
+        if (VmbErrorSuccess == feature->GetDescription(stdstring)) {
             attribute.description = QString::fromStdString(stdstring);
+        }
 
         VmbFeatureFlagsType flags;
         if (VmbErrorSuccess == feature->GetFlags(flags)) {
@@ -340,7 +344,7 @@ QList<ZCameraInterface::ZCameraAttribute> AVTVimbaCamera::getAllAttributes()
                 if (VmbErrorSuccess == feature->GetValue(boolValue))
                     attribute.value = boolValue;
                 else
-                    qWarning() << "feature->GetValue() failed." << attribute.name;
+                    qWarning() << "feature->GetValue() failed." << attribute.path;
                 break;
             case VmbFeatureDataCommand:
                 attribute.type = ZCameraInterface::CameraAttributeTypeCommand;
@@ -353,7 +357,7 @@ QList<ZCameraInterface::ZCameraAttribute> AVTVimbaCamera::getAllAttributes()
                 VmbInt64_t int64Value = -1;
                 VmbInt64_t int64EnumValue = -1;
                 if (VmbErrorSuccess != feature->GetValue(int64Value))
-                    qWarning() << "feature->GetValue() failed." << attribute.name;
+                    qWarning() << "feature->GetValue() failed." << attribute.path;
                 //else
                     //attribute.enumValue = int64Value;
 
@@ -379,7 +383,7 @@ QList<ZCameraInterface::ZCameraAttribute> AVTVimbaCamera::getAllAttributes()
                 if (VmbErrorSuccess == feature->GetValue(doubleValue))
                     attribute.value = doubleValue;
                 else
-                    qWarning() << "feature->GetValue() failed." << attribute.name;
+                    qWarning() << "feature->GetValue() failed." << attribute.path;
                 break;
             case VmbFeatureDataInt: {
                 attribute.type = ZCameraInterface::CameraAttributeTypeInt;
@@ -387,7 +391,7 @@ QList<ZCameraInterface::ZCameraAttribute> AVTVimbaCamera::getAllAttributes()
                 if (VmbErrorSuccess == feature->GetValue(int64Value))
                     attribute.value = int64Value;
                 else
-                    qWarning() << "feature->GetValue() failed." << attribute.name;
+                    qWarning() << "feature->GetValue() failed." << attribute.path;
                 break;
             }
             case VmbFeatureDataString:
@@ -395,7 +399,7 @@ QList<ZCameraInterface::ZCameraAttribute> AVTVimbaCamera::getAllAttributes()
                 if (VmbErrorSuccess == feature->GetValue(stdstring))
                     attribute.value = QString::fromStdString(stdstring);
                 else
-                    qWarning() << "feature->GetValue() failed." << attribute.name;
+                    qWarning() << "feature->GetValue() failed." << attribute.path;
                 break;
             case VmbFeatureDataNone:
             case VmbFeatureDataRaw:

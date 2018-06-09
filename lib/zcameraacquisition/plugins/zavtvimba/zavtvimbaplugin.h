@@ -36,9 +36,7 @@ public:
     virtual ~ZAVTVimbaPlugin();
 
     /// plugin information
-    QString id() const override;
     QString displayName() const override;
-    QString version() const override;
 
     /// camera utilities
     QList<ZCameraInfo *> getConnectedCameras() override;

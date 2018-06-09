@@ -12,6 +12,9 @@ HEADERS       = \
 SOURCES       = \
     zavtvimbacamera.cpp \
     zavtvimbaplugin.cpp
+DISTFILES += \
+    README.md \
+    zavtvimba.json \
 
 ###############################################################################
 # Camera acquisition

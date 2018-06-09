@@ -16,16 +16,17 @@ install: # scripts that run after cloning repository
   - cmd: |
       for /f %%a in ('"git describe --always --tags --broken --long"') do set gitVersion=%%a
       appveyor UpdateBuild -Version "%gitVersion%-build-%APPVEYOR_BUILD_NUMBER%"
-  # Download plugin deps: Basler pylon
-  - appveyor DownloadFile "%PYLON_DEV_LIBS_ZIP%" -FileName pylon.zip
+  # Download plugin deps: Basler pylon, AVT vimba, etc
+  - appveyor DownloadFile "%THIRDPARTY_LIBS_ZIP%" -FileName 3rdpartylibs.zip
   - dir
-  - md .pylon
-  - cd .pylon
+  - md 3rdpartylibs
+  - cd 3rdpartylibs
   - pwd
   - dir
-  - 7z x ..\pylon.zip > nul
+  - 7z x ..\3rdpartylibs.zip > nul
   - dir
-  - set PYLON_DEV_DIR=C:\projects\neuvision\.pylon
+  - set AVT_VIMBA_DIR=C:\projects\neuvision\3rdpartylibs\avtvimba
+  - set PYLON_DEV_DIR=C:\projects\neuvision\3rdpartylibs\pylon
   - cd ..
   - pwd
   - dir

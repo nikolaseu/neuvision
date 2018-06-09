@@ -12,6 +12,9 @@ HEADERS       = \
 SOURCES       = \
     zpyloncamera.cpp \
     zpylonplugin.cpp
+DISTFILES += \
+    README.md \
+    zpylon.json \
 
 ###############################################################################
 # Camera acquisition
@@ -24,6 +27,3 @@ include(3rdparty/pylon.pri)
 ###############################################################################
 # OpenCV
 include($$PWD/../../../../3rdparty/opencv.pri)
-
-DISTFILES += \
-    zpylon.json

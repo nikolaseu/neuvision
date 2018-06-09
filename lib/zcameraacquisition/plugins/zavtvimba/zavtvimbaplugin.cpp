@@ -19,11 +19,12 @@
 //
 
 #include "zavtvimbaplugin.h"
-#include "zavtvimbacamera.h"
 
-#include "VimbaCPP/Include/VimbaSystem.h"
+#include "zavtvimbacamera.h"
+#include "zcamerainfo.h"
 
 #include <QDebug>
+#include <VimbaCPP/Include/VimbaSystem.h>
 
 namespace Z3D
 {
@@ -42,19 +43,9 @@ ZAVTVimbaPlugin::~ZAVTVimbaPlugin()
     AVT::VmbAPI::VimbaSystem::GetInstance().Shutdown();
 }
 
-QString ZAVTVimbaPlugin::id()
-{
-    return QString("ZAVTVimba");
-}
-
-QString ZAVTVimbaPlugin::displayName()
+QString ZAVTVimbaPlugin::displayName() const
 {
     return QString("AVT Vimba SDK");
-}
-
-QString ZAVTVimbaPlugin::version()
-{
-    return QString(Z3D_VERSION_STR);
 }
 
 QList<ZCameraInfo *> ZAVTVimbaPlugin::getConnectedCameras()

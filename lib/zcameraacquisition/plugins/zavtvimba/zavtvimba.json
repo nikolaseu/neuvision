@@ -1,1 +1,3 @@
-{}
+{
+    "notes": "Requires Allied Vision VimbaCPP runtime libraries installed & available on the system. Built with AVT Vimba version 2.1.3"
+}

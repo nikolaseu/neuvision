@@ -24,7 +24,7 @@
 #include <queue>
 
 #include <VimbaCPP/Include/VimbaCPP.h>
-#include "VimbaCPP/Include/IFrameObserver.h"
+#include <VimbaCPP/Include/IFrameObserver.h>
 
 #include <QMutex>
 
