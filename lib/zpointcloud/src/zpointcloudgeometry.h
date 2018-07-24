@@ -19,6 +19,8 @@
 
 #pragma once
 
+#include "zpointcloud_global.h"
+
 #include <Qt3DRender/QGeometry>
 
 namespace Z3D
@@ -27,7 +29,7 @@ namespace Z3D
 class ZPointCloud;
 class QPointCloudGeometryPrivate;
 
-class ZPointCloudGeometry : public Qt3DRender::QGeometry
+class Z3D_ZPOINTCLOUD_SHARED_EXPORT ZPointCloudGeometry : public Qt3DRender::QGeometry
 {
     Q_OBJECT
     Q_PROPERTY(Z3D::ZPointCloud *pointCloud READ pointCloud WRITE setPointCloud NOTIFY pointCloudChanged)
