@@ -6,54 +6,48 @@ import Z3D.PointCloud 1.0
 
 Entity {
     id: root
+
     property alias pointCloud: pointCloudGeometry.pointCloud
     property Layer layer: null
-    property string log: "status: " + pointCloudShaderProgram.status + "\nlog: " + pointCloudShaderProgram.log
+    property Transform transform: Transform {}
+
     property real pointSize: 2
+    property vector3d lightPosition: Qt.vector3d(0.0, 0.0, 100.0)
+    property vector3d lightIntensity: Qt.vector3d(1.0, 1.0, 1.0)
+    property real ambient: 0.5
+    property real diffuse: 0.7
+    property real specular: 0.1
+    property real shininess: 25.0
 
-    property Transform transform : Transform {}
+    GeometryRenderer {
+        id: pointCloudMesh
 
-    property GeometryRenderer pointCloudMesh: GeometryRenderer {
+        primitiveType: GeometryRenderer.Points
         geometry: PointCloudGeometry {
             id: pointCloudGeometry
         }
-        primitiveType: GeometryRenderer.Points
     }
 
-    property Material materialPoint: PerVertexColorMaterial {
-    }
+    Material {
+        id: material
 
-    property Material materialPointCustom: Material {
-        effect: Effect {
-            techniques: Technique {
-                graphicsApiFilter {
-                    api: GraphicsApiFilter.OpenGL
-                    profile: GraphicsApiFilter.CoreProfile
-                    majorVersion: 3
-                    minorVersion: 1
-                }
-
-                filterKeys: [
-                    FilterKey { name: "renderingStyle"; value: "forward" }
-                ]
-
-                renderPasses: RenderPass {
-                    shaderProgram: ShaderProgram {
-                        id: pointCloudShaderProgram
-                        vertexShaderCode: loadSource("qrc:/shaders/pointcloud.vert")
-                        fragmentShaderCode: loadSource("qrc:/shaders/pointcloud.frag")
-                    }
-                    renderStates: [
-                        DepthTest { depthFunction: DepthTest.Always }
-                    ]
-                }
-            }
+        effect: PointCloudEffect {
+            parameters: [
+                Parameter { name: "ka"; value: Qt.vector3d(root.ambient, root.ambient, root.ambient) },
+                Parameter { name: "kd"; value: Qt.vector3d(root.diffuse, root.diffuse, root.diffuse) },
+                Parameter { name: "ks"; value: Qt.vector3d(root.specular, root.specular, root.specular) },
+                Parameter { name: "shininess"; value: shininess },
+                Parameter { name: "lightPosition";  value: root.lightPosition },
+                Parameter { name: "lightIntensity"; value: root.lightIntensity },
+                Parameter { name: "pointSize"; value: root.pointSize }
+            ]
         }
-        parameters: [
-            Parameter { name: "pointSize"; value: root.pointSize }
-        ]
     }
 
-//    components: [ layer, pointCloudMesh, materialPoint, transform ]
-    components: [ layer, pointCloudMesh, materialPointCustom, transform ]
+    components: [
+        layer,
+        pointCloudMesh,
+        material,
+        transform
+    ]
 }

@@ -10,13 +10,13 @@ VERSION       = $$Z3D_VERSION
 HEADERS       = \
     zpointcloudpclwrapper.h \
     zpointcloudlibraryplugin.h \
-    
+
 SOURCES       = \
     zpointcloudpclwrapper.cpp \
     zpointcloudlibraryplugin.cpp \
-    
+
 DISTFILES += \
-    pcl.json \
+    zpcl.json \
 
 ###############################################################################
 # Point Cloud

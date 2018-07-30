@@ -7,8 +7,8 @@ Entity {
     id: root
     property real hue: 0.0
     property alias animateColors: hueAnim.running
-    property alias color1: _private.color1
-    property alias color2: _private.color2
+    property alias colorTop: _private.color1
+    property alias colorBottom: _private.color2
     property Layer layer: null
 
     QQ2.NumberAnimation {

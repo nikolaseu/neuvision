@@ -1,4 +1,3 @@
-import Qt3D.Core 2.0
 import Qt3D.Render 2.0
 
 Effect {
@@ -10,16 +9,18 @@ Effect {
                 api: GraphicsApiFilter.OpenGL
                 profile: GraphicsApiFilter.CoreProfile
                 majorVersion: 3
-                minorVersion: 1
+                minorVersion: 2
             }
 
-            filterKeys: [ FilterKey { name: "renderingStyle"; value: "forward" } ]
+            filterKeys: [
+                FilterKey { name: "renderingStyle"; value: "forward" }
+            ]
 
             renderPasses: [
                 RenderPass {
                     shaderProgram: ShaderProgram {
-                        vertexShaderCode:   loadSource( "qrc:/shaders/background.vert" )
-                        fragmentShaderCode: loadSource( "qrc:/shaders/background.frag" )
+                        vertexShaderCode: loadSource("qrc:/shaders/background.vert")
+                        fragmentShaderCode: loadSource("qrc:/shaders/background.frag")
                     }
 
                     renderStates: [

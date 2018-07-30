@@ -1,6 +1,6 @@
 include(../NEUVision.pri)
 
-QT       += core qml quick opengl 3dinput 3dquick 3drender 3dquickrender
+QT += core qml quick opengl 3dinput 3dquick 3drender 3dquickrender
 DESTDIR = $$Z3D_BUILD_DIR
 TARGET = Z3DCloudViewer
 VERSION = $$Z3D_VERSION
@@ -34,7 +34,3 @@ include($$PWD/../lib/zgui/zgui.pri)
 ###############################################################################
 # Points clouds
 include($$PWD/../lib/zpointcloud/zpointcloud.pri)
-
-###############################################################################
-# Point Cloud Library
-include($$PWD/../3rdparty/pcl.pri)

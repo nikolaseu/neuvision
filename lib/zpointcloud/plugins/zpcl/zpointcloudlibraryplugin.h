@@ -29,7 +29,7 @@ namespace Z3D
 class ZPointCloudLibraryPlugin : public QObject, public ZPointCloudPluginInterface
 {
     Q_OBJECT
-    Q_PLUGIN_METADATA(IID "z3d.pointcloud.pointcloudplugininterface" FILE "pcl.json")
+    Q_PLUGIN_METADATA(IID "z3d.pointcloud.pointcloudplugininterface" FILE "zpcl.json")
     Q_INTERFACES(Z3D::ZPointCloudPluginInterface)
 
 public:

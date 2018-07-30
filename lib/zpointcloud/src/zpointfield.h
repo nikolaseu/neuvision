@@ -56,10 +56,10 @@ public:
     unsigned int count() const;
 
 private:
-    QString m_name;
-    unsigned int m_offset;
-    PointFieldTypes m_dataType;
-    unsigned int m_count;
+    const QString m_name;
+    const unsigned int m_offset;
+    const PointFieldTypes m_dataType;
+    const unsigned int m_count;
 };
 
 } // namespace Z3D

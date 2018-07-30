@@ -1,59 +1,56 @@
-#version 150
+#version 150 core
 
-// from Wikipedia: https://en.wikipedia.org/wiki/Blinn–Phong_shading_model
+uniform mat4 viewMatrix;
 
-in vec3 vertPos;
-in vec3 normalInterp;
+uniform vec3 lightPosition;
+uniform vec3 lightIntensity;
+
+uniform vec3 ka;            // Ambient reflectivity
+uniform vec3 kd;            // Diffuse reflectivity
+uniform vec3 ks;            // Specular reflectivity
+uniform float shininess;    // Specular shininess factor
+
+in vec3 position;
+in vec3 normal;
 in vec3 color;
 
 out vec4 fragColor;
 
-//uniform int mode;
-const int mode = 1;
+vec3 dsModel(const in vec3 pos, const in vec3 n)
+{
+    // Calculate the vector from the light to the fragment
+    vec3 s = normalize(vec3(viewMatrix * vec4(lightPosition, 1.0)) - pos);
 
-const vec3 lightPos = vec3(1.0, 0.0, 10.0);
-const vec3 lightColor = vec3(1.0, 1.0, 1.0);
-const float lightPower = 1.0;
-const float shininess = 40.0;
-const float screenGamma = 2.2; // Assume the monitor is calibrated to the sRGB color space
+    // Calculate the vector from the fragment to the eye position
+    // (origin since this is in "eye" or "camera" space)
+    vec3 v = normalize(-pos);
 
-void main() {
-    vec3 ambientColor = 0.1 * color;
-    vec3 diffuseColor = 0.6 * color;
-    vec3 specColor = 0.3 * color;
+    // Reflect the light beam using the normal at this fragment
+    vec3 r = reflect(-s, n);
 
-    vec3 normal = normalize(normalInterp);
-    vec3 lightDir = normalize(lightPos - vertPos);
+    // Calculate the diffuse component
+    float diffuse = max(dot(s, n), 0.0);
 
-    float distance = 1;//pow(length(lightPos - vertPos), 2);
-    float lambertian = max(dot(lightDir, normal), 0.0);
+    // Calculate the specular component
     float specular = 0.0;
-
-    if (lambertian > 0.0) {
-        vec3 viewDir = normalize(-vertPos);
-
-        // this is blinn phong
-        vec3 halfDir = normalize(lightDir + viewDir);
-        float specAngle = max(dot(halfDir, normal), 0.0);
-        specular = pow(specAngle, shininess);
-
-        // this is phong (for comparison)
-        if (mode == 2) {
-            vec3 reflectDir = reflect(-lightDir, normal);
-            specAngle = max(dot(reflectDir, viewDir), 0.0);
-            // note that the exponent is different here
-            specular = pow(specAngle, shininess/4.0);
-        }
+    if (dot(s, n) > 0.0) {
+        specular = pow(max(dot(r, v), 0.0), shininess);
     }
 
-    vec3 colorLinear = ambientColor +
-            diffuseColor * lambertian * lightColor * lightPower / distance +
-            specColor * specular * lightColor * lightPower / distance;
+    // Combine the diffuse and specular contributions (ambient is taken into account by the caller)
+    return lightIntensity * (kd * diffuse + ks * specular);
+}
 
-    // apply gamma correction (assume ambientColor, diffuseColor and specColor
-    // have been linearized, i.e. have no gamma correction in them)
-    vec3 colorGammaCorrected = pow(colorLinear, vec3(1.0/screenGamma));
+void main()
+{
+    vec2 coord = gl_PointCoord - vec2(0.5);  //from [0,1] to [-0.5,0.5]
+    if (length(coord) > 0.5) {               //outside of circle radius?
+        discard;
+    }
 
-    // use the gamma corrected color in the fragment
-    fragColor = vec4(colorGammaCorrected, 1.0);
+    vec3 ambient = lightIntensity * ka;
+
+    vec3 result = color * (ambient + dsModel(position, normalize(normal)));
+
+    fragColor = vec4(result, 1.0);
 }

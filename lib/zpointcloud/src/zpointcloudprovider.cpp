@@ -56,7 +56,7 @@ void ZPointCloudProvider::unloadPlugins()
     m_plugins.clear();
 }
 
-ZPointCloudPtr ZPointCloudProvider::loadPointCloud(QString fileName)
+ZPointCloudPtr ZPointCloudProvider::loadPointCloud(const QString &fileName)
 {
     qDebug() << "Trying to read PointCloud from" << fileName;
 

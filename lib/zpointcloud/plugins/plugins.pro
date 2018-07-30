@@ -1,3 +1,3 @@
 TEMPLATE  = subdirs
 
-SUBDIRS   = pcl
+SUBDIRS   = zpcl
