@@ -2,16 +2,17 @@
 ## PCL
 ################################################################################
 macx:{
-    PCL_VERSION=1.8
-    PCL_DIR=/usr/local/opt/pcl
+    PCL_DIR = /usr/local/opt/pcl # from homebrew
+    PCL_VERSION = 1.8
     INCLUDEPATH *= $$PCL_DIR/include/pcl-$$PCL_VERSION
-    PCL_LIB_SUFFIX=
+    PCL_LIB_SUFFIX =
 }
 
 win32:{
-    PCL_DIR=C:/Tools/vcpkg/installed/x64-windows # assuming vcpkg installed at C:/Tools/vcpkg/
+#    PCL_DIR=C:/Tools/vcpkg/installed/x64-windows # assuming vcpkg installed at C:/Tools/vcpkg/
+    PCL_DIR = $$(PCL_DIR)
     INCLUDEPATH *= $$PCL_DIR/include
-    PCL_LIB_SUFFIX=_release
+    PCL_LIB_SUFFIX = _release
 }
 
 LIBS += \
@@ -35,15 +36,15 @@ LIBS += \
 ## Boost
 ################################################################################
 macx:{
-    BOOST_DIR=/usr/local/opt/boost
+    BOOST_DIR = /usr/local/opt/boost
     INCLUDEPATH *= $$BOOST_DIR/include
-    BOOST_LIB_SUFFIX=-mt
+    BOOST_LIB_SUFFIX = -mt
 }
 
 win32:{
-    BOOST_DIR=C:/Tools/vcpkg/installed/x64-windows # assuming vcpkg installed at C:/Tools/vcpkg/
+    BOOST_DIR = C:/Tools/vcpkg/installed/x64-windows # assuming vcpkg installed at C:/Tools/vcpkg/
     INCLUDEPATH *= $$BOOST_DIR/include
-    BOOST_LIB_SUFFIX=-vc140-mt
+    BOOST_LIB_SUFFIX = -vc140-mt
 }
 
 LIBS += \
@@ -55,12 +56,12 @@ LIBS += \
 ## FLANN
 ################################################################################
 macx:{
-    FLANN_DIR=/usr/local/opt/flann
+    FLANN_DIR = /usr/local/opt/flann
     INCLUDEPATH *= $$FLANN_DIR/include
 }
 
 win32:{
-    FLANN_DIR=C:/Tools/vcpkg/installed/x64-windows # assuming vcpkg installed at C:/Tools/vcpkg/
+    FLANN_DIR = C:/Tools/vcpkg/installed/x64-windows # assuming vcpkg installed at C:/Tools/vcpkg/
     INCLUDEPATH *= $$FLANN_DIR/include
 }
 
@@ -72,11 +73,11 @@ LIBS += \
 ## Eigen
 ################################################################################
 macx:{
-    EIGEN_DIR=/usr/local/opt/eigen
+    EIGEN_DIR = /usr/local/opt/eigen
     INCLUDEPATH *= $$EIGEN_DIR/include/eigen3
 }
 
 win32:{
-    EIGEN_DIR=C:/Tools/vcpkg/installed/x64-windows # assuming vcpkg installed at C:/Tools/vcpkg/
+    EIGEN_DIR = C:/Tools/vcpkg/installed/x64-windows # assuming vcpkg installed at C:/Tools/vcpkg/
     INCLUDEPATH *= $$EIGEN_DIR/include
 }
