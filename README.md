@@ -29,10 +29,9 @@ You'll also need some libraries:
 
 - [OpenCV](http://opencv.org) (tested with version 3.4.1)
 
-For the point cloud viewer (optional) you'll also need:
+For the point cloud viewer you might also want to include, optionally:
 
 - [PCL](http://www.pointclouds.org) (tested with version 1.8.1)
-- [VTK](http://www.vtk.org) (tested with version 8.1)
 
 ### Apple macOS
 
@@ -49,7 +48,6 @@ Since there are no official binaries from VTK and PCL you can build everything u
 
 ```
 vcpkg install opencv:x64-windows
-vcpkg install vtk:x64-windows
 vcpkg install pcl:x64-windows
 ```
 
