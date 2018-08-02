@@ -18,20 +18,44 @@
 // along with Z3D.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-#include "zpointcloud.h"
+#include "zpointfield.h"
+
+#include <QDebug>
 
 namespace Z3D
 {
 
-ZPointCloud::ZPointCloud(QObject *parent)
+ZPointField::ZPointField(QString name, unsigned int offset, PointFieldTypes type, unsigned int count, QObject *parent)
     : QObject(parent)
+    , m_name(name)
+    , m_offset(offset)
+    , m_dataType(type)
+    , m_count(count)
 {
-
+    qDebug() << "creating field" << m_name
+             << "offset:" << m_offset
+             << "type:" << m_dataType
+             << "count:" << m_count;
 }
 
-ZPointCloud::~ZPointCloud()
+QString ZPointField::name() const
 {
+    return m_name;
+}
 
+unsigned int ZPointField::offset() const
+{
+    return m_offset;
+}
+
+ZPointField::PointFieldTypes ZPointField::dataType() const
+{
+    return m_dataType;
+}
+
+unsigned int ZPointField::count() const
+{
+    return m_count;
 }
 
 } // namespace Z3D

@@ -20,62 +20,45 @@
 #pragma once
 
 #include "zpointcloud_global.h"
-#include "zpointcloud_typedefs.h"
 
-#include <pcl/PolygonMesh.h>
-#include <pcl/search/kdtree.h>
-#include <pcl/visualization/point_cloud_handlers.h>
-
-#include <QString>
+#include <QObject>
+#include <QVector3D>
 
 namespace Z3D
 {
 
-class Z3D_ZPOINTCLOUD_SHARED_EXPORT ZPointCloud
+class ZPointField;
+
+class Z3D_ZPOINTCLOUD_SHARED_EXPORT ZPointCloud : public QObject
 {
+    Q_OBJECT
+    Q_PROPERTY(unsigned int height READ height CONSTANT)
+    Q_PROPERTY(unsigned int width READ width CONSTANT)
+    Q_PROPERTY(unsigned int pointStep READ pointStep CONSTANT)
+    Q_PROPERTY(unsigned int rowStep READ rowStep CONSTANT)
+    Q_PROPERTY(QByteArray data READ data CONSTANT)
+    Q_PROPERTY(QVector3D minimum READ minimum CONSTANT)
+    Q_PROPERTY(QVector3D maximum READ maximum CONSTANT)
+    Q_PROPERTY(QVector3D center READ center CONSTANT)
+
 public:
-    explicit ZPointCloud();
-    ZPointCloud(PointCloudPCLPtr pclPointCloud);
+    explicit ZPointCloud(QObject *parent = nullptr);
+    virtual ~ZPointCloud();
 
-    inline long number() const { return m_number; }
-    inline void setNumber(long number) { m_number = number; }
+    virtual void updateAttributes() = 0;
 
-    QString id() { return m_id; }
-    void setId(QString id) { m_id = id; }
+    virtual unsigned int height() const = 0;
+    virtual unsigned int width() const = 0;
 
-    inline PointCloudPCLPtr pclPointCloud() const { return m_pointCloud; }
-    void setPclPointCloud(PointCloudPCLPtr pointCloud);
+    virtual unsigned int pointStep() const = 0;
+    virtual unsigned int rowStep() const = 0;
+    virtual QByteArray data() const = 0;
 
-    SurfaceNormalsPtr pclNormals();
-    void setPclNormals(SurfaceNormalsPtr normals);
+    virtual const std::vector<ZPointField *> &fields() = 0;
 
-    SurfaceElementsPtr pclSurfaceElements();
-    void setPclSurfaceElements(SurfaceElementsPtr surfaceElements);
-
-    pcl::PolygonMesh::Ptr pclSurfaceMesh();
-
-    pcl::visualization::PointCloudColorHandlerGenericField<PointType>::Ptr colorHandler();
-
-    pcl::search::KdTree<PointType>::Ptr tree();
-
-private:
-    void init();
-
-    long m_number;
-
-    PointCloudPCLPtr m_pointCloud;
-    SurfaceNormalsPtr m_cloudNormals;
-    SurfaceElementsPtr m_surfaceElements;
-    pcl::PolygonMesh::Ptr m_surfaceMesh;
-
-    pcl::visualization::PointCloudColorHandlerGenericField<PointType>::Ptr m_colorHandler;
-
-    pcl::search::KdTree<PointType>::Ptr m_tree;
-
-    int m_uuid;
-    QString m_id;
-
-    static int m_lastUuid;
+    virtual QVector3D minimum() const = 0;
+    virtual QVector3D maximum() const = 0;
+    virtual QVector3D center() const = 0;
 };
 
 } // namespace Z3D

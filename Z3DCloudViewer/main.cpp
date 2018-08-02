@@ -18,22 +18,37 @@
 // along with Z3D.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-#include <QSurfaceFormat>
-
-#include "QVTKOpenGLWidget.h"
-
 #include "zapplication.h"
-#include "zcloudviewwindow.h"
+#include "zpointcloud.h"
+#include "zpointcloudgeometry.h"
+#include "zpointcloudprovider.h"
+#include "zpointcloudreader.h"
+
+#include <QQmlApplicationEngine>
+#include <QSurfaceFormat>
 
 int main(int argc, char *argv[])
 {
-    // before initializing QApplication, set the default surface format.
-    QSurfaceFormat::setDefaultFormat(QVTKOpenGLWidget::defaultFormat());
+    QSurfaceFormat glFormat;
+    glFormat.setVersion(3, 3);
+    glFormat.setProfile(QSurfaceFormat::CoreProfile);
+    QSurfaceFormat::setDefaultFormat(glFormat);
 
-    Z3D::ZApplication a(argc, argv);
+    /// to print out diagnostic information about each plugin it (Qt) tries to load
+    //qputenv("QT_DEBUG_PLUGINS", "1");
 
-    Z3D::ZCloudViewWindow w;
-    w.show();
+    QCoreApplication::setAttribute(Qt::AA_UseDesktopOpenGL, true);
 
-    return a.exec();
+    Z3D::ZApplication app(argc, argv);
+    app.loadPlugins();
+    Z3D::ZPointCloudProvider::loadPlugins();
+
+    qmlRegisterUncreatableType<Z3D::ZPointCloud>("Z3D.PointCloud", 1, 0, "PointCloud", "ZPointCloud cannot be created, must be obtained from a PointCloudReader");
+    qmlRegisterType<Z3D::ZPointCloudReader>("Z3D.PointCloud", 1, 0, "PointCloudReader");
+    qmlRegisterType<Z3D::ZPointCloudGeometry>("Z3D.PointCloud", 1, 0, "PointCloudGeometry");
+
+    QQmlApplicationEngine engine;
+    engine.load(QUrl(QStringLiteral("qrc:/qml/main.qml")));
+
+    return app.exec();
 }
