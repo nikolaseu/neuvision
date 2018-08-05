@@ -69,6 +69,10 @@ include($$PWD/../lib/zcalibratedcamera/zcalibratedcamera.pri)
 include($$PWD/../lib/zstructuredlight/zstructuredlight.pri)
 
 ###############################################################################
+# Point cloud
+include($$PWD/../lib/zpointcloud/zpointcloud.pri)
+
+###############################################################################
 # Camera calibrator
 include($$PWD/../lib/zcameracalibrator/zcameracalibrator.pri)
 

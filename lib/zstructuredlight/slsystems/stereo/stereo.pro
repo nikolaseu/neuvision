@@ -38,6 +38,10 @@ include($$PWD/../../../zcore/zcore.pri)
 include($$PWD/../../zstructuredlight.pri)
 
 ###############################################################################
+# Point cloud
+include($$PWD/../../../zpointcloud/zpointcloud.pri)
+
+###############################################################################
 # Camera acquisition
 include($$PWD/../../../zcameraacquisition/zcameraacquisition.pri)
 

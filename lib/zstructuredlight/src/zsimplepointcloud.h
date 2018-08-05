@@ -19,17 +19,17 @@
 
 #pragma once
 
+#include "zpointcloud.h"
+
 #include "zstructuredlight_fwd.h"
 #include "zstructuredlight_global.h"
 
 #include <opencv2/core/matx.hpp>
 
-#include <QObject>
-
 namespace Z3D
 {
 
-class Z3D_STRUCTUREDLIGHT_SHARED_EXPORT ZSimplePointCloud : public QObject
+class Z3D_STRUCTUREDLIGHT_SHARED_EXPORT ZSimplePointCloud : public ZPointCloud
 {
     Q_OBJECT
 
@@ -37,16 +37,33 @@ public:
     typedef cv::Vec4f PointType;
     typedef std::vector<PointType> PointVector;
 
-    explicit ZSimplePointCloud(QObject *parent = nullptr);
+    explicit ZSimplePointCloud(const PointVector points, QObject *parent = nullptr);
+    ~ZSimplePointCloud() override;
 
-signals:
+    const PointVector &points() const;
 
-public slots:
+    // ZPointCloud interface
+    virtual void updateAttributes() override;
+    virtual unsigned int height() const override;
+    virtual unsigned int width() const override;
+    virtual unsigned int pointStep() const override;
+    virtual unsigned int rowStep() const override;
+    virtual QByteArray data() const override;
+    virtual const std::vector<ZPointField *> &fields() override;
+    virtual QVector3D minimum() const override;
+    virtual QVector3D maximum() const override;
+    virtual QVector3D center() const override;
 
 public:
-    PointVector points;
-    int width;
-    int height;
+    const std::vector<ZPointField*> m_fields;
+
+    const PointVector m_points;
+
+    const unsigned int m_width;
+    const unsigned int m_height;
+
+    QVector3D m_minimum;
+    QVector3D m_maximum;
 };
 
 } // namespace Z3D

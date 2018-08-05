@@ -27,20 +27,14 @@
 ZPointCloudData::ZPointCloudData(const Z3D::ZSimplePointCloudPtr &pointCloud)
     : m_count(0)
 {
-    const auto &points = pointCloud->points;
+    const auto &points = pointCloud->points();
     m_data.resize(6 * points.size());
 
     // calculate center
-    Z3D::ZSimplePointCloud::PointType min = points.front(), max = points.front();
-    for (const auto &point : points) {
-        for (int i=0; i<3; ++i) {
-            if (point[i] > max[i])
-                max[i] = point[i];
-            if (point[i] < min[i])
-                min[i] = point[i];
-        }
-    }
-    Z3D::ZSimplePointCloud::PointType cen = (min + max)/2.f;
+    Z3D::ZSimplePointCloud::PointType min(pointCloud->minimum().x(), pointCloud->minimum().y(), pointCloud->minimum().z());
+    Z3D::ZSimplePointCloud::PointType max(pointCloud->maximum().x(), pointCloud->maximum().y(), pointCloud->maximum().z());
+    Z3D::ZSimplePointCloud::PointType cen(pointCloud->center().x(), pointCloud->center().y(), pointCloud->center().z());
+
     qDebug() << "min: (" << min[0] << "," << min[1] << "," << min[2] << ")"
              << "max: (" << max[0] << "," << max[1] << "," << max[2] << ")"
              << "center: (" << cen[0] << "," << cen[1] << "," << cen[2] << ")";

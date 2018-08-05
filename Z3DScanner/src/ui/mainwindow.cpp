@@ -172,13 +172,13 @@ void MainWindow::onScanFinished(Z3D::ZSimplePointCloudPtr cloud)
                               "VIEWPOINT 0 0 0 1 0 0 0\n"
                               "POINTS %1\n"
                               "DATA ascii\n")
-                              .arg(cloud->points.size());
-            for (const auto &point : cloud->points) {
+                              .arg(cloud->points().size());
+            for (const auto &point : cloud->points()) {
                 fileTextStream << point[0] << " " << point[1] << " " << point[2] << " " << point[3] << "\n";
             }
         } else if (fileName.endsWith(".asc", Qt::CaseInsensitive)) {
             /// ASCII file format
-            for (const auto &point : cloud->points) {
+            for (const auto &point : cloud->points()) {
                 fileTextStream << point[0] << " " << point[1] << " " << point[2] << " " << point[3] << "\n";
             }
         } else {

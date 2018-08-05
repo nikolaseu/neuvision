@@ -147,8 +147,8 @@ ZSimplePointCloudPtr process(const cv::Mat &colorImg, cv::Mat Q, cv::Mat leftImg
     std::vector<cv::Vec3f> points3f;
     cv::perspectiveTransform(disparity, points3f, Q);
 
-    ZSimplePointCloudPtr pointCloud(new ZSimplePointCloud);
-    auto &points = pointCloud->points;
+
+    ZSimplePointCloud::PointVector points;
     points.resize(points3f.size());
 
     for (size_t i=0; i<points.size(); ++i) {
@@ -159,7 +159,7 @@ ZSimplePointCloudPtr process(const cv::Mat &colorImg, cv::Mat Q, cv::Mat leftImg
         points[i][3] = *reinterpret_cast<const float_t*>(&color[i]);
     }
 
-    return pointCloud;
+    return ZSimplePointCloudPtr(new ZSimplePointCloud(points));
 }
 
 ZSimplePointCloudPtr ZStereoSystemImpl::triangulate(const cv::Mat &leftColorImage, const cv::Mat &leftDecodedImage, const cv::Mat &rightDecodedImage)

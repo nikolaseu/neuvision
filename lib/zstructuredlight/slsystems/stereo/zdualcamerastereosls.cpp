@@ -69,7 +69,7 @@ void ZDualCameraStereoSLS::onPatternsDecoded(std::vector<ZDecodedPatternPtr> dec
             decodedPatterns[1]->decodedImage());
 
     if (cloud) {
-        qDebug() << "finished calculating point cloud with" << cloud->points.size()
+        qDebug() << "finished calculating point cloud with" << cloud->width() * cloud->height()
                  << "points in" << startTime.elapsed() << "msecs";
         emit scanFinished(cloud);
     } else {
