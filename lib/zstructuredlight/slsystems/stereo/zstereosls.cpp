@@ -61,9 +61,9 @@ void ZStereoSLS::setMaxValidDistance(double maxValidDistance)
     emit maxValidDistanceChanged(maxValidDistance);
 }
 
-ZSimplePointCloudPtr ZStereoSLS::triangulate(const cv::Mat &colorImg,
-                                             const cv::Mat &leftDecodedImage,
-                                             const cv::Mat &rightDecodedImage)
+ZPointCloudPtr ZStereoSLS::triangulate(const cv::Mat &colorImg,
+                                       const cv::Mat &leftDecodedImage,
+                                       const cv::Mat &rightDecodedImage)
 {
     return m_stereoSystem->triangulate(colorImg, leftDecodedImage, rightDecodedImage);
 }

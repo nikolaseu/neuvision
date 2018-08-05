@@ -40,7 +40,7 @@
 
 #pragma once
 
-#include "zpointclouddata.h"
+#include "zpointcloud_fwd.h"
 
 #include <QOpenGLWidget>
 #include <QOpenGLFunctions>
@@ -56,13 +56,13 @@ class ZPointCloudWidget : public QOpenGLWidget, protected QOpenGLFunctions
 
 public:
     ZPointCloudWidget(QWidget *parent = nullptr);
-    ~ZPointCloudWidget();
+    ~ZPointCloudWidget() override;
 
     QSize minimumSizeHint() const override;
     QSize sizeHint() const override;
 
 public slots:
-    void setPointCloudData(ZPointCloudData::Ptr pointCloudData);
+    void setPointCloud(const Z3D::ZPointCloudPtr &pointCloud);
 
     void setXRotation(int angle);
     void setYRotation(int angle);
@@ -101,7 +101,7 @@ private:
 
     QPoint m_lastPos;
 
-    ZPointCloudData::Ptr m_pointCloud;
+    Z3D::ZPointCloudPtr m_pointCloud;
 
     QOpenGLVertexArrayObject m_vao;
     QOpenGLBuffer m_pointCloudVbo;

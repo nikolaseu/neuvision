@@ -54,9 +54,9 @@ public slots:
     void setMaxValidDistance(double maxValidDistance);
 
 protected slots:
-    Z3D::ZSimplePointCloudPtr triangulate(const cv::Mat &colorImg,
-                                          const cv::Mat &leftDecodedImage,
-                                          const cv::Mat &rightDecodedImage);
+    Z3D::ZPointCloudPtr triangulate(const cv::Mat &colorImg,
+                                    const cv::Mat &leftDecodedImage,
+                                    const cv::Mat &rightDecodedImage);
 
 private:
     double m_maxValidDistance;

@@ -60,11 +60,6 @@ ZSimplePointCloud::~ZSimplePointCloud()
 
 }
 
-const ZSimplePointCloud::PointVector &ZSimplePointCloud::points() const
-{
-    return m_points;
-}
-
 void ZSimplePointCloud::updateAttributes()
 {
     /// nothing to do, we don't have dynamic fields

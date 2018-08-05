@@ -21,6 +21,7 @@
 
 #include "zstructuredlight_fwd.h"
 
+#include "zpointcloud_fwd.h"
 #include <Z3DCameraCalibration>
 
 #include <QObject>
@@ -46,9 +47,9 @@ signals:
     void readyChanged(bool arg);
 
 public slots:
-    Z3D::ZSimplePointCloudPtr triangulate(const cv::Mat &leftColorImage,
-                                          const cv::Mat &leftDecodedImage,
-                                          const cv::Mat &rightDecodedImage);
+    Z3D::ZPointCloudPtr triangulate(const cv::Mat &leftColorImage,
+                                    const cv::Mat &leftDecodedImage,
+                                    const cv::Mat &rightDecodedImage);
 
 protected slots:
     void stereoRectify(double alpha = -1);

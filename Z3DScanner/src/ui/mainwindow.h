@@ -22,6 +22,7 @@
 #include "zmainwindow.h"
 
 #include <Z3DStructuredLight>
+#include "zpointcloud_fwd.h"
 
 #include <QPointer>
 
@@ -48,7 +49,7 @@ private slots:
 
     virtual void closeEvent(QCloseEvent *event);
 
-    void onScanFinished(Z3D::ZSimplePointCloudPtr cloud);
+    void onScanFinished(Z3D::ZPointCloudPtr cloud);
 
 private:
     Ui::MainWindow *ui;

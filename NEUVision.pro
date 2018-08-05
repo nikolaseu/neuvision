@@ -17,10 +17,8 @@ Z3DCameraViewer.depends = lib
 SUBDIRS  += Z3DScanner
 Z3DScanner.depends = lib
 
-!win32:{
 SUBDIRS  += Z3DCloudViewer
 Z3DCloudViewer.depends = lib
-}
 
 message('Projects that will be built:' $$SUBDIRS)
 

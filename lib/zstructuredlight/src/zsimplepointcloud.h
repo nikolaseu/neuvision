@@ -19,10 +19,9 @@
 
 #pragma once
 
-#include "zpointcloud.h"
-
-#include "zstructuredlight_fwd.h"
 #include "zstructuredlight_global.h"
+
+#include "zpointcloud.h"
 
 #include <opencv2/core/matx.hpp>
 
@@ -39,8 +38,6 @@ public:
 
     explicit ZSimplePointCloud(const PointVector points, QObject *parent = nullptr);
     ~ZSimplePointCloud() override;
-
-    const PointVector &points() const;
 
     // ZPointCloud interface
     virtual void updateAttributes() override;

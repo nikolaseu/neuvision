@@ -48,7 +48,7 @@ void ZSingleCameraStereoSLS::processPatterns()
         return;
     }
 
-    Z3D::ZSimplePointCloudPtr cloud = triangulate(decodedPatterns[0]->intensityImg(),
+    Z3D::ZPointCloudPtr cloud = triangulate(decodedPatterns[0]->intensityImg(),
             decodedPatterns[0]->decodedImage(),
             projectedPattern->decodedImage());
 

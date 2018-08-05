@@ -94,7 +94,7 @@ void ZStereoSystemImpl::stereoRectify(double alpha)
 }
 
 template<typename T>
-ZSimplePointCloudPtr process(const cv::Mat &colorImg, cv::Mat Q, cv::Mat leftImg, cv::Mat rightImg) {
+ZPointCloudPtr process(const cv::Mat &colorImg, cv::Mat Q, cv::Mat leftImg, cv::Mat rightImg) {
     const cv::Size &imgSize = leftImg.size();
     const int &imgHeight = imgSize.height;
     const int &imgWidth = imgSize.width;
@@ -147,7 +147,6 @@ ZSimplePointCloudPtr process(const cv::Mat &colorImg, cv::Mat Q, cv::Mat leftImg
     std::vector<cv::Vec3f> points3f;
     cv::perspectiveTransform(disparity, points3f, Q);
 
-
     ZSimplePointCloud::PointVector points;
     points.resize(points3f.size());
 
@@ -159,10 +158,10 @@ ZSimplePointCloudPtr process(const cv::Mat &colorImg, cv::Mat Q, cv::Mat leftImg
         points[i][3] = *reinterpret_cast<const float_t*>(&color[i]);
     }
 
-    return ZSimplePointCloudPtr(new ZSimplePointCloud(points));
+    return ZPointCloudPtr(new ZSimplePointCloud(points));
 }
 
-ZSimplePointCloudPtr ZStereoSystemImpl::triangulate(const cv::Mat &leftColorImage, const cv::Mat &leftDecodedImage, const cv::Mat &rightDecodedImage)
+Z3D::ZPointCloudPtr ZStereoSystemImpl::triangulate(const cv::Mat &leftColorImage, const cv::Mat &leftDecodedImage, const cv::Mat &rightDecodedImage)
 {
     //! TODO compute this once and keep in memory?
     cv::Mat rmap[2][2];

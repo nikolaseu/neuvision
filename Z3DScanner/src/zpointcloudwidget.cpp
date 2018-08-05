@@ -19,6 +19,9 @@
 //
 
 #include "zpointcloudwidget.h"
+
+#include "zpointcloud.h"
+
 #include <QMouseEvent>
 #include <QOpenGLShaderProgram>
 #include <QCoreApplication>
@@ -55,9 +58,9 @@ QSize ZPointCloudWidget::sizeHint() const
     return QSize(400, 400);
 }
 
-void ZPointCloudWidget::setPointCloudData(ZPointCloudData::Ptr pointCloudData)
+void ZPointCloudWidget::setPointCloud(const Z3D::ZPointCloudPtr &pointCloud)
 {
-    m_pointCloud = pointCloudData;
+    m_pointCloud = pointCloud;
 
     setupVertexAttribs();
     update();
@@ -252,7 +255,7 @@ void ZPointCloudWidget::initializeGL()
     connect(context(), &QOpenGLContext::aboutToBeDestroyed, this, &ZPointCloudWidget::cleanup);
 
     initializeOpenGLFunctions();
-    glClearColor(0, 0, 0, 1);
+    glClearColor(0.1f, 0.1f, 0.1f, 1);
 
     m_program = new QOpenGLShaderProgram;
     m_program->addShaderFromSourceCode(QOpenGLShader::Vertex, m_core ? vertexShaderSourceCore : vertexShaderSource);
@@ -290,15 +293,15 @@ void ZPointCloudWidget::setupVertexAttribs()
 
     // Setup our vertex buffer object.
     if (m_pointCloudVbo.create() && m_pointCloudVbo.bind()) {
-        m_pointCloudVbo.allocate(m_pointCloud->constData(), m_pointCloud->count() * sizeof(GLfloat));
+        m_pointCloudVbo.allocate(m_pointCloud->data(), m_pointCloud->data().size());
 
         // Store the vertex attribute bindings for the program.
         m_pointCloudVbo.bind();
         QOpenGLFunctions *f = QOpenGLContext::currentContext()->functions();
         f->glEnableVertexAttribArray(0);
         f->glEnableVertexAttribArray(1);
-        f->glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(GLfloat), nullptr);
-        f->glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(GLfloat), reinterpret_cast<void *>(3 * sizeof(GLfloat)));
+        f->glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 4 * sizeof(GLfloat), nullptr);
+        f->glVertexAttribPointer(1, 3, GL_UNSIGNED_BYTE, GL_TRUE, 4 * sizeof(GLfloat), reinterpret_cast<void *>(3 * sizeof(GLfloat)));
         m_pointCloudVbo.release();
     } else {
         qWarning() << "Unable to create/bind VBO";
@@ -318,7 +321,7 @@ void ZPointCloudWidget::paintGL()
 
     m_camera.setToIdentity();
     m_camera.translate(0, 0, -1000);
-    m_camera.scale(m_scale);
+    m_camera.scale(0.01f * m_scale);
 
     QOpenGLVertexArrayObject::Binder vaoBinder(&m_vao);
     m_program->bind();
@@ -331,7 +334,7 @@ void ZPointCloudWidget::paintGL()
 #if !defined(Q_OS_ANDROID)
         glPointSize(devicePixelRatio() * m_pointSize);
 #endif
-        glDrawArrays(GL_POINTS, 0, m_pointCloud->vertexCount());
+        glDrawArrays(GL_POINTS, 0, m_pointCloud->width() * m_pointCloud->height());
     }
 
     GLenum error = glGetError();
@@ -346,10 +349,11 @@ void ZPointCloudWidget::resizeGL(int w, int h)
 {
     m_proj.setToIdentity();
     GLfloat aspectRatio = GLfloat(w) / h;
-    if (m_perspectiveProjection)
+    if (m_perspectiveProjection) {
         m_proj.perspective(45.0f, aspectRatio, 0.01f, 10000.0f);
-    else
+    } else {
         m_proj.ortho(-aspectRatio, aspectRatio, -1.f, 1.f, 0.01f, 10000.0f);
+    }
 }
 
 void ZPointCloudWidget::mousePressEvent(QMouseEvent *event)

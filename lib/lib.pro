@@ -18,7 +18,7 @@ SUBDIRS  += zcameracalibrator
 zcameracalibrator.depends = zcalibratedcamera zcameraacquisition zcameracalibration
 
 SUBDIRS  += zstructuredlight
-zstructuredlight.depends = zcore zcalibratedcamera zcameraacquisition zcameracalibration zcameracalibrator
+zstructuredlight.depends = zcore zcalibratedcamera zcameraacquisition zcameracalibration zcameracalibrator zpointcloud
 
 SUBDIRS  += zpointcloud
 zpointcloud.depends = zcalibratedcamera zcameraacquisition zcameracalibration

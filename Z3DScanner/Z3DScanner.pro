@@ -19,13 +19,11 @@ SOURCES += \
     src/ui/mainwindow.cpp \
     src/zscannerinitialconfigwizard.cpp \
     src/zpointcloudwidget.cpp \
-    src/zpointclouddata.cpp
 
 HEADERS += \
     src/ui/mainwindow.h \
     src/zscannerinitialconfigwizard.h \
     src/zpointcloudwidget.h \
-    src/zpointclouddata.h
 
 FORMS += \
     src/ui/mainwindow.ui \
