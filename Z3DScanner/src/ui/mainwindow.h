@@ -24,10 +24,6 @@
 #include <Z3DStructuredLight>
 #include "zpointcloud_fwd.h"
 
-#include <QPointer>
-
-#include <opencv2/core.hpp>
-
 namespace Ui {
 class MainWindow;
 }
@@ -39,22 +35,20 @@ class MainWindow : public Z3D::ZMainWindow
     Q_OBJECT
 
 public:
-    explicit MainWindow(QWidget *parent = nullptr);
-    ~MainWindow();
+    explicit MainWindow(Z3D::ZStructuredLightSystemPtr structuredLightSystem, QWidget *parent = nullptr);
+    ~MainWindow() override;
 
 signals:
 
 private slots:
-    void init();
-
-    virtual void closeEvent(QCloseEvent *event);
+    virtual void closeEvent(QCloseEvent *event) override;
 
     void onScanFinished(Z3D::ZPointCloudPtr cloud);
 
 private:
     Ui::MainWindow *ui;
 
-    Z3D::ZStructuredLightSystemPtr m_currentStructuredLightSystem;
+    const Z3D::ZStructuredLightSystemPtr m_currentStructuredLightSystem;
 
     ZPointCloudWidget *m_pointCloudWidget;
 };

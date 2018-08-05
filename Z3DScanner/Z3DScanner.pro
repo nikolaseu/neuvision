@@ -1,6 +1,6 @@
 include(../NEUVision.pri)
 
-QT += core gui opengl multimedia widgets quick qml concurrent
+QT += core gui opengl multimedia widgets quick qml concurrent 3dinput 3dquick 3drender 3dquickrender
 #CONFIG += console
 DESTDIR = $$Z3D_BUILD_DIR
 TARGET = Z3DScanner
@@ -17,17 +17,19 @@ win32:LIBS += opengl32.lib # to use "real" OpenGL on windows
 SOURCES += \
     src/main.cpp \
     src/ui/mainwindow.cpp \
-    src/zscannerinitialconfigwizard.cpp \
     src/zpointcloudwidget.cpp \
+    src/zscannerinitialconfigwizard.cpp \
+    src/zscannerqml.cpp \
 
 HEADERS += \
     src/ui/mainwindow.h \
-    src/zscannerinitialconfigwizard.h \
     src/zpointcloudwidget.h \
+    src/zscannerinitialconfigwizard.h \
+    src/zscannerqml.h \
 
 FORMS += \
     src/ui/mainwindow.ui \
-    src/zscannerinitialconfigwizard.ui
+    src/zscannerinitialconfigwizard.ui \
 
 RESOURCES += \
     resources.qrc

@@ -28,20 +28,15 @@
 
 #include "src/zpointcloudwidget.h"
 
-#include <QDateTime>
 #include <QDebug>
-#include <QDir>
-#include <QFileDialog>
 #include <QMessageBox>
-#include <QSettings>
-#include <QTimer>
 
 
 
-MainWindow::MainWindow(QWidget *parent)
+MainWindow::MainWindow(Z3D::ZStructuredLightSystemPtr structuredLightSystem, QWidget *parent)
     : Z3D::ZMainWindow(parent)
     , ui(new Ui::MainWindow)
-    , m_currentStructuredLightSystem(nullptr)
+    , m_currentStructuredLightSystem(structuredLightSystem)
 {
     ui->setupUi(this);
 
@@ -49,10 +44,30 @@ MainWindow::MainWindow(QWidget *parent)
     ui->glLayout->addWidget(m_pointCloudWidget);
 
     /// disable all until ready
-    ui->centralwidget->setEnabled(false);
+    ui->centralwidget->setEnabled(m_currentStructuredLightSystem->ready());
 
     /// finish initialization
-    QTimer::singleShot(100, this, &MainWindow::init);
+    connect(m_currentStructuredLightSystem.get(), &Z3D::ZStructuredLightSystem::readyChanged,
+            ui->centralwidget, &QWidget::setEnabled);
+    connect(m_currentStructuredLightSystem.get(), &Z3D::ZStructuredLightSystem::scanFinished,
+            this, &MainWindow::onScanFinished);
+    connect(ui->startAcquisitionButton, &QPushButton::clicked,
+            m_currentStructuredLightSystem.get(), &Z3D::ZStructuredLightSystem::start);
+
+    /// add config widget
+    QWidget *currentWidget = Z3D::ZStructuredLightSystemProvider::getConfigWidget(m_currentStructuredLightSystem.get());
+    ui->structuredLightSystemConfigLayout->addWidget(currentWidget);
+    currentWidget->setVisible(true);
+
+    ui->structuredLightSystemLabel->setText(m_currentStructuredLightSystem->metaObject()->className());
+
+    /// add pattern projection config widget
+    auto m_currentPatternProjection = m_currentStructuredLightSystem->patternProjection();
+    ui->patternTypeLabel->setText(m_currentPatternProjection->metaObject()->className());
+
+    QWidget *currentWidget2 = Z3D::ZPatternProjectionProvider::getConfigWidget(m_currentPatternProjection.get());
+    ui->patternProjectionConfigLayout->addWidget(currentWidget2);
+    currentWidget2->setVisible(true);
 }
 
 MainWindow::~MainWindow()
@@ -61,51 +76,6 @@ MainWindow::~MainWindow()
     delete ui;
 
     qDebug() << Q_FUNC_INFO << "finished";
-}
-
-void MainWindow::init()
-{
-    QDir configDir = QDir::current();
-#if defined(Q_OS_WIN)
-//        if (pluginsDir.dirName().toLower() == "debug" || pluginsDir.dirName().toLower() == "release")
-//            pluginsDir.cdUp();
-#elif defined(Q_OS_MAC)
-    if (configDir.dirName() == "MacOS") {
-        configDir.cdUp();
-        configDir.cdUp();
-        configDir.cdUp();
-    }
-#endif
-
-    QString settingsFile = configDir.absoluteFilePath(QString("%1.ini").arg(QApplication::applicationName()));
-    qDebug() << "trying to load config from:" << settingsFile;
-    QSettings settings(settingsFile, QSettings::IniFormat);
-
-    m_currentStructuredLightSystem = Z3D::ZStructuredLightSystemProvider::get(&settings);
-
-    if (m_currentStructuredLightSystem) {
-        connect(m_currentStructuredLightSystem.get(), &Z3D::ZStructuredLightSystem::readyChanged,
-                ui->centralwidget, &QWidget::setEnabled);
-        connect(m_currentStructuredLightSystem.get(), &Z3D::ZStructuredLightSystem::scanFinished,
-                this, &MainWindow::onScanFinished);
-        connect(ui->startAcquisitionButton, &QPushButton::clicked,
-                m_currentStructuredLightSystem.get(), &Z3D::ZStructuredLightSystem::start);
-
-        /// add config widget
-        QWidget *currentWidget = Z3D::ZStructuredLightSystemProvider::getConfigWidget(m_currentStructuredLightSystem.get());
-        ui->structuredLightSystemConfigLayout->addWidget(currentWidget);
-        currentWidget->setVisible(true);
-
-        ui->structuredLightSystemLabel->setText(m_currentStructuredLightSystem->metaObject()->className());
-
-        /// add pattern projection config widget
-        auto m_currentPatternProjection = m_currentStructuredLightSystem->patternProjection();
-        ui->patternTypeLabel->setText(m_currentPatternProjection->metaObject()->className());
-
-        QWidget *currentWidget2 = Z3D::ZPatternProjectionProvider::getConfigWidget(m_currentPatternProjection.get());
-        ui->patternProjectionConfigLayout->addWidget(currentWidget2);
-        currentWidget2->setVisible(true);
-    }
 }
 
 void MainWindow::closeEvent(QCloseEvent * /*event*/)
