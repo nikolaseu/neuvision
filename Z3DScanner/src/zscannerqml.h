@@ -1,5 +1,5 @@
 /* * Z3D - A structured light 3D scanner
- * Copyright (C) 2013-2016 Nicolas Ulrich <nikolaseu@gmail.com>
+ * Copyright (C) 2013-2018 Nicolas Ulrich <nikolaseu@gmail.com>
  *
  * This file is part of Z3D.
  *
@@ -19,23 +19,35 @@
 
 #pragma once
 
-#include <QWidget>
+#include "zstructuredlight_fwd.h"
+#include "zpointcloud_fwd.h"
 
-namespace Ui {
-class ZScannerInitialConfigWizard;
-}
+#include <QObject>
 
-class ZScannerInitialConfigWizard : public QWidget
+class ZScannerQML : public QObject
 {
     Q_OBJECT
 
+    Q_PROPERTY(Z3D::ZPointCloud* cloud READ cloud NOTIFY cloudChanged)
+
 public:
-    explicit ZScannerInitialConfigWizard(QWidget *parent = nullptr);
-    ~ZScannerInitialConfigWizard();
+    explicit ZScannerQML(Z3D::ZStructuredLightSystemPtr structuredLightSystem, QObject *parent = nullptr);
+
+    Z3D::ZPointCloud* cloud() const;
+
+signals:
+    void cloudChanged(Z3D::ZPointCloud* cloud);
+
+public slots:
+    void scan();
+    Q_DECL_DEPRECATED void openPatternsDialog() const;
+    Q_DECL_DEPRECATED void openStructuredLightSystemDialog() const;
 
 private slots:
-    void on_pushButton_clicked();
+    void setCloud(Z3D::ZPointCloudPtr cloud);
 
 private:
-    Ui::ZScannerInitialConfigWizard *ui;
+    const Z3D::ZStructuredLightSystemPtr m_structuredLightSystem;
+
+    Z3D::ZPointCloudPtr m_cloud;
 };

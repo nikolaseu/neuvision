@@ -19,6 +19,7 @@
 
 #pragma once
 
+#include "zpointcloud_fwd.h"
 #include "zstructuredlight_fwd.h"
 #include "zstructuredlight_global.h"
 
@@ -52,7 +53,7 @@ signals:
     void readyChanged(bool ready);
     void debugShowDecodedImagesChanged(bool debugShowDecodedImages);
 
-    void scanFinished(Z3D::ZSimplePointCloudPtr cloud);
+    void scanFinished(Z3D::ZPointCloudPtr cloud);
 
 public slots:
     bool start();

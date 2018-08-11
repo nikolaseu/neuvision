@@ -3,35 +3,20 @@ import Qt3D.Extras 2.0
 import Qt3D.Input 2.0
 import Qt3D.Render 2.0
 
-import QtQuick 2.4
-import QtQuick.Controls 1.4 as QQControls1 // I want native platform looking menu :(
-import QtQuick.Controls 2.4 // .. but flat/simpler sliders and buttons
+import QtQuick 2.10
+import QtQuick.Controls 2.3
 import QtQuick.Dialogs 1.3
-import QtQuick.Layouts 1.1
+import QtQuick.Layouts 1.3
 import QtQuick.Scene3D 2.0
 
 import Z3D.PointCloud 1.0
 
-QQControls1.ApplicationWindow {
+ApplicationWindow {
     id: window
     title: qsTr("Point cloud viewer")
     width: 1200
     height: 800
     visible: true
-
-    menuBar: QQControls1.MenuBar {
-        id: menuBar
-
-        QQControls1.Menu {
-            id: fileMenu
-            title: qsTr("File")
-
-            QQControls1.MenuItem {
-                text: qsTr("Open file ...")
-                onTriggered: fileDialog.open()
-            }
-        }
-    }
 
     FileDialog {
         id: fileDialog
@@ -48,13 +33,12 @@ QQControls1.ApplicationWindow {
         //filename: "/Users/nikolaseu/Downloads/something.ply"
     }
 
-    RowLayout {
+    Item {
         anchors.fill: parent
 
         Scene3D {
             id: scene3d
-            Layout.fillWidth: true
-            Layout.fillHeight: true
+            anchors.fill: parent
 
             aspects: ["input", "logic"]
             cameraAspectRatioMode: Scene3D.AutomaticAspectRatio
@@ -116,87 +100,132 @@ QQControls1.ApplicationWindow {
             }
         }
 
-        ColumnLayout {
-            Layout.fillHeight: true
-            Layout.minimumWidth: 200
-            Layout.maximumWidth: 200
-            Layout.margins: 16
+        RowLayout {
+            anchors.right: parent.right
+            anchors.top: parent.top
+            anchors.margins: 4
+            opacity: mouseArea.containsMouse ? 1 : 0.3
+            visible: pointCloudReader.pointCloud
 
-            Text {
-                text: qsTr("Point size")
+            Behavior on opacity {
+                OpacityAnimator {
+                    duration: 100
+                }
             }
 
-            Slider {
-                id: pointSizeSlider
-                Layout.fillWidth: true
-                value: 2
-                from: 1
-                to: 4
+            Button {
+                text: "Open file..."
+                onClicked: fileDialog.open()
             }
 
-            Text {
-                text: qsTr("Ambient component")
+            Button {
+                text: "Settings"
+                onClicked: drawer.open()
             }
 
-            Slider {
-                id: ambientSlider
-                Layout.fillWidth: true
-                value: 0.5
-                from: 0
-                to: 1
+            MouseArea {
+                id: mouseArea
+                anchors.fill: parent
+                hoverEnabled: true
+                acceptedButtons: Qt.NoButton
             }
+        }
 
-            Text {
-                text: qsTr("Diffuse component")
-            }
+        Drawer {
+            id: drawer
+            parent: parent
+            width: 320
+            height: window.height
+            edge: Qt.RightEdge
+            dragMargin: 0 // disable drag-opening
 
-            Slider {
-                id: diffuseSlider
-                Layout.fillWidth: true
-                value: 0.7
-                from: 0
-                to: 1
-            }
+            ColumnLayout {
+                anchors.fill: parent
+                anchors.margins: 16
 
-            Text {
-                text: qsTr("Specular component")
-            }
+                Text {
+                    Layout.fillWidth: true
+                    font.pointSize: 14
+                    font.bold: true
+                    text: qsTr("3D viewer settings")
+                }
 
-            Slider {
-                id: specularSlider
-                Layout.fillWidth: true
-                value: 0.1
-                from: 0
-                to: 1
-            }
+                Item {
+                    height: 16
+                }
 
-            Text {
-                text: qsTr("Specular power")
-            }
+                Text {
+                    text: qsTr("Point size")
+                }
 
-            Slider {
-                id: shininessSlider
-                Layout.fillWidth: true
-                value: 25
-                from: 0
-                to: 200
-            }
+                Slider {
+                    id: pointSizeSlider
+                    Layout.fillWidth: true
+                    value: 2
+                    from: 1
+                    to: 4
+                }
 
-            Item {
-                Layout.fillHeight: true
+                Text {
+                    text: qsTr("Ambient component")
+                }
+
+                Slider {
+                    id: ambientSlider
+                    Layout.fillWidth: true
+                    value: 0.5
+                    from: 0
+                    to: 1
+                }
+
+                Text {
+                    text: qsTr("Diffuse component")
+                }
+
+                Slider {
+                    id: diffuseSlider
+                    Layout.fillWidth: true
+                    value: 0.7
+                    from: 0
+                    to: 1
+                }
+
+                Text {
+                    text: qsTr("Specular component")
+                }
+
+                Slider {
+                    id: specularSlider
+                    Layout.fillWidth: true
+                    value: 0.1
+                    from: 0
+                    to: 1
+                }
+
+                Text {
+                    text: qsTr("Specular power")
+                }
+
+                Slider {
+                    id: shininessSlider
+                    Layout.fillWidth: true
+                    value: 25
+                    from: 0
+                    to: 200
+                }
+
+                Item {
+                    Layout.fillHeight: true
+                }
             }
         }
     }
 
-    Rectangle {
-        anchors.fill: parent
+    Button {
+        anchors.centerIn: parent
         visible: !pointCloudReader.pointCloud
-
-        Button {
-            anchors.centerIn: parent
-            text: qsTr("Load a point cloud from file ...")
-            padding: 10
-            onClicked: fileDialog.open()
-        }
+        padding: 20
+        text: qsTr("Open a point cloud ...")
+        onClicked: fileDialog.open()
     }
 }

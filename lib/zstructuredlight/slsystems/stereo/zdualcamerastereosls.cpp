@@ -22,7 +22,8 @@
 
 #include "zcamerainterface.h"
 #include "zdecodedpattern.h"
-#include "zsimplepointcloud.h"
+
+#include "zpointcloud.h"
 
 #include <QDebug>
 #include <QSettings>
@@ -64,12 +65,12 @@ void ZDualCameraStereoSLS::onPatternsDecoded(std::vector<ZDecodedPatternPtr> dec
     QTime startTime;
     startTime.start();
 
-    Z3D::ZSimplePointCloudPtr cloud = triangulate(decodedPatterns[0]->intensityImg(),
+    Z3D::ZPointCloudPtr cloud = triangulate(decodedPatterns[0]->intensityImg(),
             decodedPatterns[0]->decodedImage(),
             decodedPatterns[1]->decodedImage());
 
     if (cloud) {
-        qDebug() << "finished calculating point cloud with" << cloud->points.size()
+        qDebug() << "finished calculating point cloud with" << cloud->width() * cloud->height()
                  << "points in" << startTime.elapsed() << "msecs";
         emit scanFinished(cloud);
     } else {

@@ -1,13 +1,11 @@
 include(../NEUVision.pri)
 
-QT += core gui opengl multimedia widgets quick qml concurrent
+QT += core gui widgets quick qml concurrent 3dinput 3dquick 3drender 3dquickrender
 #CONFIG += console
 DESTDIR = $$Z3D_BUILD_DIR
 TARGET = Z3DScanner
 VERSION = $$Z3D_VERSION
 TEMPLATE = app
-
-win32:LIBS += opengl32.lib # to use "real" OpenGL on windows
 
 # Define this to limit QtConcurrent thread pool size
 #DEFINES += Z3D_THREAD_COUNT_LIMIT=1
@@ -16,20 +14,10 @@ win32:LIBS += opengl32.lib # to use "real" OpenGL on windows
 # Project
 SOURCES += \
     src/main.cpp \
-    src/ui/mainwindow.cpp \
-    src/zscannerinitialconfigwizard.cpp \
-    src/zpointcloudwidget.cpp \
-    src/zpointclouddata.cpp
+    src/zscannerqml.cpp \
 
 HEADERS += \
-    src/ui/mainwindow.h \
-    src/zscannerinitialconfigwizard.h \
-    src/zpointcloudwidget.h \
-    src/zpointclouddata.h
-
-FORMS += \
-    src/ui/mainwindow.ui \
-    src/zscannerinitialconfigwizard.ui
+    src/zscannerqml.h \
 
 RESOURCES += \
     resources.qrc
@@ -67,6 +55,10 @@ include($$PWD/../lib/zcalibratedcamera/zcalibratedcamera.pri)
 ###############################################################################
 # Structured Light
 include($$PWD/../lib/zstructuredlight/zstructuredlight.pri)
+
+###############################################################################
+# Point cloud
+include($$PWD/../lib/zpointcloud/zpointcloud.pri)
 
 ###############################################################################
 # Camera calibrator

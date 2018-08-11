@@ -11,7 +11,6 @@ struct ZDecodedPattern;
 class ZPatternProjection;
 class ZPatternProjectionPlugin;
 struct ZProjectedPattern;
-class ZSimplePointCloud;
 class ZStructuredLightSystem;
 class ZStructuredLightSystemPlugin;
 
@@ -23,8 +22,6 @@ typedef std::shared_ptr<ZPatternProjection> ZPatternProjectionPtr;
 typedef QPointer<ZPatternProjection> ZPatternProjectionWeakPtr;
 
 typedef std::shared_ptr<ZProjectedPattern> ZProjectedPatternPtr;
-
-typedef std::shared_ptr<ZSimplePointCloud> ZSimplePointCloudPtr;
 
 typedef std::shared_ptr<ZStructuredLightSystem> ZStructuredLightSystemPtr;
 typedef QPointer<ZStructuredLightSystem> ZStructuredLightSystemWeakPtr;

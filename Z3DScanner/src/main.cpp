@@ -18,25 +18,34 @@
 // along with Z3D.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-#include "ui/mainwindow.h"
-
-#include <QDebug>
-#include <QSplashScreen>
-#include <QSurfaceFormat>
-
 #include "zapplication.h"
-#include "zapplicationstyle.h"
 #include "zcalibrationpatternfinderprovider.h"
 #include "zcameracalibrationprovider.h"
 #include "zcameraprovider.h"
 #include "zpatternprojectionprovider.h"
+#include "zpointcloud.h"
+#include "zpointcloudgeometry.h"
+#include "zpointcloudprovider.h"
 #include "zstructuredlightsystemprovider.h"
 
-#include "zscannerinitialconfigwizard.h"
+#include "zscannerqml.h"
+
+#include <QDebug>
+#include <QDir>
+#include <QQmlApplicationEngine>
+#include <QQmlContext>
+#include <QSplashScreen>
+#include <QSurfaceFormat>
+
 
 
 int main(int argc, char* argv[])
 {
+    QSurfaceFormat glFormat;
+    glFormat.setVersion(3, 2);
+    glFormat.setProfile(QSurfaceFormat::CoreProfile);
+    QSurfaceFormat::setDefaultFormat(glFormat);
+
     /// to print out diagnostic information about each plugin it (Qt) tries to load
     //qputenv("QT_DEBUG_PLUGINS", "1");
 
@@ -44,19 +53,6 @@ int main(int argc, char* argv[])
 
     ///
     Z3D::ZApplication app(argc, argv);
-
-    Z3D::ZApplicationStyle::applyStyle(Z3D::ZApplicationStyle::DarkStyle);
-
-    QSurfaceFormat fmt;
-    fmt.setDepthBufferSize(24);
-    if (QCoreApplication::arguments().contains(QStringLiteral("--multisample")))
-        fmt.setSamples(4);
-    if (QCoreApplication::arguments().contains(QStringLiteral("--coreprofile"))) {
-        qDebug() << "using OpenGL 3.2 core profile";
-        fmt.setVersion(3, 2);
-        fmt.setProfile(QSurfaceFormat::CoreProfile);
-    }
-    QSurfaceFormat::setDefaultFormat(fmt);
 
     int result;
 
@@ -87,19 +83,43 @@ int main(int argc, char* argv[])
         app.processEvents();
         Z3D::ZPatternProjectionProvider::loadPlugins();
 
+        splash.showMessage("Loading point cloud plugins...");
+        app.processEvents();
+        Z3D::ZPointCloudProvider::loadPlugins();
+
+        /// Load config
+        QDir configDir = QDir::current();
+#if defined(Q_OS_WIN)
+//        if (pluginsDir.dirName().toLower() == "debug" || pluginsDir.dirName().toLower() == "release")
+//            pluginsDir.cdUp();
+#elif defined(Q_OS_MAC)
+        if (configDir.dirName() == "MacOS") {
+            configDir.cdUp();
+            configDir.cdUp();
+            configDir.cdUp();
+        }
+#endif
+
+        QString settingsFile = configDir.absoluteFilePath(QString("%1.ini").arg(QApplication::applicationName()));
+        qDebug() << "trying to load config from:" << settingsFile;
+        QSettings settings(settingsFile, QSettings::IniFormat);
+
+        splash.showMessage(QString("Loading settings file %1...").arg(settingsFile));
+        app.processEvents();
+
+        Z3D::ZStructuredLightSystemPtr structuredLightSystem = Z3D::ZStructuredLightSystemProvider::get(&settings);
+
         splash.showMessage("Loading main window...");
         app.processEvents();
 
-        //ZScannerInitialConfigWizard window;
-        MainWindow window;
+        qmlRegisterUncreatableType<Z3D::ZPointCloud>("Z3D.PointCloud", 1, 0, "PointCloud", "ZPointCloud cannot be created, must be obtained from a PointCloudReader");
+        qmlRegisterType<Z3D::ZPointCloudGeometry>("Z3D.PointCloud", 1, 0, "PointCloudGeometry");
 
-        app.finishSplashScreen(&window);
+        QQmlApplicationEngine engine;
+        engine.rootContext()->setContextProperty("scanner", QVariant::fromValue(new ZScannerQML(structuredLightSystem)));
+        engine.load(QUrl(QStringLiteral("qrc:/qml/main.qml")));
 
-#if defined(Q_OS_ANDROID)
-        window.showFullScreen();
-#else
-        window.show();
-#endif
+        splash.hide();
 
         result = app.exec();
     }
