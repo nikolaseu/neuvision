@@ -1,6 +1,6 @@
 //
 // Z3D - A structured light 3D scanner
-// Copyright (C) 2013-2016 Nicolas Ulrich <nikolaseu@gmail.com>
+// Copyright (C) 2013-2018 Nicolas Ulrich <nikolaseu@gmail.com>
 //
 // This file is part of Z3D.
 //
