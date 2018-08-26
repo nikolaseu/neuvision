@@ -23,6 +23,8 @@
 #include "zdecodedpattern.h"
 #include "zprojectedpattern.h"
 
+#include <QDebug>
+
 namespace Z3D
 {
 
@@ -39,6 +41,12 @@ ZSingleCameraStereoSLS::ZSingleCameraStereoSLS(
 ZSingleCameraStereoSLS::~ZSingleCameraStereoSLS()
 {
 
+}
+
+const std::vector<ZSettingsItemPtr> &ZSingleCameraStereoSLS::settings()
+{
+    qDebug() << "returning settings for" << this;
+    return m_settings;
 }
 
 void ZSingleCameraStereoSLS::processPatterns()

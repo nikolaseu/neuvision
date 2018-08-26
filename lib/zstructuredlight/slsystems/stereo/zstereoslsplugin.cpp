@@ -23,7 +23,6 @@
 #include "zcameracalibrationprovider.h"
 #include "zcameraprovider.h"
 #include "zdualcamerastereosls.h"
-#include "zdualcamerastereoslsconfigwidget.h"
 #include "zpatternprojectionprovider.h"
 #include "zsinglecamerastereosls.h"
 
@@ -92,30 +91,6 @@ ZStructuredLightSystemPtr ZStereoSLSPlugin::get(QSettings *settings)
         qWarning() << "unknown ZStereoSLS mode:" << mode;
         return nullptr;
     }
-}
-
-QWidget *ZStereoSLSPlugin::getConfigWidget(ZStructuredLightSystemWeakPtr structuredLightSystem)
-{
-    const auto item = m_structuredLightSystemWidgets.find(structuredLightSystem);
-    if (item != m_structuredLightSystemWidgets.end()) {
-        return item->second;
-    }
-
-    QWidget *widget = nullptr;
-    if (auto *dualCameraStereo = qobject_cast<ZDualCameraStereoSLS *>(structuredLightSystem)) {
-        widget = new ZDualCameraStereoSLSConfigWidget(dualCameraStereo);
-    } else if (/*auto *singleCameraStereo =*/ qobject_cast<ZSingleCameraStereoSLS *>(structuredLightSystem)) {
-        widget = new QLabel("Not implemented yet :(");
-    }
-
-    if (widget) {
-        QObject::connect(structuredLightSystem, &QObject::destroyed, [=](QObject *) {
-            m_structuredLightSystemWidgets.erase(structuredLightSystem);
-        });
-        m_structuredLightSystemWidgets[structuredLightSystem] = widget;
-    }
-
-    return widget;
 }
 
 } // namespace Z3D

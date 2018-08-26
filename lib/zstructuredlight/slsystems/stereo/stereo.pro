@@ -10,7 +10,6 @@ VERSION       = $$Z3D_VERSION
 
 HEADERS       = \
     zdualcamerastereosls.h \
-    zdualcamerastereoslsconfigwidget.h \
     zsinglecamerastereosls.h \
     zstereosls.h \
     zstereoslsplugin.h \
@@ -18,14 +17,10 @@ HEADERS       = \
 
 SOURCES       = \
     zdualcamerastereosls.cpp \
-    zdualcamerastereoslsconfigwidget.cpp \
     zsinglecamerastereosls.cpp \
     zstereosls.cpp \
     zstereoslsplugin.cpp \
     zstereosystemimpl.cpp \
-
-FORMS        += \
-    zdualcamerastereoslsconfigwidget.ui
 
 
 

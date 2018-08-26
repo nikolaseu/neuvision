@@ -71,17 +71,6 @@ ZPatternProjectionPtr ZPatternProjectionProvider::get(QSettings *settings)
     return patternProjection;
 }
 
-QWidget *ZPatternProjectionProvider::getConfigWidget(ZPatternProjectionWeakPtr patternProjection)
-{
-    for (auto item : m_plugins) {
-        if (auto *widget = item.second->getConfigWidget(patternProjection)) {
-            return widget;
-        }
-    }
-
-    return nullptr;
-}
-
 ZPatternProjectionProvider::ZPatternProjectionProvider()
 {
 }

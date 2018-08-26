@@ -22,6 +22,7 @@
 #include "zstructuredlight_fwd.h"
 #include "zstructuredlight_global.h"
 
+#include <zcore_fwd.h>
 #include <Z3DCameraAcquisition>
 
 #include <QObject>
@@ -35,6 +36,9 @@ class Z3D_STRUCTUREDLIGHT_SHARED_EXPORT ZPatternProjection : public QObject
 
 public:
     explicit ZPatternProjection(QObject *parent = nullptr);
+    virtual ~ZPatternProjection();
+
+    virtual const std::vector<ZSettingsItemPtr> &settings() = 0;
 
 signals:
     void prepareAcquisition(QString acquisitionId);

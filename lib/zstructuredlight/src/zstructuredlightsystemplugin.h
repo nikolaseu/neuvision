@@ -30,9 +30,7 @@ namespace Z3D
 class Z3D_STRUCTUREDLIGHT_SHARED_EXPORT ZStructuredLightSystemPlugin
 {
 public:
-    virtual ~ZStructuredLightSystemPlugin() {}
-
-    virtual QWidget *getConfigWidget(ZStructuredLightSystemWeakPtr structuredLightSystem) = 0;
+    virtual ~ZStructuredLightSystemPlugin();
 
     virtual ZStructuredLightSystemPtr get(QSettings *settings) = 0;
 };

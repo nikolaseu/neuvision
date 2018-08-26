@@ -51,14 +51,16 @@ double ZStereoSLS::maxValidDistance() const
     return m_maxValidDistance;
 }
 
-void ZStereoSLS::setMaxValidDistance(double maxValidDistance)
+bool ZStereoSLS::setMaxValidDistance(double maxValidDistance)
 {
     if (std::fabs(m_maxValidDistance - maxValidDistance) < DBL_EPSILON) {
-        return;
+        return true;
     }
 
     m_maxValidDistance = maxValidDistance;
     emit maxValidDistanceChanged(maxValidDistance);
+
+    return true;
 }
 
 ZPointCloudPtr ZStereoSLS::triangulate(const cv::Mat &colorImg,

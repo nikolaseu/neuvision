@@ -19,9 +19,11 @@
 
 #pragma once
 
-#include "zpointcloud_fwd.h"
 #include "zstructuredlight_fwd.h"
 #include "zstructuredlight_global.h"
+
+#include "zcore_fwd.h"
+#include "zpointcloud_fwd.h"
 
 #include <QObject>
 
@@ -44,6 +46,8 @@ public:
 
     virtual ~ZStructuredLightSystem();
 
+    virtual const std::vector<ZSettingsItemPtr> &settings() = 0;
+
     bool ready() const;
     bool debugShowDecodedImages() const;
 
@@ -59,7 +63,7 @@ public slots:
     bool start();
 
     void setReady(bool ready);
-    void setDebugShowDecodedImages(bool debugShowDecodedImages);
+    bool setDebugShowDecodedImages(bool debugShowDecodedImages);
 
 protected slots:
     virtual void onPatternProjected(Z3D::ZProjectedPatternPtr pattern) = 0;

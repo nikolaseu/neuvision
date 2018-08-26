@@ -43,7 +43,7 @@ public:
                         ZPatternProjectionPtr patternProjection,
                         QObject *parent = nullptr);
 
-    ~ZStereoSLS();
+    ~ZStereoSLS() override;
 
     double maxValidDistance() const;
 
@@ -51,7 +51,7 @@ signals:
     void maxValidDistanceChanged(double maxValidDistance);
 
 public slots:
-    void setMaxValidDistance(double maxValidDistance);
+    bool setMaxValidDistance(double maxValidDistance);
 
 protected slots:
     Z3D::ZPointCloudPtr triangulate(const cv::Mat &colorImg,

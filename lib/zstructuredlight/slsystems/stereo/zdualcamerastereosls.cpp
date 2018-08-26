@@ -21,9 +21,11 @@
 #include "zdualcamerastereosls.h"
 
 #include "zcamerainterface.h"
+#include "zcamerapreviewer.h"
 #include "zdecodedpattern.h"
-
+#include "zmulticameracalibratorwidget.h"
 #include "zpointcloud.h"
+#include "zsettingsitem.h"
 
 #include <QDebug>
 #include <QSettings>
@@ -43,11 +45,84 @@ ZDualCameraStereoSLS::ZDualCameraStereoSLS(ZCameraList cameras,
         qWarning() << "there must be exactly 2 cameras!";
         return;
     }
+
+    const QString calibrationSettings("Calibration");
+
+    ZSettingsItemPtr openCalibrationOption = std::make_unique<ZSettingsItemCommand>(calibrationSettings, "Change calibration ...", "Opens structured light system calibration window",
+                                                                                    [&]() -> bool {
+                                                                                        Z3D::ZMultiCameraCalibratorWidget *calibWidget = new Z3D::ZMultiCameraCalibratorWidget(m_cameras);
+                                                                                        calibWidget->show();
+                                                                                        return true;
+                                                                                    });
+
+    const QString leftCameraSettings("Left camera");
+
+    ZSettingsItemPtr leftCameraPreviewOption = std::make_unique<ZSettingsItemCommand>(leftCameraSettings, "Preview ...", "Opens camera preview window",
+                                                                                      [&]() -> bool {
+                                                                                          auto *previewDialog = new Z3D::ZCameraPreviewer(m_cameras[0]);
+                                                                                          previewDialog->show();
+                                                                                          return true;
+                                                                                      });
+
+    ZSettingsItemPtr leftCameraSettingsOption = std::make_unique<ZSettingsItemCommand>(leftCameraSettings, "Settings ...", "Opens camera settings window",
+                                                                                       [&]() -> bool {
+                                                                                           m_cameras[0]->showSettingsDialog();
+                                                                                           return true;
+                                                                                       });
+
+    const QString rightCameraSettings("Right camera");
+
+    ZSettingsItemPtr rightCameraPreviewOption = std::make_unique<ZSettingsItemCommand>(rightCameraSettings, "Preview ...", "Opens camera preview window",
+                                                                                       [&]() -> bool {
+                                                                                           auto *previewDialog = new Z3D::ZCameraPreviewer(m_cameras[1]);
+                                                                                           previewDialog->show();
+                                                                                           return true;
+                                                                                       });
+
+    ZSettingsItemPtr rightCameraSettingsOption = std::make_unique<ZSettingsItemCommand>(rightCameraSettings, "Settings ...", "Opens camera settings window",
+                                                                                        [&]() -> bool {
+                                                                                            m_cameras[1]->showSettingsDialog();
+                                                                                            return true;
+                                                                                        });
+
+    const QString advancedSettings("Advanced options");
+
+    ZSettingsItemPtr maxValidDistanceOption = std::make_unique<ZSettingsItemFloat>(advancedSettings, "Max. valid distance", "Maximum distance to be considered valid",
+                                                                                   std::bind(&ZDualCameraStereoSLS::maxValidDistance, this),
+                                                                                   std::bind(&ZDualCameraStereoSLS::setMaxValidDistance, this, std::placeholders::_1),
+                                                                                   0.0, // minimum
+                                                                                   1.0); // maximum
+    QObject::connect(this, &ZDualCameraStereoSLS::maxValidDistanceChanged,
+                     maxValidDistanceOption.get(), &ZSettingsItem::valueChanged);
+
+    const QString debugOptions("Debug options");
+
+    ZSettingsItemPtr showDecodedPatternOption = std::make_unique<ZSettingsItemBool>(debugOptions, "Show decoded patterns", "Display decoded patterns as images (in a new window)",
+                                                                                    std::bind(&ZDualCameraStereoSLS::debugShowDecodedImages, this),
+                                                                                    std::bind(&ZDualCameraStereoSLS::setDebugShowDecodedImages, this, std::placeholders::_1));
+    QObject::connect(this, &ZDualCameraStereoSLS::debugShowDecodedImagesChanged,
+                     showDecodedPatternOption.get(), &ZSettingsItem::valueChanged);
+
+    m_settings = {
+        openCalibrationOption,
+        leftCameraPreviewOption,
+        leftCameraSettingsOption,
+        rightCameraPreviewOption,
+        rightCameraSettingsOption,
+        maxValidDistanceOption,
+        showDecodedPatternOption
+    };
 }
 
 ZDualCameraStereoSLS::~ZDualCameraStereoSLS()
 {
 
+}
+
+const std::vector<ZSettingsItemPtr> &ZDualCameraStereoSLS::settings()
+{
+    qDebug() << "returning settings for" << this;
+    return m_settings;
 }
 
 ZCameraList ZDualCameraStereoSLS::cameras() const

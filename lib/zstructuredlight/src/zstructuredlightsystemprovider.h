@@ -34,7 +34,6 @@ public:
     static void unloadPlugins();
 
     static ZStructuredLightSystemPtr get(QSettings *settings);
-    static QWidget *getConfigWidget(ZStructuredLightSystemWeakPtr structuredLightSystem);
 
 private:
     explicit ZStructuredLightSystemProvider();

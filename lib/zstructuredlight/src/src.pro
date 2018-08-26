@@ -30,11 +30,13 @@ SOURCES += \
     zdecodedpattern.cpp \
     zgeometryutils.cpp \
     zpatternprojection.cpp \
+    zpatternprojectionplugin.cpp \
     zpatternprojectionprovider.cpp \
     zprojectedpattern.cpp \
     zsimplepointcloud.cpp \
     zstructuredlightpattern.cpp \
     zstructuredlightsystem.cpp \
+    zstructuredlightsystemplugin.cpp \
     zstructuredlightsystemprovider.cpp \
 
 RESOURCES += \
