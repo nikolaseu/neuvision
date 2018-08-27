@@ -71,17 +71,6 @@ ZStructuredLightSystemPtr ZStructuredLightSystemProvider::get(QSettings *setting
     return structuredLightSystem;
 }
 
-QWidget *ZStructuredLightSystemProvider::getConfigWidget(ZStructuredLightSystemWeakPtr structuredLightSystem)
-{
-    for (auto item : m_plugins) {
-        if (auto *widget = item.second->getConfigWidget(structuredLightSystem)) {
-            return widget;
-        }
-    }
-
-    return nullptr;
-}
-
 ZStructuredLightSystemProvider::ZStructuredLightSystemProvider()
 {
 

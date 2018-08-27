@@ -19,6 +19,7 @@
 //
 
 #include "zapplication.h"
+#include "zapplicationstyle.h"
 #include "zcalibrationpatternfinderprovider.h"
 #include "zcameracalibrationprovider.h"
 #include "zcameraprovider.h"
@@ -27,6 +28,7 @@
 #include "zpointcloudgeometry.h"
 #include "zpointcloudprovider.h"
 #include "zstructuredlightsystemprovider.h"
+#include "zsettingsitem.h"
 
 #include "zscannerqml.h"
 
@@ -34,6 +36,7 @@
 #include <QDir>
 #include <QQmlApplicationEngine>
 #include <QQmlContext>
+#include <QQuickStyle>
 #include <QSplashScreen>
 #include <QSurfaceFormat>
 
@@ -50,9 +53,16 @@ int main(int argc, char* argv[])
     //qputenv("QT_DEBUG_PLUGINS", "1");
 
     QCoreApplication::setAttribute(Qt::AA_UseDesktopOpenGL, true);
+    QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
 
     ///
     Z3D::ZApplication app(argc, argv);
+
+    Z3D::ZApplicationStyle::applyStyle(Z3D::ZApplicationStyle::DarkStyle);
+
+    qDebug() << "available styles:" << QQuickStyle::availableStyles().join(", ");
+    QQuickStyle::setStyle("Universal");
+//    QQuickStyle::setStyle("Imagine");
 
     int result;
 
@@ -112,8 +122,10 @@ int main(int argc, char* argv[])
         splash.showMessage("Loading main window...");
         app.processEvents();
 
+        qmlRegisterUncreatableType<Z3D::ZSettingsItem>("Z3D.ZSettingsItem", 1, 0, "ZSettingsItem", "ZSettingsItem cannot be created, must be obtained from an object with settings");
         qmlRegisterUncreatableType<Z3D::ZPointCloud>("Z3D.PointCloud", 1, 0, "PointCloud", "ZPointCloud cannot be created, must be obtained from a PointCloudReader");
         qmlRegisterType<Z3D::ZPointCloudGeometry>("Z3D.PointCloud", 1, 0, "PointCloudGeometry");
+        qRegisterMetaType<Z3D::ZSettingsItemModel*>("Z3D::ZSettingsItemModel*");
 
         QQmlApplicationEngine engine;
         engine.rootContext()->setContextProperty("scanner", QVariant::fromValue(new ZScannerQML(structuredLightSystem)));

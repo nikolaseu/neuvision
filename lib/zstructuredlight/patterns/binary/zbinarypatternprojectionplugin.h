@@ -34,9 +34,6 @@ public:
     ZBinaryPatternProjectionPlugin();
 
     // ZPatternProjectionPlugin interface
-public:
-    QWidget *getConfigWidget(ZPatternProjectionWeakPtr patternProjection) override;
-
     ZPatternProjectionPtr get(QSettings *settings) override;
 
 private:

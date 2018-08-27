@@ -13,8 +13,12 @@ HEADERS += \
     zcoreplugin.h \
     zloghandler_p.h \
     zpluginloader.h \
+    zsettingsitem.h \
+    qqmlobjectlistmodel.h
 
 SOURCES += \
     zcoreplugin.cpp \
     zloghandler_p.cpp \
     zpluginloader.cpp \
+    zsettingsitem.cpp \
+    qqmlobjectlistmodel.cpp

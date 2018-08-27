@@ -36,7 +36,6 @@ public:
     static void unloadPlugins();
 
     static ZPatternProjectionPtr get(QSettings *settings);
-    static QWidget *getConfigWidget(ZPatternProjectionWeakPtr patternProjection);
 
 private:
     explicit ZPatternProjectionProvider();

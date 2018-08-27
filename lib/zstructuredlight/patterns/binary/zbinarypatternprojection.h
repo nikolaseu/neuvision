@@ -46,7 +46,11 @@ class ZBinaryPatternProjection : public ZPatternProjection
 
 public:
     explicit ZBinaryPatternProjection(QObject *parent = nullptr);
-    ~ZBinaryPatternProjection();
+    ~ZBinaryPatternProjection() override;
+
+public:
+    // ZPatternProjection interface
+    virtual const std::vector<ZSettingsItemPtr> &settings() override;
 
 signals:
     void intensityChanged(double);
@@ -62,7 +66,7 @@ signals:
     void automaticPatternCountChanged(bool arg);
 
 public slots:
-    // from ZPatternProjection
+    // ZPatternProjection interface
     virtual void beginScan() override;
     virtual void processImages(std::vector< std::vector<Z3D::ZCameraImagePtr> > acquiredImages, QString scanId) override;
 
@@ -71,37 +75,40 @@ public slots:
     void setProjectionWindowGeometry(const QRect &geometry);
 
     double intensity();
-    void setIntensity(double arg);
+    bool setIntensity(double arg);
 
     int currentPattern();
-    void setCurrentPattern(int arg);
+    bool setCurrentPattern(int arg);
 
     bool inverted();
-    void setInverted(bool arg);
+    bool setInverted(bool arg);
 
     bool vertical();
-    void setVertical(bool arg);
+    bool setVertical(bool arg);
 
     bool useGrayBinary();
-    void setUseGrayBinary(bool arg);
+    bool setUseGrayBinary(bool arg);
 
     int delayMs() const;
-    void setDelayMs(int arg);
+    bool setDelayMs(int arg);
 
     int noiseThreshold() const;
-    void setNoiseThreshold(int arg);
+    bool setNoiseThreshold(int arg);
 
     int numPatterns() const;
-    void setNumPatterns(int arg);
+    bool setNumPatterns(int arg);
 
     bool debugMode() const;
-    void setDebugMode(bool arg);
+    bool setDebugMode(bool arg);
 
     bool previewEnabled() const;
     bool setPreviewEnabled(bool arg);
 
     bool automaticPatternCount() const;
-    void setAutomaticPatternCount(bool arg);
+    bool setAutomaticPatternCount(bool arg);
+
+private slots:
+    bool setSelectedScreen(int index);
 
 protected:
     void updateMaxUsefulPatterns();
@@ -122,6 +129,8 @@ protected:
     bool m_previewEnabled;
 
     int m_maxUsefulPatterns;
+
+    std::vector<ZSettingsItemPtr> m_settings;
 };
 
 } // namespace Z3D

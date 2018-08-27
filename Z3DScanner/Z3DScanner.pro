@@ -1,6 +1,6 @@
 include(../NEUVision.pri)
 
-QT += core gui widgets quick qml concurrent 3dinput 3dquick 3drender 3dquickrender
+QT += core gui widgets quick quickcontrols2 qml concurrent 3dinput 3dquick 3drender 3dquickrender
 #CONFIG += console
 DESTDIR = $$Z3D_BUILD_DIR
 TARGET = Z3DScanner

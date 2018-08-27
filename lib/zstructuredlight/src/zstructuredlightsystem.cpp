@@ -98,14 +98,16 @@ void ZStructuredLightSystem::setReady(bool ready)
     emit readyChanged(ready);
 }
 
-void ZStructuredLightSystem::setDebugShowDecodedImages(bool debugShowDecodedImages)
+bool ZStructuredLightSystem::setDebugShowDecodedImages(bool debugShowDecodedImages)
 {
     if (m_debugShowDecodedImages == debugShowDecodedImages) {
-        return;
+        return true;
     }
 
     m_debugShowDecodedImages = debugShowDecodedImages;
     emit debugShowDecodedImagesChanged(debugShowDecodedImages);
+
+    return true;
 }
 
 void ZStructuredLightSystem::onPatternsDecodedDebug(std::vector<ZDecodedPatternPtr> patterns)

@@ -30,9 +30,7 @@ namespace Z3D
 class Z3D_STRUCTUREDLIGHT_SHARED_EXPORT ZPatternProjectionPlugin
 {
 public:
-    virtual ~ZPatternProjectionPlugin() {}
-
-    virtual QWidget *getConfigWidget(ZPatternProjectionWeakPtr patternProjection) = 0;
+    virtual ~ZPatternProjectionPlugin();
 
     virtual ZPatternProjectionPtr get(QSettings *settings) = 0;
 };

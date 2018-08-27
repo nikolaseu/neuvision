@@ -25,14 +25,28 @@
 #include "zstructuredlightsystem.h"
 #include "zstructuredlightsystemprovider.h"
 
+#include "zsettingsitem.h"
+
 #include <QWidget>
 
 ZScannerQML::ZScannerQML(Z3D::ZStructuredLightSystemPtr structuredLightSystem, QObject *parent)
     : QObject(parent)
     , m_structuredLightSystem(structuredLightSystem)
+    , m_patternProjectionSettings(new Z3D::ZSettingsItemModel(m_structuredLightSystem->patternProjection()->settings()))
+    , m_structuredLightSystemSettings(new Z3D::ZSettingsItemModel(m_structuredLightSystem->settings()))
 {
     QObject::connect(m_structuredLightSystem.get(), &Z3D::ZStructuredLightSystem::scanFinished,
                      this, &ZScannerQML::setCloud);
+}
+
+Z3D::ZSettingsItemModel *ZScannerQML::patternProjectionSettings() const
+{
+    return m_patternProjectionSettings;
+}
+
+Z3D::ZSettingsItemModel *ZScannerQML::structuredLightSystemSettings() const
+{
+    return m_structuredLightSystemSettings;
 }
 
 Z3D::ZPointCloud *ZScannerQML::cloud() const
@@ -43,20 +57,6 @@ Z3D::ZPointCloud *ZScannerQML::cloud() const
 void ZScannerQML::scan()
 {
     m_structuredLightSystem->start();
-}
-
-//! FIXME delete this: use model for settings so we can display them in a generic/unified way in c++ and/or QML, just like camera settings
-void ZScannerQML::openPatternsDialog() const
-{
-    QWidget *patternProjectionWidget = Z3D::ZPatternProjectionProvider::getConfigWidget(m_structuredLightSystem->patternProjection().get());
-    patternProjectionWidget->show();
-}
-
-//! FIXME delete this: use model for settings so we can display them in a generic/unified way in c++ and/or QML, just like camera settings
-void ZScannerQML::openStructuredLightSystemDialog() const
-{
-    QWidget *structuredLightSystemWidget = Z3D::ZStructuredLightSystemProvider::getConfigWidget(m_structuredLightSystem.get());
-    structuredLightSystemWidget->show();
 }
 
 void ZScannerQML::setCloud(Z3D::ZPointCloudPtr cloud)

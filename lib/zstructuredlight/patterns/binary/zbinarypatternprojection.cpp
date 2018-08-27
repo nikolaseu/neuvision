@@ -25,15 +25,19 @@
 #include "zdecodedpattern.h"
 #include "zprojectedpattern.h"
 
+#include "zsettingsitem.h"
+
 #include <opencv2/imgcodecs.hpp>
 
 #include <QCoreApplication>
 #include <QDateTime>
-#include <QDir>
 #include <QDebug>
-#include <QThread>
+#include <QDir>
+#include <QGuiApplication>
 #include <QQmlContext>
 #include <QQuickView>
+#include <QScreen>
+#include <QThread>
 
 
 namespace Z3D
@@ -59,6 +63,130 @@ ZBinaryPatternProjection::ZBinaryPatternProjection(QObject *parent)
     m_dlpview->rootContext()->setContextProperty("window", m_dlpview);
     m_dlpview->setSource(QUrl("qrc:///zstructuredlight/qml/binarypatternprojection.qml"));
     m_dlpview->setResizeMode(QQuickView::SizeRootObjectToView);
+
+    const QString projectorScreen("Projector screen");
+
+    std::shared_ptr<ZSettingsItemEnum> screenOption = std::unique_ptr<ZSettingsItemEnum>(new ZSettingsItemEnum(projectorScreen, "Projector", "Screen/projector to use",
+                                                                                             [=](){
+        std::vector<QString> screens;
+        for (const auto *screen : qGuiApp->screens()) {
+            const auto size = screen->size();
+            screens.push_back(QString("%2x%3 [%1]").arg(screen->name()).arg(size.width()).arg(size.height()));
+        }
+        return screens;
+    },
+                                                                        [=](){ return 0; },
+    std::bind(&ZBinaryPatternProjection::setSelectedScreen, this, std::placeholders::_1)));
+    QObject::connect(qGuiApp, &QGuiApplication::screenAdded,
+                     screenOption.get(), &ZSettingsItemEnum::optionsChanged);
+    QObject::connect(qGuiApp, &QGuiApplication::screenRemoved,
+                     screenOption.get(), &ZSettingsItemEnum::optionsChanged);
+
+    const QString preview("Preview");
+
+    ZSettingsItemPtr previewOption = std::make_unique<ZSettingsItemBool>(preview, "Show preview", "Show preview",
+                                                                         std::bind(&ZBinaryPatternProjection::previewEnabled, this),
+                                                                         std::bind(&ZBinaryPatternProjection::setPreviewEnabled, this, std::placeholders::_1));
+    QObject::connect(this, &ZBinaryPatternProjection::previewEnabledChanged,
+                     previewOption.get(), &ZSettingsItem::valueChanged);
+
+    ZSettingsItemPtr currentPatternOption = std::make_unique<ZSettingsItemInt>(preview, "Current pattern", "Current pattern being displayed",
+                                                                               std::bind(&ZBinaryPatternProjection::currentPattern, this),
+                                                                               std::bind(&ZBinaryPatternProjection::setCurrentPattern, this, std::placeholders::_1),
+                                                                               0, // minimum
+                                                                               11); // maximum 2048 == 11 bits
+    QObject::connect(this, &ZBinaryPatternProjection::currentPatternChanged,
+                     currentPatternOption.get(), &ZSettingsItem::valueChanged);
+    QObject::connect(this, &ZBinaryPatternProjection::previewEnabledChanged,
+                     currentPatternOption.get(), &ZSettingsItem::setWritable);
+    currentPatternOption->setWritable(previewEnabled());
+
+    ZSettingsItemPtr invertedOption = std::make_unique<ZSettingsItemBool>(preview, "Inverted", "Display inverted pattern (for the currently displayed pattern)",
+                                                                          std::bind(&ZBinaryPatternProjection::inverted, this),
+                                                                          std::bind(&ZBinaryPatternProjection::setInverted, this, std::placeholders::_1));
+    QObject::connect(this, &ZBinaryPatternProjection::invertedChanged,
+                     invertedOption.get(), &ZSettingsItem::valueChanged);
+    QObject::connect(this, &ZBinaryPatternProjection::previewEnabledChanged,
+                     invertedOption.get(), &ZSettingsItem::setWritable);
+    invertedOption->setWritable(previewEnabled());
+
+    const QString scanConfiguration("Scan configuration");
+
+    ZSettingsItemPtr useGrayCodeOption = std::make_unique<ZSettingsItemBool>(scanConfiguration, "Use gray binary code", "Use gray code instead of regular binary code",
+                                                                             std::bind(&ZBinaryPatternProjection::useGrayBinary, this),
+                                                                             std::bind(&ZBinaryPatternProjection::setUseGrayBinary, this, std::placeholders::_1));
+    QObject::connect(this, &ZBinaryPatternProjection::useGrayBinaryChanged,
+                     useGrayCodeOption.get(), &ZSettingsItem::valueChanged);
+
+    ZSettingsItemPtr useVerticalPatternOption = std::make_unique<ZSettingsItemBool>(scanConfiguration, "Vertical patterns", "Use vertical patterns (for example if the projector is rotated or cameras are arranged vertically)",
+                                                                                    std::bind(&ZBinaryPatternProjection::vertical, this),
+                                                                                    std::bind(&ZBinaryPatternProjection::setVertical, this, std::placeholders::_1));
+    QObject::connect(this, &ZBinaryPatternProjection::verticalChanged,
+                     useVerticalPatternOption.get(), &ZSettingsItem::valueChanged);
+
+    ZSettingsItemPtr automaticPatternCountOption = std::make_unique<ZSettingsItemBool>(scanConfiguration, "Automatic pattern count", "Automatically determine number of patterns to display based on projector resolution",
+                                                                                       std::bind(&ZBinaryPatternProjection::automaticPatternCount, this),
+                                                                                       std::bind(&ZBinaryPatternProjection::setAutomaticPatternCount, this, std::placeholders::_1));
+    QObject::connect(this, &ZBinaryPatternProjection::automaticPatternCountChanged,
+                     automaticPatternCountOption.get(), &ZSettingsItem::valueChanged);
+
+    ZSettingsItemPtr patternCountOption = std::make_unique<ZSettingsItemInt>(scanConfiguration, "Number of patterns", "Number of binary patterns to use",
+                                                                             std::bind(&ZBinaryPatternProjection::numPatterns, this),
+                                                                             std::bind(&ZBinaryPatternProjection::setNumPatterns, this, std::placeholders::_1),
+                                                                             1, // minimum
+                                                                             11); // maximum
+    QObject::connect(this, &ZBinaryPatternProjection::numPatternsChanged,
+                     patternCountOption.get(), &ZSettingsItem::valueChanged);
+    QObject::connect(this, &ZBinaryPatternProjection::automaticPatternCountChanged,
+                     patternCountOption.get(), &ZSettingsItem::setNonWritable);
+    patternCountOption->setNonWritable(automaticPatternCount());
+
+    const QString advancedSettings("Advanced settings");
+
+    ZSettingsItemPtr delayOption = std::make_unique<ZSettingsItemInt>(advancedSettings, "Delay", "Delay after projecting pattern (in ms)",
+                                                                      std::bind(&ZBinaryPatternProjection::delayMs, this),
+                                                                      std::bind(&ZBinaryPatternProjection::setDelayMs, this, std::placeholders::_1),
+                                                                      0, // minimum
+                                                                      10000); // maximum
+    QObject::connect(this, &ZBinaryPatternProjection::delayMsChanged,
+                     delayOption.get(), &ZSettingsItem::valueChanged);
+
+    ZSettingsItemPtr noiseThresholdOption = std::make_unique<ZSettingsItemInt>(advancedSettings, "Noise threshold", "Discard pixels where intensity doesn't change more than threshold value",
+                                                                               std::bind(&ZBinaryPatternProjection::noiseThreshold, this),
+                                                                               std::bind(&ZBinaryPatternProjection::setNoiseThreshold, this, std::placeholders::_1),
+                                                                               0.0, // minimum
+                                                                               255.0); // maximum
+    QObject::connect(this, &ZBinaryPatternProjection::noiseThresholdChanged,
+                     noiseThresholdOption.get(), &ZSettingsItem::valueChanged);
+
+    ZSettingsItemPtr intensityOption = std::make_unique<ZSettingsItemFloat>(advancedSettings, "Intensity", "Intensity of projected pattern",
+                                                                            std::bind(&ZBinaryPatternProjection::intensity, this),
+                                                                            std::bind(&ZBinaryPatternProjection::setIntensity, this, std::placeholders::_1),
+                                                                            0.0, // minimum
+                                                                            1.0); // maximum
+    QObject::connect(this, &ZBinaryPatternProjection::intensityChanged,
+                     intensityOption.get(), &ZSettingsItem::valueChanged);
+
+    ZSettingsItemPtr saveDebugInfoOption = std::make_unique<ZSettingsItemBool>(advancedSettings, "Save debug info", "Save extra information for debugging purposes",
+                                                                               std::bind(&ZBinaryPatternProjection::debugMode, this),
+                                                                               std::bind(&ZBinaryPatternProjection::setDebugMode, this, std::placeholders::_1));
+    QObject::connect(this, &ZBinaryPatternProjection::debugModeChanged,
+                     saveDebugInfoOption.get(), &ZSettingsItem::valueChanged);
+
+    m_settings = {
+        screenOption,
+        previewOption,
+        currentPatternOption,
+        invertedOption,
+        useGrayCodeOption,
+        useVerticalPatternOption,
+        automaticPatternCountOption,
+        patternCountOption,
+        delayOption,
+        noiseThresholdOption,
+        intensityOption,
+        saveDebugInfoOption
+    };
 }
 
 ZBinaryPatternProjection::~ZBinaryPatternProjection()
@@ -67,6 +195,11 @@ ZBinaryPatternProjection::~ZBinaryPatternProjection()
     if (m_dlpview) {
         m_dlpview->deleteLater();
     }
+}
+
+const std::vector<ZSettingsItemPtr> &ZBinaryPatternProjection::settings()
+{
+    return m_settings;
 }
 
 void ZBinaryPatternProjection::showProjectionWindow()
@@ -127,7 +260,7 @@ void ZBinaryPatternProjection::beginScan()
             QCoreApplication::processEvents();
             QCoreApplication::processEvents();
 
-            QThread::msleep(m_delayMs);
+            QThread::msleep(ulong(m_delayMs));
 
             QCoreApplication::processEvents();
             QCoreApplication::processEvents();
@@ -266,14 +399,16 @@ double ZBinaryPatternProjection::intensity()
     return m_intensity;
 }
 
-void ZBinaryPatternProjection::setIntensity(double arg)
+bool ZBinaryPatternProjection::setIntensity(double arg)
 {
-    if (m_intensity == arg) {
-        return;
+    if (qFuzzyCompare(m_intensity, arg)) {
+        return true;
     }
 
     m_intensity = arg;
     emit intensityChanged(arg);
+
+    return true;
 }
 
 int ZBinaryPatternProjection::currentPattern()
@@ -281,14 +416,16 @@ int ZBinaryPatternProjection::currentPattern()
     return m_currentPattern;
 }
 
-void ZBinaryPatternProjection::setCurrentPattern(int arg)
+bool ZBinaryPatternProjection::setCurrentPattern(int arg)
 {
     if (m_currentPattern == arg) {
-        return;
+        return true;
     }
 
     m_currentPattern = arg;
     emit currentPatternChanged(arg);
+
+    return true;
 }
 
 bool ZBinaryPatternProjection::inverted()
@@ -296,14 +433,16 @@ bool ZBinaryPatternProjection::inverted()
     return m_inverted;
 }
 
-void ZBinaryPatternProjection::setInverted(bool arg)
+bool ZBinaryPatternProjection::setInverted(bool arg)
 {
     if (m_inverted == arg) {
-        return;
+        return true;
     }
 
     m_inverted = arg;
     emit invertedChanged(arg);
+
+    return true;
 }
 
 bool ZBinaryPatternProjection::vertical()
@@ -311,15 +450,17 @@ bool ZBinaryPatternProjection::vertical()
     return m_vertical;
 }
 
-void ZBinaryPatternProjection::setVertical(bool arg)
+bool ZBinaryPatternProjection::setVertical(bool arg)
 {
     if (m_vertical == arg) {
-        return;
+        return true;
     }
 
     m_vertical = arg;
     emit verticalChanged(arg);
     updateMaxUsefulPatterns();
+
+    return true;
 }
 
 bool ZBinaryPatternProjection::useGrayBinary()
@@ -327,14 +468,16 @@ bool ZBinaryPatternProjection::useGrayBinary()
     return m_useGrayBinary;
 }
 
-void ZBinaryPatternProjection::setUseGrayBinary(bool arg)
+bool ZBinaryPatternProjection::setUseGrayBinary(bool arg)
 {
     if (m_useGrayBinary == arg) {
-        return;
+        return true;
     }
 
     m_useGrayBinary = arg;
     emit useGrayBinaryChanged(arg);
+
+    return true;
 }
 
 int ZBinaryPatternProjection::delayMs() const
@@ -342,14 +485,16 @@ int ZBinaryPatternProjection::delayMs() const
     return m_delayMs;
 }
 
-void ZBinaryPatternProjection::setDelayMs(int arg)
+bool ZBinaryPatternProjection::setDelayMs(int arg)
 {
     if (m_delayMs == arg) {
-        return;
+        return true;
     }
 
     m_delayMs = arg;
     emit delayMsChanged(arg);
+
+    return true;
 }
 
 int ZBinaryPatternProjection::noiseThreshold() const
@@ -357,14 +502,16 @@ int ZBinaryPatternProjection::noiseThreshold() const
     return m_noiseThreshold;
 }
 
-void ZBinaryPatternProjection::setNoiseThreshold(int arg)
+bool ZBinaryPatternProjection::setNoiseThreshold(int arg)
 {
     if (m_noiseThreshold == arg) {
-        return;
+        return true;
     }
 
     m_noiseThreshold = arg;
     emit noiseThresholdChanged(arg);
+
+    return true;
 }
 
 int ZBinaryPatternProjection::numPatterns() const
@@ -372,10 +519,10 @@ int ZBinaryPatternProjection::numPatterns() const
     return m_numPatterns;
 }
 
-void ZBinaryPatternProjection::setNumPatterns(int arg)
+bool ZBinaryPatternProjection::setNumPatterns(int arg)
 {
     if (m_numPatterns == arg) {
-        return;
+        return true;
     }
 
     m_numPatterns = arg;
@@ -386,6 +533,8 @@ void ZBinaryPatternProjection::setNumPatterns(int arg)
         qDebug() << "not using automatic pattern count. maxUsefulPatterns:" << m_maxUsefulPatterns;
         qDebug() << "numPatterns:" << m_numPatterns << "firstPatternToShow:" << firstPatternToShow;
     }
+
+    return true;
 }
 
 bool ZBinaryPatternProjection::debugMode() const
@@ -393,14 +542,16 @@ bool ZBinaryPatternProjection::debugMode() const
     return m_debugMode;
 }
 
-void ZBinaryPatternProjection::setDebugMode(bool arg)
+bool ZBinaryPatternProjection::setDebugMode(bool arg)
 {
     if (m_debugMode == arg) {
-        return;
+        return true;
     }
 
     m_debugMode = arg;
     emit debugModeChanged(arg);
+
+    return true;
 }
 
 bool ZBinaryPatternProjection::previewEnabled() const
@@ -430,7 +581,7 @@ bool ZBinaryPatternProjection::automaticPatternCount() const
     return m_automaticPatternCount;
 }
 
-void ZBinaryPatternProjection::setAutomaticPatternCount(bool arg)
+bool ZBinaryPatternProjection::setAutomaticPatternCount(bool arg)
 {
     if (m_automaticPatternCount != arg) {
         m_automaticPatternCount = arg;
@@ -440,6 +591,19 @@ void ZBinaryPatternProjection::setAutomaticPatternCount(bool arg)
     if (m_automaticPatternCount) {
         setNumPatterns(m_maxUsefulPatterns);
     }
+
+    return true;
+}
+
+bool ZBinaryPatternProjection::setSelectedScreen(int index)
+{
+    qDebug() << "setting screen to" << index;
+
+    const QList<QScreen*> screens = qGuiApp->screens();
+    const QRect screenGeometry = screens[index]->geometry();
+    setProjectionWindowGeometry(screenGeometry);
+
+    return true;
 }
 
 void ZBinaryPatternProjection::updateMaxUsefulPatterns()

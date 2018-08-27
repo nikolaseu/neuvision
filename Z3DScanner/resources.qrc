@@ -12,5 +12,8 @@
         <file>shaders/pointcloud.frag</file>
         <file>shaders/pointcloud.vert</file>
         <file alias="splash">res/splash.png</file>
+        <file>qml/settings/ZDoubleSpinBox.qml</file>
+        <file>qml/settings/ZSettingsItemDelegate.qml</file>
+        <file>qml/settings/ZSettingsListView.qml</file>
     </qresource>
 </RCC>

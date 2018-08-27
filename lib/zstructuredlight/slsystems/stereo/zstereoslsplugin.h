@@ -36,7 +36,6 @@ public:
     // ZStructuredLightSystemPlugin interface
 public:
     ZStructuredLightSystemPtr get(QSettings *settings) override;
-    QWidget *getConfigWidget(ZStructuredLightSystemWeakPtr structuredLightSystem) override;
 
 private:
     std::map<ZStructuredLightSystem *, QWidget *> m_structuredLightSystemWidgets;

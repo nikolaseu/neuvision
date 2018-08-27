@@ -1,6 +1,6 @@
 //
 // Z3D - A structured light 3D scanner
-// Copyright (C) 2013-2016 Nicolas Ulrich <nikolaseu@gmail.com>
+// Copyright (C) 2013-2018 Nicolas Ulrich <nikolaseu@gmail.com>
 //
 // This file is part of Z3D.
 //
@@ -18,22 +18,9 @@
 // along with Z3D.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-#include "zbinarypatternprojectionplugin.h"
-#include "zbinarypatternprojection.h"
+#include "zpatternprojectionplugin.h"
 
-namespace Z3D
-{
-
-ZBinaryPatternProjectionPlugin::ZBinaryPatternProjectionPlugin()
+Z3D::ZPatternProjectionPlugin::~ZPatternProjectionPlugin()
 {
 
 }
-
-ZPatternProjectionPtr ZBinaryPatternProjectionPlugin::get(QSettings *settings)
-{
-    Q_UNUSED(settings)
-
-    return ZPatternProjectionPtr(new ZBinaryPatternProjection());
-}
-
-} // namespace Z3D

@@ -36,7 +36,10 @@ public:
                                     ZPatternProjectionPtr patternProjection,
                                     QObject *parent = nullptr);
 
-    ~ZSingleCameraStereoSLS();
+    ~ZSingleCameraStereoSLS() override;
+
+    // ZStructuredLightSystem interface
+    virtual const std::vector<ZSettingsItemPtr> &settings() override;
 
 private:
     void processPatterns();
@@ -48,6 +51,9 @@ private:
 protected slots:
     virtual void onPatternProjected(ZProjectedPatternPtr pattern) override;
     virtual void onPatternsDecoded(std::vector<ZDecodedPatternPtr> patterns) override;
+
+private:
+    std::vector<ZSettingsItemPtr> m_settings;
 };
 
 } // namespace Z3D

@@ -11,17 +11,12 @@ VERSION       = $$Z3D_VERSION
 HEADERS       = \
     zbinarypatterndecoder.h \
     zbinarypatternprojection.h \
-    zbinarypatternprojectionconfigwidget.h \
     zbinarypatternprojectionplugin.h \
 
 SOURCES       = \
     zbinarypatterndecoder.cpp \
     zbinarypatternprojection.cpp \
-    zbinarypatternprojectionconfigwidget.cpp \
     zbinarypatternprojectionplugin.cpp \
-
-FORMS        += \
-    zbinarypatternprojectionconfigwidget.ui
 
 RESOURCES    += \
     resources.qrc

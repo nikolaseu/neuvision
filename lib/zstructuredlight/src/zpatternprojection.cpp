@@ -29,4 +29,9 @@ ZPatternProjection::ZPatternProjection(QObject *parent)
 
 }
 
+ZPatternProjection::~ZPatternProjection()
+{
+
+}
+
 } // namespace Z3D
