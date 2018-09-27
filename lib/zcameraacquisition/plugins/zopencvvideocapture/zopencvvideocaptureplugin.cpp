@@ -69,23 +69,48 @@ QList<ZCameraInfo *> ZOpenCVVideoCapturePlugin::getConnectedCameras()
         cameraDeviceID++;
     }
 
+    /*
+    /// for example starting raspberry camera with:
+    /// while true; do raspivid -o - -t 0 --mode 4 -w 1640 -h 1232 -fps 10 -b 15000000 -n | nc -l 5000; done;
+    QString streamUrl("tcp://192.168.0.15:5000");
+    QVariantMap extraData;
+    extraData["StreamingURL"] = streamUrl;
+    camerasList << new ZCameraInfo(this, QString("Stream at %1").arg(streamUrl), extraData);
+
+    QString streamUrl2("tcp://192.168.0.14:5000");
+    QVariantMap extraData2;
+    extraData2["StreamingURL"] = streamUrl2;
+    camerasList << new ZCameraInfo(this, QString("Stream at %1").arg(streamUrl2), extraData2);
+    */
+
     return camerasList;
 }
 
 ZCameraPtr ZOpenCVVideoCapturePlugin::getCamera(QVariantMap options)
 {
-    int cameraDeviceID = options.value("DeviceID").toInt();
-
     OpenCVVideoCaptureCamera *camera = nullptr;
 
-    cv::VideoCapture *capture = new cv::VideoCapture(cameraDeviceID);
-    if (capture->isOpened()) {
-        delete capture;
-        capture = nullptr;
-        camera = new OpenCVVideoCaptureCamera(cameraDeviceID);
-    } else {
-        delete capture;
-        capture = nullptr;
+    if (options.contains("StreamingURL")) {
+        /// for example starting raspberry camera with:
+        /// while true; do raspivid -o - -t 0 --mode 4 -w 1640 -h 1232 -fps 10 -b 15000000 -n | nc -l 5000; done;
+        const QString cameraStreamingUrl = options.value("StreamingURL").toString();
+        cv::VideoCapture *capture = new cv::VideoCapture(cameraStreamingUrl.toStdString());
+        if (capture->isOpened()) {
+            camera = new OpenCVVideoCaptureCamera(capture);
+        } else {
+            delete capture;
+            capture = nullptr;
+        }
+    }
+    else {
+        int cameraDeviceID = options.value("DeviceID").toInt();
+        cv::VideoCapture *capture = new cv::VideoCapture(cameraDeviceID);
+        if (capture->isOpened()) {
+            camera = new OpenCVVideoCaptureCamera(capture);
+        } else {
+            delete capture;
+            capture = nullptr;
+        }
     }
 
     if (camera) {

@@ -30,7 +30,7 @@ ZWidget::ZWidget(QWidget *parent)
     : QWidget(parent)
 {
 #if defined(Q_OS_MACOS)
-    osxHideTitleBar(winId());
+//    osxHideTitleBar(winId());
 #endif
 }
 

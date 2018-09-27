@@ -38,12 +38,11 @@ namespace Z3D
 // static var
 QMap<int, QString> OpenCVVideoCaptureCamera::m_opencvAttributeNames;
 
-OpenCVVideoCaptureCamera::OpenCVVideoCaptureCamera(int deviceId, QObject *parent)
+OpenCVVideoCaptureCamera::OpenCVVideoCaptureCamera(cv::VideoCapture *videoCapture, QObject *parent)
     : ZCameraBase(parent)
+    , m_capture(videoCapture)
 {
-    m_capture = new cv::VideoCapture(deviceId);
-
-    m_uuid = QString("ZOpenCV-%1").arg( deviceId );
+    m_uuid = QString("ZOpenCV-%1").arg(long(videoCapture));
 
     if (m_opencvAttributeNames.empty()) {
         /// attribute id <-> name map
@@ -84,7 +83,7 @@ OpenCVVideoCaptureCamera::OpenCVVideoCaptureCamera(int deviceId, QObject *parent
                     .arg((long)cameraThread, 0, 16));
     this->moveToThread(cameraThread);
     /// start thread with the highest priority
-    cameraThread->start(QThread::TimeCriticalPriority);
+    cameraThread->start(QThread::HighPriority);
 
     ///
     qDebug() << Q_FUNC_INFO << uuid();
@@ -270,16 +269,26 @@ void OpenCVVideoCaptureCamera::grabLoop()
     while (!m_stopThreadRequested && m_capture) {
         {
             /// thread safe
-            QMutexLocker locker(&m_mutex);
+//            QMutexLocker locker(&m_mutex);
+            if (!m_mutex.tryLock(100)) {
+                continue;
+            }
 
             /// grab & retrieve next frame
             m_capture->read(frame);
+
+            m_mutex.unlock();
         }
 
         if (frame.empty()) {
             qWarning() << "error getting frame. frame is empty!";
             break;
         }
+
+        qDebug() << "acquired image" << frameCounter
+                 << "at" << m_capture->get(cv::CAP_PROP_FPS) << "FPS"
+                 << "pos frames:" << m_capture->get(cv::CAP_PROP_POS_FRAMES)
+                 << "pos msec:" << m_capture->get(cv::CAP_PROP_POS_MSEC);
 
         switch (frame.type()) {
         case CV_8UC1:

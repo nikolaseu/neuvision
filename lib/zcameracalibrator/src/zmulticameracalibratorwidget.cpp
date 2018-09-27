@@ -156,11 +156,15 @@ ZMultiCameraCalibratorWidget::ZMultiCameraCalibratorWidget(ZCameraList cameras, 
 
 ZMultiCameraCalibratorWidget::~ZMultiCameraCalibratorWidget()
 {
-    m_workerThread->terminate();
-
     for (auto camera : m_cameras) {
-        if (camera && ui->stackedWidget->currentIndex() == CAMERA_VIEW)
+        if (camera && ui->stackedWidget->currentIndex() == CAMERA_VIEW) {
             camera->stopAcquisition();
+        }
+    }
+
+    m_workerThread->terminate();
+    if (!m_workerThread->wait(3000)) {
+        qWarning() << "failed to finish worker thread";
     }
 
     delete ui;
