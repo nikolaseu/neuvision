@@ -67,7 +67,19 @@ int main(int argc, char* argv[])
         app.processEvents();
 
         /// TODO this is just a workaround for now, see how to improve it
+        /// Load config
         QDir configDir = QDir::current();
+#if defined(Q_OS_WIN)
+//        if (pluginsDir.dirName().toLower() == "debug" || pluginsDir.dirName().toLower() == "release")
+//            pluginsDir.cdUp();
+#elif defined(Q_OS_MAC)
+        if (configDir.dirName() == "MacOS") {
+            configDir.cdUp();
+            configDir.cdUp();
+            configDir.cdUp();
+        }
+#endif
+
         QString settingsFile = configDir.absoluteFilePath(QString("%1.ini").arg(QApplication::applicationName()));
         qDebug() << "trying to load config from:" << settingsFile;
         QSettings settings(settingsFile, QSettings::IniFormat);
