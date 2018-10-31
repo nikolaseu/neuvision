@@ -33,7 +33,7 @@ For the point cloud viewer you might also want to include, optionally:
 
 - [PCL](http://www.pointclouds.org) (tested with version 1.8.1)
 
-### Apple macOS
+### Apple OSX
 
 All the dependencies can be obtained via homebrew. A [Brewfile](./Brewfile) is included so just run:
 
