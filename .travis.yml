@@ -3,7 +3,7 @@ compiler: clang++
 os: osx
 osx_image: xcode9.4
 before_install:
-- brew cask uninstall oclint # still necessary for xcode9.3, xcode9.4 images https://github.com/travis-ci/travis-ci/issues/8826
+#- brew cask uninstall oclint # still necessary for xcode9.3, xcode9.4 images https://github.com/travis-ci/travis-ci/issues/8826
 - brew update && brew bundle
 script:
 - cd $TRAVIS_BUILD_DIR/build
