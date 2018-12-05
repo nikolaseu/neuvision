@@ -3,7 +3,7 @@
 ################################################################################
 macx:{
     PCL_DIR = /usr/local/opt/pcl # from homebrew
-    PCL_VERSION = 1.8
+    PCL_VERSION = 1.9
     INCLUDEPATH *= $$PCL_DIR/include/pcl-$$PCL_VERSION
     PCL_LIB_SUFFIX =
 }
