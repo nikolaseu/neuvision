@@ -2,9 +2,12 @@ language: cpp
 compiler: clang++
 os: osx
 osx_image: xcode9.4
+addons:
+  homebrew:
+    update: true
+    brewfile: true
 before_install:
 #- brew cask uninstall oclint # still necessary for xcode9.3, xcode9.4 images https://github.com/travis-ci/travis-ci/issues/8826
-- brew update && brew bundle
 script:
 - cd $TRAVIS_BUILD_DIR/build
 - "$(brew --prefix qt)/bin/qmake ../NEUVision.pro"
