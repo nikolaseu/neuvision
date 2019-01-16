@@ -170,11 +170,11 @@ Z3D::ZPointCloudPtr ZStereoSystemImpl::triangulate(const cv::Mat &leftColorImage
     }
 
     cv::Mat leftColorRemapedImage;
-    cv::remap(leftColorImage, leftColorRemapedImage, rmap[0][0], rmap[0][1], CV_INTER_LINEAR);
+    cv::remap(leftColorImage, leftColorRemapedImage, rmap[0][0], rmap[0][1], cv::INTER_LINEAR);
     cv::Mat leftRemapedImage;
-    cv::remap(leftDecodedImage, leftRemapedImage, rmap[0][0], rmap[0][1], CV_INTER_LINEAR);
+    cv::remap(leftDecodedImage, leftRemapedImage, rmap[0][0], rmap[0][1], cv::INTER_LINEAR);
     cv::Mat rightRemapedImage;
-    cv::remap(rightDecodedImage, rightRemapedImage, rmap[1][0], rmap[1][1], CV_INTER_LINEAR);
+    cv::remap(rightDecodedImage, rightRemapedImage, rmap[1][0], rmap[1][1], cv::INTER_LINEAR);
 
     switch (leftRemapedImage.type()) {
     case CV_32F: // float

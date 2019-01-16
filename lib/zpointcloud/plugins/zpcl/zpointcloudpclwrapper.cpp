@@ -122,7 +122,7 @@ QByteArray ZPointCloudPCLWrapper::data() const
     return QByteArray::fromRawData(reinterpret_cast<const char*>(&m_pointCloud->data[0]), int(m_pointCloud->data.size()));
 }
 
-const std::vector<ZPointField *> &ZPointCloudPCLWrapper::fields()
+const std::vector<ZPointField *> &ZPointCloudPCLWrapper::fields() const
 {
     return m_fields;
 }

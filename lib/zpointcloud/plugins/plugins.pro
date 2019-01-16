@@ -1,6 +1,6 @@
 TEMPLATE = subdirs
 
-# zpcl is included if env variable PCL_DIR is set (it's the AVT Vimba SDK folder)
+# zpcl is included if env variable PCL_DIR is set
 win32:PCL_DIR = $$(PCL_DIR)
 macx:PCL_DIR=/usr/local/opt/pcl
 
