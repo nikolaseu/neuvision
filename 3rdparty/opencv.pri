@@ -21,7 +21,7 @@ unix:!macx {
 
 # macOS
 macx: {
-    OPENCV_INCLUDE_DIR = "/usr/local/opt/opencv/include"
+    OPENCV_INCLUDE_DIR = "/usr/local/opt/opencv/include/opencv4"
     OPENCV_LIB_DIR = "/usr/local/opt/opencv/lib"
 }
 

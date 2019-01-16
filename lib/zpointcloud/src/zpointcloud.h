@@ -54,7 +54,7 @@ public:
     virtual unsigned int rowStep() const = 0;
     virtual QByteArray data() const = 0;
 
-    virtual const std::vector<ZPointField *> &fields() = 0;
+    virtual const std::vector<ZPointField *> &fields() const = 0;
 
     virtual QVector3D minimum() const = 0;
     virtual QVector3D maximum() const = 0;

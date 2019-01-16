@@ -91,7 +91,7 @@ QByteArray ZSimplePointCloud::data() const
     return QByteArray::fromRawData(reinterpret_cast<const char*>(m_points.data()), int(m_points.size() * pointStep()));
 }
 
-const std::vector<ZPointField *> &ZSimplePointCloud::fields()
+const std::vector<ZPointField *> &ZSimplePointCloud::fields() const
 {
     return m_fields;
 }
