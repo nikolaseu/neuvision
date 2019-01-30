@@ -23,11 +23,13 @@
 #include "zpointcloudpclwrapper.h"
 
 #include <QDebug>
-#include <pcl/io/pcd_io.h>
-#include <pcl/io/ply_io.h>
+#include <QLoggingCategory>
+#include <pcl/io/auto_io.h>
 
 namespace Z3D
 {
+
+Q_LOGGING_CATEGORY(pclLibraryCategory, "z3d.zpointcloud.plugins.zpcl")
 
 ZPointCloudLibraryPlugin::ZPointCloudLibraryPlugin(QObject *parent)
     : QObject(parent)
@@ -37,22 +39,15 @@ ZPointCloudLibraryPlugin::ZPointCloudLibraryPlugin(QObject *parent)
 
 ZPointCloudPtr ZPointCloudLibraryPlugin::loadPointCloud(const QString &filename) const
 {
-    qDebug() << "Trying to read PointCloud from" << filename;
+    qDebug(pclLibraryCategory) << "Trying to read PointCloud from" << filename;
 
-    if (filename.endsWith(".pcd", Qt::CaseInsensitive)) {
-        pcl::PCDReader reader;
-        auto pc = new pcl::PCLPointCloud2();
-        reader.read(filename.toStdString(), *pc);
-        return std::make_shared<ZPointCloudPCLWrapper>(pc);
-    }
-    else if (filename.endsWith(".ply", Qt::CaseInsensitive)) {
-        pcl::PLYReader reader;
-        auto pc = new pcl::PCLPointCloud2();
-        reader.read(filename.toStdString(), *pc);
+    auto pc = new pcl::PCLPointCloud2();
+    if (0 == pcl::io::load(filename.toStdString(), *pc)) {
         return std::make_shared<ZPointCloudPCLWrapper>(pc);
     }
 
-    qWarning() << "Failed to read PointCloud. Invalid/unrecognized format:" << filename;
+    qWarning(pclLibraryCategory) << "Failed to read PointCloud. Invalid/unrecognized format:" << filename;
+    delete pc;
     return nullptr;
 }
 

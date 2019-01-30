@@ -100,7 +100,7 @@ ZPointCloudPtr process(const cv::Mat &colorImg, cv::Mat Q, cv::Mat leftImg, cv::
     const int &imgWidth = imgSize.width;
 
     std::vector<cv::Vec3f> disparity;
-    disparity.reserve(imgHeight * imgWidth); /// reserve maximum possible size
+    disparity.reserve(size_t(imgHeight * imgWidth)); /// reserve maximum possible size
     std::vector<uint32_t> color;
 
     for (int y=0; y<imgHeight; ++y) {
@@ -124,8 +124,8 @@ ZPointCloudPtr process(const cv::Mat &colorImg, cv::Mat Q, cv::Mat leftImg, cv::
 
                 //! TODO this is a really naive way to find correspondeces ...
                 if (*imgData >= *rImgData && *imgData <= *rImgDataNext
-                        && (*imgData - *rImgData) < 2.
-                        && (*rImgDataNext - *rImgData) < 2.)
+                        && (*imgData - *rImgData) < 2.f
+                        && (*rImgDataNext - *rImgData) < 2.f)
                 {
                     const float range = *rImgDataNext - *rImgData;
                     const float offset = (*imgData - *rImgData) / range;
@@ -165,7 +165,7 @@ Z3D::ZPointCloudPtr ZStereoSystemImpl::triangulate(const cv::Mat &leftColorImage
 {
     //! TODO compute this once and keep in memory?
     cv::Mat rmap[2][2];
-    for (int k = 0; k < 2; k++) {
+    for (size_t k = 0; k < 2; k++) {
         cv::initUndistortRectifyMap(m_calibration->cameraMatrix[k], m_calibration->distCoeffs[k], m_R[k], m_P[k], m_imageSize, CV_16SC2, rmap[k][0], rmap[k][1]);
     }
 
@@ -179,7 +179,6 @@ Z3D::ZPointCloudPtr ZStereoSystemImpl::triangulate(const cv::Mat &leftColorImage
     switch (leftRemapedImage.type()) {
     case CV_32F: // float
         return process<float>(leftColorRemapedImage, m_Q, leftRemapedImage, rightRemapedImage);
-        break;
     default:
         qWarning() << "unkwnown image type:" << leftRemapedImage.type();
     }
