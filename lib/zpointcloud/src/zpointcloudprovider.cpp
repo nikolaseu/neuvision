@@ -26,9 +26,17 @@
 
 #include <QDebug>
 #include <QDir>
+#include <QLoggingCategory>
 
 namespace Z3D
 {
+
+namespace // anonymous namespace
+{
+
+Q_LOGGING_CATEGORY(loggingCategory, "z3d.zpointcloud.zpointcloudprovider", QtInfoMsg)
+
+} // anonymous namespace
 
 QMap< QString, ZPointCloudPluginInterface *> ZPointCloudProvider::m_plugins;
 
@@ -39,10 +47,10 @@ void ZPointCloudProvider::loadPlugins()
     for (auto pluginLoader : list) {
         auto *plugin = pluginLoader->instance<ZPointCloudPluginInterface>();
         if (plugin) {
-            qDebug() << "pointcloud plugin loaded. type:" << pluginLoader->id();
+            qDebug(loggingCategory) << "pointcloud plugin loaded. type:" << pluginLoader->id();
             m_plugins.insert(pluginLoader->id(), plugin);
         } else {
-            qWarning() << "invalid pointcloud plugin:" << plugin;
+            qWarning(loggingCategory) << "invalid pointcloud plugin:" << plugin;
         }
     }
 }
@@ -58,7 +66,7 @@ void ZPointCloudProvider::unloadPlugins()
 
 ZPointCloudPtr ZPointCloudProvider::loadPointCloud(const QString &fileName)
 {
-    qDebug() << "Trying to read PointCloud from" << fileName;
+    qDebug(loggingCategory) << "Trying to read PointCloud from" << fileName;
 
     for (const auto *plugin : m_plugins.values()) {
         if (auto pc = plugin->loadPointCloud(fileName)) {
@@ -66,7 +74,7 @@ ZPointCloudPtr ZPointCloudProvider::loadPointCloud(const QString &fileName)
         }
     }
 
-    qWarning() << "Failed to read PointCloud. No plugin can handle the format of the file:" << fileName;
+    qWarning(loggingCategory) << "Failed to read PointCloud. No plugin can handle the format of the file:" << fileName;
     return nullptr;
 }
 

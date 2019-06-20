@@ -104,21 +104,30 @@ ZPointCloudPtr process(const cv::Mat &colorImg, cv::Mat Q, cv::Mat leftImg, cv::
     std::vector<uint32_t> color;
 
     for (int y=0; y<imgHeight; ++y) {
+//        qDebug() << "processing row" << y;
+
         const uint8_t* colorData = colorImg.ptr<uint8_t>(y);
-        const T* imgData = leftImg.ptr<T>(y);
-        const T* rImgData = rightImg.ptr<T>(y);
-        const T* rImgDataNext = rImgData + 1;
+        T* imgData = leftImg.ptr<T>(y);
+        T* rImgData = rightImg.ptr<T>(y);
+        T* rImgDataNext = rImgData + 1;
         for (int x=0, rx=0; x<imgWidth; ++x, ++imgData, ++colorData) {
             if (*imgData == ZDecodedPattern::NO_VALUE) {
+//                qDebug() << "skipping pixel, no data for left image";
                 continue;
             }
 
-            for (; rx<imgWidth-1; ++rx, ++rImgData, ++rImgDataNext) {
+//            qDebug() << "processing col" << x << "value" << *imgData;
+
+            bool shouldContinueInRight = true;
+            for (; shouldContinueInRight && rx<imgWidth-1; ++rx, ++rImgData, ++rImgDataNext) {
                 if (*rImgData == ZDecodedPattern::NO_VALUE) {
+//                    qDebug() << "skipping pixel, no data for right image";
                     continue;
                 }
 
                 if (*imgData < *rImgData) {
+//                    qDebug() << "value in right image is higher than left image, advancing left pointer...";
+                    shouldContinueInRight = false;
                     break;
                 }
 
@@ -128,7 +137,9 @@ ZPointCloudPtr process(const cv::Mat &colorImg, cv::Mat Q, cv::Mat leftImg, cv::
                         && (*rImgDataNext - *rImgData) < 2.f)
                 {
                     const float range = *rImgDataNext - *rImgData;
-                    const float offset = (*imgData - *rImgData) / range;
+                    const float offset = range > FLT_EPSILON
+                            ? (*imgData - *rImgData) / range
+                            : 0;
                     disparity.push_back(cv::Vec3f(x, y, float(x) - (float(rx) + offset)));
 
                     const uint32_t rgbWhite = (static_cast<uint32_t>(*colorData) << 24 | // alpha
@@ -136,6 +147,8 @@ ZPointCloudPtr process(const cv::Mat &colorImg, cv::Mat Q, cv::Mat leftImg, cv::
                                                static_cast<uint32_t>(*colorData) <<  8 | // g
                                                static_cast<uint32_t>(*colorData));       // b
                     color.push_back(rgbWhite);
+
+                    shouldContinueInRight = false;
                     break;
                 }
             }
@@ -143,6 +156,10 @@ ZPointCloudPtr process(const cv::Mat &colorImg, cv::Mat Q, cv::Mat leftImg, cv::
     }
 
     qDebug() << "found" << disparity.size() << "matches";
+
+    if (disparity.size() < 1) {
+         return nullptr;
+    }
 
     std::vector<cv::Vec3f> points3f;
     cv::perspectiveTransform(disparity, points3f, Q);
@@ -177,8 +194,8 @@ Z3D::ZPointCloudPtr ZStereoSystemImpl::triangulate(const cv::Mat &leftColorImage
     cv::remap(rightDecodedImage, rightRemapedImage, rmap[1][0], rmap[1][1], cv::INTER_LINEAR);
 
     switch (leftRemapedImage.type()) {
-    case CV_32F: // float
-        return process<float>(leftColorRemapedImage, m_Q, leftRemapedImage, rightRemapedImage);
+    case CV_32FC1: // float_t
+        return process<float_t>(leftColorRemapedImage, m_Q, leftRemapedImage, rightRemapedImage);
     default:
         qWarning() << "unkwnown image type:" << leftRemapedImage.type();
     }

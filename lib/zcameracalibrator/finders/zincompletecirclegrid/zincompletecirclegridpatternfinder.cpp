@@ -37,27 +37,27 @@
 namespace Z3D
 {
 
-bool  m_equalizeHistogram = (false);
-int   m_cannyLowThreshold = (0);
-int   m_cannyHighThreshold = (50);
-int   m_cannyApertureSize = (3);
-float m_minAreaProportion = (0.005f); /// min area is width/10 and height/10 = 1% of total
-float m_squareSize = (1.0f);
-float m_maxRectifiedDistance = (m_squareSize / 2.0);
+static bool  m_equalizeHistogram = (false);
+static int   m_cannyLowThreshold = (20);
+static int   m_cannyHighThreshold = (50); // should be close to three times the lower threshold
+static int   m_cannyApertureSize = (3);
+static float m_minAreaProportion = (0.005f); /// min area is width/10 and height/10 = 1% of total
+static float m_squareSize = (1.0f);
+static float m_maxRectifiedDistance = (m_squareSize / 2.0f);
 // rectangle validator
-float m_minCos = (-0.3f);
-float m_maxCos = (0.45f);
+static float m_minCos = (-0.3f);
+static float m_maxCos = (0.45f);
 
 /**
  * finds a cosine of angle between vectors from pt0->pt1 and pt0->pt2
  */
-double angle(const cv::Point &pt1, const cv::Point &pt2, const cv::Point &pt0)
+float angle(const cv::Point &pt1, const cv::Point &pt2, const cv::Point &pt0)
 {
-    double dx1 = pt1.x - pt0.x;
-    double dy1 = pt1.y - pt0.y;
-    double dx2 = pt2.x - pt0.x;
-    double dy2 = pt2.y - pt0.y;
-    return (dx1*dx2 + dy1*dy2)/sqrt((dx1*dx1 + dy1*dy1)*(dx2*dx2 + dy2*dy2) + 1e-10);
+    float dx1 = pt1.x - pt0.x;
+    float dy1 = pt1.y - pt0.y;
+    float dx2 = pt2.x - pt0.x;
+    float dy2 = pt2.y - pt0.y;
+    return (dx1*dx2 + dy1*dy2)/sqrt((dx1*dx1 + dy1*dy1)*(dx2*dx2 + dy2*dy2) + 1e-10f);
 }
 
 
@@ -142,15 +142,20 @@ bool ZIncompleteCircleGridPatternFinder::findCalibrationPattern(cv::Mat image, s
     /// find edges
     /// blur image a little to avoid getting noisy edges
     cv::Mat blurredGray;
-    cv::blur(gray, blurredGray, cv::Size(3,3));
+    cv::blur(gray, blurredGray, cv::Size(5,5));
     cv::Mat bw;
     cv::Canny(blurredGray, bw, m_cannyLowThreshold, m_cannyHighThreshold, m_cannyApertureSize);
+
+    /// close shapes
+    cv::Mat dilateErodeKernel = cv::getStructuringElement(cv::MORPH_ELLIPSE, cv::Size(7,7));
+    cv::dilate(bw, bw, dilateErodeKernel);
+    cv::erode(bw, bw, dilateErodeKernel);
 
     /// find contours
     std::vector<std::vector<cv::Point> > contours;
     cv::findContours(bw, contours, cv::RETR_EXTERNAL, cv::CHAIN_APPROX_SIMPLE);
 
-    int minArea = gray.size().area() * m_minAreaProportion;
+    const int minArea = int(gray.size().area() * m_minAreaProportion);
 
 #ifdef DEBUG_RECTANGLE_DETECTOR
     static QAtomicInt atomicInt = 0;
@@ -161,14 +166,21 @@ bool ZIncompleteCircleGridPatternFinder::findCalibrationPattern(cv::Mat image, s
 
     cv::cvtColor(image, contoursImage, cv::COLOR_GRAY2RGB);
     for (size_t i = 0; i < contours.size(); i++) {
-        cv::drawContours(contoursImage, contours, i, cv::Scalar(0,0,255), 2);
+        cv::drawContours(contoursImage, contours, int(i), cv::Scalar(0,0,255), 2);
+
+//        /// debug individual contours
+//        cv::Mat thisContourImage;
+//        cv::cvtColor(image, thisContourImage, cv::COLOR_GRAY2RGB);
+//        cv::drawContours(thisContourImage, contours, int(i), cv::Scalar(0,0,255), 2);
+//        cv::imwrite(qPrintable(QString("tmp/debug/rectDetector_%1_contour_%2.bmp").arg(currentIndex).arg(i)), thisContourImage);
     }
     cv::imwrite(qPrintable(QString("tmp/debug/rectDetector_%1_contours.bmp").arg(currentIndex)), contoursImage);
 
     cv::cvtColor(image, contoursImage, cv::COLOR_GRAY2RGB);
     for (size_t i = 0; i < contours.size(); i++) {
-        if (!(std::fabs(cv::contourArea(contours[i])) < minArea))
-            cv::drawContours(contoursImage, contours, i, cv::Scalar(0,0,255), 5);
+        if (cv::contourArea(contours[i], false) >= minArea) {
+            cv::drawContours(contoursImage, contours, int(i), cv::Scalar(0,0,255), 5);
+        }
     }
     cv::imwrite(qPrintable(QString("tmp/debug/rectDetector_%1_contours_valid.bmp").arg(currentIndex)), contoursImage);
 #endif
@@ -177,34 +189,38 @@ bool ZIncompleteCircleGridPatternFinder::findCalibrationPattern(cv::Mat image, s
     std::vector<cv::Point> approx;
     for (size_t i = 0; i < contours.size(); i++) {
         /// skip small objects
-        if (std::fabs(cv::contourArea(contours[i])) < minArea)
+        if (cv::contourArea(contours[i], false) < minArea) {
             continue;
+        }
 
         /// approximate contour with accuracy proportional to the contour perimeter
         cv::approxPolyDP(contours[i], approx, cv::arcLength(contours[i], true)*0.02, true);
 
         /// number of vertices of polygonal curve
-        int vtc = approx.size();
+        const size_t vtc = approx.size();
 
         /// skip non-rectangular shapes
-        if (vtc != 4)
+        if (vtc != 4) {
             continue;
+        }
 
         /// skip non-convex objects
-        if (!cv::isContourConvex(approx))
+        if (!cv::isContourConvex(approx)) {
             continue;
+        }
 
         /// get the cosines of all corners
-        std::vector<double> cos;
-        for (int j = 2; j < vtc+1; j++)
+        std::vector<float> cos;
+        for (size_t j = 2; j < vtc+1; j++) {
             cos.push_back(angle(approx[j%vtc], approx[j-2], approx[j-1]));
+        }
 
         /// sort ascending the cosine values
         std::sort(cos.begin(), cos.end());
 
         /// get the lowest and the highest cosine
-        double mincos = cos.front();
-        double maxcos = cos.back();
+        const float mincos = cos.front();
+        const float maxcos = cos.back();
 
         /// use the degrees obtained above to determine valid rectangles
         if (mincos >= m_minCos && maxcos <= m_maxCos) {
@@ -216,7 +232,7 @@ bool ZIncompleteCircleGridPatternFinder::findCalibrationPattern(cv::Mat image, s
               , maxX = point.x
               , maxY = point.y;
 
-            for (int c=1; c<vtc; ++c) {
+            for (size_t c=1; c<vtc; ++c) {
                 const cv::Point &point = approx[c];
                 if (point.x < minX)
                     minX = point.x;
@@ -231,14 +247,24 @@ bool ZIncompleteCircleGridPatternFinder::findCalibrationPattern(cv::Mat image, s
             /// try to find standard circle grid inside rectangle
             /// use only the section of the image that matters
             cv::Mat roi = gray(cv::Rect(minX, minY, maxX-minX, maxY-minY));
-            //cv::Mat roi = gray;
 
             /// remove outside of the rectangle to avoid false detections
             cv::Mat roiMask2 = cv::Mat::zeros(roi.rows, roi.cols, roi.type());
             cv::Point startPoint(minX, minY);
-            for (int c=0; c<vtc; ++c) {
+            for (size_t c=0; c<vtc; ++c) {
                 approx[c] -= startPoint;
             }
+
+            /// reduce the polygon to avoid including the rectangle edges.
+            /// but it's not really necessary ...
+//            const float diagSize = std::sqrtf(std::powf(m_boardSize.width, 2) + std::powf(m_boardSize.height, 2));
+//            const float relativeMotion = 0.2f / diagSize;
+//            for (size_t c=0; c<vtc; ++c) {
+//                const size_t oppositeIndex = (c + 2) % vtc;
+//                approx[c] += relativeMotion * (approx[oppositeIndex] - approx[c]);
+//            }
+
+            /// create mask
             cv::fillConvexPoly(roiMask2, approx, cv::Scalar(1));
 
             double minVal, maxVal;
@@ -246,37 +272,53 @@ bool ZIncompleteCircleGridPatternFinder::findCalibrationPattern(cv::Mat image, s
             cv::Mat roiClean = cv::Mat(roi.rows, roi.cols, roi.type(), cv::Scalar(maxVal));
             roi.copyTo(roiClean, roiMask2);
 
-            /// test
-            //cv::GaussianBlur(roiClean, roiClean, cv::Size(3,3), 1);
-            //cv::equalizeHist(roiMask, roiMask);
+            /// since we assume inside the rectangle there's a circle grid only,
+            /// we could apply a binary threshold, but it's not really necessary ...
+//            cv::threshold(roiClean, roiClean, 0, 255, cv::THRESH_BINARY | cv::THRESH_OTSU);
+
+            const double rectArea = cv::contourArea(approx, false);
 
             cv::SimpleBlobDetector::Params blobDetectorParams;
-            blobDetectorParams.filterByArea = false;
+            blobDetectorParams.filterByArea = true;
+            blobDetectorParams.maxArea = 0.7f * float(rectArea / m_boardSize.area()); // cannot be bigger than this otherwise they would overlap
+            blobDetectorParams.minArea = 0.05f * float(rectArea / m_boardSize.area()); // cannot be too small either
 
-            cv::Ptr<cv::FeatureDetector> blobDetector = cv::SimpleBlobDetector::create();
+            cv::Ptr<cv::FeatureDetector> blobDetector = cv::SimpleBlobDetector::create(blobDetectorParams);
 
 #ifdef DEBUG_RECTANGLE_DETECTOR
+            qDebug() << "board size:" << m_boardSize.width << "x" << m_boardSize.height
+                     << "rect area:" << rectArea
+                     << "min blob area:" << blobDetectorParams.minArea
+                     << "max blob area:" << blobDetectorParams.maxArea;
+
             //cv::imwrite(qPrintable(QString("tmp/debug/rectDetector_%1_roi.bmp").arg(currentIndex)), roiClean);
 
             /// test blobDetector
-            cv::Mat roiMaskKeypoints = roiClean.clone();
+            cv::Mat roiMaskKeypoints;
+            cv::cvtColor(roiClean, roiMaskKeypoints, cv::COLOR_GRAY2BGR);
             std::vector<cv::KeyPoint> keypoints;
             blobDetector->detect(roiClean, keypoints);
             for (size_t i = 0; i < keypoints.size(); i++) {
-                cv::circle(roiMaskKeypoints, keypoints[i].pt, 3, cv::Scalar(255));
+                cv::circle(roiMaskKeypoints, keypoints[i].pt, 3, cv::Scalar(0, 255, 0), 3);
             }
-            cv::imwrite(qPrintable(QString("tmp/debug/rectDetector_%1_roiKeypoints.bmp").arg(currentIndex)), roiMaskKeypoints);
+            cv::imwrite(qPrintable(QString("tmp/debug/rectDetector_%1_roiKeypoints_%2.bmp").arg(currentIndex).arg(i)), roiMaskKeypoints);
 #endif
+
+            /// Relax parameters for circle grid finder
+            cv::CirclesGridFinderParameters circleGridParameters;
+            circleGridParameters.minDensity = 0; //10 is default but is not working for my calibration plate
 
             if (cv::findCirclesGrid(roiClean, m_boardSize, corners,
                                     //cv::CALIB_CB_CLUSTERING |
                                     m_isAsymmetricGrid ? cv::CALIB_CB_ASYMMETRIC_GRID : cv::CALIB_CB_SYMMETRIC_GRID,
-                                    blobDetector)) {
+                                    blobDetector, circleGridParameters))
+            {
                 /// the standard circle grid was found
                 /// return corners to original image coordinates
                 cv::Point2f origin(minX, minY);
-                for (std::vector<cv::Point2f>::iterator c = corners.begin(); c != corners.end(); ++c)
+                for (std::vector<cv::Point2f>::iterator c = corners.begin(); c != corners.end(); ++c) {
                     *c += origin;
+                }
 
                 /// get coordinates of ideal points, the indices inside the standard grid
                 std::vector<cv::Point2f> idealPoints;
@@ -346,10 +388,10 @@ bool ZIncompleteCircleGridPatternFinder::findCalibrationPattern(cv::Mat image, s
                             idealPt = cv::Point2f(j*m_squareSize, i*m_squareSize);
 
                         std::vector<float> query = cv::Mat(idealPt);
-                        int knn = 1;
+                        size_t knn = 1;
                         std::vector<int> indices(knn);
                         std::vector<float> dists(knn);
-                        flannIndex.knnSearch(query, indices, dists, knn, cv::flann::SearchParams());
+                        flannIndex.knnSearch(query, indices, dists, int(knn), cv::flann::SearchParams());
 
                         if (dists[0] < m_maxRectifiedDistance) {
                             /// found valid point
@@ -380,7 +422,7 @@ bool ZIncompleteCircleGridPatternFinder::findCalibrationPattern(cv::Mat image, s
 
                                 /// destination image
                                 static const int m_refinementImgSize = 100;
-                                cv::Mat imgRectifiedPatternPoint = cv::Mat::zeros(m_refinementImgSize*m_squareSize, m_refinementImgSize*m_squareSize, gray.type());
+                                cv::Mat imgRectifiedPatternPoint = cv::Mat::zeros(int(m_refinementImgSize*m_squareSize), int(m_refinementImgSize*m_squareSize), gray.type());
 
                                 /// corners of the destination image
                                 std::vector<cv::Point2f> quad_pts;

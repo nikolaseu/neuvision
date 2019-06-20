@@ -29,6 +29,8 @@ namespace Z3D
 
 static int z3dDecodedPatternPtrTypeId = qRegisterMetaType<Z3D::ZDecodedPatternPtr>("Z3D::ZDecodedPatternPtr");
 
+const float_t ZDecodedPattern::NO_VALUE = std::numeric_limits<float_t>::min();
+
 ZDecodedPattern::ZDecodedPattern(cv::Mat decodedImage,
                                  cv::Mat intensityImg,
                                  std::map<int, std::vector<cv::Vec2f> > fringePointsList)

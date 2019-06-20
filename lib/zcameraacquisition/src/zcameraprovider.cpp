@@ -90,7 +90,8 @@ ZCameraPtr ZCameraProvider::getCamera(QString pluginName, QVariantMap options)
             m_model.add(camera);
         }
     } else {
-        qWarning() << "camera plugin not found:" << pluginName;
+        qWarning() << "camera plugin not found:" << pluginName
+                   << "available plugins:" << m_plugins.keys();
     }
 
     return camera;

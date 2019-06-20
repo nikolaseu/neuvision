@@ -9,6 +9,8 @@ import QtQuick.Dialogs 1.3
 import QtQuick.Layouts 1.3
 import QtQuick.Scene3D 2.0
 
+import Qt.labs.settings 1.0
+
 import Z3D.PointCloud 1.0
 
 ApplicationWindow {
@@ -18,13 +20,53 @@ ApplicationWindow {
     height: 800
     visible: true
 
+    color: Qt.rgba(0.8, 0.8, 0.8, 1)
+
+    property int maxRecentFiles: 20
+    property string lastOpenedFile
+    property var recentFiles: []
+
+    onLastOpenedFileChanged: {
+        console.log("lastOpenedFileChanged:", lastOpenedFile)
+        if (!lastOpenedFile) {
+            return;
+        }
+
+        if (recentFiles.indexOf(lastOpenedFile) < 0) {
+            console.log("adding lastOpenedFile:", lastOpenedFile, "because it's not in the recent files list:", recentFiles)
+            // it's not in the recent files list, add it
+            // have to concat and reassign to make sure it's saved in settings :(
+            recentFiles = [lastOpenedFile].concat(recentFiles);
+        }
+        else {
+            // TODO make sure it's the first in the list of recent files
+        }
+    }
+
+    onRecentFilesChanged: {
+        console.log("recentFilesChanged:", recentFiles);
+        if (recentFiles.length > maxRecentFiles) {
+            console.log("too much recent files, removing old ones...");
+            recentFiles = recentFiles.slice(0, maxRecentFiles);
+        }
+    }
+
+    Settings {
+        id: recentFilesSettings
+        category: "Recent"
+
+        property alias recentFiles: window.recentFiles
+    }
+
     FileDialog {
         id: fileDialog
         title: qsTr("Open a point cloud")
         folder: shortcuts.home
         nameFilters: ["PLY files (*.ply)", "STL files (*.stl)", "PCD files (*.pcd)"]
         onAccepted: {
-            pointCloudReader.source = fileDialog.fileUrl
+            const fileName = fileDialog.fileUrl;
+            pointCloudReader.source = fileName;
+            window.lastOpenedFile = fileName;
         }
     }
 
@@ -74,8 +116,8 @@ ApplicationWindow {
                 BackgroundEntity {
                     id: background
                     layer: renderSettings.activeFrameGraph.backgroundLayer
-                    colorTop: Qt.rgba(0.4, 0.4, 0.4, 1)
-                    colorBottom: Qt.rgba(0.8, 0.8, 0.8, 1)
+                    colorTop: window.color//Qt.rgba(0.4, 0.4, 0.4, 1)
+                    colorBottom: window.color//Qt.rgba(0.8, 0.8, 0.8, 1)
                 }
 
                 PointCloudEntity {
@@ -99,10 +141,11 @@ ApplicationWindow {
         }
 
         RowLayout {
+            id: menuLayout
             anchors.right: parent.right
             anchors.top: parent.top
             anchors.margins: 4
-            opacity: mouseArea.containsMouse ? 1 : 0.3
+            opacity: mouseAreaForMenuLayout.containsMouse ? 1 : 0.3
             visible: pointCloudReader.pointCloud
 
             Behavior on opacity {
@@ -120,13 +163,13 @@ ApplicationWindow {
                 text: "Settings"
                 onClicked: drawer.open()
             }
+        }
 
-            MouseArea {
-                id: mouseArea
-                anchors.fill: parent
-                hoverEnabled: true
-                acceptedButtons: Qt.NoButton
-            }
+        MouseArea {
+            id: mouseAreaForMenuLayout
+            anchors.fill: menuLayout
+            hoverEnabled: true
+            acceptedButtons: Qt.NoButton
         }
 
         Drawer {
@@ -219,11 +262,115 @@ ApplicationWindow {
         }
     }
 
-    Button {
+    ColumnLayout {
         anchors.centerIn: parent
         visible: !pointCloudReader.pointCloud
-        padding: 20
-        text: qsTr("Open a point cloud ...")
-        onClicked: fileDialog.open()
+        width: Math.min(600, Math.max(400, window.width/2))
+        height: Math.min(600, Math.max(400, window.height/2))
+
+        spacing: 24
+
+        Rectangle {
+            Layout.fillWidth: true
+            radius: 3
+            border.width: 1
+            border.color: "#22000000"
+            clip: true
+            color: "#22ffffff"
+            height: 48
+
+            Text {
+                anchors.fill: parent
+                anchors.margins: 10
+                text: qsTr("Load a point cloud ...")
+                font.pointSize: 14
+                color: "#333"
+                verticalAlignment: Text.AlignVCenter
+            }
+
+            MouseArea {
+                anchors.fill: parent
+                onClicked: fileDialog.open()
+            }
+        }
+
+        Text {
+            Layout.fillWidth: true
+            font.pointSize: 14
+            font.italic: true
+            color: "#666"
+            horizontalAlignment: Text.AlignHCenter
+            verticalAlignment: Text.AlignVCenter
+            text: qsTr("or open one of the recently used files")
+        }
+
+        Rectangle {
+            Layout.fillWidth: true
+            Layout.fillHeight: true
+            radius: 3
+            border.width: 1
+            border.color: "#22000000"
+            clip: true
+            color: "#22ffffff"
+
+            ListView {
+                id: recentFilesListView
+                anchors.fill: parent
+                model: recentFiles
+
+                ScrollBar.vertical: ScrollBar {
+                    active: true
+                }
+
+                delegate: Item {
+                    id: delegate
+                    width: recentFilesListView.width
+                    height: 56
+
+                    property string fileUrl: modelData
+                    property string fileName: fileUrl.slice(1 + fileUrl.lastIndexOf("/"))
+                    property string filePath: fileUrl.slice(7)
+
+                    property color textColor: "#333"
+
+                    ColumnLayout {
+                        anchors.fill: parent
+                        anchors.margins: 10
+                        spacing: 2
+
+                        Text {
+                            Layout.fillWidth: true
+                            text: delegate.fileName
+                            font.pointSize: 14
+                            color: textColor
+                        }
+
+                        Text {
+                            text: delegate.filePath
+                            font.pointSize: 11
+                            color: Qt.lighter(textColor, 2)
+                        }
+                    }
+
+                    Rectangle {
+                        anchors.left: parent.left
+                        anchors.right: parent.right
+                        anchors.bottom: parent.bottom
+                        height: 1
+                        color: "#11000000"
+                    }
+
+                    MouseArea {
+                        id: mouseArea
+                        anchors.fill: parent
+                        hoverEnabled: true
+                        onClicked: {
+                            pointCloudReader.source = modelData
+                            lastOpenedFile = modelData
+                        }
+                    }
+                }
+            }
+        }
     }
 }

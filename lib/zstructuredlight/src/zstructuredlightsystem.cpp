@@ -123,24 +123,20 @@ void ZStructuredLightSystem::onPatternsDecodedDebug(std::vector<ZDecodedPatternP
 
     /// only to show in the window, we need to change image "range" to improve visibility
     for (const auto &decodedPattern : patterns) {
-        cv::Mat decoded = decodedPattern->decodedImage();
+        cv::Mat decoded = decodedPattern->decodedImage().clone();
 
-        ///find minimum and maximum intensities
+        /// find minimum and maximum intensities
         cv::minMaxLoc(decoded, &minVal, &maxVal);
 
-        /// minimum will always be zero, we need to find the minimum != 0
-        /// we set maxVal where value is zero
-        cv::Mat mask = decoded == 0;
-        decoded.setTo(cv::Scalar(maxVal), mask);
+        /// to discard invalid values
+        cv::Mat mask = decoded == Z3D::ZDecodedPattern::NO_VALUE;
+        decoded.setTo(cv::Scalar(maxVal == Z3D::ZDecodedPattern::NO_VALUE ? minVal : maxVal), mask);
 
         /// find correct minimum and maximum intensities (skipping zeros)
         cv::minMaxLoc(decoded, &minVal, &maxVal);
 
         qDebug() << "min:" << minVal
                  << "max:" << maxVal;
-
-        /// return back to original
-        decoded.setTo(cv::Scalar(0), mask);
 
         if (absMinVal > minVal) {
             absMinVal = minVal;

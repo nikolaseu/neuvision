@@ -21,7 +21,7 @@
 #include "zwidget.h"
 
 #if defined(Q_OS_MACOS)
-#include "osxutils.h"
+#include "zosxutils.h"
 #endif
 
 namespace Z3D {
@@ -30,7 +30,7 @@ ZWidget::ZWidget(QWidget *parent)
     : QWidget(parent)
 {
 #if defined(Q_OS_MACOS)
-//    osxHideTitleBar(winId());
+    ZOSXUtils::hideTitleBar(winId());
 #endif
 }
 

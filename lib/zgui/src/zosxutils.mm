@@ -18,25 +18,33 @@
 // along with Z3D.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-#include "osxutils.h"
+#include "zosxutils.h"
 
 #include <Cocoa/Cocoa.h>
 
-void osxHideTitleBar(unsigned long long winid)
+namespace Z3D {
+namespace ZOSXUtils {
+
+void hideTitleBar(unsigned long long winid)
 {
     NSView *nativeView = reinterpret_cast<NSView *>(winid);
     NSWindow* nativeWindow = [nativeView window];
 
+    [nativeWindow setTitleVisibility:NSWindowTitleHidden];
+
     [nativeWindow setStyleMask:
-        [nativeWindow styleMask] | NSFullSizeContentViewWindowMask | NSWindowTitleHidden];
+        [nativeWindow styleMask] | NSWindowStyleMaskFullSizeContentView | NSWindowTitleHidden];
 
     [nativeWindow setTitlebarAppearsTransparent:YES];
     //[nativeWindow setMovableByWindowBackground:YES];
 }
 
-void osxTransparentTitleBar(unsigned long long winid)
+void transparentTitleBar(unsigned long long winid)
 {
     NSView *nativeView = reinterpret_cast<NSView *>(winid);
     NSWindow* nativeWindow = [nativeView window];
     [nativeWindow setTitlebarAppearsTransparent:YES];
 }
+
+} // namespace ZOSXUtils
+} // namespace Z3D

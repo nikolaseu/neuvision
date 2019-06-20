@@ -75,6 +75,7 @@ Item {
                 y: control.topPadding + (control.availableHeight - height) / 2
 
                 model: setting.options
+                currentIndex: setting.value
                 onCurrentIndexChanged: setting.value = currentIndex
             }
         }

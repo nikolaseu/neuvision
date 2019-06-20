@@ -36,7 +36,7 @@ class Z3D_ZPOINTCLOUD_SHARED_EXPORT ZPointCloudGeometry : public Qt3DRender::QGe
 
 public:
     explicit ZPointCloudGeometry(QNode *parent = nullptr);
-    ~ZPointCloudGeometry();
+    ~ZPointCloudGeometry() override;
 
     void updateVertices();
 

@@ -18,6 +18,8 @@ ApplicationWindow {
     height: 800
     visible: true
 
+    color: Qt.rgba(0.8, 0.8, 0.8, 1)
+
     Item {
         anchors.fill: parent
 
@@ -61,8 +63,8 @@ ApplicationWindow {
                 BackgroundEntity {
                     id: background
                     layer: renderSettings.activeFrameGraph.backgroundLayer
-                    colorTop: Qt.rgba(0.4, 0.4, 0.4, 1)
-                    colorBottom: Qt.rgba(0.8, 0.8, 0.8, 1)
+                    colorTop: window.color//Qt.rgba(0.4, 0.4, 0.4, 1)
+                    colorBottom: window.color//Qt.rgba(0.8, 0.8, 0.8, 1)
                 }
 
                 PointCloudEntity {
@@ -192,7 +194,7 @@ ApplicationWindow {
                                 onClicked: stackView.pop()
                             }
 
-                            Text {
+                            Label {
                                 Layout.fillWidth: true
                                 font.bold: true
                                 text: qsTr("Pattern projetion settings")
@@ -224,7 +226,7 @@ ApplicationWindow {
                                 onClicked: stackView.pop()
                             }
 
-                            Text {
+                            Label {
                                 Layout.fillWidth: true
                                 font.bold: true
                                 text: qsTr("Structured light system settings")
@@ -248,7 +250,6 @@ ApplicationWindow {
                 Item {
                     ColumnLayout {
                         anchors.fill: parent
-                        anchors.margins: 16
 
                         RowLayout {
                             Button {
@@ -257,7 +258,7 @@ ApplicationWindow {
                                 onClicked: stackView.pop()
                             }
 
-                            Text {
+                            Label {
                                 Layout.fillWidth: true
                                 font.bold: true
                                 text: qsTr("3D viewer settings")

@@ -108,6 +108,7 @@ public slots:
     bool setAutomaticPatternCount(bool arg);
 
 private slots:
+    int selectedScreen() const;
     bool setSelectedScreen(int index);
 
 protected:

@@ -46,7 +46,7 @@ namespace Z3D
 ZBinaryPatternProjection::ZBinaryPatternProjection(QObject *parent)
     : ZPatternProjection(parent)
     , m_dlpview(nullptr)
-    , m_delayMs(400)
+    , m_delayMs(500)
     , m_noiseThreshold(15)
     , m_automaticPatternCount(true)
     , m_numPatterns(11)
@@ -59,8 +59,15 @@ ZBinaryPatternProjection::ZBinaryPatternProjection(QObject *parent)
     , m_previewEnabled(false)
 {
     m_dlpview = new QQuickView();
+    m_dlpview->setFlags(Qt::FramelessWindowHint
+                        //| Qt::MaximizeUsingFullscreenGeometryHint
+                        | Qt::WindowTransparentForInput
+                        | Qt::WindowDoesNotAcceptFocus
+                        //| Qt::WindowStaysOnBottomHint
+                        //| Qt::WindowStaysOnTopHint
+                        );
     m_dlpview->rootContext()->setContextProperty("config", this);
-    m_dlpview->rootContext()->setContextProperty("window", m_dlpview);
+//    m_dlpview->rootContext()->setContextProperty("window", m_dlpview);
     m_dlpview->setSource(QUrl("qrc:///zstructuredlight/qml/binarypatternprojection.qml"));
     m_dlpview->setResizeMode(QQuickView::SizeRootObjectToView);
 
@@ -75,7 +82,7 @@ ZBinaryPatternProjection::ZBinaryPatternProjection(QObject *parent)
         }
         return screens;
     },
-                                                                        [=](){ return 0; },
+                                                                        [=](){ return selectedScreen(); },
     std::bind(&ZBinaryPatternProjection::setSelectedScreen, this, std::placeholders::_1)));
     QObject::connect(qGuiApp, &QGuiApplication::screenAdded,
                      screenOption.get(), &ZSettingsItemEnum::optionsChanged);
@@ -204,8 +211,7 @@ const std::vector<ZSettingsItemPtr> &ZBinaryPatternProjection::settings()
 
 void ZBinaryPatternProjection::showProjectionWindow()
 {
-    m_dlpview->showNormal();
-    m_dlpview->showFullScreen();
+    m_dlpview->show();
 }
 
 void ZBinaryPatternProjection::hideProjectionWindow()
@@ -260,7 +266,7 @@ void ZBinaryPatternProjection::beginScan()
             QCoreApplication::processEvents();
             QCoreApplication::processEvents();
 
-            QThread::msleep(ulong(m_delayMs));
+            QThread::msleep(ulong(m_delayMs/2));
 
             QCoreApplication::processEvents();
             QCoreApplication::processEvents();
@@ -271,6 +277,11 @@ void ZBinaryPatternProjection::beginScan()
                     .arg(inverted?"_inv":"");
 
             emit acquireSingle(fileName);
+
+            QCoreApplication::processEvents();
+            QCoreApplication::processEvents();
+
+            QThread::msleep(ulong(m_delayMs/2));
         }
     }
 
@@ -380,11 +391,7 @@ void ZBinaryPatternProjection::processImages(std::vector<std::vector<ZCameraImag
                         decoded);
         }
 
-        /// vector of points for every fringe
-        std::map<int, std::vector<cv::Vec2f> > fringePoints;
-        Z3D::ZBinaryPatternDecoder::simplifyBinaryPatternData(decoded, maskImg, fringePoints);
-
-        Z3D::ZDecodedPatternPtr decodedPattern(new Z3D::ZDecodedPattern(decoded, intensityImg, fringePoints));
+        Z3D::ZDecodedPatternPtr decodedPattern(new Z3D::ZDecodedPattern(decoded, intensityImg));
         decodedPatternList.push_back(decodedPattern);
     }
 
@@ -593,6 +600,21 @@ bool ZBinaryPatternProjection::setAutomaticPatternCount(bool arg)
     }
 
     return true;
+}
+
+int ZBinaryPatternProjection::selectedScreen() const
+{
+    const auto screens = qGuiApp->screens();
+    for (int i=0; i<screens.size(); ++i) {
+        const auto &screen = screens[i];
+        if (screen->geometry().contains(m_dlpview->geometry().center())) {
+            return i;
+        }
+    }
+
+    qWarning() << "couldn't find screen being used for pattern projection!";
+
+    return -1;
 }
 
 bool ZBinaryPatternProjection::setSelectedScreen(int index)
