@@ -19,6 +19,12 @@
 
 #pragma once
 
-void osxHideTitleBar(unsigned long long winid);
+namespace Z3D {
+namespace ZOSXUtils {
 
-void osxTransparentTitleBar(unsigned long long winid);
+void hideTitleBar(unsigned long long winid);
+
+void transparentTitleBar(unsigned long long winid);
+
+} // namespace ZOSXUtils
+} // namespace Z3D

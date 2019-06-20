@@ -24,6 +24,11 @@
 #include "zpointcloudprovider.h"
 #include "zpointcloudreader.h"
 
+#if defined(Q_OS_MACOS)
+#include "zosxutils.h" // just to hide title bar in OSX
+#include <QWindow>
+#endif
+
 #include <QQmlApplicationEngine>
 #include <QSurfaceFormat>
 
@@ -49,6 +54,16 @@ int main(int argc, char *argv[])
 
     QQmlApplicationEngine engine;
     engine.load(QUrl(QStringLiteral("qrc:/qml/main.qml")));
+
+#if defined(Q_OS_MACOS)
+    // just to hide title bar in OSX
+    for (auto &obj : engine.rootObjects()) {
+        if (auto win = qobject_cast<QWindow*>(obj)) {
+            Z3D::ZOSXUtils::hideTitleBar(win->winId());
+            break;
+        }
+    }
+#endif
 
     return app.exec();
 }

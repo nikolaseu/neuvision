@@ -18,6 +18,8 @@ ApplicationWindow {
     height: 800
     visible: true
 
+    color: Qt.rgba(0.8, 0.8, 0.8, 1)
+
     Item {
         anchors.fill: parent
 
@@ -61,8 +63,8 @@ ApplicationWindow {
                 BackgroundEntity {
                     id: background
                     layer: renderSettings.activeFrameGraph.backgroundLayer
-                    colorTop: Qt.rgba(0.4, 0.4, 0.4, 1)
-                    colorBottom: Qt.rgba(0.8, 0.8, 0.8, 1)
+                    colorTop: window.color//Qt.rgba(0.4, 0.4, 0.4, 1)
+                    colorBottom: window.color//Qt.rgba(0.8, 0.8, 0.8, 1)
                 }
 
                 PointCloudEntity {

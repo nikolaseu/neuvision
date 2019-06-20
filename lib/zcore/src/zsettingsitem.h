@@ -433,7 +433,7 @@ public:
     }
 
 public slots:
-    virtual bool setValue(QVariant value) override
+    virtual bool setValue(QVariant /*value*/) override
     {
         return false;
     }

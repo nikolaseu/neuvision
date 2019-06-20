@@ -21,9 +21,17 @@
 #include "zpointfield.h"
 
 #include <QDebug>
+#include <QLoggingCategory>
 
 namespace Z3D
 {
+
+namespace // anonymous namespace
+{
+
+Q_LOGGING_CATEGORY(loggingCategory, "z3d.zpointcloud.zpointfield", QtInfoMsg)
+
+} // anonymous namespace
 
 ZPointField::ZPointField(QString name, unsigned int offset, PointFieldTypes type, unsigned int count, QObject *parent)
     : QObject(parent)
@@ -32,10 +40,10 @@ ZPointField::ZPointField(QString name, unsigned int offset, PointFieldTypes type
     , m_dataType(type)
     , m_count(count)
 {
-    qDebug() << "creating field" << m_name
-             << "offset:" << m_offset
-             << "type:" << m_dataType
-             << "count:" << m_count;
+    qDebug(loggingCategory) << "creating field" << m_name
+                            << "offset:" << m_offset
+                            << "type:" << m_dataType
+                            << "count:" << m_count;
 }
 
 QString ZPointField::name() const

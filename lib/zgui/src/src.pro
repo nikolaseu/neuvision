@@ -25,9 +25,9 @@ SOURCES += \
 mac {
     # Only include / compile these files on OS X
     OBJECTIVE_SOURCES += \
-        osxutils.mm
+        zosxutils.mm
     HEADERS  += \
-        osxutils.h
+        zosxutils.h
 
     # Additionally include Cocoa for OS X code
     LIBS += -framework Foundation -framework Cocoa
