@@ -243,7 +243,7 @@ void ZImageViewer::updateImage(ZCameraImagePtr image)
         updateImage(cv::Mat());
 }
 
-void ZImageViewer::updateImage(cv::Mat image)
+void ZImageViewer::updateImage(const cv::Mat &image)
 {
     if (!image.cols) {
         /// empty view
@@ -272,8 +272,18 @@ void ZImageViewer::updateImage(cv::Mat image)
         }
     } else if(m_img.channels() == 3) {
         m_img.convertTo(m_visibleImage, CV_8UC3);
+    } else if(m_img.channels() == 4) {
+        QImage qImage(m_img.data,
+                      m_img.cols,
+                      m_img.rows,
+                      m_img.step,
+                      QImage::Format_RGBX8888);
+
+        updateImage(qImage);
+
+        return;
     } else {
-        qCritical() << "unsupported image";
+        qCritical() << "unsupported image type:" << m_img.type() << "size:" << m_img.cols << "x" << m_img.rows;
         return;
     }
 
@@ -295,13 +305,19 @@ void ZImageViewer::updateImage(cv::Mat image)
     updateImage(qImage);
 }
 
-void ZImageViewer::updateImage(QImage image)
+void ZImageViewer::updateImage(const QImage &image)
 {
+    const bool haveToForceFitImageToWindow = m_fitToWindowEnabled && m_image.size() != image.size();
+
     m_image = image;
 
     auto pixmap = QPixmap::fromImage(m_image);
 
     m_pixmapItem->setPixmap(pixmap);
+
+    if (haveToForceFitImageToWindow) {
+        fitInView(scene()->itemsBoundingRect(), Qt::KeepAspectRatio);
+    }
 }
 
 } // namespace Z3D

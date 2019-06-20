@@ -78,8 +78,8 @@ protected:
     bool m_refinePatternPoints = false;
     bool m_equalizeHistogram = false;
     int m_blurSize = 5;
-    int m_cannyLowThreshold = 0;
-    int m_cannyHighThreshold = 50;
+    int m_cannyLowThreshold = 50;
+    int m_cannyHighThreshold = 150;
     int m_cannyApertureSize = 3;
     float m_squareSize = 1.0f;
     float m_maxRectifiedDistance = m_squareSize / 2.f;

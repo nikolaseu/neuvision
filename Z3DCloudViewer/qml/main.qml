@@ -99,10 +99,11 @@ ApplicationWindow {
         }
 
         RowLayout {
+            id: menuLayout
             anchors.right: parent.right
             anchors.top: parent.top
             anchors.margins: 4
-            opacity: mouseArea.containsMouse ? 1 : 0.3
+            opacity: mouseAreaForMenuLayout.containsMouse ? 1 : 0.3
             visible: pointCloudReader.pointCloud
 
             Behavior on opacity {
@@ -120,13 +121,13 @@ ApplicationWindow {
                 text: "Settings"
                 onClicked: drawer.open()
             }
+        }
 
-            MouseArea {
-                id: mouseArea
-                anchors.fill: parent
-                hoverEnabled: true
-                acceptedButtons: Qt.NoButton
-            }
+        MouseArea {
+            id: mouseAreaForMenuLayout
+            anchors.fill: menuLayout
+            hoverEnabled: true
+            acceptedButtons: Qt.NoButton
         }
 
         Drawer {

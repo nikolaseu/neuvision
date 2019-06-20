@@ -34,6 +34,8 @@ namespace Z3D
 namespace ZBinaryPatternDecoder
 {
 
+constexpr const uint16_t NO_VALUE = std::numeric_limits<uint16_t>::quiet_NaN();
+
 unsigned int binaryToGray(unsigned int num)
 {
     return (num >> 1) ^ num;
@@ -68,20 +70,20 @@ unsigned int grayToBinary(unsigned int num)
 
 cv::Mat decodeBinaryPatternImages(const std::vector<cv::Mat> &images, const std::vector<cv::Mat> &invImages, cv::Mat maskImg, bool isGrayCode)
 {
-    unsigned int imgCount = images.size();
+    const size_t imgCount = images.size();
 
     const cv::Size &imgSize = images[0].size();
 
-    /// use 16 bits, it's more than enough
-    cv::Mat decodedImg(imgSize, CV_16U, cv::Scalar(Z3D::ZDecodedPattern::NO_VALUE));
+    /// 16 bits is more than enough
+    cv::Mat decodedImg(imgSize, CV_16UC1, cv::Scalar(NO_VALUE));
 
     const int &imgHeight = imgSize.height;
     const int &imgWidth = imgSize.width;
 
-    for (unsigned int i=0; i<imgCount; ++i) {
+    for (size_t i=0; i<imgCount; ++i) {
         const cv::Mat &regImg = images[i];
         const cv::Mat &invImg = invImages[i];
-        uint16_t bit = 1 << ( i+1 );
+        uint16_t bit = 1 << ( imgCount-i-1 );
         for (int y=0; y<imgHeight; ++y) {
             /// get pointers to first item of the row
             const uint8_t* maskImgData = maskImg.ptr<uint8_t>(y);
@@ -113,8 +115,9 @@ cv::Mat decodeBinaryPatternImages(const std::vector<cv::Mat> &images, const std:
             uint16_t* decodedImgData = decodedImg.ptr<uint16_t>(y);
             for (int x=0; x<imgWidth; ++x, ++decodedImgData) {
                 uint16_t &value = *decodedImgData;
-                if (value != Z3D::ZDecodedPattern::NO_VALUE) {
+                if (value != NO_VALUE) {
                     value = grayToBinary(value);
+//                    value = std::numeric_limits<uint16_t>::max() - grayToBinary(value); //! FIXME negative because projected patterns are going from high to low but should be fixed there!
                 }
             }
         }
@@ -125,20 +128,26 @@ cv::Mat decodeBinaryPatternImages(const std::vector<cv::Mat> &images, const std:
         uint16_t *decodedImgData = decodedImg.ptr<uint16_t>(y) + 1; // start in x+1
         for (int x=1; x<imgWidth-1; ++x, ++decodedImgData) {
             uint16_t &value = *decodedImgData;
-            if (value != Z3D::ZDecodedPattern::NO_VALUE) {
+            if (value != NO_VALUE) {
                 continue;
             }
 
-            int valueLeft = *(decodedImgData - 1);
-            int valueRight = *(decodedImgData + 1);
-            if (valueLeft != Z3D::ZDecodedPattern::NO_VALUE && valueRight == valueLeft) {
+            const int valueLeft = *(decodedImgData - 1);
+            const int valueRight = *(decodedImgData + 1);
+            if (valueLeft != NO_VALUE && valueRight == valueLeft) {
                 /// assign value
                 value = valueLeft;
             }
         }
     }
 
-    return decodedImg;
+    /// to simplify shared code we use float for all decoded patterns
+    cv::Mat decodedConvertedImg(imgSize, CV_32FC1, cv::Scalar(Z3D::ZDecodedPattern::NO_VALUE));
+    decodedImg.convertTo(decodedConvertedImg, CV_32FC1);
+    /// and also have to set empty pixels to the corresponding standard value
+    decodedConvertedImg.setTo(Z3D::ZDecodedPattern::NO_VALUE, maskImg == 0);
+
+    return decodedConvertedImg;
 }
 
 

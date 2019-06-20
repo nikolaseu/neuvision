@@ -201,10 +201,18 @@
        <widget class="QSpinBox" name="cannyApertureSizeSpinBox"/>
       </item>
       <item row="2" column="1">
-       <widget class="QSpinBox" name="cannyLowThresholdSpinBox"/>
+       <widget class="QSpinBox" name="cannyLowThresholdSpinBox">
+        <property name="maximum">
+         <number>999</number>
+        </property>
+       </widget>
       </item>
       <item row="3" column="1">
-       <widget class="QSpinBox" name="cannyHighThresholdSpinBox"/>
+       <widget class="QSpinBox" name="cannyHighThresholdSpinBox">
+        <property name="maximum">
+         <number>999</number>
+        </property>
+       </widget>
       </item>
      </layout>
     </widget>

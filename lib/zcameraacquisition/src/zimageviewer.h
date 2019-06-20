@@ -39,12 +39,12 @@ class Z3D_CAMERAACQUISITION_SHARED_EXPORT ZImageViewer : public QGraphicsView
 
 public:
     ZImageViewer(QWidget *parent = nullptr);
-    ~ZImageViewer();
+    ~ZImageViewer() override;
 
 public slots:
     void updateImage(Z3D::ZCameraImagePtr image);
-    void updateImage(cv::Mat image);
-    void updateImage(QImage image);
+    void updateImage(const cv::Mat &image);
+    void updateImage(const QImage &image);
 
     void setFitToWindow(const bool &enabled);
     void setDeleteOnClose(bool deleteOnClose);
@@ -54,10 +54,10 @@ protected slots:
     void saveImage();
 
 protected:
-    virtual void mousePressEvent(QMouseEvent* event);
-    virtual void wheelEvent(QWheelEvent* event);
-    virtual void resizeEvent(QResizeEvent* event);
-    virtual void closeEvent(QCloseEvent *event);
+    void mousePressEvent(QMouseEvent* event) override;
+    void wheelEvent(QWheelEvent* event) override;
+    void resizeEvent(QResizeEvent* event) override;
+    void closeEvent(QCloseEvent *event) override;
 
 protected:
     QMenu *m_contextMenu;
@@ -68,7 +68,6 @@ protected:
     int m_colormap;
 
     QGraphicsScene* m_scene;
-    QGraphicsView* m_view;
     QGraphicsPixmapItem *m_pixmapItem;
     QImage m_image;
 

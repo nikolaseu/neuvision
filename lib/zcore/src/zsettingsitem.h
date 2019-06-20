@@ -390,13 +390,7 @@ public:
     // ZSettingsItem interface
     virtual QVariant value() const override
     {
-        const std::vector<QString> enumNames = m_getEnumNames();
-        const int selectedIndex = m_getSelectedIndex();
-        if (selectedIndex < 0 || size_t(selectedIndex) >= enumNames.size()) {
-            return QVariant();
-        }
-
-        return enumNames[size_t(selectedIndex)];
+        return m_getSelectedIndex();
     }
 
 signals:
@@ -405,7 +399,12 @@ signals:
 public slots:
     virtual bool setValue(QVariant value) override
     {
-        return m_setSelectedIndex(value.toInt());
+        const int index = value.toInt();
+        if (index == m_getSelectedIndex()) {
+            return true;
+        }
+
+        return m_setSelectedIndex(index);
     }
 
 private:

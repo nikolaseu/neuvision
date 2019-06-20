@@ -192,7 +192,7 @@ ApplicationWindow {
                                 onClicked: stackView.pop()
                             }
 
-                            Text {
+                            Label {
                                 Layout.fillWidth: true
                                 font.bold: true
                                 text: qsTr("Pattern projetion settings")
@@ -224,7 +224,7 @@ ApplicationWindow {
                                 onClicked: stackView.pop()
                             }
 
-                            Text {
+                            Label {
                                 Layout.fillWidth: true
                                 font.bold: true
                                 text: qsTr("Structured light system settings")
@@ -248,7 +248,6 @@ ApplicationWindow {
                 Item {
                     ColumnLayout {
                         anchors.fill: parent
-                        anchors.margins: 16
 
                         RowLayout {
                             Button {
@@ -257,7 +256,7 @@ ApplicationWindow {
                                 onClicked: stackView.pop()
                             }
 
-                            Text {
+                            Label {
                                 Layout.fillWidth: true
                                 font.bold: true
                                 text: qsTr("3D viewer settings")

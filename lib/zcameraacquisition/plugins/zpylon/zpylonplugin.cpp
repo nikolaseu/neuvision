@@ -84,6 +84,7 @@ ZCameraPtr ZPylonPlugin::getCamera(QVariantMap options)
     }
 
     if (fullName.isNull()) {
+        qWarning() << "couldn't find camera with serial number:" << serialNumber;
         return nullptr;
     }
 
@@ -91,6 +92,7 @@ ZCameraPtr ZPylonPlugin::getCamera(QVariantMap options)
             .CreateDevice(Pylon::CDeviceInfo().SetFullName(qPrintable(fullName)));
 
     if (!device) {
+        qWarning() << "couldn't connect to camera with serial number:" << serialNumber;
         return nullptr;
     }
 

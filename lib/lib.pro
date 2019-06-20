@@ -21,6 +21,6 @@ SUBDIRS  += zstructuredlight
 zstructuredlight.depends = zcore zcalibratedcamera zcameraacquisition zcameracalibration zcameracalibrator zpointcloud
 
 SUBDIRS  += zpointcloud
-zpointcloud.depends = zcalibratedcamera zcameraacquisition zcameracalibration
+zpointcloud.depends = zcore
 
 message('Libraries that will be built:' $$SUBDIRS)
