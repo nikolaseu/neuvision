@@ -4,9 +4,9 @@ in vec3 vertexPosition;
 in vec3 vertexNormal;
 in vec3 vertexColor;
 
-out vec3 position;
-out vec3 normal;
-out vec3 color;
+out vec3 vposition;
+out vec3 vnormal;
+out vec3 vcolor;
 
 uniform mat4 modelMatrix;
 uniform mat4 modelView;
@@ -17,9 +17,9 @@ uniform float pointSize;
 
 void main()
 {
-    normal = normalize(modelViewNormal * vertexNormal);
-    position = vec3(modelView * vec4(vertexPosition, 1.0));
-    color = vertexColor;
+    vnormal = normalize(modelViewNormal * vertexNormal);
+    vposition = vec3(modelView * vec4(vertexPosition, 1.0));
+    vcolor = vertexColor;
 
     gl_Position = mvp * vec4(vertexPosition, 1.0);
 

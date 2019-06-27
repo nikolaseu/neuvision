@@ -43,14 +43,16 @@ vec3 dsModel(const in vec3 pos, const in vec3 n)
 
 void main()
 {
-    vec2 coord = gl_PointCoord - vec2(0.5);  //from [0,1] to [-0.5,0.5]
-    if (length(coord) > 0.5) {               //outside of circle radius?
-        discard;
-    }
+//    vec2 coord = gl_PointCoord - vec2(0.5);  //from [0,1] to [-0.5,0.5]
+//    if (length(coord) > 0.5) {               //outside of circle radius?
+//        discard;
+//    }
 
-    vec3 ambient = lightIntensity * ka;
+//    vec3 ambient = lightIntensity * ka;
 
-    vec3 result = color * (ambient + dsModel(position, normalize(normal)));
+//    vec3 result = color * (ambient + dsModel(position, normalize(normal)));
 
-    fragColor = vec4(result, 1.0);
+//    fragColor = vec4(result, 1.0);
+
+//    fragColor = vec4(0,1,0, 1.0);
 }

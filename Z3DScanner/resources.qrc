@@ -15,5 +15,6 @@
         <file>qml/settings/ZDoubleSpinBox.qml</file>
         <file>qml/settings/ZSettingsItemDelegate.qml</file>
         <file>qml/settings/ZSettingsListView.qml</file>
+        <file>qml/DefaultCameraController.qml</file>
     </qresource>
 </RCC>

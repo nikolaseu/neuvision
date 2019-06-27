@@ -40,10 +40,8 @@ ApplicationWindow {
                     aspectRatio: scene3d.width/scene3d.height
                 }
 
-                OrbitCameraController {
+                DefaultCameraController {
                     camera: mainCamera
-                    linearSpeed: 0 // don't let the camera move!
-                    lookSpeed: 200
                 }
 
                 components: [

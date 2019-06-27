@@ -1,7 +1,7 @@
-import Qt3D.Core 2.0 as Q3D
-import Qt3D.Extras 2.0
-import Qt3D.Input 2.0
-import Qt3D.Render 2.0
+import Qt3D.Core 2.13 as Q3D
+import Qt3D.Extras 2.13
+import Qt3D.Input 2.13
+import Qt3D.Render 2.13
 
 import QtQuick 2.10
 import QtQuick.Controls 2.3
@@ -99,12 +99,14 @@ ApplicationWindow {
                     camera: mainCamera
                 }
 
+                // Render from the mainCamera
                 components: [
                     RenderSettings {
                         id: renderSettings
-                        activeFrameGraph: PointCloudFrameGraph {
+                        activeFrameGraph: ForwardRenderer {
                             id: renderer
                             camera: mainCamera
+                            clearColor: window.color
                         }
                     },
                     InputSettings {
@@ -113,16 +115,8 @@ ApplicationWindow {
                     }
                 ]
 
-                BackgroundEntity {
-                    id: background
-                    layer: renderSettings.activeFrameGraph.backgroundLayer
-                    colorTop: window.color//Qt.rgba(0.4, 0.4, 0.4, 1)
-                    colorBottom: window.color//Qt.rgba(0.8, 0.8, 0.8, 1)
-                }
-
                 PointCloudEntity {
                     id: pointCloud
-                    layer: renderSettings.activeFrameGraph.pointsLayer
                     pointCloud: pointCloudReader.pointCloud
 
                     pointSize: pointSizeSlider.value

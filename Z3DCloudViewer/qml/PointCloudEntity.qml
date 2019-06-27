@@ -1,6 +1,6 @@
-import Qt3D.Core 2.0
-import Qt3D.Render 2.0
-import Qt3D.Extras 2.0
+import Qt3D.Core 2.13
+import Qt3D.Render 2.13
+import Qt3D.Extras 2.13
 
 import Z3D.PointCloud 1.0
 
@@ -8,7 +8,6 @@ Entity {
     id: root
 
     property alias pointCloud: pointCloudGeometry.pointCloud
-    property Layer layer: null
     property Transform transform: Transform {}
 
     property real pointSize: 2
@@ -31,21 +30,48 @@ Entity {
     Material {
         id: material
 
-        effect: PointCloudEffect {
+        effect: Effect {
             parameters: [
                 Parameter { name: "ka"; value: Qt.vector3d(root.ambient, root.ambient, root.ambient) },
                 Parameter { name: "kd"; value: Qt.vector3d(root.diffuse, root.diffuse, root.diffuse) },
                 Parameter { name: "ks"; value: Qt.vector3d(root.specular, root.specular, root.specular) },
-                Parameter { name: "shininess"; value: shininess },
+                Parameter { name: "shininess"; value: root.shininess },
                 Parameter { name: "lightPosition";  value: root.lightPosition },
                 Parameter { name: "lightIntensity"; value: root.lightIntensity },
                 Parameter { name: "pointSize"; value: root.pointSize }
             ]
+
+            techniques: Technique {
+                filterKeys: [
+                    FilterKey { name: "renderingStyle"; value: "forward" }
+                ]
+
+                graphicsApiFilter {
+                    api: GraphicsApiFilter.OpenGL
+                    profile: GraphicsApiFilter.CoreProfile
+                    majorVersion: 3
+                    minorVersion: 2
+                }
+
+                renderPasses: [
+                    RenderPass {
+                        shaderProgram: ShaderProgram {
+                            id: pointCloudShaderProgram
+                            vertexShaderCode: loadSource("qrc:/shaders/pointcloud.vert")
+                            fragmentShaderCode: loadSource("qrc:/shaders/pointcloud.frag")
+                            geometryShaderCode: loadSource("qrc:/shaders/pointcloud.geom")
+                        }
+                        renderStates: [
+                            PointSize { sizeMode: PointSize.Programmable }, //supported since OpenGL 3.2
+                            DepthTest { depthFunction: DepthTest.LessOrEqual }
+                        ]
+                    }
+                ]
+            }
         }
     }
 
     components: [
-        layer,
         pointCloudMesh,
         material,
         transform
