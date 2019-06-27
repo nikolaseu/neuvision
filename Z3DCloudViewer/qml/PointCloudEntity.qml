@@ -1,6 +1,6 @@
-import Qt3D.Core 2.13
-import Qt3D.Render 2.13
-import Qt3D.Extras 2.13
+import Qt3D.Core 2.12
+import Qt3D.Render 2.12
+import Qt3D.Extras 2.12
 
 import Z3D.PointCloud 1.0
 
@@ -62,8 +62,8 @@ Entity {
                             geometryShaderCode: loadSource("qrc:/shaders/pointcloud.geom")
                         }
                         renderStates: [
-                            PointSize { sizeMode: PointSize.Programmable }, //supported since OpenGL 3.2
-                            DepthTest { depthFunction: DepthTest.LessOrEqual }
+                            DepthTest { depthFunction: DepthTest.Less },
+                            CullFace { mode: CullFace.NoCulling }
                         ]
                     }
                 ]

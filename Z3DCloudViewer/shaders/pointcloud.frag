@@ -1,58 +1,27 @@
-#version 150 core
+#version 330
 
-uniform mat4 viewMatrix;
-
-uniform vec3 lightPosition;
-uniform vec3 lightIntensity;
-
-uniform vec3 ka;            // Ambient reflectivity
-uniform vec3 kd;            // Diffuse reflectivity
-uniform vec3 ks;            // Specular reflectivity
-uniform float shininess;    // Specular shininess factor
-
-in vec3 position;
-in vec3 normal;
-in vec3 color;
-
-out vec4 fragColor;
-
-vec3 dsModel(const in vec3 pos, const in vec3 n)
+in FragmentData
 {
-    // Calculate the vector from the light to the fragment
-    vec3 s = normalize(vec3(viewMatrix * vec4(lightPosition, 1.0)) - pos);
+    vec2 texcoord;
+    vec3 color;
+} FragmentIn;
 
-    // Calculate the vector from the fragment to the eye position
-    // (origin since this is in "eye" or "camera" space)
-    vec3 v = normalize(-pos);
-
-    // Reflect the light beam using the normal at this fragment
-    vec3 r = reflect(-s, n);
-
-    // Calculate the diffuse component
-    float diffuse = max(dot(s, n), 0.0);
-
-    // Calculate the specular component
-    float specular = 0.0;
-    if (dot(s, n) > 0.0) {
-        specular = pow(max(dot(r, v), 0.0), shininess);
-    }
-
-    // Combine the diffuse and specular contributions (ambient is taken into account by the caller)
-    return lightIntensity * (kd * diffuse + ks * specular);
-}
+out vec4 fragmentColor;
 
 void main()
 {
-//    vec2 coord = gl_PointCoord - vec2(0.5);  //from [0,1] to [-0.5,0.5]
-//    if (length(coord) > 0.5) {               //outside of circle radius?
-//        discard;
-//    }
+    // Splat code taken with modifications from http://www.mbroecker.com/research_pbr.html
+    // calculate whether this fragment is inside or outside the splat circle
+    // tex coords from -1.0 to 1.0
+    if (pow(FragmentIn.texcoord.x, 2.0) + pow(FragmentIn.texcoord.y, 2.0) > 1.0) {
+        discard;
+    }
 
+    // FAST
+    fragmentColor = vec4(FragmentIn.color, 1.0);
+
+    // SLOW! we compute the shaded color in the geometry shader, only once per point
 //    vec3 ambient = lightIntensity * ka;
-
-//    vec3 result = color * (ambient + dsModel(position, normalize(normal)));
-
-//    fragColor = vec4(result, 1.0);
-
-//    fragColor = vec4(0,1,0, 1.0);
+//    vec3 result = FragmentIn.color * (ambient + dsModel(FragmentIn.position, normalize(FragmentIn.normal)));
+//    fragmentColor = vec4(result, 1.0);
 }
