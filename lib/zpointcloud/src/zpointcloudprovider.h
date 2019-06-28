@@ -24,6 +24,15 @@
 
 #include <QMap>
 
+//! TODO: This is ugly, find a better way to do this
+#define Z3D_ZPOINTCLOUD_INIT() \
+    Z3D::ZPointCloudProvider::registerMetaTypes(); \
+    Z3D::ZPointCloudProvider::loadPlugins()
+
+//! TODO: This is ugly, find a better way to do this
+#define Z3D_ZPOINTCLOUD_INIT_QMLENGINE(engine) \
+    engine.addImportPath("qrc:/")
+
 namespace Z3D
 {
 
@@ -33,6 +42,8 @@ class Z3D_ZPOINTCLOUD_SHARED_EXPORT ZPointCloudProvider
 {
 
 public:
+    static void registerMetaTypes();
+
     static void loadPlugins();
     static void unloadPlugins();
 

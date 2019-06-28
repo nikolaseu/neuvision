@@ -9,7 +9,7 @@
 //layout(location = 2) in vec4 vertexNormal;
 
 in vec3 vertexPosition;
-in vec3 vertexNormal;
+in vec4 vertexNormal;
 in vec3 vertexColor;
 
 out VertexData
@@ -20,8 +20,6 @@ out VertexData
     float radius;
 } vertexOut;
 
-uniform float pointSize;
-
 void main()
 {
     gl_Position = vec4(vertexPosition, 1.0);
@@ -29,5 +27,10 @@ void main()
     vertexOut.position = vertexPosition;
     vertexOut.color = vertexColor;
     vertexOut.normal = vertexNormal.xyz;
-    vertexOut.radius = 0.1 * pointSize;//vertexNormal.w;
+    vertexOut.radius = 0.1;//vertexNormal.w; // if we want to send normal.w for radius of splat
+
+    // if we don't have normals, force 0,0,1
+    if (dot(vertexOut.normal, vertexOut.normal) < 0.001) {
+        vertexOut.normal = vec3(0,0,1);
+    }
 }

@@ -11,7 +11,7 @@ import QtQuick.Scene3D 2.0
 
 import Qt.labs.settings 1.0
 
-import Z3D.PointCloud 1.0
+import Z3D.ZPointCloud 1.0
 
 ApplicationWindow {
     id: window
@@ -20,7 +20,7 @@ ApplicationWindow {
     height: 800
     visible: true
 
-    color: Qt.rgba(0.8, 0.8, 0.8, 1)
+    color: "#ddd"
 
     property int maxRecentFiles: 20
     property string lastOpenedFile
@@ -32,15 +32,18 @@ ApplicationWindow {
             return;
         }
 
-        if (recentFiles.indexOf(lastOpenedFile) < 0) {
+        const fileIndex = recentFiles.indexOf(lastOpenedFile);
+        if (fileIndex < 0) {
             console.log("adding lastOpenedFile:", lastOpenedFile, "because it's not in the recent files list:", recentFiles)
-            // it's not in the recent files list, add it
-            // have to concat and reassign to make sure it's saved in settings :(
-            recentFiles = [lastOpenedFile].concat(recentFiles);
+            // it's not in the recent files list, we'll just add it
         }
         else {
-            // TODO make sure it's the first in the list of recent files
+            // remove it from where it was, we'll add it to the beginning later
+            recentFiles.splice(fileIndex, 1);
         }
+        // add it to the front
+        // have to concat and reassign to make sure it's saved in settings :(
+        recentFiles = [lastOpenedFile].concat(recentFiles);
     }
 
     onRecentFilesChanged: {
@@ -99,7 +102,6 @@ ApplicationWindow {
                     camera: mainCamera
                 }
 
-                // Render from the mainCamera
                 components: [
                     RenderSettings {
                         id: renderSettings
@@ -196,9 +198,10 @@ ApplicationWindow {
                 Slider {
                     id: pointSizeSlider
                     Layout.fillWidth: true
-                    value: 2
+                    value: 1.5
                     from: 1
-                    to: 4
+                    to: 5
+                    stepSize: 0.1
                 }
 
                 Text {

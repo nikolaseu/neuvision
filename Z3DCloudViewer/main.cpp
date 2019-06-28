@@ -42,17 +42,19 @@ int main(int argc, char *argv[])
     /// to print out diagnostic information about each plugin it (Qt) tries to load
     //qputenv("QT_DEBUG_PLUGINS", "1");
 
+    QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling, true);
     QCoreApplication::setAttribute(Qt::AA_UseDesktopOpenGL, true);
 
     Z3D::ZApplication app(argc, argv);
     app.loadPlugins();
     Z3D::ZPointCloudProvider::loadPlugins();
 
-    qmlRegisterUncreatableType<Z3D::ZPointCloud>("Z3D.PointCloud", 1, 0, "PointCloud", "ZPointCloud cannot be created, must be obtained from a PointCloudReader");
-    qmlRegisterType<Z3D::ZPointCloudReader>("Z3D.PointCloud", 1, 0, "PointCloudReader");
-    qmlRegisterType<Z3D::ZPointCloudGeometry>("Z3D.PointCloud", 1, 0, "PointCloudGeometry");
-
     QQmlApplicationEngine engine;
+
+    //! TODO: This is ugly, find a better way to do this
+    Z3D_ZPOINTCLOUD_INIT();
+    Z3D_ZPOINTCLOUD_INIT_QMLENGINE(engine);
+
     engine.load(QUrl(QStringLiteral("qrc:/qml/main.qml")));
 
 #if defined(Q_OS_MACOS)

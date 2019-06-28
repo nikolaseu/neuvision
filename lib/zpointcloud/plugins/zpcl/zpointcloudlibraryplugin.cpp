@@ -29,7 +29,10 @@
 namespace Z3D
 {
 
+namespace // anonymous namespace
+{
 Q_LOGGING_CATEGORY(pclLibraryCategory, "z3d.zpointcloud.plugins.zpcl")
+}
 
 ZPointCloudLibraryPlugin::ZPointCloudLibraryPlugin(QObject *parent)
     : QObject(parent)

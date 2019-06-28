@@ -22,7 +22,7 @@
 
 #include "zpointfield.h"
 
-#include <QDebug>
+#include <QLoggingCategory>
 #include <pcl/PCLPointCloud2.h>
 #include <pcl/PCLPointField.h>
 #include <pcl/common/common.h>
@@ -30,6 +30,11 @@
 
 namespace Z3D
 {
+
+namespace // anonymous namespace
+{
+Q_LOGGING_CATEGORY(loggingCategory, "z3d.zpointcloud.plugins.zpcl.zpointcloudpclwrapper")
+} // anonymous namespace
 
 ZPointField::PointFieldTypes fromPCLDatatype(const pcl::uint8_t &datatype)
 {
@@ -64,7 +69,7 @@ ZPointCloudPCLWrapper::ZPointCloudPCLWrapper(pcl::PCLPointCloud2 *pointCloud)
     : ZPointCloud()
     , m_pointCloud(pointCloud)
 {
-    qDebug() << "creating point cloud with" << width() * height() << "points,"
+    qDebug(loggingCategory) << "creating point cloud with" << width() * height() << "points,"
              << "size:" << data().size() << "bytes";
 
     /// update boundary

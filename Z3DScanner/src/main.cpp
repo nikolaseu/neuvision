@@ -24,8 +24,6 @@
 #include "zcameracalibrationprovider.h"
 #include "zcameraprovider.h"
 #include "zpatternprojectionprovider.h"
-#include "zpointcloud.h"
-#include "zpointcloudgeometry.h"
 #include "zpointcloudprovider.h"
 #include "zstructuredlightsystemprovider.h"
 #include "zsettingsitem.h"
@@ -72,6 +70,8 @@ int main(int argc, char* argv[])
     int result;
 
     {
+        QQmlApplicationEngine engine;
+
         QSplashScreen &splash = *app.showSplashScreen();
 
         splash.showMessage("Loading plugins...");
@@ -100,7 +100,10 @@ int main(int argc, char* argv[])
 
         splash.showMessage("Loading point cloud plugins...");
         app.processEvents();
-        Z3D::ZPointCloudProvider::loadPlugins();
+
+        //! TODO: This is ugly, find a better way to do this
+        Z3D_ZPOINTCLOUD_INIT();
+        Z3D_ZPOINTCLOUD_INIT_QMLENGINE(engine);
 
         /// Load config
         QDir configDir = QDir::current();
@@ -128,11 +131,8 @@ int main(int argc, char* argv[])
         app.processEvents();
 
         qmlRegisterUncreatableType<Z3D::ZSettingsItem>("Z3D.ZSettingsItem", 1, 0, "ZSettingsItem", "ZSettingsItem cannot be created, must be obtained from an object with settings");
-        qmlRegisterUncreatableType<Z3D::ZPointCloud>("Z3D.PointCloud", 1, 0, "PointCloud", "ZPointCloud cannot be created, must be obtained from a PointCloudReader");
-        qmlRegisterType<Z3D::ZPointCloudGeometry>("Z3D.PointCloud", 1, 0, "PointCloudGeometry");
         qRegisterMetaType<Z3D::ZSettingsItemModel*>("Z3D::ZSettingsItemModel*");
 
-        QQmlApplicationEngine engine;
         engine.rootContext()->setContextProperty("scanner", QVariant::fromValue(new ZScannerQML(structuredLightSystem)));
         engine.load(QUrl(QStringLiteral("qrc:/qml/main.qml")));
 

@@ -1,11 +1,5 @@
 <RCC>
     <qresource prefix="/">
-        <file>qml/BasicCamera.qml</file>
-        <file>qml/DefaultCameraController.qml</file>
-        <file>qml/PointCloudEntity.qml</file>
         <file>qml/main.qml</file>
-        <file>shaders/pointcloud.frag</file>
-        <file>shaders/pointcloud.geom</file>
-        <file>shaders/pointcloud.vert</file>
     </qresource>
 </RCC>

@@ -8,7 +8,7 @@ import QtQuick.Controls 2.3
 import QtQuick.Layouts 1.3
 import QtQuick.Scene3D 2.0
 
-import Z3D.PointCloud 1.0
+import Z3D.ZPointCloud 1.0
 import "settings"
 
 ApplicationWindow {
@@ -18,7 +18,7 @@ ApplicationWindow {
     height: 800
     visible: true
 
-    color: Qt.rgba(0.8, 0.8, 0.8, 1)
+    color: "#ddd"
 
     Item {
         anchors.fill: parent
@@ -47,9 +47,10 @@ ApplicationWindow {
                 components: [
                     RenderSettings {
                         id: renderSettings
-                        activeFrameGraph: PointCloudFrameGraph {
+                        activeFrameGraph: ForwardRenderer {
                             id: renderer
                             camera: mainCamera
+                            clearColor: window.color
                         }
                     },
                     InputSettings {
@@ -58,24 +59,15 @@ ApplicationWindow {
                     }
                 ]
 
-                BackgroundEntity {
-                    id: background
-                    layer: renderSettings.activeFrameGraph.backgroundLayer
-                    colorTop: window.color//Qt.rgba(0.4, 0.4, 0.4, 1)
-                    colorBottom: window.color//Qt.rgba(0.8, 0.8, 0.8, 1)
-                }
-
                 PointCloudEntity {
                     id: pointCloud
-                    layer: renderSettings.activeFrameGraph.pointsLayer
-//                    pointCloud: pointCloudReader.pointCloud
 
-                    pointSize: pointSizeSlider.value
-                    lightPosition: mainCamera.position
-                    ambient: ambientSlider.value
-                    diffuse: diffuseSlider.value
-                    specular: specularSlider.value
-                    shininess: shininessSlider.value
+//                    pointSize: pointSizeSlider.value
+//                    lightPosition: mainCamera.position
+//                    ambient: ambientSlider.value
+//                    diffuse: diffuseSlider.value
+//                    specular: specularSlider.value
+//                    shininess: shininessSlider.value
 
                     transform: Q3D.Transform {
                         // center in 0,0,0

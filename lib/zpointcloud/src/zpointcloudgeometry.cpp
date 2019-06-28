@@ -33,7 +33,7 @@ namespace Z3D
 namespace // anonymous namespace
 {
 
-Q_LOGGING_CATEGORY(loggingCategory, "z3d.zpointcloud.zpointcloudgeometry", QtInfoMsg)
+Q_LOGGING_CATEGORY(loggingCategory, "z3d.zpointcloud.zpointcloudgeometry")//, QtInfoMsg)
 
 QByteArray createColorBufferFromBGRA(ZPointCloud *pointCloud, uint colorOffset)
 {
@@ -65,7 +65,7 @@ QByteArray createColorBufferFromBGRA(ZPointCloud *pointCloud, uint colorOffset)
 
 } // anonymous namespace
 
-class QPointCloudGeometryPrivate
+class ZPointCloudGeometryPrivate
 {
 public:
     Qt3DRender::QBuffer *m_vertexBuffer = nullptr;
@@ -77,7 +77,7 @@ public:
 
 ZPointCloudGeometry::ZPointCloudGeometry(Qt3DCore::QNode *parent)
     : Qt3DRender::QGeometry(parent)
-    , m_p(new QPointCloudGeometryPrivate)
+    , m_p(new ZPointCloudGeometryPrivate)
 {
     m_p->m_vertexBuffer = new Qt3DRender::QBuffer(this);
     m_p->m_colorBuffer = new Qt3DRender::QBuffer(this);

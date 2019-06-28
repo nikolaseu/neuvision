@@ -2,7 +2,7 @@ import Qt3D.Core 2.12
 import Qt3D.Render 2.12
 import Qt3D.Extras 2.12
 
-import Z3D.PointCloud 1.0
+import Z3D.ZPointCloud 1.0
 
 Entity {
     id: root
@@ -38,7 +38,7 @@ Entity {
                 Parameter { name: "shininess"; value: root.shininess },
                 Parameter { name: "lightPosition";  value: root.lightPosition },
                 Parameter { name: "lightIntensity"; value: root.lightIntensity },
-                Parameter { name: "pointSize"; value: root.pointSize }
+                Parameter { name: "splatSize"; value: root.pointSize }
             ]
 
             techniques: Technique {
@@ -57,9 +57,9 @@ Entity {
                     RenderPass {
                         shaderProgram: ShaderProgram {
                             id: pointCloudShaderProgram
-                            vertexShaderCode: loadSource("qrc:/shaders/pointcloud.vert")
-                            fragmentShaderCode: loadSource("qrc:/shaders/pointcloud.frag")
-                            geometryShaderCode: loadSource("qrc:/shaders/pointcloud.geom")
+                            vertexShaderCode: loadSource("qrc:/Z3D/ZPointCloud/shaders/pointcloud.vert")
+                            fragmentShaderCode: loadSource("qrc:/Z3D/ZPointCloud/shaders/pointcloud.frag")
+                            geometryShaderCode: loadSource("qrc:/Z3D/ZPointCloud/shaders/pointcloud.geom")
                         }
                         renderStates: [
                             DepthTest { depthFunction: DepthTest.Less },
