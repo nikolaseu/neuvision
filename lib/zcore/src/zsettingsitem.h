@@ -1,9 +1,9 @@
 #pragma once
 
-#include "qqmlobjectlistmodel.h"
 #include "zcore_fwd.h"
 #include "zcore_global.h"
 
+#include <QAbstractListModel>
 #include <QObject>
 #include <QVariant>
 
@@ -75,18 +75,21 @@ private:
     bool m_writable = true;
 };
 
-class Z3D_CORE_SHARED_EXPORT ZSettingsItemModel : public QQmlObjectListModel<ZSettingsItem>
+class ZSettingsItemModelPrivate;
+class Z3D_CORE_SHARED_EXPORT ZSettingsItemModel : public QAbstractListModel
 {
     Q_OBJECT
 
 public:
-    explicit ZSettingsItemModel(const std::vector<ZSettingsItemPtr> settings, QObject *parent = nullptr)
-        : QQmlObjectListModel<ZSettingsItem>(parent)
-    {
-        for (ZSettingsItemPtr setting : settings) {
-            append(setting.get());
-        }
-    }
+    explicit ZSettingsItemModel(const std::vector<ZSettingsItemPtr> settings, QObject *parent = nullptr);
+
+    // QAbstractItemModel interface
+    int rowCount(const QModelIndex &parent) const override;
+    QVariant data(const QModelIndex &index, int role) const override;
+    QHash<int, QByteArray> roleNames() const override;
+
+private:
+    const ZSettingsItemModelPrivate *m_p;
 };
 
 template<typename ValueType>
