@@ -1,6 +1,6 @@
 #include "zsettingsitem.h"
 
-#include "qqmlobjectlistmodel.h"
+#include "QQmlObjectListModel.h"
 
 namespace Z3D
 {

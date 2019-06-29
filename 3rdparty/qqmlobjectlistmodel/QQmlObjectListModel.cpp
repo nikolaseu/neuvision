@@ -1,5 +1,5 @@
 
-#include "qqmlobjectlistmodel.h"
+#include "QQmlObjectListModel.h"
 
 /*!
     \class QQmlObjectListModel

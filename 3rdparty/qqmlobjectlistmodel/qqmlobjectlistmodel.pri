@@ -1,3 +1,8 @@
 INCLUDEPATH *= $$PWD/
-HEADERS += $$PWD/qqmlobjectlistmodel.h
-SOURCES += $$PWD/qqmlobjectlistmodel.cpp
+HEADERS += \
+    $$PWD/QQmlObjectListModel.h
+SOURCES += \
+    $$PWD/QQmlObjectListModel.cpp
+
+DISTFILES += \
+    $$PWD/README.md
