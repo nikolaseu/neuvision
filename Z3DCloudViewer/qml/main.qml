@@ -128,6 +128,11 @@ ApplicationWindow {
                     specular: specularSlider.value
                     shininess: shininessSlider.value
 
+                    showColors: showColorsSwitch.checked
+                    defaultColor: colorChooser.color
+
+                    hasNormals: true
+
                     transform: Q3D.Transform {
                         // center in 0,0,0
                         translation: Qt.vector3d(-pointCloud.pointCloud.center.x, -pointCloud.pointCloud.center.y, -pointCloud.pointCloud.center.z)
@@ -189,6 +194,46 @@ ApplicationWindow {
 
                 Item {
                     height: 16
+                }
+
+                SwitchDelegate {
+                    id: showColorsSwitch
+                    Layout.fillWidth: true
+                    checked: false
+                    text: qsTr("Show object colors")
+                }
+
+                CheckDelegate {
+                    id: colorChooser
+                    Layout.fillWidth: true
+                    text: qsTr("Color")
+                    enabled: !showColorsSwitch.checked
+                    checkable: false
+
+                    property color color: "#666"
+
+                    onClicked: {
+                        colorDialog.color = color
+                        colorDialog.open();
+                    }
+
+                    indicator: Rectangle {
+                        implicitWidth: 26
+                        implicitHeight: 26
+                        x: colorChooser.width - width - colorChooser.rightPadding
+                        y: colorChooser.topPadding + colorChooser.availableHeight / 2 - height / 2
+                        color: colorChooser.color
+                        border.width: 1
+                        border.color: Qt.darker(colorChooser.color, 1.2)
+                    }
+
+                    ColorDialog {
+                        id: colorDialog
+                        modality: Qt.ApplicationModal
+                        onAccepted: {
+                            colorChooser.color = colorDialog.color;
+                        }
+                    }
                 }
 
                 Text {

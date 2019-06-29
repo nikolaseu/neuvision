@@ -18,6 +18,11 @@ Entity {
     property real specular: 0.1
     property real shininess: 25.0
 
+    property bool showColors: false
+    property color defaultColor: Qt.rgba(0.5, 0.5, 0.5, 1.0)
+
+    property bool hasNormals: false
+
     GeometryRenderer {
         id: pointCloudMesh
 
@@ -38,7 +43,10 @@ Entity {
                 Parameter { name: "shininess"; value: root.shininess },
                 Parameter { name: "lightPosition";  value: root.lightPosition },
                 Parameter { name: "lightIntensity"; value: root.lightIntensity },
-                Parameter { name: "splatSize"; value: root.pointSize }
+                Parameter { name: "splatSize"; value: root.pointSize },
+                Parameter { name: "hasColors"; value: root.showColors },
+                Parameter { name: "defaultColor"; value: Qt.vector3d(root.defaultColor.r, root.defaultColor.g, root.defaultColor.b) },
+                Parameter { name: "hasNormals"; value: root.hasNormals }
             ]
 
             techniques: Technique {

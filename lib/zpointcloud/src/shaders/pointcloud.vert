@@ -12,6 +12,11 @@ in vec3 vertexPosition;
 in vec4 vertexNormal;
 in vec3 vertexColor;
 
+uniform bool hasColors = false;
+uniform vec3 defaultColor = vec3(0.5, 0.5, 0.5);
+
+uniform bool hasNormals = false;
+
 out VertexData
 {
     vec3 position;
@@ -25,12 +30,7 @@ void main()
     gl_Position = vec4(vertexPosition, 1.0);
 
     vertexOut.position = vertexPosition;
-    vertexOut.color = vertexColor;
-    vertexOut.normal = vertexNormal.xyz;
+    vertexOut.color = hasColors ? vertexColor : defaultColor;
+    vertexOut.normal = hasNormals ? vertexNormal.xyz : vec3(0.0,0.0,1.0);
     vertexOut.radius = 0.1;//vertexNormal.w; // if we want to send normal.w for radius of splat
-
-    // if we don't have normals, force 0,0,1
-    if (dot(vertexOut.normal, vertexOut.normal) < 0.001) {
-        vertexOut.normal = vec3(0,0,1);
-    }
 }
