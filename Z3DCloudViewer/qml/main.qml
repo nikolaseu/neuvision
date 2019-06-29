@@ -1,7 +1,7 @@
-import Qt3D.Core 2.0 as Q3D
-import Qt3D.Extras 2.0
-import Qt3D.Input 2.0
-import Qt3D.Render 2.0
+import Qt3D.Core 2.12 as Q3D
+import Qt3D.Extras 2.12
+import Qt3D.Input 2.12
+import Qt3D.Render 2.12
 
 import QtQuick 2.10
 import QtQuick.Controls 2.3
@@ -11,7 +11,7 @@ import QtQuick.Scene3D 2.0
 
 import Qt.labs.settings 1.0
 
-import Z3D.PointCloud 1.0
+import Z3D.ZPointCloud 1.0
 
 ApplicationWindow {
     id: window
@@ -20,7 +20,7 @@ ApplicationWindow {
     height: 800
     visible: true
 
-    color: Qt.rgba(0.8, 0.8, 0.8, 1)
+    color: "#ddd"
 
     property int maxRecentFiles: 20
     property string lastOpenedFile
@@ -32,15 +32,18 @@ ApplicationWindow {
             return;
         }
 
-        if (recentFiles.indexOf(lastOpenedFile) < 0) {
+        const fileIndex = recentFiles.indexOf(lastOpenedFile);
+        if (fileIndex < 0) {
             console.log("adding lastOpenedFile:", lastOpenedFile, "because it's not in the recent files list:", recentFiles)
-            // it's not in the recent files list, add it
-            // have to concat and reassign to make sure it's saved in settings :(
-            recentFiles = [lastOpenedFile].concat(recentFiles);
+            // it's not in the recent files list, we'll just add it
         }
         else {
-            // TODO make sure it's the first in the list of recent files
+            // remove it from where it was, we'll add it to the beginning later
+            recentFiles.splice(fileIndex, 1);
         }
+        // add it to the front
+        // have to concat and reassign to make sure it's saved in settings :(
+        recentFiles = [lastOpenedFile].concat(recentFiles);
     }
 
     onRecentFilesChanged: {
@@ -102,9 +105,10 @@ ApplicationWindow {
                 components: [
                     RenderSettings {
                         id: renderSettings
-                        activeFrameGraph: PointCloudFrameGraph {
+                        activeFrameGraph: ForwardRenderer {
                             id: renderer
                             camera: mainCamera
+                            clearColor: window.color
                         }
                     },
                     InputSettings {
@@ -113,16 +117,8 @@ ApplicationWindow {
                     }
                 ]
 
-                BackgroundEntity {
-                    id: background
-                    layer: renderSettings.activeFrameGraph.backgroundLayer
-                    colorTop: window.color//Qt.rgba(0.4, 0.4, 0.4, 1)
-                    colorBottom: window.color//Qt.rgba(0.8, 0.8, 0.8, 1)
-                }
-
                 PointCloudEntity {
                     id: pointCloud
-                    layer: renderSettings.activeFrameGraph.pointsLayer
                     pointCloud: pointCloudReader.pointCloud
 
                     pointSize: pointSizeSlider.value
@@ -131,6 +127,11 @@ ApplicationWindow {
                     diffuse: diffuseSlider.value
                     specular: specularSlider.value
                     shininess: shininessSlider.value
+
+                    showColors: showColorsSwitch.checked
+                    defaultColor: colorChooser.color
+
+                    hasNormals: true
 
                     transform: Q3D.Transform {
                         // center in 0,0,0
@@ -195,6 +196,46 @@ ApplicationWindow {
                     height: 16
                 }
 
+                SwitchDelegate {
+                    id: showColorsSwitch
+                    Layout.fillWidth: true
+                    checked: false
+                    text: qsTr("Show object colors")
+                }
+
+                CheckDelegate {
+                    id: colorChooser
+                    Layout.fillWidth: true
+                    text: qsTr("Color")
+                    enabled: !showColorsSwitch.checked
+                    checkable: false
+
+                    property color color: "#666"
+
+                    onClicked: {
+                        colorDialog.color = color
+                        colorDialog.open();
+                    }
+
+                    indicator: Rectangle {
+                        implicitWidth: 26
+                        implicitHeight: 26
+                        x: colorChooser.width - width - colorChooser.rightPadding
+                        y: colorChooser.topPadding + colorChooser.availableHeight / 2 - height / 2
+                        color: colorChooser.color
+                        border.width: 1
+                        border.color: Qt.darker(colorChooser.color, 1.2)
+                    }
+
+                    ColorDialog {
+                        id: colorDialog
+                        modality: Qt.ApplicationModal
+                        onAccepted: {
+                            colorChooser.color = colorDialog.color;
+                        }
+                    }
+                }
+
                 Text {
                     text: qsTr("Point size")
                 }
@@ -202,9 +243,10 @@ ApplicationWindow {
                 Slider {
                     id: pointSizeSlider
                     Layout.fillWidth: true
-                    value: 2
+                    value: 1.5
                     from: 1
-                    to: 4
+                    to: 5
+                    stepSize: 0.1
                 }
 
                 Text {

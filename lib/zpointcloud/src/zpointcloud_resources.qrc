@@ -1,0 +1,11 @@
+<RCC>
+    <qresource prefix="/Z3D/ZPointCloud">
+        <file alias="BasicCamera.qml">qml/BasicCamera.qml</file>
+        <file alias="DefaultCameraController.qml">qml/DefaultCameraController.qml</file>
+        <file alias="PointCloudEntity.qml">qml/PointCloudEntity.qml</file>
+        <file>shaders/pointcloud.frag</file>
+        <file>shaders/pointcloud.geom</file>
+        <file>shaders/pointcloud.vert</file>
+        <file alias="qmldir">qml/qmldir</file>
+    </qresource>
+</RCC>

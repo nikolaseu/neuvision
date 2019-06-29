@@ -1,16 +1,5 @@
 <RCC>
     <qresource prefix="/">
-        <file>qml/BackgroundEffect.qml</file>
-        <file>qml/BackgroundEntity.qml</file>
-        <file>qml/BasicCamera.qml</file>
-        <file>qml/DefaultCameraController.qml</file>
-        <file>qml/PointCloudEffect.qml</file>
-        <file>qml/PointCloudEntity.qml</file>
-        <file>qml/PointCloudFrameGraph.qml</file>
         <file>qml/main.qml</file>
-        <file>shaders/background.frag</file>
-        <file>shaders/background.vert</file>
-        <file>shaders/pointcloud.frag</file>
-        <file>shaders/pointcloud.vert</file>
     </qresource>
 </RCC>

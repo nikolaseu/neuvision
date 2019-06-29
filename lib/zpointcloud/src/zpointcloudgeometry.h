@@ -27,7 +27,7 @@ namespace Z3D
 {
 
 class ZPointCloud;
-class QPointCloudGeometryPrivate;
+class ZPointCloudGeometryPrivate;
 
 class Z3D_ZPOINTCLOUD_SHARED_EXPORT ZPointCloudGeometry : public Qt3DRender::QGeometry
 {
@@ -52,7 +52,7 @@ private slots:
     void updateAttributes();
 
 private:
-    QPointCloudGeometryPrivate *m_p;
+    ZPointCloudGeometryPrivate *m_p;
 };
 
 } // namespace Z3D

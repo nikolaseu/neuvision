@@ -48,11 +48,11 @@ install: # scripts that run after cloning repository
 build_script:
   - cd build
   - call "C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Auxiliary\Build\vcvarsall.bat" x86_amd64
-  - call "C:\Qt\5.11\msvc2017_64\bin\qmake.exe" ..\neuvision.pro -spec win32-msvc
+  - call "C:\Qt\5.12\msvc2017_64\bin\qmake.exe" ..\neuvision.pro -spec win32-msvc
   - nmake
 after_build:
   - cd %APPVEYOR_BUILD_FOLDER%/bin/release5
-  - call "C:\Qt\5.11\msvc2017_64\bin\windeployqt.exe" -concurrent -multimedia -multimediawidgets --qmldir ./../../Z3DScanner/qml/ --qmldir ./../../Z3DCloudViewer/qml/ ./Z3DScanner.exe
+  - call "C:\Qt\5.12\msvc2017_64\bin\windeployqt.exe" -concurrent -multimedia -multimediawidgets --qmldir ./../../Z3DScanner/qml/ --qmldir ./../../Z3DCloudViewer/qml/ ./Z3DScanner.exe
   - cp "C:/Tools/vcpkg/installed/x64-windows/bin"/*.dll . # copy dependencies
   - del /s /q *.lib # remove unnecessary lib files
   - del /s /q *.exp # remove unnecessary exp files

@@ -22,11 +22,15 @@
 
 #include "zcoreplugin.h"
 #include "zpluginloader.h"
+#include "zpointcloud.h"
+#include "zpointcloudgeometry.h"
 #include "zpointcloudplugininterface.h"
+#include "zpointcloudreader.h"
 
 #include <QDebug>
 #include <QDir>
 #include <QLoggingCategory>
+#include <QQmlEngine>
 
 namespace Z3D
 {
@@ -39,6 +43,13 @@ Q_LOGGING_CATEGORY(loggingCategory, "z3d.zpointcloud.zpointcloudprovider", QtInf
 } // anonymous namespace
 
 QMap< QString, ZPointCloudPluginInterface *> ZPointCloudProvider::m_plugins;
+
+void ZPointCloudProvider::registerMetaTypes()
+{
+    qmlRegisterUncreatableType<Z3D::ZPointCloud>("Z3D.ZPointCloud", 1, 0, "PointCloud", "ZPointCloud cannot be created, must be obtained from a PointCloudReader");
+    qmlRegisterType<Z3D::ZPointCloudReader>("Z3D.ZPointCloud", 1, 0, "PointCloudReader");
+    qmlRegisterType<Z3D::ZPointCloudGeometry>("Z3D.ZPointCloud", 1, 0, "PointCloudGeometry");
+}
 
 void ZPointCloudProvider::loadPlugins()
 {
