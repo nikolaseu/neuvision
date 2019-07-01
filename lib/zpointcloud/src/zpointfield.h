@@ -26,9 +26,9 @@
 namespace Z3D
 {
 
-class Z3D_ZPOINTCLOUD_SHARED_EXPORT ZPointField : public QObject
+class Z3D_ZPOINTCLOUD_SHARED_EXPORT ZPointField
 {
-    Q_OBJECT
+    Q_GADGET
 
     Q_PROPERTY(QString name READ name CONSTANT)
     Q_PROPERTY(unsigned int offset READ offset CONSTANT)
@@ -48,7 +48,11 @@ public:
     };
     Q_ENUM(PointFieldTypes)
 
-    explicit ZPointField(QString name, unsigned int offset, PointFieldTypes type, unsigned int count, QObject *parent = nullptr);
+    explicit ZPointField(QString name,
+                         unsigned int offset,
+                         PointFieldTypes type,
+                         unsigned int count);
+    virtual ~ZPointField();
 
     QString name() const;
     unsigned int offset() const;
@@ -63,3 +67,5 @@ private:
 };
 
 } // namespace Z3D
+
+QDebug operator<<(QDebug debug, const Z3D::ZPointField *pointField);

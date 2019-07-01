@@ -22,7 +22,7 @@
 #include "zpointcloud.h"
 #include "zpointcloudgeometry.h"
 #include "zpointcloudprovider.h"
-#include "zpointcloudreader.h"
+#include "zpointcloudviewercontroller.h"
 
 #if defined(Q_OS_MACOS)
 #include "zosxutils.h" // just to hide title bar in OSX
@@ -35,7 +35,7 @@
 int main(int argc, char *argv[])
 {
     QSurfaceFormat glFormat;
-    glFormat.setVersion(3, 2);
+    glFormat.setVersion(3, 3);
     glFormat.setProfile(QSurfaceFormat::CoreProfile);
     QSurfaceFormat::setDefaultFormat(glFormat);
 
@@ -54,6 +54,8 @@ int main(int argc, char *argv[])
     //! TODO: This is ugly, find a better way to do this
     Z3D_ZPOINTCLOUD_INIT();
     Z3D_ZPOINTCLOUD_INIT_QMLENGINE(engine);
+
+    qmlRegisterType<Z3D::ZPointCloudViewerController>("Z3D.ZPointCloudViewer", 1, 0, "ZPointCloudViewerController");
 
     engine.load(QUrl(QStringLiteral("qrc:/qml/main.qml")));
 

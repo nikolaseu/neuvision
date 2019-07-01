@@ -43,7 +43,7 @@ class Z3D_ZPOINTCLOUD_SHARED_EXPORT ZPointCloud : public QObject
 
 public:
     explicit ZPointCloud(QObject *parent = nullptr);
-    virtual ~ZPointCloud();
+    virtual ~ZPointCloud() override;
 
     virtual void updateAttributes() = 0;
 
@@ -54,6 +54,7 @@ public:
     virtual unsigned int rowStep() const = 0;
     virtual QByteArray data() const = 0;
 
+    //! IMPORTANT: returns a reference, subclasses must not return temporaries!
     virtual const std::vector<ZPointField *> &fields() const = 0;
 
     virtual QVector3D minimum() const = 0;

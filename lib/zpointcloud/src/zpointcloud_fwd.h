@@ -7,6 +7,6 @@ namespace Z3D
 
 class ZPointCloud;
 
-typedef std::shared_ptr<Z3D::ZPointCloud> ZPointCloudPtr;
+using ZPointCloudPtr = std::shared_ptr<Z3D::ZPointCloud>;
 
 } // namespace Z3D

@@ -7,5 +7,7 @@
         <file>shaders/pointcloud.geom</file>
         <file>shaders/pointcloud.vert</file>
         <file alias="qmldir">qml/qmldir</file>
+        <file>shaders/pointcloud_basic.frag</file>
+        <file>shaders/pointcloud_basic.vert</file>
     </qresource>
 </RCC>

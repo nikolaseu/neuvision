@@ -34,7 +34,6 @@ namespace Z3D
 namespace // anonymous namespace
 {
 Q_LOGGING_CATEGORY(loggingCategory, "z3d.zpointcloud.plugins.zpcl.zpointcloudpclwrapper")
-} // anonymous namespace
 
 ZPointField::PointFieldTypes fromPCLDatatype(const pcl::uint8_t &datatype)
 {
@@ -60,10 +59,12 @@ ZPointField::PointFieldTypes fromPCLDatatype(const pcl::uint8_t &datatype)
     return ZPointField::INT8;
 }
 
-ZPointField *fromPclPointField(pcl::PCLPointField *field, QObject *parent = nullptr)
+ZPointField *fromPclPointField(pcl::PCLPointField *field)
 {
-    return new ZPointField(field->name.c_str(), field->offset, fromPCLDatatype(field->datatype), field->count, parent);
+    return new ZPointField(field->name.c_str(), field->offset, fromPCLDatatype(field->datatype), field->count);
 }
+
+} // anonymous namespace
 
 ZPointCloudPCLWrapper::ZPointCloudPCLWrapper(pcl::PCLPointCloud2 *pointCloud)
     : ZPointCloud()
@@ -87,11 +88,18 @@ ZPointCloudPCLWrapper::ZPointCloudPCLWrapper(pcl::PCLPointCloud2 *pointCloud)
 
 ZPointCloudPCLWrapper::~ZPointCloudPCLWrapper()
 {
+    qDebug(loggingCategory) << "destroying" << this;
     delete m_pointCloud;
+    for (auto field : m_fields) {
+        delete field;
+    }
 }
 
 void ZPointCloudPCLWrapper::updateAttributes()
 {
+    for (auto field : m_fields) {
+        delete field;
+    }
     m_fields.clear();
     m_fields.reserve(m_pointCloud->fields.size());
     for (pcl::PCLPointField &pf : m_pointCloud->fields) {
@@ -121,13 +129,11 @@ unsigned int ZPointCloudPCLWrapper::rowStep() const
 
 QByteArray ZPointCloudPCLWrapper::data() const
 {
-    // return QByteArray(reinterpret_cast<char*>(&m_pointcloud->data[0]), int(m_pointcloud->data.size()));
-
     /// do not copy data, but we need to be careful!
     return QByteArray::fromRawData(reinterpret_cast<const char*>(&m_pointCloud->data[0]), int(m_pointCloud->data.size()));
 }
 
-const std::vector<ZPointField *> &ZPointCloudPCLWrapper::fields() const
+const std::vector<ZPointField*> &ZPointCloudPCLWrapper::fields() const
 {
     return m_fields;
 }

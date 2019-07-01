@@ -8,8 +8,8 @@ namespace Z3D
 
 class ZCalibratedCamera;
 
-typedef std::shared_ptr<Z3D::ZCalibratedCamera> ZCalibratedCameraPtr;
-typedef QPointer<Z3D::ZCalibratedCamera> ZCalibratedCameraWeakPtr;
+using ZCalibratedCameraPtr = std::shared_ptr<Z3D::ZCalibratedCamera>;
+using ZCalibratedCameraWeakPtr = QPointer<Z3D::ZCalibratedCamera>;
 
 } // namespace Z3D
 

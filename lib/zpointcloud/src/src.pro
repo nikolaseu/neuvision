@@ -13,6 +13,8 @@ HEADERS      += \
     zpointcloud_fwd.h \
     zpointcloud_global.h \
     zpointcloudgeometry.h \
+    zpointcloudlistitem.h \
+    zpointcloudlistmodel.h \
     zpointcloudplugininterface.h \
     zpointcloudprovider.h \
     zpointcloudreader.h \
@@ -21,6 +23,8 @@ HEADERS      += \
 SOURCES      += \
     zpointcloud.cpp \
     zpointcloudgeometry.cpp \
+    zpointcloudlistitem.cpp \
+    zpointcloudlistmodel.cpp \
     zpointcloudplugininterface.cpp \
     zpointcloudprovider.cpp \
     zpointcloudreader.cpp \
@@ -32,3 +36,7 @@ RESOURCES    += \
 ###############################################################################
 # Core
 include($$PWD/../../zcore/zcore.pri)
+
+###############################################################################
+# QQmlObjectListModel
+include($$PWD/../../../3rdparty/qqmlobjectlistmodel/qqmlobjectlistmodel.pri)

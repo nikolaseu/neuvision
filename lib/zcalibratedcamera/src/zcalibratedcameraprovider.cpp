@@ -36,7 +36,7 @@ ZCalibratedCameraProvider::ZCalibratedCameraProvider()
 
 }
 
-QList<ZCalibratedCameraPtr> ZCalibratedCameraProvider::loadCameras(QString folder)
+QList<ZCalibratedCameraPtr> ZCalibratedCameraProvider::loadCameras(const QString &folder)
 {
     auto configDir = QDir(folder);
 

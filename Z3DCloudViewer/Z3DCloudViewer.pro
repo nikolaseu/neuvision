@@ -1,13 +1,19 @@
 include(../NEUVision.pri)
 
-QT += core qml quick opengl 3dinput 3dquick 3drender 3dquickrender
+QT += core concurrent xml qml quick opengl 3dinput 3dquick 3drender 3dquickrender
 DESTDIR = $$Z3D_BUILD_DIR
 TARGET = Z3DCloudViewer
 VERSION = $$Z3D_VERSION
 TEMPLATE = app
 
+HEADERS += \
+    zmeshlabutils.h \
+    zpointcloudviewercontroller.h
+
 SOURCES += \
     main.cpp \
+    zmeshlabutils.cpp \
+    zpointcloudviewercontroller.cpp
 
 RESOURCES += \
     qml.qrc

@@ -33,17 +33,18 @@ Q_LOGGING_CATEGORY(loggingCategory, "z3d.zpointcloud.zpointfield", QtInfoMsg)
 
 } // anonymous namespace
 
-ZPointField::ZPointField(QString name, unsigned int offset, PointFieldTypes type, unsigned int count, QObject *parent)
-    : QObject(parent)
-    , m_name(name)
+ZPointField::ZPointField(QString name, unsigned int offset, PointFieldTypes type, unsigned int count)
+    : m_name(name)
     , m_offset(offset)
     , m_dataType(type)
     , m_count(count)
 {
-    qDebug(loggingCategory) << "creating field" << m_name
-                            << "offset:" << m_offset
-                            << "type:" << m_dataType
-                            << "count:" << m_count;
+    qDebug(loggingCategory) << "creating" << this;
+}
+
+ZPointField::~ZPointField()
+{
+    qDebug(loggingCategory) << "destroying" << this;
 }
 
 QString ZPointField::name() const
@@ -67,3 +68,13 @@ unsigned int ZPointField::count() const
 }
 
 } // namespace Z3D
+
+QDebug operator<< (QDebug debug, const Z3D::ZPointField *pointField) {
+    QDebugStateSaver saver(debug);
+    debug.nospace() << "Z3D::ZPointField(" << (void*)(pointField)
+                    << ") name: " << pointField->name()
+                    << ", offset: " << pointField->offset()
+                    << ", type: " << pointField->dataType()
+                    << ", count: " << pointField->count();
+    return debug;
+}

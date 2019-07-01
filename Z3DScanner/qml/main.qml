@@ -69,6 +69,8 @@ ApplicationWindow {
 //                    specular: specularSlider.value
 //                    shininess: shininessSlider.value
 
+                    showColors: true
+
                     transform: Q3D.Transform {
                         // center in 0,0,0
                         translation: Qt.vector3d(-pointCloud.pointCloud.center.x, -pointCloud.pointCloud.center.y, -pointCloud.pointCloud.center.z)

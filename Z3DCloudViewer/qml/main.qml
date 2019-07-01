@@ -11,7 +11,8 @@ import QtQuick.Scene3D 2.0
 
 import Qt.labs.settings 1.0
 
-import Z3D.ZPointCloud 1.0
+import Z3D.ZPointCloud 1.0 as ZPointCloud
+import Z3D.ZPointCloudViewer 1.0
 
 ApplicationWindow {
     id: window
@@ -54,6 +55,19 @@ ApplicationWindow {
         }
     }
 
+    ZPointCloudViewerController {
+        id: controller
+
+        onFileLoaded: {
+            // loading might fail, so only update if it was sucessfully opened
+            window.lastOpenedFile = fileUrl;
+        }
+
+        onMessage: {
+            statusBar.showMessage(message);
+        }
+    }
+
     Settings {
         id: recentFilesSettings
         category: "Recent"
@@ -63,23 +77,23 @@ ApplicationWindow {
 
     FileDialog {
         id: fileDialog
-        title: qsTr("Open a point cloud")
+        title: qsTr("Open a point cloud or project")
         folder: shortcuts.home
-        nameFilters: ["PLY files (*.ply)", "STL files (*.stl)", "PCD files (*.pcd)"]
+        nameFilters: ["PLY files (*.ply)", "STL files (*.stl)", "PCD files (*.pcd)", "Meshlab project (*.mlp)" ]
         onAccepted: {
-            const fileName = fileDialog.fileUrl;
-            pointCloudReader.source = fileName;
-            window.lastOpenedFile = fileName;
+            controller.loadFile(fileDialog.fileUrl);
         }
-    }
-
-    PointCloudReader {
-        id: pointCloudReader
-        //filename: "/Users/nikolaseu/Downloads/something.ply"
     }
 
     Item {
         anchors.fill: parent
+
+        Keys.enabled: true
+        Keys.onReleased: {
+            if (event.key === Qt.Key_F) {
+                screenRayCaster.triggerForMousePosition();
+            }
+        }
 
         Scene3D {
             id: scene3d
@@ -89,17 +103,26 @@ ApplicationWindow {
             cameraAspectRatioMode: Scene3D.AutomaticAspectRatio
             focus: true
             multisample: false // faster
+            hoverEnabled: true
 
             Q3D.Entity {
                 id: sceneRoot
 
-                BasicCamera {
+                ZPointCloud.BasicCamera {
                     id: mainCamera
                     aspectRatio: scene3d.width/scene3d.height
                 }
 
-                DefaultCameraController {
+                ZPointCloud.DefaultCameraController {
                     camera: mainCamera
+                }
+
+                function printHits(desc, hits) {
+                    console.log(desc, hits.length)
+                    for (var i=0; i<hits.length; i++) {
+                        console.log("  " + hits[i].entity.objectName, hits[i].distance,
+                                    hits[i].worldIntersection.x, hits[i].worldIntersection.y, hits[i].worldIntersection.z)
+                    }
                 }
 
                 components: [
@@ -110,44 +133,112 @@ ApplicationWindow {
                             camera: mainCamera
                             clearColor: window.color
                         }
+                        renderPolicy: RenderSettings.OnDemand
+                        pickingSettings.pickMethod: PickingSettings.PrimitivePicking
+                        pickingSettings.pickResultMode: PickingSettings.NearestPick
                     },
                     InputSettings {
                         eventSource: window
                         enabled: true
+                    },
+                    ScreenRayCaster {
+                        id: screenRayCaster
+                        onHitsChanged: {
+//                            sceneRoot.printHits("Screen hits", hits)
+                            if (hits.length > 0) {
+//                                console.log("  " + hits[0].worldIntersection.x, hits[0].worldIntersection.y, hits[0].worldIntersection.z);
+                                mainCamera.zoomTo(Qt.vector3d(hits[0].worldIntersection.x, hits[0].worldIntersection.y, hits[0].worldIntersection.z));
+                            }
+                        }
+
+                        function triggerForMousePosition() {
+                            screenRayCaster.trigger(mousePosition)
+                        }
+
+                        property var mousePosition
+                    },
+//                    KeyboardHandler {
+//                        id: keyboardHandler
+//                        enabled: true
+//                        focus: true
+//                        sourceDevice: KeyboardDevice {}
+//                        property var mouse
+//                        onReleased: {
+////                            if (event.key == Qt.Key_F) {
+//                                screenRayCaster.trigger(Qt.point(mouse.x, mouse.y))
+////                            }
+//                        }
+//                    },
+                    MouseHandler {
+                        id: mouseHandler
+                        sourceDevice:  MouseDevice {}
+                        onPositionChanged: {
+//                            console.log("mouse position changed", mouse)
+                            screenRayCaster.mousePosition = Qt.point(mouse.x, mouse.y);
+                        }
+//                        onDoubleClicked: {
+//                            screenRayCaster.triggerForMousePosition();
+//                        }
+
+//                        onReleased: { screenRayCaster.trigger(Qt.point(mouse.x, mouse.y)) }
                     }
+//                    ObjectPicker {
+//                        id: objectPicker
+//                        enabled: true
+
+//                        onClicked: {
+//                            console.log("clicked", pick)
+//                            console.log("position", pick.worldIntersection)
+//                        }
+//                    }
                 ]
 
-                PointCloudEntity {
-                    id: pointCloud
-                    pointCloud: pointCloudReader.pointCloud
+                Q3D.NodeInstantiator {
+                    id: pointCloudEntityInstatiator
+                    model: controller.model
 
-                    pointSize: pointSizeSlider.value
-                    lightPosition: mainCamera.position
-                    ambient: ambientSlider.value
-                    diffuse: diffuseSlider.value
-                    specular: specularSlider.value
-                    shininess: shininessSlider.value
+                    delegate: ZPointCloud.PointCloudEntity {
+                        id: pointCloudEntity
 
-                    showColors: showColorsSwitch.checked
-                    defaultColor: colorChooser.color
+                        enabled: qtObject.visible
+                        pointCloud: qtObject.pointCloud
+                        levelOfDetailCamera: mainCamera
 
-                    hasNormals: true
+                        pointSize: pointSizeSlider.value
+                        lightPosition: mainCamera.position
+                        ambient: ambientSlider.value
+                        diffuse: diffuseSlider.value
+                        specular: specularSlider.value
+                        shininess: shininessSlider.value
 
-                    transform: Q3D.Transform {
-                        // center in 0,0,0
-                        translation: Qt.vector3d(-pointCloud.pointCloud.center.x, -pointCloud.pointCloud.center.y, -pointCloud.pointCloud.center.z)
+                        showColors: showColorsSwitch.checked
+                        defaultColor: colorChooser.color
+
+                        // if it's set to a non-negative value, it will be fixed and will not be updated automatically
+//                        levelOfDetail: 4
+//                        levelOfDetail: 0
+
+                        transform: Q3D.Transform {
+                            matrix: qtObject.transformation
+                        }
+                    }
+
+                    onCountChanged: {
+                        // center camera when something is added/removed
+                        mainCamera.viewAll();
                     }
                 }
             }
         }
 
-        RowLayout {
+        ColumnLayout {
             id: menuLayout
             anchors.right: parent.right
             anchors.top: parent.top
-            anchors.margins: 4
-            opacity: mouseAreaForMenuLayout.containsMouse ? 1 : 0.3
-            visible: pointCloudReader.pointCloud
+            anchors.bottom: parent.bottom
+            width: 320
+            //opacity: mouseAreaForMenuLayout.containsMouse ? 1 : 0.3
+            visible: pointCloudEntityInstatiator.count > 0
 
             Behavior on opacity {
                 OpacityAnimator {
@@ -155,14 +246,35 @@ ApplicationWindow {
                 }
             }
 
-            Button {
-                text: "Open file..."
-                onClicked: fileDialog.open()
+            RowLayout {
+                Layout.fillWidth: true
+
+                Button {
+                    text: "Open file..."
+                    onClicked: fileDialog.open()
+                }
+
+                Button {
+                    text: "Settings"
+                    onClicked: drawer.open()
+                }
             }
 
-            Button {
-                text: "Settings"
-                onClicked: drawer.open()
+            ListView {
+                Layout.fillHeight: true
+                Layout.fillWidth: true
+
+                model: controller.model
+
+                delegate: CheckDelegate {
+                    text: qtObject.name
+                    checkable: true
+                    checked: qtObject.visible
+
+                    onCheckedChanged: {
+                        qtObject.visible = checked
+                    }
+                }
             }
         }
 
@@ -199,7 +311,7 @@ ApplicationWindow {
                 SwitchDelegate {
                     id: showColorsSwitch
                     Layout.fillWidth: true
-                    checked: false
+                    checked: true
                     text: qsTr("Show object colors")
                 }
 
@@ -243,7 +355,7 @@ ApplicationWindow {
                 Slider {
                     id: pointSizeSlider
                     Layout.fillWidth: true
-                    value: 1.5
+                    value: 3
                     from: 1
                     to: 5
                     stepSize: 0.1
@@ -304,9 +416,18 @@ ApplicationWindow {
         }
     }
 
+    MouseArea {
+        id: mouseAreaForAvoidingProblemsWithMacTitlebar
+        visible: Qt.platform.os === "osx"
+        anchors.top: parent.top
+        anchors.left: parent.left
+        anchors.right: parent.right
+        height: 24
+    }
+
     ColumnLayout {
         anchors.centerIn: parent
-        visible: !pointCloudReader.pointCloud
+        visible: pointCloudEntityInstatiator.count < 1
         width: Math.min(600, Math.max(400, window.width/2))
         height: Math.min(600, Math.max(400, window.height/2))
 
@@ -407,11 +528,60 @@ ApplicationWindow {
                         anchors.fill: parent
                         hoverEnabled: true
                         onClicked: {
-                            pointCloudReader.source = modelData
-                            lastOpenedFile = modelData
+                            controller.loadFile(modelData)
                         }
                     }
                 }
+            }
+        }
+    }
+
+    Rectangle {
+        id: statusBar
+        opacity: 0
+        anchors.bottom: parent.bottom
+        anchors.right: parent.right
+        anchors.left: parent.left
+        height: statusBarLayout.height
+        color: "#66ffffff"
+
+        function showMessage(message) {
+            statusBarText.text = message;
+            if (showMessageAnimation.running) {
+                showMessageAnimation.restart();
+            } else {
+                showMessageAnimation.running = true;
+            }
+        }
+
+        SequentialAnimation {
+            id: showMessageAnimation
+            NumberAnimation {
+                target: statusBar
+                property: "opacity"
+                duration: 0
+                from: 1
+                to: 1
+            }
+            NumberAnimation {
+                duration: 5000
+            }
+            NumberAnimation {
+                target: statusBar
+                property: "opacity"
+                duration: 1000
+                from: 1
+                to: 0
+                easing.type: Easing.InOutQuad
+            }
+        }
+
+        RowLayout {
+            id: statusBarLayout
+            Label {
+                id: statusBarText
+                Layout.margins: 10
+                height: implicitHeight
             }
         }
     }

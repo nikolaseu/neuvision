@@ -34,7 +34,7 @@ class MainWindow : public Z3D::ZMainWindow
 
 public:
     explicit MainWindow(QWidget *parent = nullptr);
-    ~MainWindow();
+    ~MainWindow() override;
 
 private slots:
     void onCameraSelected(Z3D::ZCameraPtr camera);
