@@ -52,7 +52,7 @@ build_script:
   - nmake
 after_build:
   - cd %APPVEYOR_BUILD_FOLDER%/bin/release5
-  - call "C:\Qt\5.12\msvc2017_64\bin\windeployqt.exe" -concurrent -multimedia -multimediawidgets --qmldir ./../../Z3DScanner/qml/ --qmldir ./../../Z3DCloudViewer/qml/ ./Z3DScanner.exe
+  - call "C:\Qt\5.12\msvc2017_64\bin\windeployqt.exe" -concurrent -multimedia -multimediawidgets --qmldir ./../../Z3DScanner/qml/ --qmldir ./../../Z3DCloudViewer/qml/ ./Z3DScanner.exe ./Z3DCloudViewer.exe
   - cp "C:/Tools/vcpkg/installed/x64-windows/bin"/*.dll . # copy dependencies
   - del /s /q *.lib # remove unnecessary lib files
   - del /s /q *.exp # remove unnecessary exp files

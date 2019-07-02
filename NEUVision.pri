@@ -36,8 +36,8 @@ CONFIG(release, debug|release): Z3D_BUILD_DIR = $$PWD/bin/release5
 CONFIG(debug,   debug|release): Z3D_BUILD_DIR = $$PWD/bin/debug5
 message(Build folder should be $$Z3D_BUILD_DIR)
 
-# enable C++14
-CONFIG += c++14
+# enable C++17
+CONFIG += c++17
 
 # define Z3D_RELEASE when building in release mode
 CONFIG(release, debug|release): DEFINES += Z3D_RELEASE

@@ -105,6 +105,24 @@ void ZPointCloudListModel::addPointCloud(ZPointCloudListItem *pointCloudItem)
     m_p->append(pointCloudItem);
 }
 
+void ZPointCloudListModel::addPointClouds(const std::vector<ZPointCloudListItem *> &pointCloudItems)
+{
+    for (auto *pointCloudItem : pointCloudItems) {
+        /// make sure object lives in same thread
+        pointCloudItem->moveToThread(thread());
+
+        /// we will also take ownership of the object
+        pointCloudItem->setParent(this);
+    }
+
+    /// just because I dont want to modify impl of qqmlobjectlistmodel
+    QList<ZPointCloudListItem *> list;
+    list.reserve(int(pointCloudItems.size()));
+    std::copy(pointCloudItems.begin(), pointCloudItems.end(), std::back_inserter(list));
+
+    m_p->append(list);
+}
+
 int ZPointCloudListModel::rowCount(const QModelIndex &parent) const
 {
     return m_p->rowCount(parent);

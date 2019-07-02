@@ -46,6 +46,11 @@ void ZPointCloudViewerController::loadFile(const QUrl &fileUrl)
 
         if (fileInfo.suffix().compare("mlp", Qt::CaseInsensitive) == 0) {
             const auto meshlabProjectFiles = Z3D::ZMeshlabUtils::parseMeshlabProject(fileInfo.absoluteFilePath());
+
+            const size_t INSERT_BATCH_SIZE = 20;
+            std::vector<ZPointCloudListItem *> items;
+            items.reserve(INSERT_BATCH_SIZE);
+
             for (size_t i=0; i<meshlabProjectFiles.size(); ++i) {
                 const auto &projectFile = meshlabProjectFiles[i];
 
@@ -58,11 +63,19 @@ void ZPointCloudViewerController::loadFile(const QUrl &fileUrl)
                     const QFileInfo projectFileInfo(projectFile.filename);
                     auto item = new ZPointCloudListItem(pc, projectFileInfo.fileName());
                     item->setTransformation(projectFile.transformation);
-                    m_model->addPointCloud(item);
+                    items.push_back(item);
                 } else {
                     qWarning(loggingCategory) << "failed to load file inside the project:" << projectFile.filename;
                 }
+
+                if (i == 0 || items.size() >= INSERT_BATCH_SIZE) {
+                    qDebug(loggingCategory) << "inserting batch of items";
+                    m_model->addPointClouds(items);
+                    items.clear();
+                }
             }
+
+            m_model->addPointClouds(items);
 
             emit message(QString("finished loading %1").arg(fileInfo.fileName()));
             emit fileLoaded(fileUrl);

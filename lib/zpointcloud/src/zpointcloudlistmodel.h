@@ -38,6 +38,7 @@ public:
 
     // takes ownership of the item
     void addPointCloud(ZPointCloudListItem *pointCloudItem);
+    void addPointClouds(const std::vector<ZPointCloudListItem *> &pointCloudItems);
 
     // QAbstractItemModel interface
     int rowCount(const QModelIndex &parent = QModelIndex()) const override;

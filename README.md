@@ -23,15 +23,15 @@ them anymore, they are not tested/enabled anymore. Contact me if you have a came
 ## Requirements
 
 We assume you already have a suitable C++ compiler and [Qt](https://www.qt.io) installed (at least
-version 5.6).
+version 5.12).
 
 You'll also need some libraries:
 
-- [OpenCV](http://opencv.org) (tested with version 3.4.1)
+- [OpenCV](http://opencv.org) (tested with version 4.1.x)
 
 For the point cloud viewer you might also want to include, optionally:
 
-- [PCL](http://www.pointclouds.org) (tested with version 1.8.1)
+- [PCL](http://www.pointclouds.org) (tested with version 1.9.x)
 
 ### Apple macOS
 
