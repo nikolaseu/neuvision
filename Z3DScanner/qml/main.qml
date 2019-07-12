@@ -18,7 +18,7 @@ ApplicationWindow {
     height: 800
     visible: true
 
-    color: "#ddd"
+    color: Qt.platform.os == "osx" ? "transparent" : "#ddd"
 
     Item {
         anchors.fill: parent

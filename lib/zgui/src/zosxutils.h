@@ -26,5 +26,7 @@ void hideTitleBar(unsigned long long winid);
 
 void transparentTitleBar(unsigned long long winid);
 
+void applyTranslucentBackgroundEffect(unsigned long long winid);
+
 } // namespace ZOSXUtils
 } // namespace Z3D

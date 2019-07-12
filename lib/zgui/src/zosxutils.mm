@@ -46,5 +46,29 @@ void transparentTitleBar(unsigned long long winid)
     [nativeWindow setTitlebarAppearsTransparent:YES];
 }
 
+void applyTranslucentBackgroundEffect(unsigned long long winid)
+{
+    NSView *nativeView = reinterpret_cast<NSView *>(winid);
+    NSWindow* nativeWindow = [nativeView window];
+
+    /// credits to https://bugreports.qt.io/browse/QTBUG-39463
+    /// FIXME it makes app crash on maximize
+    /// FIXME it does not close the app anymore when window is closed
+    NSVisualEffectView * vibrant = [[NSVisualEffectView alloc] init];
+    if (@available(macOS 10.14, *)) {
+        vibrant.material = NSVisualEffectMaterialUnderWindowBackground;
+    } else {
+        vibrant.material = NSVisualEffectMaterialMediumLight;
+    }
+    vibrant.blendingMode = NSVisualEffectBlendingModeBehindWindow;
+    vibrant.state = NSVisualEffectStateFollowsWindowActiveState;
+    [vibrant setAutoresizingMask:NSViewWidthSizable|NSViewHeightSizable];
+
+    NSView* qtView = nativeWindow.contentView;
+    [qtView setAutoresizingMask:NSViewWidthSizable|NSViewHeightSizable];
+    nativeWindow.contentView = vibrant;
+    [vibrant addSubview:qtView positioned:NSWindowBelow relativeTo:nil];
+}
+
 } // namespace ZOSXUtils
 } // namespace Z3D

@@ -141,6 +141,7 @@ int main(int argc, char* argv[])
         for (auto &obj : engine.rootObjects()) {
             if (auto win = qobject_cast<QWindow*>(obj)) {
                 Z3D::ZOSXUtils::hideTitleBar(win->winId());
+                Z3D::ZOSXUtils::applyTranslucentBackgroundEffect(win->winId());
                 break;
             }
         }

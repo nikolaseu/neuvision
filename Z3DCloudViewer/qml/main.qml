@@ -21,7 +21,7 @@ ApplicationWindow {
     height: 800
     visible: true
 
-    color: "#ddd"
+    color: Qt.platform.os == "osx" ? "transparent" : "#ddd"
 
     property int maxRecentFiles: 20
     property string lastOpenedFile
