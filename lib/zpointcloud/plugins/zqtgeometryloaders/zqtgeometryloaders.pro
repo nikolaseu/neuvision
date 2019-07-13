@@ -19,6 +19,7 @@ HEADERS       = \
     objgeometryloader.h \
     plygeometryloader.h \
     stlgeometryloader.h \
+    zqtgeometryloaders.h \
     zqtgeometryloadersplugin.h
 
 SOURCES       = \
@@ -26,6 +27,7 @@ SOURCES       = \
     objgeometryloader.cpp \
     plygeometryloader.cpp \
     stlgeometryloader.cpp \
+    zqtgeometryloaders.cpp \
     zqtgeometryloadersplugin.cpp
 
 DISTFILES += \
