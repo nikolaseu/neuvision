@@ -33,8 +33,14 @@ class Z3D_ZPOINTCLOUD_SHARED_EXPORT ZPointCloudListModel : public QAbstractListM
     Q_OBJECT
 
 public:
+    enum Roles {
+        ZPointCloudListItemRole = Qt::UserRole + 999
+    };
+
     explicit ZPointCloudListModel(QObject *parent = nullptr);
     ~ZPointCloudListModel() override;
+
+    void clear();
 
     // takes ownership of the item
     void addPointCloud(ZPointCloudListItem *pointCloudItem);

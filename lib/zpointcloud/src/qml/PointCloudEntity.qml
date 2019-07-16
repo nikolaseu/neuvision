@@ -21,6 +21,7 @@ Entity {
     property real specular: 0.1
     property real shininess: 25.0
 
+    property bool renderPointsAsDiscs: true
     property bool showColors: true
     property color defaultColor: Qt.rgba(0.5, 0.5, 0.5, 1.0)
 
@@ -79,7 +80,7 @@ Entity {
 
                 renderPasses: [
                     RenderPass {
-                        shaderProgram: pointCloudGeometry.hasNormals ? pointCloudShaderProgram : pointCloudShaderProgramSimple
+                        shaderProgram: pointCloudGeometry.hasNormals && root.renderPointsAsDiscs ? pointCloudShaderProgram : pointCloudShaderProgramSimple
                         renderStates: [
                             PointSize { sizeMode: PointSize.Programmable },
                             DepthTest { depthFunction: DepthTest.Less },

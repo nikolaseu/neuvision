@@ -83,6 +83,10 @@ public:
         PropertyNormalX,
         PropertyNormalY,
         PropertyNormalZ,
+        PropertyColorA,
+        PropertyColorR,
+        PropertyColorG,
+        PropertyColorB,
         PropertyTextureU,
         PropertyTextureV,
         PropertyUnknown,
@@ -126,6 +130,7 @@ private:
 
     bool m_hasNormals;
     bool m_hasTexCoords;
+    bool m_hasVertexColors;
 };
 
 } // namespace Qt3DRender

@@ -88,11 +88,13 @@ public:
 
     bool hasNormals() const { return !m_normals.isEmpty(); }
     bool hasTextureCoordinates() const { return !m_texCoords.isEmpty(); }
+    bool hasVertexColors() const { return !m_vertexColors.isEmpty(); }
     bool hasTangents() const { return !m_tangents.isEmpty(); }
 
     QVector<QVector3D> vertices() const { return m_points; }
     QVector<QVector3D> normals() const { return m_normals; }
     QVector<QVector2D> textureCoordinates() const { return m_texCoords; }
+    QVector<float> vertexColors() const { return m_vertexColors; }
     QVector<QVector4D> tangents() const { return m_tangents; }
     QVector<unsigned int> indices() const { return m_indices; }
 
@@ -121,6 +123,7 @@ protected:
     QVector<QVector3D> m_points;
     QVector<QVector3D> m_normals;
     QVector<QVector2D> m_texCoords;
+    QVector<float> m_vertexColors;
     QVector<QVector4D> m_tangents;
     QVector<unsigned int> m_indices;
 

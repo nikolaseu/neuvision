@@ -226,7 +226,7 @@ bool PlyGeometryLoader::parseHeader(QIODevice *ioDev)
 {
     Format format = FormatUnknown;
 
-    m_hasNormals = m_hasTexCoords = false;
+    m_hasNormals = m_hasTexCoords = m_hasVertexColors = false;
 
     while (!ioDev->atEnd()) {
         QByteArray lineBuffer = ioDev->readLine();
@@ -319,6 +319,15 @@ bool PlyGeometryLoader::parseHeader(QIODevice *ioDev)
             } else if (propertyName == QStringLiteral("t")) {
                 property.type = PropertyTextureV;
                 m_hasTexCoords = true;
+            } else if (propertyName == QStringLiteral("red")) {
+                property.type = PropertyColorR;
+                m_hasVertexColors = true;
+            } else if (propertyName == QStringLiteral("green")) {
+                property.type = PropertyColorG;
+                m_hasVertexColors = true;
+            } else if (propertyName == QStringLiteral("blue")) {
+                property.type = PropertyColorB;
+                m_hasVertexColors = true;
             } else {
                 property.type = PropertyUnknown;
             }
@@ -370,6 +379,13 @@ bool PlyGeometryLoader::parseMesh(QIODevice *ioDev)
             QVector3D normal;
             QVector2D texCoord;
 
+            union RGBAColor { // just to simplify converting color data
+                uchar rgba[4];
+                float_t asFloat;
+            };
+
+            RGBAColor color;
+
             QVector<unsigned int> faceIndices;
 
             for (auto &property : element.properties) {
@@ -386,19 +402,34 @@ bool PlyGeometryLoader::parseMesh(QIODevice *ioDev)
                             faceIndices.append(value);
                     }
                 } else {
-                    float value = dataReader->readFloatValue(property.dataType);
+                    if (property.dataType == Float32) {
+                        float value = dataReader->readFloatValue(property.dataType);
 
-                    if (element.type == ElementVertex) {
-                        switch (property.type) {
-                        case PropertyX: point.setX(value); break;
-                        case PropertyY: point.setY(value); break;
-                        case PropertyZ: point.setZ(value); break;
-                        case PropertyNormalX: normal.setX(value); break;
-                        case PropertyNormalY: normal.setY(value); break;
-                        case PropertyNormalZ: normal.setZ(value); break;
-                        case PropertyTextureU: texCoord.setX(value); break;
-                        case PropertyTextureV: texCoord.setY(value); break;
-                        default: break;
+                        if (element.type == ElementVertex) {
+                            switch (property.type) {
+                            case PropertyX: point.setX(value); break;
+                            case PropertyY: point.setY(value); break;
+                            case PropertyZ: point.setZ(value); break;
+                            case PropertyNormalX: normal.setX(value); break;
+                            case PropertyNormalY: normal.setY(value); break;
+                            case PropertyNormalZ: normal.setZ(value); break;
+                            case PropertyTextureU: texCoord.setX(value); break;
+                            case PropertyTextureV: texCoord.setY(value); break;
+                            default: break;
+                            }
+                        }
+                    }
+                    else if (property.dataType == Uint8) {
+                        const uint8_t value = uint8_t(dataReader->readIntValue(property.dataType));
+
+                        if (element.type == ElementVertex) {
+                            switch (property.type) {
+                            case PropertyColorB: color.rgba[0] = value; break;
+                            case PropertyColorG: color.rgba[1] = value; break;
+                            case PropertyColorR: color.rgba[2] = value; break;
+                            case PropertyColorA: color.rgba[3] = value; break;
+                            default: break;
+                            }
                         }
                     }
                 }
@@ -412,6 +443,9 @@ bool PlyGeometryLoader::parseMesh(QIODevice *ioDev)
 
                 if (m_hasTexCoords)
                     m_texCoords.append(texCoord);
+
+                if (m_hasVertexColors)
+                    m_vertexColors.append(color.asFloat);
             } else if (element.type == ElementFace) {
                 if (faceIndices.size() >= 3) {
                     // decompose face into triangle fan

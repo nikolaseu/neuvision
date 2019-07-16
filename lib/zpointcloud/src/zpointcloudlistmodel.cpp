@@ -94,6 +94,11 @@ ZPointCloudListModel::~ZPointCloudListModel()
     qDebug(loggingCategory) << "destroying" << this;
 }
 
+void ZPointCloudListModel::clear()
+{
+    m_p->clear();
+}
+
 void ZPointCloudListModel::addPointCloud(ZPointCloudListItem *pointCloudItem)
 {
     addPointClouds({ pointCloudItem });
@@ -123,6 +128,17 @@ int ZPointCloudListModel::rowCount(const QModelIndex &parent) const
 
 QVariant ZPointCloudListModel::data(const QModelIndex &index, int role) const
 {
+    if (index.row() < 0 && index.row() >= rowCount()) {
+        return QVariant();
+    }
+
+    switch (role) {
+    case Qt::DisplayRole:
+        return m_p->at(index.row())->name();
+    case ZPointCloudListItemRole:
+        return QVariant::fromValue(m_p->at(index.row()));
+    }
+
     return m_p->data(index, role);
 }
 

@@ -32,7 +32,9 @@ public:
     {
         const auto &m_points = loader.vertices();
         count = m_points.size();
-        elementSize = 3 + (loader.hasNormals() ? 3 : 0);
+        elementSize = 3
+            + (loader.hasNormals() ? 3 : 0)
+            + (loader.hasVertexColors() ? 1 : 0);
         stride = elementSize * sizeof(float);
         bufferBytes.resize(stride * count);
 
@@ -41,7 +43,9 @@ public:
         float *fptr = reinterpret_cast<float*>(bufferBytes.data());
 
         const bool hasNormals = loader.hasNormals();
+        const bool hasColors = loader.hasVertexColors();
         const auto &m_normals = loader.normals();
+        const auto &m_colors = loader.vertexColors();
         for (int index = 0; index < count; ++index) {
             *fptr++ = m_points.at(index).x();
             *fptr++ = m_points.at(index).y();
@@ -52,6 +56,10 @@ public:
                 *fptr++ = m_normals.at(index).y();
                 *fptr++ = m_normals.at(index).z();
             }
+
+            if (hasColors) {
+                *fptr++ = m_colors.at(index);
+            }
         } // of buffer filling loop
 
         // basic fiels always
@@ -61,11 +69,19 @@ public:
             new ZPointField("z", 8, ZPointField::FLOAT32, 1),
         };
 
+        unsigned int offset = 12;
+
         // normals might not be available
         if (hasNormals) {
-            m_fields.push_back(new ZPointField("normal_x", 12, ZPointField::FLOAT32, 1));
-            m_fields.push_back(new ZPointField("normal_y", 16, ZPointField::FLOAT32, 1));
-            m_fields.push_back(new ZPointField("normal_z", 20, ZPointField::FLOAT32, 1));
+            m_fields.push_back(new ZPointField("normal_x", offset+0, ZPointField::FLOAT32, 1));
+            m_fields.push_back(new ZPointField("normal_y", offset+4, ZPointField::FLOAT32, 1));
+            m_fields.push_back(new ZPointField("normal_z", offset+8, ZPointField::FLOAT32, 1));
+            offset += 12;
+        }
+
+        if (hasColors) {
+            m_fields.push_back(new ZPointField("rgb", offset+0, ZPointField::FLOAT32, 1));
+            offset += 4;
         }
 
         bb = QAxisAlignedBoundingBox(m_points);
