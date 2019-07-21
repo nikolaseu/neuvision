@@ -22,7 +22,6 @@
 #include "zpointcloud_global.h"
 
 #include <QObject>
-#include <QVector3D>
 
 namespace Z3D
 {
@@ -37,9 +36,6 @@ class Z3D_ZPOINTCLOUD_SHARED_EXPORT ZPointCloud : public QObject
     Q_PROPERTY(unsigned int pointStep READ pointStep CONSTANT)
     Q_PROPERTY(unsigned int rowStep READ rowStep CONSTANT)
     Q_PROPERTY(QByteArray data READ data CONSTANT)
-    Q_PROPERTY(QVector3D minimum READ minimum CONSTANT)
-    Q_PROPERTY(QVector3D maximum READ maximum CONSTANT)
-    Q_PROPERTY(QVector3D center READ center CONSTANT)
 
 public:
     explicit ZPointCloud(QObject *parent = nullptr);
@@ -56,10 +52,6 @@ public:
 
     //! IMPORTANT: returns a reference, subclasses must not return temporaries!
     virtual const std::vector<ZPointField *> &fields() const = 0;
-
-    virtual QVector3D minimum() const = 0;
-    virtual QVector3D maximum() const = 0;
-    virtual QVector3D center() const = 0;
 };
 
 } // namespace Z3D

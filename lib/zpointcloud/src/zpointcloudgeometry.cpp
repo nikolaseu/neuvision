@@ -34,7 +34,7 @@ namespace Z3D
 namespace // anonymous namespace
 {
 
-Q_LOGGING_CATEGORY(loggingCategory, "z3d.zpointcloud.zpointcloudgeometry")//, QtInfoMsg)
+Q_LOGGING_CATEGORY(loggingCategory, "z3d.zpointcloud.zpointcloudgeometry", QtInfoMsg)
 
 } // anonymous namespace
 
@@ -144,7 +144,7 @@ void ZPointCloudGeometry::updateAttributes()
     // parse point fields and make reasonable attributes out of them
     auto pf = pfs.find("x");
     if (pf != pfs.cend()) {
-        qDebug(loggingCategory) << "Adding position attribute from individual x y z w";
+        qDebug(loggingCategory) << "Adding position attribute from individual x y z [w]";
         const uint num = 1 + (pfs.contains("y")?1:0) + (pfs.contains("z")?1:0) + (pfs.contains("w")?1:0);
         Qt3DRender::QAttribute* attrib = new Qt3DRender::QAttribute(m_p->vertexBuffer,
                                                                     Qt3DRender::QAttribute::defaultPositionAttributeName(),
@@ -228,7 +228,7 @@ void ZPointCloudGeometry::setPointCloud(ZPointCloud *pointCloud)
 
     emit hasNormalsChanged(hasNormals());
     emit hasColorsChanged(hasColors());
-    emit pointCloudChanged(pointCloud);
+    emit pointCloudChanged(m_p->pointCloud);
 }
 
 void ZPointCloudGeometry::setLevelOfDetail(uint levelOfDetail)

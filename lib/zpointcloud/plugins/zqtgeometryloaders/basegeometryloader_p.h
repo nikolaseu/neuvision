@@ -58,7 +58,7 @@
 #include <QtGui/QVector3D>
 #include <QtGui/QVector4D>
 
-#include <Qt3DRender/private/qgeometryloaderinterface_p.h>
+//#include <Qt3DRender/private/qgeometryloaderinterface_p.h>
 
 #include <private/qlocale_tools_p.h>
 
@@ -71,9 +71,9 @@ namespace Qt3DRender {
 
 class QGeometry;
 
-class BaseGeometryLoader : public QGeometryLoaderInterface
+class BaseGeometryLoader //: public QGeometryLoaderInterface
 {
-    Q_OBJECT
+//    Q_OBJECT
 public:
     BaseGeometryLoader();
 
@@ -98,23 +98,23 @@ public:
     QVector<QVector4D> tangents() const { return m_tangents; }
     QVector<unsigned int> indices() const { return m_indices; }
 
-    QGeometry *geometry() const override;
+//    QGeometry *geometry() const;// override;
 
-    bool load(QIODevice *ioDev, const QString &subMesh = QString()) override;
+    bool load(QIODevice *ioDev, const QString &subMesh = QString());// override;
 
 protected:
     virtual bool doLoad(QIODevice *ioDev, const QString &subMesh = QString()) = 0;
 
-    void generateAveragedNormals(const QVector<QVector3D>& points,
-                                 QVector<QVector3D>& normals,
-                                 const QVector<unsigned int>& faces) const;
-    void generateGeometry();
-    void generateTangents(const QVector<QVector3D>& points,
-                          const QVector<QVector3D>& normals,
-                          const QVector<unsigned int>& faces,
-                          const QVector<QVector2D>& texCoords,
-                          QVector<QVector4D>& tangents) const;
-    void center(QVector<QVector3D>& points);
+//    void generateAveragedNormals(const QVector<QVector3D>& points,
+//                                 QVector<QVector3D>& normals,
+//                                 const QVector<unsigned int>& faces) const;
+//    void generateGeometry();
+//    void generateTangents(const QVector<QVector3D>& points,
+//                          const QVector<QVector3D>& normals,
+//                          const QVector<unsigned int>& faces,
+//                          const QVector<QVector2D>& texCoords,
+//                          QVector<QVector4D>& tangents) const;
+//    void center(QVector<QVector3D>& points);
 
     bool m_loadTextureCoords;
     bool m_generateTangents;
@@ -127,7 +127,7 @@ protected:
     QVector<QVector4D> m_tangents;
     QVector<unsigned int> m_indices;
 
-    QGeometry *m_geometry;
+//    QGeometry *m_geometry;
 };
 
 struct FaceIndices
@@ -155,14 +155,14 @@ struct FaceIndices
     unsigned int texCoordIndex;
     unsigned int normalIndex;
 };
-QT3D_DECLARE_TYPEINFO(Qt3DRender, FaceIndices, Q_PRIMITIVE_TYPE)
+//QT3D_DECLARE_TYPEINFO(Qt3DRender, FaceIndices, Q_PRIMITIVE_TYPE)
 
 struct ByteArraySplitterEntry
 {
     int start;
     int size;
 };
-QT3D_DECLARE_TYPEINFO(Qt3DRender, ByteArraySplitterEntry, Q_PRIMITIVE_TYPE)
+//QT3D_DECLARE_TYPEINFO(Qt3DRender, ByteArraySplitterEntry, Q_PRIMITIVE_TYPE)
 
 /*
  * A helper class to split a QByteArray and access its sections without

@@ -25,8 +25,6 @@
 #include <QLoggingCategory>
 #include <pcl/PCLPointCloud2.h>
 #include <pcl/PCLPointField.h>
-#include <pcl/common/common.h>
-#include <pcl/conversions.h>
 
 namespace Z3D
 {
@@ -72,18 +70,6 @@ ZPointCloudPCLWrapper::ZPointCloudPCLWrapper(pcl::PCLPointCloud2 *pointCloud)
 {
     qDebug(loggingCategory) << "creating point cloud with" << width() * height() << "points,"
              << "size:" << data().size() << "bytes";
-
-    /// update boundary
-    pcl::PointXYZ min;
-    pcl::PointXYZ max;
-    pcl::PointCloud<pcl::PointXYZ> pc;
-    pcl::fromPCLPointCloud2(*m_pointCloud, pc);
-    pcl::getMinMax3D(pc, min, max);
-    m_minimum = QVector3D(min.x, min.y, min.z);
-    m_maximum = QVector3D(max.x, max.y, max.z);
-
-    /// update center
-    m_center = m_minimum + (m_maximum - m_minimum)/2.0;
 }
 
 ZPointCloudPCLWrapper::~ZPointCloudPCLWrapper()
@@ -136,21 +122,6 @@ QByteArray ZPointCloudPCLWrapper::data() const
 const std::vector<ZPointField*> &ZPointCloudPCLWrapper::fields() const
 {
     return m_fields;
-}
-
-QVector3D ZPointCloudPCLWrapper::minimum() const
-{
-    return m_minimum;
-}
-
-QVector3D ZPointCloudPCLWrapper::maximum() const
-{
-    return m_maximum;
-}
-
-QVector3D ZPointCloudPCLWrapper::center() const
-{
-    return m_center;
 }
 
 } // namespace Z3D

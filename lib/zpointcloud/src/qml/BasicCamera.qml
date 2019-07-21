@@ -12,33 +12,33 @@ Camera {
     upVector: Qt.vector3d(0.0, 1.0, 0.0)
     position: Qt.vector3d(0.0, 0.0, 300.0)
 
-    ParallelAnimation {
-        id: zoomAnimation
-        property int duration: 200
+    property real animationDuration: 500
+    property bool animationEnabled: true
+    // we cannot use something different because it's restarted as camera can move continuously
+    property var animationEasing: Easing.Linear
+    Behavior on position {
+        enabled: mainCamera.animationEnabled
         Vector3dAnimation {
-            id: viewCenterAnimation
-            target: mainCamera
-            property: "viewCenter"
-            duration: zoomAnimation.duration
+            duration: mainCamera.animationDuration
+            easing.type: mainCamera.animationEasing
         }
+    }
+    Behavior on viewCenter {
+        enabled: mainCamera.animationEnabled
         Vector3dAnimation {
-            id: positionAnimation
-            target: mainCamera
-            property: "position"
-            duration: zoomAnimation.duration
+            duration: mainCamera.animationDuration
+            easing.type: mainCamera.animationEasing
+        }
+    }
+    Behavior on upVector {
+        enabled: mainCamera.animationEnabled
+        Vector3dAnimation {
+            duration: mainCamera.animationDuration
+            easing.type: mainCamera.animationEasing
         }
     }
 
     function zoomTo(point) {
-        viewCenterAnimation.from = mainCamera.viewCenter
-        viewCenterAnimation.to = point
-
-        const d = 0.2 * (mainCamera.viewCenter.minus(mainCamera.position)).length();
-        positionAnimation.from = mainCamera.position
         mainCamera.viewCenter = point
-        mainCamera.translate(Qt.vector3d(0, 0, d), Camera.DontTranslateViewCenter)
-        positionAnimation.to = mainCamera.position
-
-        zoomAnimation.running = true
     }
 }

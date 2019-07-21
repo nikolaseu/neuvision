@@ -381,7 +381,7 @@ bool PlyGeometryLoader::parseMesh(QIODevice *ioDev)
 
             union RGBAColor { // just to simplify converting color data
                 uchar rgba[4];
-                float_t asFloat;
+                float asFloat;
             };
 
             RGBAColor color;

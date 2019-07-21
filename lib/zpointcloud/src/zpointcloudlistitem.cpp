@@ -27,7 +27,7 @@ namespace Z3D
 
 namespace // anonymous namespace
 {
-Q_LOGGING_CATEGORY(loggingCategory, "z3d.zpointcloud.zpointcloudlistitem")//, QtInfoMsg)
+Q_LOGGING_CATEGORY(loggingCategory, "z3d.zpointcloud.zpointcloudlistitem", QtInfoMsg)
 }
 
 ZPointCloudListItem::ZPointCloudListItem(ZPointCloudPtr pointCloud,

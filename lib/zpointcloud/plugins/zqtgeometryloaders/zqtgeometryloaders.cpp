@@ -11,7 +11,7 @@
 #include <QFile>
 #include <QLoggingCategory>
 #include <Qt3DRender/QBuffer>
-#include <Qt3DRender/private/qaxisalignedboundingbox_p.h>
+//#include <Qt3DRender/private/qaxisalignedboundingbox_p.h>
 
 using namespace Qt3DRender;
 
@@ -83,8 +83,6 @@ public:
             m_fields.push_back(new ZPointField("rgb", offset+0, ZPointField::FLOAT32, 1));
             offset += 4;
         }
-
-        bb = QAxisAlignedBoundingBox(m_points);
     }
 
     void updateAttributes() override { }
@@ -95,9 +93,6 @@ public:
 
     QByteArray data() const override { return bufferBytes; }
     const std::vector<ZPointField *> &fields() const override { return m_fields; }
-    QVector3D minimum() const override { return bb.minPoint(); }
-    QVector3D maximum() const override { return bb.maxPoint(); }
-    QVector3D center() const override { return bb.center(); }
 
 private:
     int count = 0;
@@ -105,7 +100,6 @@ private:
     quint32 stride = 0;
     std::vector<ZPointField *> m_fields;
     QByteArray bufferBytes;
-    QAxisAlignedBoundingBox bb;
 };
 
 }

@@ -47,9 +47,6 @@ public:
     virtual unsigned int rowStep() const override;
     virtual QByteArray data() const override;
     virtual const std::vector<ZPointField *> &fields() const override;
-    virtual QVector3D minimum() const override;
-    virtual QVector3D maximum() const override;
-    virtual QVector3D center() const override;
 
 public:
     const std::vector<ZPointField*> m_fields;
@@ -58,9 +55,6 @@ public:
 
     const unsigned int m_width;
     const unsigned int m_height;
-
-    QVector3D m_minimum;
-    QVector3D m_maximum;
 };
 
 } // namespace Z3D

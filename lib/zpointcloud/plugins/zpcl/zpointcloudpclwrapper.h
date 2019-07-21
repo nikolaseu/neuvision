@@ -43,18 +43,11 @@ public:
     virtual unsigned int rowStep() const override;
     virtual QByteArray data() const override;
     virtual const std::vector<ZPointField *> &fields() const override;
-    virtual QVector3D minimum() const override;
-    virtual QVector3D maximum() const override;
-    virtual QVector3D center() const override;
 
 private:
     pcl::PCLPointCloud2 *m_pointCloud = nullptr;
 
     std::vector<ZPointField*> m_fields;
-
-    QVector3D m_minimum;
-    QVector3D m_maximum;
-    QVector3D m_center;
 };
 
 } // namespace Z3D

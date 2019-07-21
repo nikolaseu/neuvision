@@ -69,7 +69,8 @@ unsigned int ZPointField::count() const
 
 } // namespace Z3D
 
-QDebug operator<< (QDebug debug, const Z3D::ZPointField *pointField) {
+QDebug operator<< (QDebug debug, const Z3D::ZPointField *pointField)
+{
     QDebugStateSaver saver(debug);
     debug.nospace() << "Z3D::ZPointField(" << (void*)(pointField)
                     << ") name: " << pointField->name()
