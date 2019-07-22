@@ -24,7 +24,7 @@
 #include "zcameracalibrationprovider.h"
 #include "zcameraprovider.h"
 #include "zpatternprojectionprovider.h"
-#include "zpointcloudprovider.h"
+#include "ZPointCloud/zpointcloudprovider.h"
 #include "zstructuredlightsystemprovider.h"
 #include "zsettingsitem.h"
 

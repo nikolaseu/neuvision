@@ -19,7 +19,7 @@
 
 #pragma once
 
-#include "zpointcloud_global.h"
+#include "ZPointCloud/zpointcloud_global.h"
 
 #include <QObject>
 

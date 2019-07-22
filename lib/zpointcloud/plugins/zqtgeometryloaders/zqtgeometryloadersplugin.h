@@ -19,7 +19,7 @@
 
 #pragma once
 
-#include "zpointcloudplugininterface.h"
+#include "ZPointCloud/zpointcloudplugininterface.h"
 
 #include <QObject>
 

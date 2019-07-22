@@ -20,7 +20,7 @@
 #pragma once
 
 #include "zcore_fwd.h"
-#include "zpointcloud_fwd.h"
+#include "ZPointCloud/zpointcloud_fwd.h"
 #include "zstructuredlight_fwd.h"
 
 #include <QObject>

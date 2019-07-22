@@ -24,7 +24,7 @@
 #include "zcamerapreviewer.h"
 #include "zdecodedpattern.h"
 #include "zmulticameracalibratorwidget.h"
-#include "zpointcloud.h"
+#include "ZPointCloud/zpointcloud.h"
 #include "zsettingsitem.h"
 
 #include <QDebug>

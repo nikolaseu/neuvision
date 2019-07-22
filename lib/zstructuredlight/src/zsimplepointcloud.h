@@ -21,7 +21,7 @@
 
 #include "zstructuredlight_global.h"
 
-#include "zpointcloud.h"
+#include "ZPointCloud/zpointcloud.h"
 
 #include <opencv2/core/matx.hpp>
 

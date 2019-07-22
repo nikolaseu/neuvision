@@ -4,8 +4,8 @@
 #include "plygeometryloader.h"
 #include "stlgeometryloader.h"
 
-#include "zpointcloud.h"
-#include "zpointfield.h"
+#include "ZPointCloud/zpointcloud.h"
+#include "ZPointCloud/zpointfield.h"
 
 #include <QDebug>
 #include <QFile>

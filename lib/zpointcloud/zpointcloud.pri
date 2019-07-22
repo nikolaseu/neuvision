@@ -10,5 +10,5 @@ macx: {
     CONFIG(debug, debug|release):   LIBS += -L$$Z3D_BUILD_DIR -lzpointcloud_debug
 }
 
-INCLUDEPATH += $$PWD/src
+INCLUDEPATH += $$PWD/include
 DEPENDPATH += $$PWD/src

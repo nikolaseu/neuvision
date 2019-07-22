@@ -18,7 +18,7 @@
 // along with Z3D.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-#include "zpointfield.h"
+#include "ZPointCloud/zpointfield.h"
 
 #include <QDebug>
 #include <QLoggingCategory>

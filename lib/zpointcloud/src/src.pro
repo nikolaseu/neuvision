@@ -8,17 +8,19 @@ TARGET        = $$qtLibraryTarget(zpointcloud)
 DESTDIR       = $$Z3D_BUILD_DIR
 DEFINES      += Z3D_ZPOINTCLOUD_LIBRARY
 
+INCLUDEPATH *= ../include
+
 HEADERS      += \
-    zpointcloud.h \
-    zpointcloud_fwd.h \
-    zpointcloud_global.h \
-    zpointcloudgeometry.h \
-    zpointcloudlistitem.h \
-    zpointcloudlistmodel.h \
-    zpointcloudplugininterface.h \
-    zpointcloudprovider.h \
-    zpointcloudreader.h \
-    zpointfield.h \
+    ../include/ZPointCloud/zpointcloud.h \
+    ../include/ZPointCloud/zpointcloud_fwd.h \
+    ../include/ZPointCloud/zpointcloud_global.h \
+    ../include/ZPointCloud/zpointcloudgeometry.h \
+    ../include/ZPointCloud/zpointcloudlistitem.h \
+    ../include/ZPointCloud/zpointcloudlistmodel.h \
+    ../include/ZPointCloud/zpointcloudplugininterface.h \
+    ../include/ZPointCloud/zpointcloudprovider.h \
+    ../include/ZPointCloud/zpointcloudreader.h \
+    ../include/ZPointCloud/zpointfield.h \
 
 SOURCES      += \
     zpointcloud.cpp \

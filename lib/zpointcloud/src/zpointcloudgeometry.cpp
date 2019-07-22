@@ -18,10 +18,10 @@
 // along with Z3D.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-#include "zpointcloudgeometry.h"
+#include "ZPointCloud/zpointcloudgeometry.h"
 
-#include "zpointcloud.h"
-#include "zpointfield.h"
+#include "ZPointCloud/zpointcloud.h"
+#include "ZPointCloud/zpointfield.h"
 
 #include <QLoggingCategory>
 #include <Qt3DRender/QAttribute>
@@ -84,6 +84,9 @@ Qt3DRender::QAttribute::VertexBaseType pointFieldTypeToAttributeType(const ZPoin
     case ZPointField::FLOAT64:
         return Qt3DRender::QAttribute::Double;
     }
+
+    qCritical(loggingCategory) << "unhandled point field type" << inp;
+    return Qt3DRender::QAttribute::Byte;
 }
 
 void ZPointCloudGeometry::updateVertices()

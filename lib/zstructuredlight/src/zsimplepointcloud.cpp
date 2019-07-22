@@ -20,7 +20,7 @@
 
 #include "zsimplepointcloud.h"
 
-#include <zpointfield.h>
+#include <ZPointCloud/zpointfield.h>
 
 namespace Z3D
 {

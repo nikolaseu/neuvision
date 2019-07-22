@@ -18,15 +18,15 @@
 // along with Z3D.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-#include "zpointcloudprovider.h"
+#include "ZPointCloud/zpointcloudprovider.h"
 
 #include "zcoreplugin.h"
 #include "zpluginloader.h"
-#include "zpointcloud.h"
-#include "zpointcloudgeometry.h"
-#include "zpointcloudlistmodel.h"
-#include "zpointcloudplugininterface.h"
-#include "zpointcloudreader.h"
+#include "ZPointCloud/zpointcloud.h"
+#include "ZPointCloud/zpointcloudgeometry.h"
+#include "ZPointCloud/zpointcloudlistmodel.h"
+#include "ZPointCloud/zpointcloudplugininterface.h"
+#include "ZPointCloud/zpointcloudreader.h"
 
 #include <QDebug>
 #include <QDir>

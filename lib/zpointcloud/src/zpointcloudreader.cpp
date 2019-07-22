@@ -18,9 +18,9 @@
 // along with Z3D.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-#include "zpointcloudreader.h"
+#include "ZPointCloud/zpointcloudreader.h"
 
-#include "zpointcloudprovider.h"
+#include "ZPointCloud/zpointcloudprovider.h"
 
 #include <QDebug>
 

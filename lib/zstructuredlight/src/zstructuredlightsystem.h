@@ -23,7 +23,7 @@
 #include "zstructuredlight_global.h"
 
 #include "zcore_fwd.h"
-#include "zpointcloud_fwd.h"
+#include "ZPointCloud/zpointcloud_fwd.h"
 
 #include <QObject>
 

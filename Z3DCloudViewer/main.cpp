@@ -19,9 +19,9 @@
 //
 
 #include "zapplication.h"
-#include "zpointcloud.h"
-#include "zpointcloudgeometry.h"
-#include "zpointcloudprovider.h"
+#include "ZPointCloud/zpointcloud.h"
+#include "ZPointCloud/zpointcloudgeometry.h"
+#include "ZPointCloud/zpointcloudprovider.h"
 #include "zpointcloudviewercontroller.h"
 
 #if defined(Q_OS_MACOS)

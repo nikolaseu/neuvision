@@ -1,8 +1,8 @@
 #include "zpointcloudviewercontroller.h"
 
-#include "zpointcloudlistitem.h"
-#include "zpointcloudlistmodel.h"
-#include "zpointcloudprovider.h"
+#include "ZPointCloud/zpointcloudlistitem.h"
+#include "ZPointCloud/zpointcloudlistmodel.h"
+#include "ZPointCloud/zpointcloudprovider.h"
 #include "zmeshlabutils.h"
 
 #include <QFileInfo>

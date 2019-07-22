@@ -21,7 +21,7 @@
 
 #include "zstructuredlight_fwd.h"
 
-#include "zpointcloud_fwd.h"
+#include "ZPointCloud/zpointcloud_fwd.h"
 #include <Z3DCameraCalibration>
 
 #include <QObject>

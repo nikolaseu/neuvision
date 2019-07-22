@@ -19,8 +19,8 @@
 
 #pragma once
 
-#include "zpointcloud_fwd.h"
-#include "zpointcloud_global.h"
+#include "ZPointCloud/zpointcloud_fwd.h"
+#include "ZPointCloud/zpointcloud_global.h"
 
 #include <QMap>
 
