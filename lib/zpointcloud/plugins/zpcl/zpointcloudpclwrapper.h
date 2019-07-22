@@ -19,7 +19,7 @@
 
 #pragma once
 
-#include "zpointcloud.h"
+#include "ZPointCloud/zpointcloud.h"
 
 namespace pcl
 {

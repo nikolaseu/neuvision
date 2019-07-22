@@ -20,7 +20,7 @@
 
 #include "zpointcloudpclwrapper.h"
 
-#include "zpointfield.h"
+#include "ZPointCloud/zpointfield.h"
 
 #include <QLoggingCategory>
 #include <pcl/PCLPointCloud2.h>
