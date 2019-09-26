@@ -62,9 +62,9 @@ int main(int argc, char *argv[])
 #if defined(Q_OS_MACOS)
     // just to hide title bar in OSX
     for (auto &obj : engine.rootObjects()) {
-        if (auto win = qobject_cast<QWindow*>(obj)) {
+        if (auto *win = qobject_cast<QWindow*>(obj)) {
             Z3D::ZOSXUtils::hideTitleBar(win->winId());
-            Z3D::ZOSXUtils::applyTranslucentBackgroundEffect(win->winId());
+//            Z3D::ZOSXUtils::applyTranslucentBackgroundEffect(win->winId());
             break;
         }
     }

@@ -60,6 +60,11 @@ bool ZPointCloudListItem::visible() const
     return m_visible;
 }
 
+bool ZPointCloudListItem::highlighted() const
+{
+    return m_highlighted;
+}
+
 QMatrix4x4 ZPointCloudListItem::transformation() const
 {
     return m_transformation;
@@ -73,6 +78,16 @@ void ZPointCloudListItem::setVisible(bool visible)
 
     m_visible = visible;
     emit visibleChanged(m_visible);
+}
+
+void ZPointCloudListItem::setHighlighted(bool highlighted)
+{
+    if (m_highlighted == highlighted) {
+        return;
+    }
+
+    m_highlighted = highlighted;
+    emit highlightedChanged(m_highlighted);
 }
 
 void ZPointCloudListItem::setTransformation(QMatrix4x4 transformation)

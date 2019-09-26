@@ -35,6 +35,7 @@ class Z3D_ZPOINTCLOUD_SHARED_EXPORT ZPointCloudListItem : public QObject
     Q_PROPERTY(Z3D::ZPointCloud* pointCloud READ pointCloud CONSTANT)
     Q_PROPERTY(QString name READ name CONSTANT)
     Q_PROPERTY(bool visible READ visible WRITE setVisible NOTIFY visibleChanged)
+    Q_PROPERTY(bool highlighted READ highlighted WRITE setHighlighted NOTIFY highlightedChanged)
     Q_PROPERTY(QMatrix4x4 transformation READ transformation WRITE setTransformation NOTIFY transformationChanged)
 
 public:
@@ -46,20 +47,25 @@ public:
     Z3D::ZPointCloud* pointCloud() const;
     QString name() const;
     bool visible() const;
+    bool highlighted() const;
     QMatrix4x4 transformation() const;
 
 signals:
     void visibleChanged(bool visible);
     void transformationChanged(QMatrix4x4 transformation);
 
+    void highlightedChanged(bool highlighted);
+
 public slots:
     void setVisible(bool visible);
+    void setHighlighted(bool highlighted);
     void setTransformation(QMatrix4x4 transformation);
 
 private:
     const Z3D::ZPointCloudPtr m_pointCloud;
     const QString m_name;
     bool m_visible = true;
+    bool m_highlighted = false;
     QMatrix4x4 m_transformation; // default constructor == identity matrix
 };
 

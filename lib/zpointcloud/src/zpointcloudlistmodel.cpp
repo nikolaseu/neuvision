@@ -142,6 +142,11 @@ QVariant ZPointCloudListModel::data(const QModelIndex &index, int role) const
     return m_p->data(index, role);
 }
 
+bool ZPointCloudListModel::setData(const QModelIndex &index, const QVariant &value, int role)
+{
+    return m_p->setData(index, value, role);
+}
+
 QHash<int, QByteArray> ZPointCloudListModel::roleNames() const
 {
     return m_p->roleNames();

@@ -6,6 +6,10 @@ TARGET = Z3DCloudViewer
 VERSION = $$Z3D_VERSION
 TEMPLATE = app
 
+#CONFIG += resources_big # we have some big files in resources (environment maps)
+
+#QMAKE_INFO_PLIST = resources/Info.plist
+
 HEADERS += \
     zmeshlabutils.h \
     zpointcloudviewercontroller.h

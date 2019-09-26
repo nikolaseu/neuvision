@@ -72,8 +72,9 @@ bool BaseGeometryLoader::load(QIODevice *ioDev, const QString &subMesh)
     if (!doLoad(ioDev, subMesh))
         return false;
 
-//    if (m_normals.isEmpty())
-//        generateAveragedNormals(m_points, m_normals, m_indices);
+    if (m_normals.isEmpty() && !m_indices.isEmpty()) {
+        generateAveragedNormals(m_points, m_normals, m_indices);
+    }
 
 //    if (m_generateTangents && !m_texCoords.isEmpty())
 //        generateTangents(m_points, m_normals, m_indices, m_texCoords, m_tangents);
@@ -93,30 +94,30 @@ bool BaseGeometryLoader::load(QIODevice *ioDev, const QString &subMesh)
     return true;
 }
 
-//void BaseGeometryLoader::generateAveragedNormals(const QVector<QVector3D>& points,
-//                                                 QVector<QVector3D>& normals,
-//                                                 const QVector<unsigned int>& faces) const
-//{
-//    for (int i = 0; i < points.size(); ++i)
-//        normals.append(QVector3D());
+void BaseGeometryLoader::generateAveragedNormals(const QVector<QVector3D>& points,
+                                                 QVector<QVector3D>& normals,
+                                                 const QVector<unsigned int>& faces) const
+{
+    for (int i = 0; i < points.size(); ++i)
+        normals.append(QVector3D());
 
-//    for (int i = 0; i < faces.size(); i += 3) {
-//        const QVector3D &p1 = points[ faces[i]   ];
-//        const QVector3D &p2 = points[ faces[i+1] ];
-//        const QVector3D &p3 = points[ faces[i+2] ];
+    for (int i = 0; i < faces.size(); i += 3) {
+        const QVector3D &p1 = points[ faces[i]   ];
+        const QVector3D &p2 = points[ faces[i+1] ];
+        const QVector3D &p3 = points[ faces[i+2] ];
 
-//        const QVector3D a = p2 - p1;
-//        const QVector3D b = p3 - p1;
-//        const QVector3D n = QVector3D::crossProduct(a, b).normalized();
+        const QVector3D a = p2 - p1;
+        const QVector3D b = p3 - p1;
+        const QVector3D n = QVector3D::crossProduct(a, b).normalized();
 
-//        normals[ faces[i]   ] += n;
-//        normals[ faces[i+1] ] += n;
-//        normals[ faces[i+2] ] += n;
-//    }
+        normals[ faces[i]   ] += n;
+        normals[ faces[i+1] ] += n;
+        normals[ faces[i+2] ] += n;
+    }
 
-//    for (int i = 0; i < normals.size(); ++i)
-//        normals[i].normalize();
-//}
+    for (int i = 0; i < normals.size(); ++i)
+        normals[i].normalize();
+}
 
 //void BaseGeometryLoader::generateGeometry()
 //{

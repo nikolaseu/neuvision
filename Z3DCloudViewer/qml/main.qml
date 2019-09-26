@@ -2,12 +2,15 @@ import Qt3D.Core 2.12 as Q3D
 import Qt3D.Extras 2.12
 import Qt3D.Input 2.12
 import Qt3D.Render 2.12
+import Qt3D.Logic 2.12 // for FrameAction
 
 import QtQuick 2.10
 import QtQuick.Controls 2.3
 import QtQuick.Dialogs 1.3
 import QtQuick.Layouts 1.3
 import QtQuick.Scene3D 2.0
+
+import QtGraphicalEffects 1.12
 
 import Qt.labs.settings 1.0
 
@@ -21,7 +24,7 @@ ApplicationWindow {
     height: 800
     visible: true
 
-    color: Qt.platform.os == "osx" ? "transparent" : "#ddd"
+    color: "#ddd"
 
     property int maxRecentFiles: 20
     property string lastOpenedFile
@@ -108,10 +111,47 @@ ApplicationWindow {
             Q3D.Entity {
                 id: sceneRoot
 
+                FrameAction {
+                    id: frameAction
+                    property int frames: 0
+                    property int framesPerSecond: 0
+                    onTriggered: {
+                        frames++;
+                    }
+
+                    onFramesPerSecondChanged: {
+                        console.log("FPS changed:", frameAction.framesPerSecond);
+                    }
+
+                    Timer {
+                        interval: 1000
+                        repeat: true
+                        running: true
+                        onTriggered: {
+                            frameAction.framesPerSecond = frameAction.frames;
+                            frameAction.frames = 0;
+                        }
+                        onRunningChanged: {
+                            frameAction.frames = 0;
+                        }
+                    }
+                }
+
+                Environment {
+                    /// the skybox and environment lights, for PBR
+                    id: environment
+                }
+
                 ZPointCloud.BasicCamera {
                     id: mainCamera
                     aspectRatio: scene3d.width/scene3d.height
+                    fieldOfView: 60
                 }
+
+//                ZPointCloud.ZCameraController {
+//                    camera: mainCamera
+//                    viewport: Qt.rect(0, 0, scene3d.width, scene3d.height)
+//                }
 
                 ZPointCloud.DefaultCameraController {
                     camera: mainCamera
@@ -198,6 +238,7 @@ ApplicationWindow {
                             screenRayCaster.mousePosition = Qt.point(mouse.x, mouse.y);
                         }
 //                        onDoubleClicked: {
+////                            console.log("mouse double clicked")
 //                            screenRayCaster.triggerForMousePosition();
 //                        }
 

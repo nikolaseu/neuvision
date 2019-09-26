@@ -105,9 +105,9 @@ public:
 protected:
     virtual bool doLoad(QIODevice *ioDev, const QString &subMesh = QString()) = 0;
 
-//    void generateAveragedNormals(const QVector<QVector3D>& points,
-//                                 QVector<QVector3D>& normals,
-//                                 const QVector<unsigned int>& faces) const;
+    void generateAveragedNormals(const QVector<QVector3D>& points,
+                                 QVector<QVector3D>& normals,
+                                 const QVector<unsigned int>& faces) const;
 //    void generateGeometry();
 //    void generateTangents(const QVector<QVector3D>& points,
 //                          const QVector<QVector3D>& normals,
