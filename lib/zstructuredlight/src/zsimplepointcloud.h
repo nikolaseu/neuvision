@@ -45,7 +45,8 @@ public:
     virtual unsigned int width() const override;
     virtual unsigned int pointStep() const override;
     virtual unsigned int rowStep() const override;
-    virtual QByteArray data() const override;
+    virtual QByteArray vertexData() const override;
+    QVector<unsigned int> indices() const override;
     virtual const std::vector<ZPointField *> &fields() const override;
 
 public:

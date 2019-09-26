@@ -79,7 +79,7 @@ ApplicationWindow {
         id: fileDialog
         title: qsTr("Open a point cloud or project")
         folder: shortcuts.home
-        nameFilters: ["PLY files (*.ply)", "STL files (*.stl)", "PCD files (*.pcd)", "Meshlab project (*.mlp)" ]
+        nameFilters: ["PLY files (*.ply)", "OBJ files (*.obj)", "STL files (*.stl)", "PCD files (*.pcd)", "Meshlab project (*.mlp)" ]
         onAccepted: {
             controller.loadFile(fileDialog.fileUrl);
         }
@@ -101,9 +101,9 @@ ApplicationWindow {
 
             aspects: ["input", "logic"]
             cameraAspectRatioMode: Scene3D.AutomaticAspectRatio
-            focus: true
+            focus: true // required for keyboard
             multisample: false // faster
-            hoverEnabled: true
+            hoverEnabled: true // required for mouse handler
 
             Q3D.Entity {
                 id: sceneRoot
@@ -117,23 +117,45 @@ ApplicationWindow {
                     camera: mainCamera
                 }
 
-                function printHits(desc, hits) {
-                    console.log(desc, hits.length)
-                    for (var i=0; i<hits.length; i++) {
-                        console.log("  " + hits[i].entity.objectName, hits[i].distance,
-                                    hits[i].worldIntersection.x, hits[i].worldIntersection.y, hits[i].worldIntersection.z)
-                    }
+                Q3D.Entity {
+                    // These lights are mostly for standard shading, non-PBR
+                    components: [
+                        DirectionalLight {
+                            // This light is to illuminate the front faces
+                            intensity: 0.5
+                            worldDirection: mainCamera.viewCenter.minus(mainCamera.position).normalized()
+                        },
+                        DirectionalLight {
+                            // This light is to illuminate the back faces
+                            intensity: 0.2
+                            worldDirection: mainCamera.position.minus(mainCamera.viewCenter).normalized()
+                        }
+                    ]
                 }
 
                 components: [
                     RenderSettings {
                         id: renderSettings
-                        activeFrameGraph: ForwardRenderer {
-                            id: renderer
-                            camera: mainCamera
-                            clearColor: window.color
+                        activeFrameGraph: RenderSurfaceSelector {
+                            ClearBuffers {
+                                buffers : ClearBuffers.ColorDepthBuffer
+                                clearColor: window.color
+                                CameraSelector {
+                                    camera: mainCamera
+                                    FrustumCulling {
+                                        // frustum culling is per-object, so it will not really help as much as I would like
+                                        RenderStateSet {
+                                            renderStates: [
+                                                DepthTest { depthFunction: DepthTest.Less },
+                                                CullFace { mode: CullFace.NoCulling } // we want to see back faces, the inside
+                                            ]
+                                        }
+                                    }
+                                }
+                            }
                         }
-                        renderPolicy: RenderSettings.OnDemand
+//                        renderPolicy: RenderSettings.OnDemand // seems like this makes it stutter (at least in macOS)
+                        pickingSettings.faceOrientationPickingMode: PickingSettings.FrontAndBackFace // also pick on the "inside" of objects
                         pickingSettings.pickMethod: PickingSettings.PrimitivePicking
                         pickingSettings.pickResultMode: PickingSettings.NearestPick
                     },
@@ -144,7 +166,6 @@ ApplicationWindow {
                     ScreenRayCaster {
                         id: screenRayCaster
                         onHitsChanged: {
-//                            sceneRoot.printHits("Screen hits", hits)
                             if (hits.length > 0) {
 //                                console.log("  " + hits[0].worldIntersection.x, hits[0].worldIntersection.y, hits[0].worldIntersection.z);
                                 mainCamera.zoomTo(Qt.vector3d(hits[0].worldIntersection.x, hits[0].worldIntersection.y, hits[0].worldIntersection.z));
@@ -155,7 +176,7 @@ ApplicationWindow {
                             screenRayCaster.trigger(mousePosition)
                         }
 
-                        property var mousePosition
+                        property point mousePosition
                     },
 //                    KeyboardHandler {
 //                        id: keyboardHandler
@@ -200,8 +221,8 @@ ApplicationWindow {
                     delegate: ZPointCloud.PointCloudEntity {
                         id: pointCloudEntity
 
-                        enabled: qtObject.visible
-                        pointCloud: qtObject.pointCloud
+                        enabled: model.visible
+                        pointCloud: model.pointCloud
                         levelOfDetailCamera: mainCamera
 
                         pointSize: pointSizeSlider.value
@@ -211,78 +232,122 @@ ApplicationWindow {
                         specular: specularSlider.value
                         shininess: shininessSlider.value
 
-                        showColors: showColorsSwitch.checked
-                        defaultColor: colorChooser.color
+                        showColors: !model.highlighted && showColorsSwitch.checked
+                        defaultColor: !model.highlighted ? colorChooser.color : "red"
 
                         // if it's set to a non-negative value, it will be fixed and will not be updated automatically
 //                        levelOfDetail: 4
-//                        levelOfDetail: 0
+                        levelOfDetail: 0
 
                         transform: Q3D.Transform {
-                            matrix: qtObject.transformation
+                            matrix: model.transformation
                         }
-                    }
-
-                    onCountChanged: {
-                        // center camera when something is added/removed
-                        mainCamera.viewAll();
                     }
                 }
             }
         }
 
-        ColumnLayout {
-            id: menuLayout
+        RowLayout {
             anchors.right: parent.right
             anchors.top: parent.top
             anchors.bottom: parent.bottom
             width: 320
-            //opacity: mouseAreaForMenuLayout.containsMouse ? 1 : 0.3
+            spacing: 0
             visible: pointCloudEntityInstatiator.count > 0
 
-            Behavior on opacity {
-                OpacityAnimator {
-                    duration: 100
+            LinearGradient { //! TODO this is not efficient but it's easy to implement
+                id: edge
+                Layout.fillHeight: true
+                width: 4
+                start: Qt.point(0, 0)
+                end: Qt.point(width, 0)
+                property color backgroundColor: Qt.darker(window.color, 2.5)
+                gradient: Gradient {
+                    GradientStop { position: 0.0; color: Qt.rgba(edge.backgroundColor.r, edge.backgroundColor.g, edge.backgroundColor.b, 0.0) }
+                    GradientStop { position: 0.8; color: Qt.rgba(edge.backgroundColor.r, edge.backgroundColor.g, edge.backgroundColor.b, 0.1) }
+                    GradientStop { position: 1.0; color: Qt.rgba(edge.backgroundColor.r, edge.backgroundColor.g, edge.backgroundColor.b, 0.3) }
                 }
             }
 
-            RowLayout {
-                Layout.fillWidth: true
-
-                Button {
-                    text: "Open file..."
-                    onClicked: fileDialog.open()
-                }
-
-                Button {
-                    text: "Settings"
-                    onClicked: drawer.open()
-                }
-            }
-
-            ListView {
+            Item {
+                id: rightMenu
                 Layout.fillHeight: true
                 Layout.fillWidth: true
 
-                model: controller.model
+                ZFastBlur {
+                    anchors.fill: parent
+                    source: scene3d
+                    radius: 256
+                }
 
-                delegate: CheckDelegate {
-                    text: qtObject.name
-                    checkable: true
-                    checked: qtObject.visible
+                Rectangle {
+                    id: backgroundOverlay
+                    anchors.fill: parent
+                    property color backgroundColor: Qt.darker(window.color, 1.1)
+                    color: Qt.rgba(backgroundColor.r, backgroundColor.g, backgroundColor.b, 0.2)
+                }
 
-                    onCheckedChanged: {
-                        qtObject.visible = checked
+                ColumnLayout {
+                    id: menuLayout
+                    anchors.fill: parent
+
+                    RowLayout {
+                        id: headerLayout
+                        Button {
+                            text: "Open file..."
+                            onClicked: fileDialog.open()
+                        }
+
+                        Button {
+                            text: "Settings"
+                            onClicked: drawer.open()
+                        }
+                    }
+
+                    ListView {
+                        id: pointCloudListView
+                        Layout.fillHeight: true
+                        Layout.fillWidth: true
+                        clip: true
+
+                        model: controller.model
+
+                        headerPositioning: ListView.OverlayHeader
+                        header: Rectangle {
+                            width: parent.width
+                            height: 1
+                            color: "#11000000"
+                            visible: !pointCloudListView.atYBeginning
+                        }
+
+                        delegate: PointCloudListDelegate {
+                            width: pointCloudListView.width
+                            text: model.name
+                            checked: model.visible
+
+                            onCheckedChanged: {
+                                model.visible = checked
+                            }
+
+                            onHoveredChanged: {
+                                if (hovered) {
+                                    pointCloudListView.currentIndex = index
+                                }
+                                model.highlighted = hovered && ListView.isCurrentItem
+                            }
+
+                            Rectangle {
+                                visible: model.highlighted
+                                anchors.fill: parent
+                                z: -1
+                                color: backgroundOverlay.color
+                            }
+                        }
+
+                        ScrollBar.vertical: ScrollBar {}
                     }
                 }
             }
-        }
-
-        MouseArea {
-            id: mouseAreaForMenuLayout
-            anchors.fill: menuLayout
-            hoverEnabled: true
-            acceptedButtons: Qt.NoButton
         }
 
         Drawer {
@@ -311,7 +376,7 @@ ApplicationWindow {
                 SwitchDelegate {
                     id: showColorsSwitch
                     Layout.fillWidth: true
-                    checked: true
+                    checked: false
                     text: qsTr("Show object colors")
                 }
 

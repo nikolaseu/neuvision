@@ -28,11 +28,27 @@ Entity {
     GeometryRenderer {
         id: pointCloudMesh
 
-        primitiveType: GeometryRenderer.Points
+        primitiveType: pointCloudGeometry.hasTriangles
+                       ? GeometryRenderer.Triangles
+                       : GeometryRenderer.Points
+
         geometry: PointCloudGeometry {
             id: pointCloudGeometry
-            levelOfDetail: root.levelOfDetail < 0 ? levelOfDetail.currentIndex : root.levelOfDetail
+            levelOfDetail: root.levelOfDetail < 0
+                           ? levelOfDetail.currentIndex
+                           : root.levelOfDetail
         }
+    }
+
+    MetalRoughMaterial {
+        id: material
+        baseColor: defaultColor
+        metalness: specular
+        roughness: shininess
+    }
+
+    PerVertexColorMaterial {
+        id: perVertexColorMaterial
     }
 
     ShaderProgram {
@@ -49,7 +65,7 @@ Entity {
     }
 
     Material {
-        id: material
+        id: pointCloudMaterial
 
         effect: Effect {
             parameters: [
@@ -103,7 +119,11 @@ Entity {
 
     components: [
         pointCloudMesh,
-        material,
+        !pointCloudGeometry.hasTriangles
+            ? pointCloudMaterial
+            : (pointCloudGeometry.hasColors && root.showColors)
+                ? perVertexColorMaterial
+                : material,
         transform,
         levelOfDetail
     ]

@@ -83,6 +83,8 @@ public:
             m_fields.push_back(new ZPointField("rgb", offset+0, ZPointField::FLOAT32, 1));
             offset += 4;
         }
+
+        m_indices = loader.indices();
     }
 
     void updateAttributes() override { }
@@ -91,7 +93,8 @@ public:
     unsigned int pointStep() const override { return stride; }
     unsigned int rowStep() const override { return width(); }
 
-    QByteArray data() const override { return bufferBytes; }
+    QByteArray vertexData() const override { return bufferBytes; }
+    QVector<unsigned int> indices() const override { return m_indices; }
     const std::vector<ZPointField *> &fields() const override { return m_fields; }
 
 private:
@@ -100,6 +103,7 @@ private:
     quint32 stride = 0;
     std::vector<ZPointField *> m_fields;
     QByteArray bufferBytes;
+    QVector<unsigned int> m_indices;
 };
 
 }

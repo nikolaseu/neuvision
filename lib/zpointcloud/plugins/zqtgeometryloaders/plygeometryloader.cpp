@@ -385,6 +385,7 @@ bool PlyGeometryLoader::parseMesh(QIODevice *ioDev)
             };
 
             RGBAColor color;
+            color.rgba[3] = 0xFF; // if there's no alpha in any vertex, it will be 255
 
             QVector<unsigned int> faceIndices;
 
@@ -424,9 +425,9 @@ bool PlyGeometryLoader::parseMesh(QIODevice *ioDev)
 
                         if (element.type == ElementVertex) {
                             switch (property.type) {
-                            case PropertyColorB: color.rgba[0] = value; break;
+                            case PropertyColorR: color.rgba[0] = value; break;
                             case PropertyColorG: color.rgba[1] = value; break;
-                            case PropertyColorR: color.rgba[2] = value; break;
+                            case PropertyColorB: color.rgba[2] = value; break;
                             case PropertyColorA: color.rgba[3] = value; break;
                             default: break;
                             }

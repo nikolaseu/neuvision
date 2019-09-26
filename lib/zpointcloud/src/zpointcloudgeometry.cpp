@@ -41,11 +41,14 @@ Q_LOGGING_CATEGORY(loggingCategory, "z3d.zpointcloud.zpointcloudgeometry", QtInf
 class ZPointCloudGeometryPrivate
 {
 public:
-    Qt3DRender::QBuffer *vertexBuffer = nullptr;
     ZPointCloud *pointCloud = nullptr;
+
+    Qt3DRender::QBuffer *vertexBuffer = nullptr;
+    Qt3DRender::QBuffer *indexBuffer = nullptr;
 
     Qt3DRender::QAttribute* normalsAttrib = nullptr;
     Qt3DRender::QAttribute* colorsAttrib = nullptr;
+    Qt3DRender::QAttribute *indexAttribute = nullptr;
 
     uint levelOfDetail = 0; // 0 == original data
 };
@@ -56,6 +59,7 @@ ZPointCloudGeometry::ZPointCloudGeometry(Qt3DCore::QNode *parent)
 {
     qDebug(loggingCategory) << "creating" << this;
     m_p->vertexBuffer = new Qt3DRender::QBuffer(this);
+    m_p->indexBuffer = new Qt3DRender::QBuffer(this);
 }
 
 ZPointCloudGeometry::~ZPointCloudGeometry()
@@ -89,17 +93,6 @@ Qt3DRender::QAttribute::VertexBaseType pointFieldTypeToAttributeType(const ZPoin
     return Qt3DRender::QAttribute::Byte;
 }
 
-void ZPointCloudGeometry::updateVertices()
-{
-    if (m_p->pointCloud->data().length() == 0) {
-        return;
-    }
-
-    updateAttributes();
-
-    m_p->vertexBuffer->setData(m_p->pointCloud->data());
-}
-
 ZPointCloud *ZPointCloudGeometry::pointCloud() const
 {
     return m_p->pointCloud;
@@ -118,6 +111,11 @@ bool ZPointCloudGeometry::hasNormals() const
 bool ZPointCloudGeometry::hasColors() const
 {
     return m_p->colorsAttrib != nullptr;
+}
+
+bool ZPointCloudGeometry::hasTriangles() const
+{
+    return m_p->indexAttribute != nullptr;
 }
 
 void ZPointCloudGeometry::updateAttributes()
@@ -218,6 +216,23 @@ void ZPointCloudGeometry::updateAttributes()
         attrib->setAttributeType(Qt3DRender::QAttribute::VertexAttribute);
         addAttribute(attrib);
     }
+
+    /// If what we have is actually a mesh, also include faces (indices)
+    //! FIXME
+    if (m_p->pointCloud->indices().size() > 0) {
+        // use UINT - no conversion needed, but let's ensure int is 32-bit!
+        Q_ASSERT(sizeof(int) == sizeof(quint32));
+        Qt3DRender::QAttribute *indexAttribute = new Qt3DRender::QAttribute(m_p->indexBuffer,
+                                                                            Qt3DRender::QAttribute::UnsignedInt,
+                                                                            1,
+                                                                            m_p->pointCloud->indices().size());
+        indexAttribute->setAttributeType(Qt3DRender::QAttribute::IndexAttribute);
+        addAttribute(indexAttribute);
+
+        m_p->indexAttribute = indexAttribute;
+    } else {
+        m_p->indexAttribute = nullptr;
+    }
 }
 
 void ZPointCloudGeometry::setPointCloud(ZPointCloud *pointCloud)
@@ -227,16 +242,25 @@ void ZPointCloudGeometry::setPointCloud(ZPointCloud *pointCloud)
     }
 
     m_p->pointCloud = pointCloud;
-    updateVertices();
+
+    updateAttributes();
+
+    m_p->vertexBuffer->setData(m_p->pointCloud->vertexData());
+
+    //! TODO this is making a copy, it's supposed to be unnecessary but seems like
+    //! original data was being deleted so it was crashing when using picking for example
+    m_p->indexBuffer->setData(QByteArray(reinterpret_cast<const char*>(m_p->pointCloud->indices().data()),
+                                                      int(sizeof(quint32)) * m_p->pointCloud->indices().size()));
 
     emit hasNormalsChanged(hasNormals());
     emit hasColorsChanged(hasColors());
+    emit hasTrianglesChanged(hasTriangles());
     emit pointCloudChanged(m_p->pointCloud);
 }
 
 void ZPointCloudGeometry::setLevelOfDetail(uint levelOfDetail)
 {
-    if (m_p->levelOfDetail == levelOfDetail) {
+    /*if (m_p->levelOfDetail == levelOfDetail) {
         return;
     }
 
@@ -261,7 +285,7 @@ void ZPointCloudGeometry::setLevelOfDetail(uint levelOfDetail)
 
     m_p->levelOfDetail = levelOfDetail;
 
-    emit levelOfDetailChanged(m_p->levelOfDetail);
+    emit levelOfDetailChanged(m_p->levelOfDetail);*/
 }
 
 } // namespace Z3D

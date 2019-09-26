@@ -30,7 +30,7 @@ void main()
     gl_Position = vec4(vertexPosition, 1.0);
 
     vertexOut.position = vertexPosition;
-    vertexOut.color = hasColors ? vertexColor.bgr : defaultColor;
+    vertexOut.color = hasColors ? vertexColor.rgb : defaultColor;
     vertexOut.normal = hasNormals ? vertexNormal.xyz : vec3(0.0,0.0,1.0);
     vertexOut.radius = 0.1;//vertexNormal.w; // if we want to send normal.w for radius of splat
 }

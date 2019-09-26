@@ -72,10 +72,16 @@ unsigned int ZSimplePointCloud::rowStep() const
     return width();
 }
 
-QByteArray ZSimplePointCloud::data() const
+QByteArray ZSimplePointCloud::vertexData() const
 {
     /// do not copy data, but we need to be careful!
     return QByteArray::fromRawData(reinterpret_cast<const char*>(m_points.data()), int(m_points.size() * pointStep()));
+}
+
+QVector<unsigned int> ZSimplePointCloud::indices() const
+{
+    /// there's nothing here
+    return {};
 }
 
 const std::vector<ZPointField *> &ZSimplePointCloud::fields() const

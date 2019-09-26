@@ -69,7 +69,7 @@ ZPointCloudPCLWrapper::ZPointCloudPCLWrapper(pcl::PCLPointCloud2 *pointCloud)
     , m_pointCloud(pointCloud)
 {
     qDebug(loggingCategory) << "creating point cloud with" << width() * height() << "points,"
-             << "size:" << data().size() << "bytes";
+             << "size:" << vertexData().size() << "bytes";
 }
 
 ZPointCloudPCLWrapper::~ZPointCloudPCLWrapper()
@@ -113,7 +113,7 @@ unsigned int ZPointCloudPCLWrapper::rowStep() const
     return m_pointCloud->row_step;
 }
 
-QByteArray ZPointCloudPCLWrapper::data() const
+QByteArray ZPointCloudPCLWrapper::vertexData() const
 {
     /// do not copy data, but we need to be careful!
     return QByteArray::fromRawData(reinterpret_cast<const char*>(&m_pointCloud->data[0]), int(m_pointCloud->data.size()));
