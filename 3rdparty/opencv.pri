@@ -3,7 +3,7 @@
 # Windows
 win32 {
     OPENCV_DIR = C:/Tools/vcpkg/installed/x64-windows # assuming vcpkg installed at C:/Tools/vcpkg/
-    OPENCV_VER = 341
+    OPENCV_VER = #411 # latest opencv files (as built in vcpkg) are not versioned so this is not necessary
 
     OPENCV_INCLUDE_DIR = $$OPENCV_DIR/include
     CONFIG(release, debug|release) {

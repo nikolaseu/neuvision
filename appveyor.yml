@@ -37,7 +37,7 @@ install: # scripts that run after cloning repository
   # pause the build until a special “lock” file on VM desktop is deleted
   # useful to manually copy/download/update vcpkg libs like vtk & pcl that cannot be built in CI
   #- ps: $blockRdp = $true; iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
-  - vcpkg install opencv:x64-windows
+  - vcpkg install opencv:x64-windows --recurse
   #- vcpkg install vtk:x64-windows # takes a really long time, build won't work on CI
   #- vcpkg install pcl:x64-windows # takes a really long time, build won't work on CI
   # Just to debug what vcpkg installed
