@@ -24,6 +24,7 @@
 #include "zpluginloader.h"
 
 #include <QDebug>
+#include <QFileInfo>
 #include <QSplashScreen>
 #include <QThreadPool>
 
@@ -42,6 +43,14 @@ ZApplication::ZApplication(int &argc, char **argv)
 #ifdef Z3D_THREAD_COUNT_LIMIT
     QThreadPool::globalInstance()->setMaxThreadCount(Z3D_THREAD_COUNT_LIMIT);
 #endif
+
+    setOrganizationDomain("z3d.neuvision");
+    setOrganizationName("Z3D");
+    setApplicationName(QFileInfo(applicationFilePath()).baseName());
+    setApplicationVersion(Z3D_VERSION_BUILD_STR);
+
+    qInfo() << "starting" << applicationName()
+            << "version" << applicationVersion();
 }
 
 void ZApplication::loadPlugins()
