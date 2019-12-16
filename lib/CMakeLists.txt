@@ -1,0 +1,8 @@
+add_subdirectory(zcore)
+add_subdirectory(zgui)
+add_subdirectory(zcameraacquisition)
+add_subdirectory(zcameracalibration)
+add_subdirectory(zcalibratedcamera)
+add_subdirectory(zcameracalibrator)
+add_subdirectory(zpointcloud)
+add_subdirectory(zstructuredlight)

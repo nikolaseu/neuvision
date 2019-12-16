@@ -18,8 +18,8 @@
 // along with Z3D.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-#include "zcamerainfo.h"
-#include "zcameraplugininterface.h"
+#include "ZCameraAcquisition/zcamerainfo.h"
+#include "ZCameraAcquisition/zcameraplugininterface.h"
 
 namespace Z3D
 {

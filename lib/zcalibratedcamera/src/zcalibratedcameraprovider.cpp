@@ -18,11 +18,12 @@
 // along with Z3D.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-#include "zcalibratedcameraprovider.h"
+#include "ZCalibratedCamera/zcalibratedcameraprovider.h"
 
-#include "zcalibratedcamera.h"
-#include "zcameracalibrationprovider.h"
-#include "zcameraprovider.h"
+#include "ZCalibratedCamera/zcalibratedcamera.h"
+
+#include "ZCameraAcquisition/zcameraprovider.h"
+#include "ZCameraCalibration/zcameracalibrationprovider.h"
 
 #include <QDebug>
 #include <QDir>

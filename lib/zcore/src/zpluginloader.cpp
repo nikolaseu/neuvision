@@ -18,9 +18,9 @@
 // along with Z3D.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-#include "zpluginloader.h"
+#include "ZCore/zpluginloader.h"
 
-#include "zcoreplugin.h"
+#include "ZCore/zcoreplugin.h"
 
 #include <QCoreApplication>
 #include <QDebug>

@@ -21,11 +21,11 @@
 #include "zbinarypatternprojection.h"
 
 #include "zbinarypatterndecoder.h"
-#include "zcameraimage.h"
-#include "zdecodedpattern.h"
-#include "zprojectedpattern.h"
 
-#include "zsettingsitem.h"
+#include "ZCameraAcquisition/zcameraimage.h"
+#include "ZCore/zsettingsitem.h"
+#include "ZStructuredLight/zdecodedpattern.h"
+#include "ZStructuredLight/zprojectedpattern.h"
 
 #include <opencv2/imgcodecs.hpp>
 

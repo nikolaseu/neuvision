@@ -18,7 +18,7 @@
 // along with Z3D.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-#include "zstructuredlightpattern.h"
+#include "ZStructuredLight/zstructuredlightpattern.h"
 
 namespace Z3D
 {

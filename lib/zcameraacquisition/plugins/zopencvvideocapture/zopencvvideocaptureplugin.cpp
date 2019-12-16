@@ -20,8 +20,9 @@
 
 #include "zopencvvideocaptureplugin.h"
 
-#include "zcamerainfo.h"
 #include "zopencvvideocapturecamera.h"
+
+#include "ZCameraAcquisition/zcamerainfo.h"
 
 #include <QDebug>
 

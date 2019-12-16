@@ -20,11 +20,12 @@
 
 #include "zstereoslsplugin.h"
 
-#include "zcameracalibrationprovider.h"
-#include "zcameraprovider.h"
 #include "zdualcamerastereosls.h"
-#include "zpatternprojectionprovider.h"
 #include "zsinglecamerastereosls.h"
+
+#include "ZCameraAcquisition/zcameraprovider.h"
+#include "ZCameraCalibration/zcameracalibrationprovider.h"
+#include "ZStructuredLight/zpatternprojectionprovider.h"
 
 #include <QDebug>
 #include <QLabel>

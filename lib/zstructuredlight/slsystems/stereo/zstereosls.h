@@ -19,7 +19,7 @@
 
 #pragma once
 
-#include "zstructuredlightsystem.h"
+#include "ZStructuredLight/zstructuredlightsystem.h"
 
 #include <Z3DCameraAcquisition>
 #include <Z3DCameraCalibration>

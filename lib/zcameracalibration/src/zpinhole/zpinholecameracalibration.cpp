@@ -18,7 +18,7 @@
 // along with Z3D.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-#include "zpinholecameracalibration.h"
+#include "ZCameraCalibration/zpinholecameracalibration.h"
 
 #include <opencv2/imgproc.hpp> // undistortPoints
 #include <opencv2/calib3d.hpp> // rodrigues, solvePnP

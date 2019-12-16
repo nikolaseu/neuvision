@@ -19,7 +19,7 @@
 
 #pragma once
 
-#include "zpatternprojectionplugin.h"
+#include "ZStructuredLight/zpatternprojectionplugin.h"
 
 namespace Z3D
 {

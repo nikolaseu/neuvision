@@ -18,7 +18,7 @@
 // along with Z3D.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-#include "zstructuredlightsystemplugin.h"
+#include "ZStructuredLight/zstructuredlightsystemplugin.h"
 
 Z3D::ZStructuredLightSystemPlugin::~ZStructuredLightSystemPlugin()
 {

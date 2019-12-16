@@ -18,19 +18,20 @@
 // along with Z3D.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-#include "zcameracalibratorwidget.h"
+#include "ZCameraCalibrator/zcameracalibratorwidget.h"
 #include "ui_zcameracalibratorwidget.h"
 
-#include "zcalibrationimagemodel.h"
-#include "zcalibrationpatternfinder.h"
-#include "zcalibrationpatternfinderprovider.h"
-#include "zcalibratedcamera.h"
-#include "zcameracalibration.h"
-#include "zcameracalibrationprovider.h"
-#include "zcameracalibrator.h"
-#include "zcameracalibratorworker.h"
-#include "zcameraimage.h"
-#include "zcamerainterface.h"
+#include "ZCameraCalibrator/zcalibrationimagemodel.h"
+#include "ZCameraCalibrator/zcalibrationpatternfinder.h"
+#include "ZCameraCalibrator/zcalibrationpatternfinderprovider.h"
+#include "ZCameraCalibrator/zcameracalibratorworker.h"
+
+#include "ZCalibratedCamera/zcalibratedcamera.h"
+#include "ZCameraAcquisition/zcameraimage.h"
+#include "ZCameraAcquisition/zcamerainterface.h"
+#include "ZCameraCalibration/zcameracalibration.h"
+#include "ZCameraCalibration/zcameracalibrationprovider.h"
+#include "ZCameraCalibration/zcameracalibrator.h"
 
 #include "3rdParty/objectcontroller.h"
 

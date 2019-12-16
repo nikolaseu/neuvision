@@ -1,0 +1,4 @@
+add_subdirectory(zincompletecirclegrid)
+add_subdirectory(zopencvstandard)
+add_subdirectory(zringgrid)
+add_subdirectory(zringgrid2)

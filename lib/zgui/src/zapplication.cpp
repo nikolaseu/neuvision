@@ -18,10 +18,10 @@
 // along with Z3D.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-#include "zapplication.h"
+#include "ZGui/zapplication.h"
 
-#include "zloghandler_p.h"
-#include "zpluginloader.h"
+#include "ZCore/zloghandler_p.h"
+#include "ZCore/zpluginloader.h"
 
 #include <QDebug>
 #include <QFileInfo>

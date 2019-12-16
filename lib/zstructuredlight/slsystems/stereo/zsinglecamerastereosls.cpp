@@ -20,8 +20,8 @@
 
 #include "zsinglecamerastereosls.h"
 
-#include "zdecodedpattern.h"
-#include "zprojectedpattern.h"
+#include "ZStructuredLight/zdecodedpattern.h"
+#include "ZStructuredLight/zprojectedpattern.h"
 
 #include <QDebug>
 

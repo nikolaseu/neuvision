@@ -42,7 +42,9 @@
 #include <QMetaProperty>
 #include <QVBoxLayout>
 #include <QScrollArea>
+
 #include "objectcontroller.h"
+
 #include "qtvariantproperty.h"
 #include "qtgroupboxpropertybrowser.h"
 #include "qttreepropertybrowser.h"

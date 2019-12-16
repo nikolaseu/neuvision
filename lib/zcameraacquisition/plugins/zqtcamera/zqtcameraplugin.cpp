@@ -20,8 +20,9 @@
 
 #include "zqtcameraplugin.h"
 
-#include "zcamerainfo.h"
 #include "zqtcamera.h"
+
+#include "ZCameraAcquisition/zcamerainfo.h"
 
 #include <QCameraInfo>
 

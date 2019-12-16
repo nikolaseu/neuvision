@@ -18,9 +18,10 @@
 // along with Z3D.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-#include "zcameraacquisitionmanager.h"
-#include "zcameraimage.h"
-#include "zcamerainterface.h"
+#include "ZStructuredLight/zcameraacquisitionmanager.h"
+
+#include "ZCameraAcquisition/zcameraimage.h"
+#include "ZCameraAcquisition/zcamerainterface.h"
 
 #include <QDir>
 

@@ -18,7 +18,7 @@
 // along with Z3D.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-#include "zcameraimage.h"
+#include "ZCameraAcquisition/zcameraimage.h"
 
 #include "string.h" // memcpy
 

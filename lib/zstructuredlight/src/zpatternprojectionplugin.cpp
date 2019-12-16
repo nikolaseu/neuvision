@@ -18,7 +18,7 @@
 // along with Z3D.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-#include "zpatternprojectionplugin.h"
+#include "ZStructuredLight/zpatternprojectionplugin.h"
 
 Z3D::ZPatternProjectionPlugin::~ZPatternProjectionPlugin()
 {

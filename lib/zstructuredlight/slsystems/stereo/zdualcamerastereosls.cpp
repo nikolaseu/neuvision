@@ -20,12 +20,12 @@
 
 #include "zdualcamerastereosls.h"
 
-#include "zcamerainterface.h"
-#include "zcamerapreviewer.h"
-#include "zdecodedpattern.h"
-#include "zmulticameracalibratorwidget.h"
+#include "ZCameraAcquisition/zcamerainterface.h"
+#include "ZCameraAcquisition/zcamerapreviewer.h"
+#include "ZCameraCalibrator/zmulticameracalibratorwidget.h"
+#include "ZCore/zsettingsitem.h"
 #include "ZPointCloud/zpointcloud.h"
-#include "zsettingsitem.h"
+#include "ZStructuredLight/zdecodedpattern.h"
 
 #include <QDebug>
 #include <QSettings>

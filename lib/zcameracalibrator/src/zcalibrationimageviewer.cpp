@@ -18,7 +18,7 @@
 // along with Z3D.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-#include "zcalibrationimageviewer.h"
+#include "ZCameraCalibrator/zcalibrationimageviewer.h"
 
 #include <QDebug>
 #include <QGraphicsEllipseItem>

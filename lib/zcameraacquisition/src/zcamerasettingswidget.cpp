@@ -18,13 +18,14 @@
 // along with Z3D.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-#include "zcamerasettingswidget.h"
+#include "ZCameraAcquisition/zcamerasettingswidget.h"
 #include "ui_zcamerasettingswidget.h"
+
+#include "ZCameraAcquisition/zcamerainterface.h"
 
 #include "qtpropertymanager.h"
 #include "qteditorfactory.h"
 #include "qttreepropertybrowser.h"
-#include "zcamerainterface.h"
 
 #include <QDebug>
 #include <QTimer>

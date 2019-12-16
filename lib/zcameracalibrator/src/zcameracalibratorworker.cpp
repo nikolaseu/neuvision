@@ -18,13 +18,14 @@
 // along with Z3D.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-#include "zcameracalibratorworker.h"
+#include "ZCameraCalibrator/zcameracalibratorworker.h"
 
-#include "zcalibrationimage.h"
-#include "zcalibrationimagemodel.h"
-#include "zcalibrationpatternfinder.h"
-#include "zcameracalibration.h"
-#include "zcameracalibrator.h"
+#include "ZCameraCalibrator/zcalibrationimage.h"
+#include "ZCameraCalibrator/zcalibrationimagemodel.h"
+#include "ZCameraCalibrator/zcalibrationpatternfinder.h"
+
+#include "ZCameraCalibration/zcameracalibration.h"
+#include "ZCameraCalibration/zcameracalibrator.h"
 
 #include <QCoreApplication>
 #include <QTime>

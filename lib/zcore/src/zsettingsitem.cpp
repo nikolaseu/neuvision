@@ -1,4 +1,4 @@
-#include "zsettingsitem.h"
+#include "ZCore/zsettingsitem.h"
 
 #include "QQmlObjectListModel.h"
 

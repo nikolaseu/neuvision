@@ -20,7 +20,7 @@
 
 #include "zsimulatedcamera.h"
 
-#include "zcameraimage.h"
+#include "ZCameraAcquisition/zcameraimage.h"
 
 #include <QDebug>
 #include <QTimer>

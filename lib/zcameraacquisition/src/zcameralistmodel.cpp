@@ -18,9 +18,9 @@
 // along with Z3D.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-#include "zcameralistmodel.h"
+#include "ZCameraAcquisition/zcameralistmodel.h"
 
-#include "zcamerainterface.h"
+#include "ZCameraAcquisition/zcamerainterface.h"
 
 namespace Z3D
 {

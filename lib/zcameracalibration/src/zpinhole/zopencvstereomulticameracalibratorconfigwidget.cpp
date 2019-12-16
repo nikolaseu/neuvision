@@ -18,10 +18,10 @@
 // along with Z3D.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-#include "zopencvstereomulticameracalibratorconfigwidget.h"
+#include "ZCameraCalibration/zopencvstereomulticameracalibratorconfigwidget.h"
 #include "ui_zopencvstereomulticameracalibratorconfigwidget.h"
 
-#include "zopencvstereomulticameracalibrator.h"
+#include "ZCameraCalibration/zopencvstereomulticameracalibrator.h"
 
 namespace Z3D
 {

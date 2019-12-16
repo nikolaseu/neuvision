@@ -18,7 +18,7 @@
 // along with Z3D.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-#include "zcalibrationpatternfinder.h"
+#include "ZCameraCalibrator/zcalibrationpatternfinder.h"
 
 #include <QDebug>
 

@@ -20,7 +20,7 @@
 
 #include "zbinarypatterndecoder.h"
 
-#include "zdecodedpattern.h"
+#include "ZStructuredLight/zdecodedpattern.h"
 
 #include <map>
 

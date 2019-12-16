@@ -18,9 +18,9 @@
 // along with Z3D.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-#include "zcamerapreviewer.h"
+#include "ZCameraAcquisition/zcamerapreviewer.h"
 #include "ui_zcamerapreviewer.h"
-#include "zcamerainterface.h"
+#include "ZCameraAcquisition/zcamerainterface.h"
 
 #include <opencv2/core/mat.hpp>
 

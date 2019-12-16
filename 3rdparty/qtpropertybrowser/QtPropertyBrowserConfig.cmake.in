@@ -1,0 +1,60 @@
+###########################################################################
+#
+#  Library:   CTK
+#
+#  Copyright (c) Kitware Inc.
+#
+#  Licensed under the Apache License, Version 2.0 (the "License");
+#  you may not use this file except in compliance with the License.
+#  You may obtain a copy of the License at
+#
+#      http://www.commontk.org/LICENSE
+#
+#  Unless required by applicable law or agreed to in writing, software
+#  distributed under the License is distributed on an "AS IS" BASIS,
+#  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+#  See the License for the specific language governing permissions and
+#  limitations under the License.
+#
+###########################################################################
+
+#
+# QtPropertyBrowserConfig.cmake - QtPropertyBrowser CMake configuration file for external projects.
+#
+# This file is configured by QtPropertyBrowser and used by the 
+# UseQtPropertyBrowser.cmake module to load QtPropertyBrowser's settings 
+# for an external project.
+
+# The QtPropertyBrowser include file directories.
+SET(QtPropertyBrowser_INCLUDE_DIRS "@QtPropertyBrowser_INCLUDE_DIRS_CONFIG@")
+ 
+# The QtPropertyBrowser library directories. Note that if
+# QtPropertyBrowser_CONFIGURATION_TYPES is set (see below) then these directories
+# will be the parent directories under which there will be a directory
+# of runtime binaries for each configuration type.
+SET(QtPropertyBrowser_LIBRARY_DIRS "@QtPropertyBrowser_LIBRARY_DIRS_CONFIG@")
+  
+# The QtPropertyBrowser runtime library directories. Note that if
+# QtPropertyBrowser_CONFIGURATION_TYPES is set (see below) then these directories
+# will be the parent directories under which there will be a directory
+# of runtime libraries for each configuration type.
+SET(QtPropertyBrowser_RUNTIME_LIBRARY_DIRS "@QtPropertyBrowser_RUNTIME_LIBRARY_DIRS_CONFIG@")
+ 
+# The location of the UseQtPropertyBrowser.cmake file.
+SET(QtPropertyBrowser_USE_FILE "@QtPropertyBrowser_USE_FILE@")
+  
+ 
+# A QtPropertyBrowser install tree always provides one build configuration. 
+# A QtPropertyBrowser build tree may provide either one or multiple build 
+# configurations depending on the CMake generator used. 
+# Since QtPropertyBrowser can be used either from a build tree or an install 
+# tree it is useful for outside projects to know the configurations available. 
+# If this QtPropertyBrowserConfig.cmake is in a QtPropertyBrowser install 
+# tree QtPropertyBrowser_CONFIGURATION_TYPES will be empty and 
+# QtPropertyBrowser_BUILD_TYPE will be set to the value of
+# CMAKE_BUILD_TYPE used to build QtPropertyBrowser. If QtPropertyBrowserConfig.cmake 
+# is in a QtPropertyBrowser build tree then QtPropertyBrowser_CONFIGURATION_TYPES 
+# and QtPropertyBrowser_BUILD_TYPE will have values matching CMAKE_CONFIGURATION_TYPES 
+# and CMAKE_BUILD_TYPE for that build tree (only one will ever be set).
+SET(QtPropertyBrowser_CONFIGURATION_TYPES @QtPropertyBrowser_CONFIGURATION_TYPES_CONFIG@)
+SET(QtPropertyBrowser_BUILD_TYPE @QtPropertyBrowser_BUILD_TYPE_CONFIG@)

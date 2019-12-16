@@ -20,7 +20,7 @@
 
 #include "zopencvvideocapturecamera.h"
 
-#include "zcameraimage.h"
+#include "ZCameraAcquisition/zcameraimage.h"
 
 #include <opencv2/imgproc.hpp>
 

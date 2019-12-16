@@ -18,11 +18,12 @@
 // along with Z3D.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-#include "zpatternprojectionprovider.h"
+#include "ZStructuredLight/zpatternprojectionprovider.h"
 
-#include "zcoreplugin.h"
-#include "zpluginloader.h"
-#include "zpatternprojectionplugin.h"
+#include "ZStructuredLight/zpatternprojectionplugin.h"
+
+#include "ZCore/zcoreplugin.h"
+#include "ZCore/zpluginloader.h"
 
 #include <QDebug>
 #include <QSettings>

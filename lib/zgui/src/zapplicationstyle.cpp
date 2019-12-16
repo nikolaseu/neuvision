@@ -18,7 +18,7 @@
 // along with Z3D.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-#include "zapplicationstyle.h"
+#include "ZGui/zapplicationstyle.h"
 
 #include <QApplication>
 #include <QPalette>

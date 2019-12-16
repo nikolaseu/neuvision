@@ -18,7 +18,7 @@
 // along with Z3D.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-#include "zcameraselectordialog.h"
+#include "ZCameraAcquisition/zcameraselectordialog.h"
 #include "ui_zcameraselectordialog.h"
 
 namespace Z3D

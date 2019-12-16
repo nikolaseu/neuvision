@@ -18,7 +18,7 @@
 // along with Z3D.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-#include "zloghandler_p.h"
+#include "ZCore/zloghandler_p.h"
 
 #include <QDateTime>
 #include <QThread>

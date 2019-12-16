@@ -18,10 +18,10 @@
 // along with Z3D.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-#include "zcameraframesrecorder.h"
+#include "ZCameraAcquisition/zcameraframesrecorder.h"
 
-#include "zcameraimage.h"
-#include "zcamerainterface.h"
+#include "ZCameraAcquisition/zcameraimage.h"
+#include "ZCameraAcquisition/zcamerainterface.h"
 
 #include <opencv2/imgcodecs.hpp>
 

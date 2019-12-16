@@ -20,8 +20,9 @@
 
 #include "zstereosls.h"
 
-#include "zcameraacquisitionmanager.h"
 #include "zstereosystemimpl.h"
+
+#include "ZStructuredLight/zcameraacquisitionmanager.h"
 
 #include <QDebug>
 

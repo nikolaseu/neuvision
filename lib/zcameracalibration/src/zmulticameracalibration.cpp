@@ -18,7 +18,7 @@
 // along with Z3D.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-#include "zmulticameracalibration.h"
+#include "ZCameraCalibration/zmulticameracalibration.h"
 
 namespace Z3D
 {

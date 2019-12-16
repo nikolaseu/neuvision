@@ -19,7 +19,7 @@
 
 #pragma once
 
-#include "zcameraplugininterface.h"
+#include "ZCameraAcquisition/zcameraplugininterface.h"
 
 namespace Z3D {
 

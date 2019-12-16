@@ -18,9 +18,9 @@
 // along with Z3D.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-#include "zmulticalibrationimagemodel.h"
+#include "ZCameraCalibrator/zmulticalibrationimagemodel.h"
 
-#include "zmulticalibrationimage.h"
+#include "ZCameraCalibrator/zmulticalibrationimage.h"
 
 #include <QDir>
 #include <QtConcurrent>

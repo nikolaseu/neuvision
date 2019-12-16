@@ -18,9 +18,11 @@
 // along with Z3D.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-#include "zopencvstereocameracalibration.h"
-#include "zopencvstereomulticameracalibrator.h"
-#include "zpinholecameracalibration.h"
+#include "ZCameraCalibration/zopencvstereomulticameracalibrator.h"
+
+#include "ZCameraCalibration/zopencvstereocameracalibration.h"
+
+#include "ZCameraCalibration/zpinholecameracalibration.h"
 
 #include <QDebug>
 

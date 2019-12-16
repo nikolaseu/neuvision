@@ -18,9 +18,9 @@
 // along with Z3D.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-#include "zcalibratedcamera.h"
+#include "ZCalibratedCamera/zcalibratedcamera.h"
 
-#include "zcalibratedcamera_fwd.h"
+#include "ZCalibratedCamera/zcalibratedcamera_fwd.h"
 
 #include <QDebug>
 #include <QMetaType>

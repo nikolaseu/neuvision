@@ -18,11 +18,12 @@
 // along with Z3D.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-#include "zstructuredlightsystemprovider.h"
+#include "ZStructuredLight/zstructuredlightsystemprovider.h"
 
-#include "zcoreplugin.h"
-#include "zpluginloader.h"
-#include "zstructuredlightsystemplugin.h"
+#include "ZStructuredLight/zstructuredlightsystemplugin.h"
+
+#include "ZCore/zcoreplugin.h"
+#include "ZCore/zpluginloader.h"
 
 #include <QDebug>
 #include <QSettings>

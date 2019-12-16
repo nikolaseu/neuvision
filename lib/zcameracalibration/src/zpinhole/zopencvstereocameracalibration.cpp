@@ -18,8 +18,9 @@
 // along with Z3D.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-#include "zopencvstereocameracalibration.h"
-#include "zpinholecameracalibration.h"
+#include "ZCameraCalibration/zopencvstereocameracalibration.h"
+
+#include "ZCameraCalibration/zpinholecameracalibration.h"
 
 #include <opencv2/calib3d.hpp>
 #include <opencv2/imgproc.hpp>

@@ -18,12 +18,13 @@
 // along with Z3D.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-#include "zstructuredlightsystem.h"
+#include "ZStructuredLight/zstructuredlightsystem.h"
 
-#include "zcameraacquisitionmanager.h"
-#include "zdecodedpattern.h"
-#include "zimageviewer.h"
-#include "zpatternprojection.h"
+#include "ZStructuredLight/zcameraacquisitionmanager.h"
+#include "ZStructuredLight/zdecodedpattern.h"
+#include "ZStructuredLight/zpatternprojection.h"
+
+#include "ZCameraAcquisition/zimageviewer.h"
 
 #include <opencv2/core.hpp>
 

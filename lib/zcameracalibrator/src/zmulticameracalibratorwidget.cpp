@@ -18,23 +18,24 @@
 // along with Z3D.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-#include "zmulticameracalibratorwidget.h"
+#include "ZCameraCalibrator/zmulticameracalibratorwidget.h"
 #include "ui_zmulticameracalibratorwidget.h"
 
-#include "zcalibrationimageviewer.h"
-#include "zcalibrationpatternfinder.h"
-#include "zcalibrationpatternfinderprovider.h"
-#include "zcalibratedcamera.h"
-#include "zcameracalibrationprovider.h"
-#include "zcameraimage.h"
-#include "zcamerainterface.h"
-#include "zimageviewer.h"
-#include "zmulticalibrationimage.h"
-#include "zmulticalibrationimagemodel.h"
-#include "zmulticameracalibration.h"
-#include "zmulticameracalibrator.h"
-#include "zmulticameracalibratorworker.h"
-#include "zpinhole/zpinholecameracalibration.h"
+#include "ZCameraCalibrator/zcalibrationimageviewer.h"
+#include "ZCameraCalibrator/zcalibrationpatternfinder.h"
+#include "ZCameraCalibrator/zcalibrationpatternfinderprovider.h"
+#include "ZCameraCalibrator/zmulticalibrationimage.h"
+#include "ZCameraCalibrator/zmulticalibrationimagemodel.h"
+#include "ZCameraCalibrator/zmulticameracalibratorworker.h"
+
+#include "ZCalibratedCamera/zcalibratedcamera.h"
+#include "ZCameraAcquisition/zcameraimage.h"
+#include "ZCameraAcquisition/zcamerainterface.h"
+#include "ZCameraAcquisition/zimageviewer.h"
+#include "ZCameraCalibration/zcameracalibrationprovider.h"
+#include "ZCameraCalibration/zmulticameracalibration.h"
+#include "ZCameraCalibration/zmulticameracalibrator.h"
+#include "ZCameraCalibration/zpinholecameracalibration.h"
 
 #include <QDateTime>
 #include <QFileDialog>

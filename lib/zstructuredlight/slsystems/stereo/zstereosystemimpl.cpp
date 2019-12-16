@@ -20,11 +20,11 @@
 
 #include "zstereosystemimpl.h"
 
-#include "zdecodedpattern.h"
-#include "zgeometryutils.h"
-#include "zpinhole/zopencvstereocameracalibration.h"
-#include "zpinhole/zpinholecameracalibration.h"
-#include "zsimplepointcloud.h"
+#include "ZStructuredLight/zdecodedpattern.h"
+#include "ZStructuredLight/zgeometryutils.h"
+#include "ZCameraCalibration/zopencvstereocameracalibration.h"
+#include "ZCameraCalibration/zpinholecameracalibration.h"
+#include "ZStructuredLight/zsimplepointcloud.h"
 
 #include <QAtomicInt>
 #include <QDateTime>

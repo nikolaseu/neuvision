@@ -1,0 +1,5 @@
+add_subdirectory(Z3DCameraViewer)
+add_subdirectory(Z3DCameraCalibration)
+add_subdirectory(Z3DCloudViewer)
+add_subdirectory(Z3DMultiCameraCalibration)
+add_subdirectory(Z3DScanner)

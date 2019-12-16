@@ -18,7 +18,7 @@
 // along with Z3D.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-#include "zsimplepointcloud.h"
+#include "ZStructuredLight/zsimplepointcloud.h"
 
 #include <ZPointCloud/zpointfield.h>
 

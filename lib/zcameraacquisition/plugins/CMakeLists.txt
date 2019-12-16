@@ -1,0 +1,3 @@
+add_subdirectory(zopencvvideocapture)
+add_subdirectory(zsimulatedcamera)
+add_subdirectory(zqtcamera)

@@ -18,9 +18,9 @@
 // along with Z3D.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-#include "zdecodedpattern.h"
+#include "ZStructuredLight/zdecodedpattern.h"
 
-#include "zstructuredlight_fwd.h"
+#include "ZStructuredLight/zstructuredlight_fwd.h"
 
 #include <QMetaType>
 

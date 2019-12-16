@@ -20,15 +20,14 @@
 
 #include "ZPointCloud/zpointcloudprovider.h"
 
-#include "zcoreplugin.h"
-#include "zpluginloader.h"
-
-#include "ZPointCloud/zcameracontroller.h"
 #include "ZPointCloud/zpointcloud.h"
 #include "ZPointCloud/zpointcloudgeometry.h"
 #include "ZPointCloud/zpointcloudlistmodel.h"
 #include "ZPointCloud/zpointcloudplugininterface.h"
 #include "ZPointCloud/zpointcloudreader.h"
+
+#include "ZCore/zcoreplugin.h"
+#include "ZCore/zpluginloader.h"
 
 #include <QDebug>
 #include <QDir>
@@ -54,7 +53,6 @@ void ZPointCloudProvider::registerMetaTypes()
     qmlRegisterUncreatableType<Z3D::ZPointCloud>("Z3D.ZPointCloud", 1, 0, "PointCloud", "ZPointCloud cannot be created, must be obtained from a PointCloudReader");
     qmlRegisterType<Z3D::ZPointCloudReader>("Z3D.ZPointCloud", 1, 0, "PointCloudReader");
     qmlRegisterType<Z3D::ZPointCloudGeometry>("Z3D.ZPointCloud", 1, 0, "PointCloudGeometry");
-    qmlRegisterType<Z3D::ZCameraController>("Z3D.ZPointCloud", 1, 0, "ZCameraController");
 }
 
 void ZPointCloudProvider::loadPlugins()

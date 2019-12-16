@@ -21,7 +21,7 @@
 
 #include <QObject>
 
-#include "zcalibrationpatternfinderplugininterface.h"
+#include "ZCameraCalibrator/zcalibrationpatternfinderplugininterface.h"
 
 namespace Z3D {
 

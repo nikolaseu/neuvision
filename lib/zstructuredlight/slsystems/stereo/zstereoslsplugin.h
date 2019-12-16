@@ -19,7 +19,7 @@
 
 #pragma once
 
-#include "zstructuredlightsystemplugin.h"
+#include "ZStructuredLight/zstructuredlightsystemplugin.h"
 
 namespace Z3D
 {
