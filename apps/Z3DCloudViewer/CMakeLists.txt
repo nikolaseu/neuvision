@@ -24,3 +24,9 @@ target_link_libraries(${PROJECT_NAME}
         ZGui
         ZPointCloud
 )
+
+set_target_properties(${PROJECT_NAME} PROPERTIES VERSION ${CMAKE_PROJECT_VERSION})
+
+if(CMAKE_BUILD_TYPE STREQUAL "Release")
+    set_property(TARGET ${PROJECT_NAME} PROPERTY WIN32_EXECUTABLE true)
+endif()

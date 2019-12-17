@@ -26,3 +26,5 @@ target_link_libraries(${PROJECT_NAME}
         ZCameraAcquisition
         ZCameraCalibration
 )
+
+set_target_properties(${PROJECT_NAME} PROPERTIES VERSION ${CMAKE_PROJECT_VERSION})

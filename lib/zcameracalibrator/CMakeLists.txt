@@ -40,4 +40,6 @@ target_link_libraries(${PROJECT_NAME}
         ZCalibratedCamera
 )
 
+set_target_properties(${PROJECT_NAME} PROPERTIES VERSION ${CMAKE_PROJECT_VERSION})
+
 add_subdirectory(finders)

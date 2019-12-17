@@ -29,5 +29,7 @@ target_link_libraries(${PROJECT_NAME}
         ZPointCloud
 )
 
+set_target_properties(${PROJECT_NAME} PROPERTIES VERSION ${CMAKE_PROJECT_VERSION})
+
 add_subdirectory(patterns)
 add_subdirectory(slsystems)

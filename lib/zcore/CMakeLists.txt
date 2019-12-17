@@ -28,9 +28,4 @@ target_include_directories(${PROJECT_NAME}
 target_link_libraries(${PROJECT_NAME} PRIVATE
     Qt5::Core)
 
-#set_target_properties(${PROJECT_NAME} PROPERTIES PUBLIC_HEADER include/ZCore/*.h)
 set_target_properties(${PROJECT_NAME} PROPERTIES VERSION ${CMAKE_PROJECT_VERSION})
-#set_target_properties(${PROJECT_NAME} PROPERTIES SOVERSION ${CMAKE_PROJECT_VERSION})
-
-#install(TARGETS ${PROJECT_NAME} DESTINATION lib)
-#install(FILES ${HEADER_FILES} DESTINATION include/${PROJECT_NAME})

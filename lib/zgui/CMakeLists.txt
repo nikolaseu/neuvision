@@ -33,3 +33,5 @@ if(APPLE)
     # for macOS
     target_link_libraries(${PROJECT_NAME} PRIVATE "-framework Cocoa")
 endif()
+
+set_target_properties(${PROJECT_NAME} PROPERTIES VERSION ${CMAKE_PROJECT_VERSION})

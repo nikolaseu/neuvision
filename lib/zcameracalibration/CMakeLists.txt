@@ -34,3 +34,5 @@ target_link_libraries(${PROJECT_NAME}
         ZCore
         ZGui
 )
+
+set_target_properties(${PROJECT_NAME} PROPERTIES VERSION ${CMAKE_PROJECT_VERSION})

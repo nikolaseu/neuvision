@@ -78,7 +78,7 @@ void ZLogHandler(QtMsgType type, const QMessageLogContext &context, const QStrin
         debugType = "[F]";
     }
 
-#if defined(Z3D_RELEASE)
+#if defined(Z3D_RELEASE_BUILD)
     fprintf(m_logFile, "%s %s [0x%.8llX] %s: %s\n", qPrintable(debugType), qPrintable(debugdate), uint64_t(QThread::currentThread()), context.category, qPrintable(msgstr));
 #else
     fprintf(m_logFile, "%s %s [0x%.8llX] %s: %s\n\t%s:%u\n\t%s\n\n", qPrintable(debugType), qPrintable(debugdate), uint64_t(QThread::currentThread()), context.category, qPrintable(msgstr), context.file, context.line, context.function);
@@ -87,7 +87,7 @@ void ZLogHandler(QtMsgType type, const QMessageLogContext &context, const QStrin
     if (m_logFile && m_logFile != stdout) {
         fflush(m_logFile);
 
-#if defined(Z3D_RELEASE)
+#if defined(Z3D_RELEASE_BUILD)
         fprintf(stdout, "%s %s [0x%.8llX] %s: %s\n", qPrintable(debugType), qPrintable(debugdate), uint64_t(QThread::currentThread()), context.category, qPrintable(msgstr));
 #else
         fprintf(stdout, "%s %s [0x%.8llX] %s: %s\n\t%s:%u\n\t%s\n\n", qPrintable(debugType), qPrintable(debugdate), uint64_t(QThread::currentThread()), context.category, qPrintable(msgstr), context.file, context.line, context.function);

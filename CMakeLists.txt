@@ -1,10 +1,16 @@
 cmake_minimum_required(VERSION 3.15)
 
+include(cmake/MunkeiVersionFromGit.cmake)
+version_from_git(
+    LOG ON
+    TIMESTAMP "%Y%m%d%H%M%S"
+)
+
 project(NEUVision
     LANGUAGES CXX
-    VERSION 1.0.0 # FIXME
+    VERSION ${VERSION}
     DESCRIPTION "A framework for structured light scanning projects"
-    )
+)
 
 set(CMAKE_AUTOUIC ON)
 set(CMAKE_AUTOMOC ON)
@@ -13,8 +19,11 @@ set(CMAKE_AUTORCC ON)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-add_compile_definitions(Z3D_VERSION_STR="${CMAKE_PROJECT_VERSION}")
-add_compile_definitions(Z3D_VERSION_BUILD_STR="${CMAKE_PROJECT_VERSION}") # FIXME add build number/hash
+add_compile_definitions(Z3D_VERSION_STR="${VERSION}")
+add_compile_definitions(Z3D_VERSION_BUILD_STR="${SEMVER}")
+if(CMAKE_BUILD_TYPE STREQUAL "Release")
+    add_compile_definitions(Z3D_RELEASE_BUILD)
+endif()
 
 add_compile_definitions(_USE_MATH_DEFINES)
 
