@@ -1,6 +1,7 @@
 project(ZOpenCVPatternFinderPlugin LANGUAGES CXX)
 
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${Z3D_OUTPUT_DIRECTORY}/plugins/calibrationpatternfinder)
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${Z3D_OUTPUT_DIRECTORY}/plugins/calibrationpatternfinder)
 
 find_package(Qt5 COMPONENTS Core Widgets REQUIRED)
 find_package(OpenCV REQUIRED)

@@ -18,7 +18,7 @@
 // along with Z3D.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-#include "zosxutils.h"
+#include "ZGui/zosxutils.h"
 
 #include <Cocoa/Cocoa.h>
 

@@ -31,7 +31,7 @@
 #include "ZStructuredLight/zstructuredlightsystemprovider.h"
 
 #if defined(Q_OS_MACOS)
-#include "zosxutils.h" // just to hide title bar in OSX
+#include "ZGui/zosxutils.h" // just to hide title bar in OSX
 #include <QWindow>
 #endif
 

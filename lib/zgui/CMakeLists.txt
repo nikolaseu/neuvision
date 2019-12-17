@@ -6,7 +6,9 @@ file(GLOB HEADER_FILES
     ${CMAKE_CURRENT_SOURCE_DIR}/include/${PROJECT_NAME}/*.h)
 
 file(GLOB SRC_FILES
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp)
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/*.mm
+)
 
 add_library(${PROJECT_NAME} SHARED
     ${HEADER_FILES}
@@ -24,3 +26,8 @@ target_link_libraries(${PROJECT_NAME}
     PUBLIC
         ZCore
 )
+
+if(APPLE)
+    # for macOS
+    target_link_libraries(${PROJECT_NAME} PRIVATE "-framework Cocoa")
+endif()

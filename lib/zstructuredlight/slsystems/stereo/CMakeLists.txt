@@ -1,6 +1,7 @@
 project(ZStereoStructuredLight LANGUAGES CXX)
 
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${Z3D_OUTPUT_DIRECTORY}/plugins/structuredlight)
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${Z3D_OUTPUT_DIRECTORY}/plugins/structuredlight)
 
 find_package(Qt5 COMPONENTS Core Concurrent REQUIRED)
 find_package(OpenCV REQUIRED)

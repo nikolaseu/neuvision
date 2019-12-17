@@ -21,7 +21,7 @@
 #include "ZGui/zwidget.h"
 
 #if defined(Q_OS_MACOS)
-#include "zosxutils.h"
+#include "ZGui/zosxutils.h"
 #endif
 
 namespace Z3D {

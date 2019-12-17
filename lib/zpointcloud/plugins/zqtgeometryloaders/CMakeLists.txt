@@ -1,6 +1,7 @@
 project(ZQtGeometryLoaders LANGUAGES CXX)
 
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${Z3D_OUTPUT_DIRECTORY}/plugins/pointcloud)
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${Z3D_OUTPUT_DIRECTORY}/plugins/pointcloud)
 
 find_package(Qt5 COMPONENTS Core Gui REQUIRED)
 

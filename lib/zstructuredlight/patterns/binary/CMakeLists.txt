@@ -1,6 +1,7 @@
 project(ZBinaryPatternProjection LANGUAGES CXX)
 
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${Z3D_OUTPUT_DIRECTORY}/plugins/structuredlightpatterns)
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${Z3D_OUTPUT_DIRECTORY}/plugins/structuredlightpatterns)
 
 find_package(Qt5 COMPONENTS Core Quick REQUIRED)
 find_package(OpenCV REQUIRED)
