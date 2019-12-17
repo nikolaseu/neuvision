@@ -51,8 +51,8 @@ add_library(${libname} STATIC
   ${KIT_QRC_SRCS}
   )
   
-install(TARGETS ${libname} DESTINATION lib)
-install(FILES ${KIT_H} DESTINATION include/${PROJECT_NAME})
+#install(TARGETS ${libname} DESTINATION lib)
+#install(FILES ${KIT_H} DESTINATION include/${PROJECT_NAME})
   
 target_link_libraries(
   ${libname}
