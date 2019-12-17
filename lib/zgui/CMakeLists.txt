@@ -6,9 +6,11 @@ file(GLOB HEADER_FILES
     ${CMAKE_CURRENT_SOURCE_DIR}/include/${PROJECT_NAME}/*.h)
 
 file(GLOB SRC_FILES
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/*.mm
-)
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp)
+
+if(APPLE)
+    list(APPEND SRC_FILES ${CMAKE_CURRENT_SOURCE_DIR}/src/zosxutils.mm)
+endif()
 
 add_library(${PROJECT_NAME} SHARED
     ${HEADER_FILES}

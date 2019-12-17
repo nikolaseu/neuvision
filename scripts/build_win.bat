@@ -1,6 +1,6 @@
 
-set Qt5_DIR=C:/Qt/5.14.0/msvc2017_64
-set OpenCV_DIR=C:/Users/nikol/Projects/opencv-4.1.0-vc14_vc15/build
+set Qt5_DIR=C:/Qt/5.12/msvc2017_64
+set OpenCV_DIR=C:/Tools/vcpkg/installed/x64-windows
 
 set BUILD_TYPE=Release
 set INSTALL_DIR=bin/%BUILD_TYPE%
