@@ -20,10 +20,10 @@
 
 #include "zlibgphoto2camera.h"
 
-#include "zcameraimage.h"
+#include "ZCameraAcquisition/zcameraimage.h"
 
 #include <QDebug>
-#include <QImage>
+#include <QImage> //! FIXME we can replace QImage with cv::Mat to remove dependency in Qt5::Gui
 #include <QSize>
 #include <QThread>
 #include <QTimer>
