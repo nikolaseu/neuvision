@@ -2,6 +2,7 @@
 
 [![Build Status](https://travis-ci.com/nikolaseu/neuvision.svg?branch=master)](https://travis-ci.com/nikolaseu/neuvision)
 [![Build status](https://ci.appveyor.com/api/projects/status/q3vr5tbjbh3v8jh5/branch/master?svg=true)](https://ci.appveyor.com/project/nikolaseu/neuvision/branch/master)
+[![Build Status](https://github.com/nikolaseu/neuvision/workflows/build/badge.svg?branch=master)](https://github.com/nikolaseu/neuvision/actions)
 
 Engineering degree thesis/project for the title of "Ingeniero en Informatica", Universidad Nacional del Litoral (Santa Fe, Argentina).
 

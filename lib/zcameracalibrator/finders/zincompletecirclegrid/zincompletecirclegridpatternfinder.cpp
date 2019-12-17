@@ -304,14 +304,20 @@ bool ZIncompleteCircleGridPatternFinder::findCalibrationPattern(cv::Mat image, s
             cv::imwrite(qPrintable(QString("tmp/debug/rectDetector_%1_roiKeypoints_%2.bmp").arg(currentIndex).arg(i)), roiMaskKeypoints);
 #endif
 
+#if CV_MAJOR_VERSION >= 4
             /// Relax parameters for circle grid finder
             cv::CirclesGridFinderParameters circleGridParameters;
             circleGridParameters.minDensity = 0; //10 is default but is not working for my calibration plate
+#endif
 
             if (cv::findCirclesGrid(roiClean, m_boardSize, corners,
                                     //cv::CALIB_CB_CLUSTERING |
                                     m_isAsymmetricGrid ? cv::CALIB_CB_ASYMMETRIC_GRID : cv::CALIB_CB_SYMMETRIC_GRID,
-                                    blobDetector, circleGridParameters))
+                                    blobDetector
+#if CV_MAJOR_VERSION >= 4
+                                    , circleGridParameters
+#endif
+                                    ))
             {
                 /// the standard circle grid was found
                 /// return corners to original image coordinates

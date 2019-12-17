@@ -10,7 +10,7 @@ else()
     message("-- AVT Vimba camera acquisition plugin disabled. Set AVT_VIMBA_DIR if the SDK was installed in a non-default location")
 endif()
 
-find_package(GPhoto2 QUIET)
+find_package(Gphoto2 QUIET)
 if(GPHOTO2_FOUND)
     message("-- Found GPhoto2 version " ${GPHOTO2_VERSION_STRING} " in " ${Gphoto2_INCLUDE_DIRS})
     add_subdirectory(zlibgphoto2)

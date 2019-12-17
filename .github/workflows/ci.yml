@@ -1,0 +1,20 @@
+name: build
+
+on:
+  push:
+  schedule:
+    - cron:  '* */24 * * *'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v1
+    - name: Install dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y build-essential libopencv-dev libgphoto2-dev
+    - name: Install Qt
+      uses: jurplel/install-qt-action@v2
+    - name: Build
+      run: sh ./scripts/build_linux.sh

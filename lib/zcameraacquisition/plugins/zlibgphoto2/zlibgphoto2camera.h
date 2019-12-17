@@ -21,6 +21,7 @@
 
 #include "ZCameraAcquisition/zcamerainterface_p.h"
 
+#include <QMutex>
 #include <gphoto2/gphoto2-camera.h>
 
 namespace Z3D

@@ -5,7 +5,7 @@ set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${Z3D_OUTPUT_DIRECTORY}/plugins/cameraacquisi
 
 find_package(Qt5 COMPONENTS Core Gui REQUIRED)
 find_package(OpenCV REQUIRED)
-find_package(GPhoto2 REQUIRED)
+find_package(Gphoto2 REQUIRED)
 
 file(GLOB HEADER_FILES
     ${CMAKE_CURRENT_SOURCE_DIR}/*.h)
