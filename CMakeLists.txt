@@ -1,5 +1,7 @@
 cmake_minimum_required(VERSION 3.15)
 
+list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
+
 include(cmake/MunkeiVersionFromGit.cmake)
 version_from_git(
     LOG ON
@@ -27,9 +29,12 @@ endif()
 
 add_compile_definitions(_USE_MATH_DEFINES)
 
-#-----------------------------------------------------------------------------
-# Output directories.
-#
+# By default set release configuration
+if(NOT CMAKE_BUILD_TYPE)
+  set(CMAKE_BUILD_TYPE "Release" CACHE STRING "Choose the type of build, options are: None Debug Release RelWithDebInfo MinSizeRel." FORCE)
+endif()
+
+# Output directories
 set(Z3D_OUTPUT_DIRECTORY ${NEUVision_BINARY_DIR}/bin)
 foreach(type LIBRARY RUNTIME ARCHIVE)
     if(NOT DEFINED CMAKE_${type}_OUTPUT_DIRECTORY)

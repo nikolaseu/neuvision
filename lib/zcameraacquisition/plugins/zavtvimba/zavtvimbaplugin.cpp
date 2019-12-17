@@ -21,7 +21,8 @@
 #include "zavtvimbaplugin.h"
 
 #include "zavtvimbacamera.h"
-#include "zcamerainfo.h"
+
+#include "ZCameraAcquisition/zcamerainfo.h"
 
 #include <QDebug>
 #include <VimbaCPP/Include/VimbaSystem.h>

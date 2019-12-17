@@ -20,7 +20,7 @@
 
 #include "zpyloncamera.h"
 
-#include "zcameraimage.h"
+#include "ZCameraAcquisition/zcameraimage.h"
 
 #include <QDebug>
 

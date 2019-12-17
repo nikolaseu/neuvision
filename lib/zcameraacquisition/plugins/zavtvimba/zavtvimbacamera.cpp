@@ -20,7 +20,7 @@
 
 #include "zavtvimbacamera.h"
 
-#include "zcameraimage.h"
+#include "ZCameraAcquisition/zcameraimage.h"
 
 #include <QDebug>
 #include <QThread>
