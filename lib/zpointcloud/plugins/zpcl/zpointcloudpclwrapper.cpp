@@ -119,6 +119,11 @@ QByteArray ZPointCloudPCLWrapper::vertexData() const
     return QByteArray::fromRawData(reinterpret_cast<const char*>(&m_pointCloud->data[0]), int(m_pointCloud->data.size()));
 }
 
+QVector<unsigned int> ZPointCloudPCLWrapper::indices() const
+{
+    return {};
+}
+
 const std::vector<ZPointField*> &ZPointCloudPCLWrapper::fields() const
 {
     return m_fields;
