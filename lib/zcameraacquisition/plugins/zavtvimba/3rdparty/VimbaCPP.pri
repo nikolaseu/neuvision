@@ -1,7 +1,0 @@
-AVT_VIMBA_DIR = $$(AVT_VIMBA_DIR)
-
-INCLUDEPATH += "$$AVT_VIMBA_DIR"
-
-win32:{
-LIBS += -L"$$AVT_VIMBA_DIR/VimbaCPP/Lib/Win64" -lVimbaCPP
-}
