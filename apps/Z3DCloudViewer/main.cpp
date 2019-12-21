@@ -18,12 +18,12 @@
 // along with Z3D.  If not, see <http://www.gnu.org/licenses/>.
 //
 
+#include "zpointcloudviewercontroller.h"
+
 #include "ZGui/zapplication.h"
 #include "ZPointCloud/zpointcloud.h"
 #include "ZPointCloud/zpointcloudgeometry.h"
 #include "ZPointCloud/zpointcloudprovider.h"
-
-#include "zpointcloudviewercontroller.h"
 
 #if defined(Q_OS_MACOS)
 #include "ZGui/zosxutils.h" // just to hide title bar in OSX

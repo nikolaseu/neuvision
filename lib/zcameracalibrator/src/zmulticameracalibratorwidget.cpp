@@ -262,8 +262,8 @@ void ZMultiCameraCalibratorWidget::onCameraModelTypeChanged(int index)
     /// add config widget
     QWidget *currentWidget = ZCameraCalibrationProvider::getConfigWidget(currentCameraCalibrator);
     if (currentWidget) {
-        currentWidget->setVisible(true);
         ui->cameraModelConfigLayout->addWidget(currentWidget);
+        currentWidget->setVisible(true);
     }
 }
 
@@ -283,8 +283,8 @@ void ZMultiCameraCalibratorWidget::onCalibrationPatternTypeChanged(int index)
 
     /// add config widget
     QWidget *currentWidget = ZCalibrationPatternFinderProvider::getConfigWidget(m_currentPatternFinder.get());
-    currentWidget->setVisible(true);
     ui->calibrationPatternConfigLayout->addWidget(currentWidget);
+    currentWidget->setVisible(true);
 }
 
 void ZMultiCameraCalibratorWidget::onProgressChanged(float progress, QString message)
