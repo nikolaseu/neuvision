@@ -21,18 +21,19 @@ set(CMAKE_AUTORCC ON)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-add_compile_definitions(Z3D_VERSION_STR="${VERSION}")
-add_compile_definitions(Z3D_VERSION_BUILD_STR="${SEMVER}")
-if(CMAKE_BUILD_TYPE STREQUAL "Release")
-    add_compile_definitions(Z3D_RELEASE_BUILD)
-endif()
-
-add_compile_definitions(_USE_MATH_DEFINES)
-
 # By default set release configuration
 if(NOT CMAKE_BUILD_TYPE)
   set(CMAKE_BUILD_TYPE "Release" CACHE STRING "Choose the type of build, options are: None Debug Release RelWithDebInfo MinSizeRel." FORCE)
 endif()
+
+add_compile_definitions(Z3D_VERSION_STR="${VERSION}")
+add_compile_definitions(Z3D_VERSION_BUILD_STR="${SEMVER}")
+if(CMAKE_BUILD_TYPE STREQUAL "Release" OR CMAKE_BUILD_TYPE STREQUAL "RelWithDebInfo")
+    message("This is a release build (CMAKE_BUILD_TYPE=" ${CMAKE_BUILD_TYPE} ")")
+    add_compile_definitions(Z3D_RELEASE_BUILD)
+endif()
+
+add_compile_definitions(_USE_MATH_DEFINES)
 
 # Output directories
 set(Z3D_OUTPUT_DIRECTORY ${NEUVision_BINARY_DIR}/bin)
