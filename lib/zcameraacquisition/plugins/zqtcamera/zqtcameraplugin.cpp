@@ -57,7 +57,7 @@ ZCameraPtr ZQtCameraPlugin::getCamera(QVariantMap options)
         return nullptr;
     }
 
-    QCamera *qcamera = new QCamera(deviceName);
+    auto *qcamera = new QCamera(deviceName);
     if (qcamera->isAvailable()) {
         return ZCameraPtr(new ZQtCamera(qcamera));
     }

@@ -44,23 +44,23 @@ int main(int argc, char* argv[])
         QSplashScreen &splash = *app.showSplashScreen();
 
         splash.showMessage("Loading plugins...");
-        app.processEvents();
+        Z3D::ZApplication::processEvents();
         app.loadPlugins();
 
         splash.showMessage("Loading camera acquisition plugins...");
-        app.processEvents();
+        Z3D::ZApplication::processEvents();
         Z3D::ZCameraProvider::loadPlugins();
 
         splash.showMessage("Loading camera calibration plugins...");
-        app.processEvents();
+        Z3D::ZApplication::processEvents();
         Z3D::ZCameraCalibrationProvider::loadPlugins();
 
         splash.showMessage("Loading calibration pattern finder plugins...");
-        app.processEvents();
+        Z3D::ZApplication::processEvents();
         Z3D::ZCalibrationPatternFinderProvider::loadPlugins();
 
         splash.showMessage("Loading main window...");
-        app.processEvents();
+        Z3D::ZApplication::processEvents();
 
         MainWindow window;
         window.show();

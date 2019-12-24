@@ -76,8 +76,8 @@ private:
 };
 
 namespace ZCameraImage {
-Z3D_CAMERAACQUISITION_SHARED_EXPORT ZCameraImagePtr fromFile(QString fileName);
-Z3D_CAMERAACQUISITION_SHARED_EXPORT bool save(ZCameraImagePtr image, QString fileName);
+Z3D_CAMERAACQUISITION_SHARED_EXPORT ZCameraImagePtr fromFile(const QString& fileName);
+Z3D_CAMERAACQUISITION_SHARED_EXPORT bool save(const ZCameraImagePtr &image, const QString &fileName);
 } // namespace ZCameraImage
 
 } // namespace Z3D

@@ -47,7 +47,7 @@ public:
 signals:
 
 public slots:
-    void add(ZCameraPtr camera);
+    void add(Z3D::ZCameraPtr camera);
 
 protected slots:
     void onCameraDeleted(QObject *object);

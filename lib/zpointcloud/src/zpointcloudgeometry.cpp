@@ -26,7 +26,7 @@
 #include <QLoggingCategory>
 #include <Qt3DRender/QAttribute>
 #include <Qt3DRender/QBuffer>
-#include <math.h>
+#include <cmath>
 
 namespace Z3D
 {

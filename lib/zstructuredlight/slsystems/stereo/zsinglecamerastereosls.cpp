@@ -70,7 +70,7 @@ void ZSingleCameraStereoSLS::processPatterns()
 
 void ZSingleCameraStereoSLS::onPatternProjected(ZProjectedPatternPtr pattern)
 {
-    if (pattern && pattern->estimatedCloudPoints() > 0) {
+    if (pattern) {
         projectedPattern = pattern;
         processPatterns();
     } else {
@@ -81,7 +81,7 @@ void ZSingleCameraStereoSLS::onPatternProjected(ZProjectedPatternPtr pattern)
 void ZSingleCameraStereoSLS::onPatternsDecoded(std::vector<ZDecodedPatternPtr> patterns)
 {
     for (const auto &decodedPattern : patterns) {
-        if (decodedPattern->estimatedCloudPoints() < 1) {
+        if (!decodedPattern) {
             projectedPattern = nullptr;
             return;
         }

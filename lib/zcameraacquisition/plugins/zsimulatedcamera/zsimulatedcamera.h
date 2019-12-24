@@ -45,7 +45,7 @@ public slots:
     virtual QVariant getAttribute(const QString &name) const override;
 
     /// this is unique, only for simulated camera
-    void loadImageFromFilename(QString fileName);
+    void loadImageFromFilename(const QString& fileName);
 
 protected slots:
     virtual bool setAttribute(const QString &name, const QVariant &value, bool notify) override;

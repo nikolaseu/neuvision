@@ -44,7 +44,7 @@ public slots:
     virtual bool stopAcquisition() override;
 
     /// camera attributes (settings)
-    virtual QList<ZCameraAttribute> getAllAttributes() override;
+    virtual QList<Z3D::ZCameraInterface::ZCameraAttribute> getAllAttributes() override;
     virtual QVariant getAttribute(const QString &deviceID) const override;
 
 protected slots:
@@ -55,7 +55,7 @@ protected slots:
 private:
     cv::VideoCapture *m_capture;
 
-    bool m_stopThreadRequested;
+    bool m_stopThreadRequested = false;
 
     QMutex m_mutex;
 

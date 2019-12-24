@@ -28,6 +28,7 @@
 #include <QDebug>
 #include <QDir>
 #include <QSettings>
+#include <memory>
 
 namespace Z3D
 {
@@ -115,7 +116,7 @@ ZCalibratedCameraPtr ZCalibratedCameraProvider::getCalibratedCamera(QSettings *s
     }
     settings->endGroup();
 
-    return ZCalibratedCameraPtr(new ZCalibratedCamera(camera, cameraCalibration));
+    return std::make_shared<ZCalibratedCamera>(camera, cameraCalibration);
 }
 
 } // namespace Z3D

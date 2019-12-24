@@ -86,15 +86,15 @@ ZImageViewer::ZImageViewer(QWidget *parent)
     m_colormapsMenu = m_contextMenu->addMenu(tr("Colormap"));
     m_colormapsMenu->setEnabled(false);
     m_colormapSignalMapper = new QSignalMapper(this);
-    for (int i = 0; i<colormaps.size(); ++i) {
-        auto colormapAction = new QAction(colormaps[i].second, this);
+    for (auto &colormap : colormaps) {
+        auto colormapAction = new QAction(colormap.second, this);
         colormapAction->setCheckable(true);
-        if (colormaps[i].first == m_colormap) {
+        if (colormap.first == m_colormap) {
             colormapAction->setChecked(true);
         }
         QObject::connect(colormapAction, static_cast<void(QAction::*)(bool)>(&QAction::triggered),
                          m_colormapSignalMapper, static_cast<void(QSignalMapper::*)()>(&QSignalMapper::map));
-        m_colormapSignalMapper->setMapping(colormapAction, colormaps[i].first);
+        m_colormapSignalMapper->setMapping(colormapAction, colormap.first);
         m_colormapsMenu->addAction(colormapAction);
     }
 

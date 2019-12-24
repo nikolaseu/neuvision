@@ -206,12 +206,17 @@ ZPointCloudPtr process(const cv::Mat &colorImg, cv::Mat Q, cv::Mat leftImg, cv::
             points[i][4] = *nyData;
             points[i][5] = - *nzData;
 
-            // we don't really have RGB :(
-            const uint32_t grayIntensity = (static_cast<uint32_t>(       255) << 24 | // alpha
-                                            static_cast<uint32_t>(*colorData) << 16 | // b
-                                            static_cast<uint32_t>(*colorData) <<  8 | // g
-                                            static_cast<uint32_t>(*colorData));       // r
-            points[i][6] = *reinterpret_cast<const float_t*>(&grayIntensity);
+            union RGBAColor { // just to simplify converting color data
+                uchar rgba[4];
+                float asFloat;
+            } color;
+
+            color.rgba[0] = 255;
+            color.rgba[1] = *colorData; // we don't really have RGB :(
+            color.rgba[2] = *colorData;
+            color.rgba[3] = *colorData;
+
+            points[i][6] = color.asFloat;
 
             // add face/s
             const size_t pointOrgIndex = y*imgWidth+x;

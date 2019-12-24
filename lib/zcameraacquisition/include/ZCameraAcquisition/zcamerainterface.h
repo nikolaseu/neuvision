@@ -106,7 +106,7 @@ signals:
 
 public slots:
     virtual bool requestSnapshot() = 0;
-    virtual ZCameraImagePtr getSnapshot() = 0;
+    virtual Z3D::ZCameraImagePtr getSnapshot() = 0;
 
     /// acquisition control
     Q_INVOKABLE virtual bool startAcquisition() = 0;
@@ -114,7 +114,7 @@ public slots:
     virtual bool isRunning() = 0;
 
     /// camera attributes (settings)
-    virtual QList<ZCameraAttribute> getAllAttributes() = 0;
+    virtual QList<Z3D::ZCameraInterface::ZCameraAttribute> getAllAttributes() = 0;
     virtual bool setAttribute(const QString &name, const QVariant &value) = 0;
     virtual QVariant getAttribute(const QString &name) const = 0;
 

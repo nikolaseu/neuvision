@@ -83,7 +83,7 @@ void ZCameraListModel::add(ZCameraPtr camera)
 
 void ZCameraListModel::onCameraDeleted(QObject *object)
 {
-    ZCameraInterface *camera = static_cast<ZCameraInterface*>(object);
+    auto *camera = static_cast<ZCameraInterface*>(object);
 
     for (auto it = m_cameraList.cbegin(); it != m_cameraList.cend(); ++it) {
         if (it->get() == camera) {

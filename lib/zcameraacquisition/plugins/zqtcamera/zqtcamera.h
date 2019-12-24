@@ -49,7 +49,7 @@ protected slots:
     void onImageCaptured(int id, const QImage & preview);
     void onImageSaved(int id, const QString &fileName);
     void onImageAvailable(int id, const QVideoFrame & buffer);
-    void onCaptureError(int id, QCameraImageCapture::Error error, QString message);
+    void onCaptureError(int id, QCameraImageCapture::Error error, const QString& message);
     void onReadyForCaptureChanged(bool ready);
 
 private:

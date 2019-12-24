@@ -41,8 +41,8 @@ ZStructuredLightSystem::ZStructuredLightSystem(
         ZPatternProjectionPtr patternProjection,
         QObject *parent)
     : QObject(parent)
-    , m_acqManager(acquisitionManager)
-    , m_patternProjection(patternProjection)
+    , m_acqManager(std::move(acquisitionManager))
+    , m_patternProjection(std::move(patternProjection))
     , m_ready(false)
     , m_debugShowDecodedImages(false)
 {

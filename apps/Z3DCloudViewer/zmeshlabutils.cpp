@@ -7,10 +7,7 @@
 #include <QLoggingCategory>
 #include <QRegularExpression>
 
-namespace Z3D
-{
-
-namespace ZMeshlabUtils
+namespace Z3D::ZMeshlabUtils
 {
 
 namespace // anonymous namespace
@@ -106,6 +103,4 @@ std::vector<MeshlabProjectData> parseMeshlabProject(const QString &fileName)
     return data;
 }
 
-} // namespace ZMeshlabUtils
-
-} // namespace Z3D
+} // namespace Z3D::ZMeshlabUtils

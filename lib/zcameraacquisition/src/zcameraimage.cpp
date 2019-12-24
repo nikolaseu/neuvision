@@ -20,13 +20,12 @@
 
 #include "ZCameraAcquisition/zcameraimage.h"
 
-#include "string.h" // memcpy
-
+#include <cstring> // memcpy
+#include <memory>
 #include <opencv2/imgcodecs.hpp>
-
+#include <utility>
 #include <QDebug>
 #include <QMetaType>
-
 //! FIXME esto no va acá!!
 static int z3dImagePtrTypeId = qRegisterMetaType<Z3D::ZCameraImagePtr>("Z3D::ZCameraImagePtr");
 
@@ -57,7 +56,7 @@ ZImageGrayscale::ZImageGrayscale(int width, int height, int xOffset, int yOffset
 }
 
 ZImageGrayscale::ZImageGrayscale(cv::Mat mat)
-    : m_cvMat(mat)
+    : m_cvMat(std::move(mat))
     , m_width(m_cvMat.cols)
     , m_height(m_cvMat.rows)
     , m_xOffset(0)
@@ -118,19 +117,19 @@ unsigned char *ZImageGrayscale::buffer() const
 
 bool ZImageGrayscale::setBuffer(void *otherBuffer)
 {
-    return 0 != memcpy(m_cvMat.data, otherBuffer, bufferSize());
+    return nullptr != memcpy(m_cvMat.data, otherBuffer, bufferSize());
 }
 
-bool ZCameraImage::save(ZCameraImagePtr image, QString fileName)
+bool ZCameraImage::save(const ZCameraImagePtr &image, const QString& fileName)
 {
     return cv::imwrite(qPrintable(fileName), image->cvMat());
 }
 
-ZCameraImagePtr ZCameraImage::fromFile(QString fileName)
+ZCameraImagePtr ZCameraImage::fromFile(const QString &fileName)
 {
     try {
         auto mat = cv::imread(qPrintable(fileName), cv::IMREAD_GRAYSCALE);
-        return ZCameraImagePtr(new ZImageGrayscale(mat));
+        return std::make_shared<ZImageGrayscale>(mat);
     } catch (...) {
         qCritical() << "invalid image" << fileName;
         return nullptr;

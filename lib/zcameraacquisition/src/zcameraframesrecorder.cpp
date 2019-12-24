@@ -23,19 +23,19 @@
 #include "ZCameraAcquisition/zcameraimage.h"
 #include "ZCameraAcquisition/zcamerainterface.h"
 
-#include <opencv2/imgcodecs.hpp>
-
 #include <QCoreApplication>
 #include <QDateTime>
 #include <QDebug>
 #include <QDir>
+#include <opencv2/imgcodecs.hpp>
+#include <utility>
 
 namespace Z3D
 {
 
 ZCameraFramesRecorder::ZCameraFramesRecorder(ZCameraWeakPtr camera, QObject *parent)
     : QObject(parent)
-    , m_camera(camera)
+    , m_camera(std::move(camera))
     , m_basePath(QDir(QCoreApplication::applicationDirPath()).absoluteFilePath(QLatin1String("acquisition")))
 {
     if (!m_camera.isNull()) {
@@ -66,7 +66,7 @@ void ZCameraFramesRecorder::onAcquisitionStarted()
     }
 }
 
-void ZCameraFramesRecorder::onNewImageReceived(Z3D::ZCameraImagePtr image)
+void ZCameraFramesRecorder::onNewImageReceived(ZCameraImagePtr image)
 {
     QString currentImageFileName = QString("%1/%2.tiff")
             .arg(m_currentSavePath)

@@ -76,11 +76,11 @@ OpenCVVideoCaptureCamera::OpenCVVideoCaptureCamera(cv::VideoCapture *videoCaptur
     }
 
     /// create a thread for the camera and move the camera to it
-    QThread *cameraThread = new QThread();
+    auto *cameraThread = new QThread();
     qDebug() << qPrintable(
                     QString("[%1] moving camera to its own thread (0x%2)")
                     .arg(this->uuid())
-                    .arg((long)cameraThread, 0, 16));
+                    .arg(long(cameraThread), 0, 16));
     this->moveToThread(cameraThread);
     /// start thread with the highest priority
     cameraThread->start(QThread::HighPriority);
@@ -243,7 +243,7 @@ bool OpenCVVideoCaptureCamera::setAttribute(const QString &name, const QVariant 
             }
         } else if (-666 != m_opencvAttributeNames.key(name, -666)) {
             int key = m_opencvAttributeNames.key(name);
-            int doubleValue = value.toDouble();
+            int doubleValue(value.toDouble());
             if (m_capture->get( key) != doubleValue) {
                 m_capture->set( key, doubleValue );
                 changed = m_capture->get( key ) == doubleValue;

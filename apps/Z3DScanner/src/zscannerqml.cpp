@@ -34,7 +34,7 @@
 
 ZScannerQML::ZScannerQML(Z3D::ZStructuredLightSystemPtr structuredLightSystem, QObject *parent)
     : QObject(parent)
-    , m_structuredLightSystem(structuredLightSystem)
+    , m_structuredLightSystem(std::move(structuredLightSystem))
     , m_patternProjectionSettings(new Z3D::ZSettingsItemModel(m_structuredLightSystem->patternProjection()->settings()))
     , m_structuredLightSystemSettings(new Z3D::ZSettingsItemModel(m_structuredLightSystem->settings()))
     , m_model(new Z3D::ZPointCloudListModel(this))

@@ -44,7 +44,7 @@ public:
 public slots:
     ///
     virtual bool requestSnapshot() override;
-    virtual ZCameraImagePtr getSnapshot() override;
+    virtual Z3D::ZCameraImagePtr getSnapshot() override;
 
     /// acquisition control
     virtual bool startAcquisition() override;
@@ -52,7 +52,7 @@ public slots:
     virtual bool isRunning() override { return m_simultaneousCapturesCount > 0; }
 
     /// camera attributes (settings)
-    virtual QList<ZCameraAttribute> getAllAttributes() override = 0;
+    virtual QList<Z3D::ZCameraInterface::ZCameraAttribute> getAllAttributes() override = 0;
     virtual bool setAttribute(const QString &name, const QVariant &value) override;
     virtual QVariant getAttribute(const QString &name) const override = 0;
 
