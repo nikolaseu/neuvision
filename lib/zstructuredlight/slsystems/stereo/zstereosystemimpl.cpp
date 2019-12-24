@@ -90,6 +90,10 @@ void ZStereoSystemImpl::stereoRectify(double alpha)
                       alpha,
                       m_imageSize, &validRoi[0], &validRoi[1]);
 
+    for (size_t k = 0; k < 2; k++) {
+        cv::initUndistortRectifyMap(m_calibration->cameraMatrix[k], m_calibration->distCoeffs[k], m_R[k], m_P[k], m_imageSize, CV_16SC2, m_rectifyMaps[k][0], m_rectifyMaps[k][1]);
+    }
+
     setReady(true);
 }
 
@@ -177,6 +181,8 @@ ZPointCloudPtr process(const cv::Mat &colorImg, cv::Mat Q, cv::Mat leftImg, cv::
     cv::dilate(invalidDataMask, invalidDataMask, cv::getStructuringElement(cv::MORPH_RECT, cv::Size(3, 3)));
 
     ZSimplePointCloud::PointVector points(pointCloud.size().area());
+    std::vector<int> pointIndices(points.size(), -1); // where each point was added
+    QVector<unsigned int> faceIndices;
 
     size_t i=0;
     for (int y=0; y<imgHeight; ++y) {
@@ -207,6 +213,41 @@ ZPointCloudPtr process(const cv::Mat &colorImg, cv::Mat Q, cv::Mat leftImg, cv::
                                             static_cast<uint32_t>(*colorData));       // r
             points[i][6] = *reinterpret_cast<const float_t*>(&grayIntensity);
 
+            // add face/s
+            const size_t pointOrgIndex = y*imgWidth+x;
+            /*if (y>0) {
+                const size_t leftOrgIndex = pointOrgIndex - 1;
+                const size_t topOrgIndex = pointOrgIndex - imgWidth;
+                const size_t topRightOrgIndex = topOrgIndex + 1;
+                const int leftIndex = pointIndices[leftOrgIndex];
+                const int topIndex = pointIndices[topOrgIndex];
+                const int topRightIndex = pointIndices[topRightOrgIndex];
+                const auto thisZ = position[2];
+                const auto leftZ = points[leftIndex][2];
+                const auto topZ = points[topIndex][2];
+                const auto topRightZ = points[topRightIndex][2];
+                const float zThreshold = 1.f;
+                if (x>0 && leftIndex >= 0 && topIndex>=0
+                    && std::abs(leftZ - thisZ) < zThreshold
+                    && std::abs(topZ - thisZ) < zThreshold)
+                {
+                    faceIndices.push_back(i);
+                    faceIndices.push_back(leftIndex);
+                    faceIndices.push_back(topIndex);
+                }
+                if (x<imgWidth-1 && topRightIndex >= 0 && topIndex>=0
+                    && std::abs(thisZ - topZ) < zThreshold
+                    && std::abs(topRightZ - topZ) < zThreshold)
+                {
+                    faceIndices.push_back(i);
+                    faceIndices.push_back(topIndex);
+                    faceIndices.push_back(topRightIndex);
+                }
+            }*/
+
+            // remember point index so we know it when required to add faces later
+            pointIndices[pointOrgIndex] = i;
+
             // valid data index/counter
             ++i;
         }
@@ -218,23 +259,17 @@ ZPointCloudPtr process(const cv::Mat &colorImg, cv::Mat Q, cv::Mat leftImg, cv::
         return nullptr;
     }
 
-    return ZPointCloudPtr(new ZSimplePointCloud(points));
+    return ZPointCloudPtr(new ZSimplePointCloud(points, faceIndices));
 }
 
 Z3D::ZPointCloudPtr ZStereoSystemImpl::triangulate(const cv::Mat &leftColorImage, const cv::Mat &leftDecodedImage, const cv::Mat &rightDecodedImage)
 {
-    //! TODO compute this once and keep in memory?
-    cv::Mat rmap[2][2];
-    for (size_t k = 0; k < 2; k++) {
-        cv::initUndistortRectifyMap(m_calibration->cameraMatrix[k], m_calibration->distCoeffs[k], m_R[k], m_P[k], m_imageSize, CV_16SC2, rmap[k][0], rmap[k][1]);
-    }
-
     cv::Mat leftColorRemapedImage;
-    cv::remap(leftColorImage, leftColorRemapedImage, rmap[0][0], rmap[0][1], cv::INTER_LINEAR);
+    cv::remap(leftColorImage, leftColorRemapedImage, m_rectifyMaps[0][0], m_rectifyMaps[0][1], cv::INTER_LINEAR);
     cv::Mat leftRemapedImage;
-    cv::remap(leftDecodedImage, leftRemapedImage, rmap[0][0], rmap[0][1], cv::INTER_LINEAR);
+    cv::remap(leftDecodedImage, leftRemapedImage, m_rectifyMaps[0][0], m_rectifyMaps[0][1], cv::INTER_LINEAR);
     cv::Mat rightRemapedImage;
-    cv::remap(rightDecodedImage, rightRemapedImage, rmap[1][0], rmap[1][1], cv::INTER_LINEAR);
+    cv::remap(rightDecodedImage, rightRemapedImage, m_rectifyMaps[1][0], m_rectifyMaps[1][1], cv::INTER_LINEAR);
 
     switch (leftRemapedImage.type()) {
     case CV_32FC1: // float_t

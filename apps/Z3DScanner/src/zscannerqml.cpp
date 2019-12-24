@@ -25,18 +25,22 @@
 #include "ZStructuredLight/zstructuredlightsystem.h"
 #include "ZStructuredLight/zstructuredlightsystemprovider.h"
 
+#include "ZPointCloud/zpointcloudlistitem.h"
+#include "ZPointCloud/zpointcloudlistmodel.h"
+
 #include "ZCore/zsettingsitem.h"
 
-#include <QWidget>
+#include <QDateTime>
 
 ZScannerQML::ZScannerQML(Z3D::ZStructuredLightSystemPtr structuredLightSystem, QObject *parent)
     : QObject(parent)
     , m_structuredLightSystem(structuredLightSystem)
     , m_patternProjectionSettings(new Z3D::ZSettingsItemModel(m_structuredLightSystem->patternProjection()->settings()))
     , m_structuredLightSystemSettings(new Z3D::ZSettingsItemModel(m_structuredLightSystem->settings()))
+    , m_model(new Z3D::ZPointCloudListModel(this))
 {
     QObject::connect(m_structuredLightSystem.get(), &Z3D::ZStructuredLightSystem::scanFinished,
-                     this, &ZScannerQML::setCloud);
+                     this, &ZScannerQML::addNewScan);
 }
 
 Z3D::ZSettingsItemModel *ZScannerQML::patternProjectionSettings() const
@@ -49,9 +53,9 @@ Z3D::ZSettingsItemModel *ZScannerQML::structuredLightSystemSettings() const
     return m_structuredLightSystemSettings;
 }
 
-Z3D::ZPointCloud *ZScannerQML::cloud() const
+Z3D::ZPointCloudListModel *ZScannerQML::model() const
 {
-    return m_cloud.get();
+    return m_model;
 }
 
 void ZScannerQML::scan()
@@ -59,12 +63,8 @@ void ZScannerQML::scan()
     m_structuredLightSystem->start();
 }
 
-void ZScannerQML::setCloud(Z3D::ZPointCloudPtr cloud)
+void ZScannerQML::addNewScan(Z3D::ZPointCloudPtr cloud)
 {
-    if (m_cloud == cloud) {
-        return;
-    }
-
-    m_cloud = cloud;
-    emit cloudChanged(m_cloud.get());
+    auto *pcItem = new Z3D::ZPointCloudListItem(cloud, QDateTime::currentDateTime().toString(Qt::ISODate));
+    m_model->addPointCloud(pcItem);
 }

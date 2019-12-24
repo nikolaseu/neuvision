@@ -62,6 +62,8 @@ protected:
     std::vector<cv::Mat> m_P;
     cv::Mat m_Q;
 
+    cv::Mat m_rectifyMaps[2][2];
+
 private:
     bool m_ready;
 };

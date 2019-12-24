@@ -1,7 +1,4 @@
 #!/bin/bash
-#export Qt5_DIR=$(brew --prefix qt)
-#export OpenCV_DIR=$(brew --prefix opencv)
-
 BUILD_TYPE=Release
 STARTING_DIR=$(pwd)
 BUILD_DIR=$STARTING_DIR/build/$BUILD_TYPE

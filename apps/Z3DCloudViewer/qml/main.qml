@@ -318,14 +318,14 @@ ApplicationWindow {
                 ZFastBlur {
                     anchors.fill: parent
                     source: scene3d
-                    radius: 256
+                    radius: 64
                 }
 
                 Rectangle {
                     id: backgroundOverlay
                     anchors.fill: parent
-                    property color backgroundColor: Qt.darker(window.color, 1.1)
-                    color: Qt.rgba(backgroundColor.r, backgroundColor.g, backgroundColor.b, 0.2)
+                    property color backgroundColor: Qt.lighter(window.color, 1.1)
+                    color: Qt.rgba(backgroundColor.r, backgroundColor.g, backgroundColor.b, 0.5)
                 }
 
                 ColumnLayout {

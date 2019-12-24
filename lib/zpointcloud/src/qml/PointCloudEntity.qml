@@ -40,12 +40,20 @@ Entity {
         }
     }
 
-    MetalRoughMaterial {
+    PhongMaterial {
         id: material
-        baseColor: defaultColor
-        metalness: specular
-        roughness: shininess
+        ambient: Qt.lighter(root.defaultColor, root.ambient)
+        diffuse: Qt.lighter(root.defaultColor, 2 * root.diffuse)
+        specular: Qt.lighter(root.defaultColor, 2 * root.specular)
+        shininess: root.shininess
     }
+
+//    MetalRoughMaterial {
+//        id: material
+//        baseColor: defaultColor
+//        metalness: specular
+//        roughness: shininess
+//    }
 
     PerVertexColorMaterial {
         id: perVertexColorMaterial
