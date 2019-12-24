@@ -28,10 +28,13 @@ namespace Z3D
 ZSimplePointCloud::ZSimplePointCloud(const ZSimplePointCloud::PointVector points, QObject *parent)
     : ZPointCloud(parent)
     , m_fields({
-               new ZPointField("x",    0, ZPointField::FLOAT32, 1),
-               new ZPointField("y",    4, ZPointField::FLOAT32, 1),
-               new ZPointField("z",    8, ZPointField::FLOAT32, 1),
-               new ZPointField("rgb", 12, ZPointField::FLOAT32, 1)
+               new ZPointField("x",         0, ZPointField::FLOAT32, 1),
+               new ZPointField("y",         4, ZPointField::FLOAT32, 1),
+               new ZPointField("z",         8, ZPointField::FLOAT32, 1),
+               new ZPointField("normal_x", 12, ZPointField::FLOAT32, 1),
+               new ZPointField("normal_y", 16, ZPointField::FLOAT32, 1),
+               new ZPointField("normal_z", 20, ZPointField::FLOAT32, 1),
+               new ZPointField("rgb",      24, ZPointField::UINT8,   4)
     })
     , m_points(std::move(points))
     , m_width(m_points.size())
@@ -64,7 +67,7 @@ unsigned int ZSimplePointCloud::width() const
 
 unsigned int ZSimplePointCloud::pointStep() const
 {
-    return sizeof(cv::Vec4f);
+    return sizeof(PointType);
 }
 
 unsigned int ZSimplePointCloud::rowStep() const

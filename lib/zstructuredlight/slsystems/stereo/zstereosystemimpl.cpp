@@ -33,9 +33,9 @@
 #include <QtConcurrentMap>
 #include <QtConcurrentRun>
 
+#include <opencv2/calib3d.hpp>
 #include <opencv2/core.hpp>
 #include <opencv2/imgproc.hpp>
-#include <opencv2/calib3d.hpp>
 
 namespace Z3D
 {
@@ -94,59 +94,54 @@ void ZStereoSystemImpl::stereoRectify(double alpha)
 }
 
 template<typename T>
-ZPointCloudPtr process(const cv::Mat &colorImg, cv::Mat Q, cv::Mat leftImg, cv::Mat rightImg) {
+ZPointCloudPtr process(const cv::Mat &colorImg, cv::Mat Q, cv::Mat leftImg, cv::Mat rightImg)
+{
     const cv::Size &imgSize = leftImg.size();
     const int &imgHeight = imgSize.height;
     const int &imgWidth = imgSize.width;
 
-    std::vector<cv::Vec3f> disparity;
-    disparity.reserve(size_t(imgHeight * imgWidth)); /// reserve maximum possible size
-    std::vector<uint32_t> color;
+    cv::Mat disparityImage(imgSize, CV_32FC1, cv::Scalar(0));
 
     for (int y=0; y<imgHeight; ++y) {
-//        qDebug() << "processing row" << y;
+        //qDebug() << "processing row" << y;
 
         const uint8_t* colorData = colorImg.ptr<uint8_t>(y);
+        float *depthPtr = disparityImage.ptr<float>(y);
         T* imgData = leftImg.ptr<T>(y);
         T* rImgData = rightImg.ptr<T>(y);
         T* rImgDataNext = rImgData + 1;
-        for (int x=0, rx=0; x<imgWidth; ++x, ++imgData, ++colorData) {
+        for (int x=0, rx=0; x<imgWidth; ++x, ++imgData, ++colorData, ++depthPtr) {
             if (*imgData == ZDecodedPattern::NO_VALUE) {
-//                qDebug() << "skipping pixel, no data for left image";
+                //qDebug() << "skipping left pixel x:" << x << "-> no data";
                 continue;
             }
 
-//            qDebug() << "processing col" << x << "value" << *imgData;
+            //qDebug() << "processing col" << x << "value" << *imgData;
 
             bool shouldContinueInRight = true;
             for (; shouldContinueInRight && rx<imgWidth-1; ++rx, ++rImgData, ++rImgDataNext) {
                 if (*rImgData == ZDecodedPattern::NO_VALUE) {
-//                    qDebug() << "skipping pixel, no data for right image";
+                    //qDebug() << "skipping right pixel x:" << x << "-> no data";
                     continue;
                 }
 
+                //qDebug() << "processing right col" << rx << "value" << *rImgData << "next" << *rImgDataNext;
+
                 if (*imgData < *rImgData) {
-//                    qDebug() << "value in right image is higher than left image, advancing left pointer...";
+                    //qDebug() << "value in right image is higher than left image, advancing left pointer...";
                     shouldContinueInRight = false;
                     break;
                 }
 
                 //! TODO this is a really naive way to find correspondeces ...
                 if (*imgData >= *rImgData && *imgData <= *rImgDataNext
-                        && (*imgData - *rImgData) < 2.f
                         && (*rImgDataNext - *rImgData) < 2.f)
                 {
                     const float range = *rImgDataNext - *rImgData;
                     const float offset = range > FLT_EPSILON
                             ? (*imgData - *rImgData) / range
                             : 0;
-                    disparity.push_back(cv::Vec3f(x, y, float(x) - (float(rx) + offset)));
-
-                    const uint32_t rgbWhite = (static_cast<uint32_t>(*colorData) << 24 | // alpha
-                                               static_cast<uint32_t>(*colorData) << 16 | // r
-                                               static_cast<uint32_t>(*colorData) <<  8 | // g
-                                               static_cast<uint32_t>(*colorData));       // b
-                    color.push_back(rgbWhite);
+                    *depthPtr = float(x) - (float(rx) + offset);
 
                     shouldContinueInRight = false;
                     break;
@@ -155,24 +150,72 @@ ZPointCloudPtr process(const cv::Mat &colorImg, cv::Mat Q, cv::Mat leftImg, cv::
         }
     }
 
-    qDebug() << "found" << disparity.size() << "matches";
+    //! Reproject to compute xyz
+    cv::Mat pointCloud(imgSize, CV_32FC3);
+    cv::reprojectImageTo3D(disparityImage, pointCloud, Q);
 
-    if (disparity.size() < 1) {
-         return nullptr;
+    cv::Mat zChannel;
+    cv::extractChannel(pointCloud, zChannel, 2);
+
+    /// Gradients of z to compute normals
+    cv::Mat gradientX, gradientY;
+    const int sobelScale = 1;
+    const int sobelDelta = 0;
+    const int sobelDataTypeDepth = CV_32F;
+    cv::Sobel(zChannel, gradientX, sobelDataTypeDepth, 1, 0, 3, sobelScale, sobelDelta, cv::BORDER_DEFAULT );
+    cv::Sobel(zChannel, gradientY, sobelDataTypeDepth, 0, 1, 3, sobelScale, sobelDelta, cv::BORDER_DEFAULT );
+
+    cv::Mat normalsMagnitude = gradientX.mul(gradientX) + gradientY.mul(gradientY) + 1;
+    cv::sqrt(normalsMagnitude, normalsMagnitude);
+
+    /// Normals
+    cv::Mat normalsZ = 1 / normalsMagnitude;
+    cv::Mat normalsX = gradientX.mul(normalsZ);
+    cv::Mat normalsY = gradientY.mul(normalsZ);
+
+    cv::Mat invalidDataMask = disparityImage == 0;
+    cv::dilate(invalidDataMask, invalidDataMask, cv::getStructuringElement(cv::MORPH_RECT, cv::Size(3, 3)));
+
+    ZSimplePointCloud::PointVector points(pointCloud.size().area());
+
+    size_t i=0;
+    for (int y=0; y<imgHeight; ++y) {
+        const uint8_t* invalidData = invalidDataMask.ptr<uint8_t>(y);
+        const cv::Vec3f* positionData = pointCloud.ptr<cv::Vec3f>(y);
+        const float_t *nxData = normalsX.ptr<float_t>(y);
+        const float_t *nyData = normalsY.ptr<float_t>(y);
+        const float_t *nzData = normalsZ.ptr<float_t>(y);
+        const uint8_t* colorData = colorImg.ptr<uint8_t>(y);
+        for (int x=0; x<imgWidth; ++x, ++invalidData, ++positionData, ++nxData, ++nyData, ++nzData, ++colorData) {
+            if (*invalidData) {
+                continue;
+            }
+
+            const cv::Vec3f &position = *positionData;
+            points[i][0] = position[0];
+            points[i][1] = position[1];
+            points[i][2] = position[2];
+
+            points[i][3] = *nxData;
+            points[i][4] = *nyData;
+            points[i][5] = - *nzData;
+
+            // we don't really have RGB :(
+            const uint32_t grayIntensity = (static_cast<uint32_t>(       255) << 24 | // alpha
+                                            static_cast<uint32_t>(*colorData) << 16 | // b
+                                            static_cast<uint32_t>(*colorData) <<  8 | // g
+                                            static_cast<uint32_t>(*colorData));       // r
+            points[i][6] = *reinterpret_cast<const float_t*>(&grayIntensity);
+
+            // valid data index/counter
+            ++i;
+        }
     }
+    points.resize(i);
 
-    std::vector<cv::Vec3f> points3f;
-    cv::perspectiveTransform(disparity, points3f, Q);
-
-    ZSimplePointCloud::PointVector points;
-    points.resize(points3f.size());
-
-    for (size_t i=0; i<points.size(); ++i) {
-        points[i][0] = points3f[i][0];
-        points[i][1] = points3f[i][1];
-        points[i][2] = points3f[i][2];
-
-        points[i][3] = *reinterpret_cast<const float_t*>(&color[i]);
+    qDebug() << "found" << points.size() << "matches";
+    if (points.size() < 1) {
+        return nullptr;
     }
 
     return ZPointCloudPtr(new ZSimplePointCloud(points));

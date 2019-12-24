@@ -27,6 +27,8 @@
 #include "ZCameraAcquisition/zimageviewer.h"
 
 #include <opencv2/core.hpp>
+#include <opencv2/imgproc.hpp>
+#include <opencv2/highgui.hpp>
 
 #include <QDebug>
 #include <QTimer>
@@ -123,6 +125,7 @@ void ZStructuredLightSystem::onPatternsDecodedDebug(std::vector<ZDecodedPatternP
            absMaxVal = DBL_MIN;
 
     /// only to show in the window, we need to change image "range" to improve visibility
+    std::vector<cv::Mat> decodedImagesClean;
     for (const auto &decodedPattern : patterns) {
         cv::Mat decoded = decodedPattern->decodedImage().clone();
 
@@ -146,28 +149,35 @@ void ZStructuredLightSystem::onPatternsDecodedDebug(std::vector<ZDecodedPatternP
         if (absMaxVal < maxVal) {
             absMaxVal = maxVal;
         }
+
+        decodedImagesClean.push_back(decoded);
     }
 
     /// range of values
-    double range = (absMaxVal - absMinVal);
+    const double range = (absMaxVal - absMinVal);
 
     qDebug() << "abs min:" << absMinVal
              << "abs max:" << absMaxVal
              << "range:" << range;
 
-    int iCam = 0;
-    for (const auto &decodedPattern : patterns) {
-        cv::Mat decodedImage = decodedPattern->decodedImage();
-
-        /// convert to "visible" image to show in window
-        cv::Mat decodedVisibleImage;
-        decodedImage.convertTo(decodedVisibleImage, CV_8U, 255.0/range, -absMinVal * 255.0/range);
-
+    for (size_t iCam = 0; iCam<decodedImagesClean.size(); ++iCam) {
+        const auto &decodedImage = decodedImagesClean[iCam];
         Z3D::ZImageViewer *imageWidget = new Z3D::ZImageViewer();
         imageWidget->setDeleteOnClose(true);
-        imageWidget->setWindowTitle(QString("Decoded image [Camera %1]").arg(iCam++));
-        imageWidget->updateImage(decodedVisibleImage);
+        imageWidget->setWindowTitle(QString("Decoded image [Camera %1]").arg(iCam));
+        imageWidget->updateImage(decodedImage, absMinVal, absMaxVal);
         imageWidget->show();
+
+        /// compute and show gradient
+        const cv::Mat_<float> diffKernel = (cv::Mat_<float>(1, 3) << 0, -1, 1) / 2;
+        cv::Mat gradX;
+        filter2D(decodedImage, gradX, -1, diffKernel, cv::Point(-1, 0), 0, cv::BORDER_CONSTANT);
+
+        Z3D::ZImageViewer *gradientImageWidget = new Z3D::ZImageViewer();
+        gradientImageWidget->setDeleteOnClose(true);
+        gradientImageWidget->setWindowTitle(QString("Decoded image [Camera %1] - Gradient x").arg(iCam));
+        gradientImageWidget->updateImage(gradX, 0.f, 0.5f);
+        gradientImageWidget->show();
     }
 }
 

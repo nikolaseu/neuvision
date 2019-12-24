@@ -46,7 +46,7 @@ ZApplication::ZApplication(int &argc, char **argv)
 
     setOrganizationDomain("z3d.neuvision");
     setOrganizationName("Z3D");
-    setApplicationName(QFileInfo(applicationFilePath()).baseName());
+    setApplicationName(QFileInfo(argv[0]).baseName());
     setApplicationVersion(Z3D_VERSION_BUILD_STR);
 
     qInfo() << "starting" << applicationName()

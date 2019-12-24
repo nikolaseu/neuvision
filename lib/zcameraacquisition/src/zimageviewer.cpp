@@ -306,6 +306,22 @@ void ZImageViewer::updateImage(const cv::Mat &image)
     updateImage(qImage);
 }
 
+void ZImageViewer::updateImage(const cv::Mat &image, float minValue, float maxValue)
+{
+    if (m_img.channels() != 1) {
+        qCritical() << "cannot show image with min/max range because it has more than one channel!";
+        return;
+    }
+
+    /// convert to "visible" image to show in window
+    const float range = maxValue - minValue;
+    cv::Mat img;
+    //! FIXME this loses a lot of detail
+    image.convertTo(img, CV_8UC1, 256/range, -minValue * 256/range);
+
+    updateImage(img);
+}
+
 void ZImageViewer::updateImage(const QImage &image)
 {
     const bool haveToForceFitImageToWindow = m_fitToWindowEnabled && m_image.size() != image.size();

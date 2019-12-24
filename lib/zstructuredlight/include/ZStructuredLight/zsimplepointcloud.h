@@ -33,8 +33,8 @@ class Z3D_STRUCTUREDLIGHT_SHARED_EXPORT ZSimplePointCloud : public ZPointCloud
     Q_OBJECT
 
 public:
-    typedef cv::Vec4f PointType;
-    typedef std::vector<PointType> PointVector;
+    using PointType = cv::Vec<float, 7>; // X Y Z NX NY NZ RGBX
+    using PointVector = std::vector<PointType>;
 
     explicit ZSimplePointCloud(const PointVector points, QObject *parent = nullptr);
     ~ZSimplePointCloud() override;
