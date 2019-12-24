@@ -59,6 +59,11 @@ ZPointField::PointFieldTypes fromPCLDatatype(const pcl::uint8_t &datatype)
 
 ZPointField *fromPclPointField(pcl::PCLPointField *field)
 {
+    if (strcmp(field->name.c_str(), "rgb") == 0 && field->datatype == pcl::PCLPointField::FLOAT32) {
+        // special handling for color since pcl says it's a float
+        return new ZPointField(field->name.c_str(), field->offset, ZPointField::UINT8, 4);
+    }
+
     return new ZPointField(field->name.c_str(), field->offset, fromPCLDatatype(field->datatype), field->count);
 }
 

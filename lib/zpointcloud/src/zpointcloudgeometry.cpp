@@ -163,11 +163,10 @@ void ZPointCloudGeometry::updateAttributes()
     pf = pfs.find("rgb");
     if (pf != pfs.cend()) {
         qDebug(loggingCategory) << "Adding color attribute from rgb";
-        const uint num = 4; // RGBA == 4 bytes but it's only one attribute
         Qt3DRender::QAttribute* attrib = new Qt3DRender::QAttribute(m_p->vertexBuffer,
                                                                     Qt3DRender::QAttribute::defaultColorAttributeName(),
-                                                                    Qt3DRender::QAttribute::VertexBaseType::UnsignedByte,
-                                                                    num,
+                                                                    pointFieldTypeToAttributeType((*pf)->dataType()),
+                                                                    (*pf)->count(),
                                                                     m_p->pointCloud->width() * m_p->pointCloud->height(),
                                                                     (*pf)->offset(),
                                                                     m_p->pointCloud->pointStep(),

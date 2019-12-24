@@ -80,7 +80,7 @@ public:
         }
 
         if (hasColors) {
-            m_fields.push_back(new ZPointField("rgb", offset+0, ZPointField::FLOAT32, 1));
+            m_fields.push_back(new ZPointField("rgb", offset+0, ZPointField::UINT8, 4));
             offset += 4;
         }
 
