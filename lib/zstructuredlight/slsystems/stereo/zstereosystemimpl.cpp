@@ -211,44 +211,55 @@ ZPointCloudPtr process(const cv::Mat &colorImg, cv::Mat Q, cv::Mat leftImg, cv::
                 float asFloat;
             } color;
 
-            color.rgba[0] = 255;
-            color.rgba[1] = *colorData; // we don't really have RGB :(
+            color.rgba[0] = *colorData; // we don't really have RGB :(
+            color.rgba[1] = *colorData;
             color.rgba[2] = *colorData;
-            color.rgba[3] = *colorData;
+            color.rgba[3] = 255;
 
             points[i][6] = color.asFloat;
 
             // add face/s
             const size_t pointOrgIndex = y*imgWidth+x;
-            /*if (y>0) {
-                const size_t leftOrgIndex = pointOrgIndex - 1;
+            if (y>0) {
                 const size_t topOrgIndex = pointOrgIndex - imgWidth;
-                const size_t topRightOrgIndex = topOrgIndex + 1;
-                const int leftIndex = pointIndices[leftOrgIndex];
                 const int topIndex = pointIndices[topOrgIndex];
-                const int topRightIndex = pointIndices[topRightOrgIndex];
-                const auto thisZ = position[2];
-                const auto leftZ = points[leftIndex][2];
-                const auto topZ = points[topIndex][2];
-                const auto topRightZ = points[topRightIndex][2];
-                const float zThreshold = 1.f;
-                if (x>0 && leftIndex >= 0 && topIndex>=0
-                    && std::abs(leftZ - thisZ) < zThreshold
-                    && std::abs(topZ - thisZ) < zThreshold)
-                {
-                    faceIndices.push_back(i);
-                    faceIndices.push_back(leftIndex);
-                    faceIndices.push_back(topIndex);
+                if (topIndex >= 0) {
+                    const auto topZ = points[topIndex][2];
+                    const auto thisZ = position[2];
+
+                    constexpr float zThreshold = 1.f; //! TODO make parameter
+
+                    if (x > 0) {
+                        const size_t leftOrgIndex = pointOrgIndex - 1;
+                        const int leftIndex = pointIndices[leftOrgIndex];
+                        if (leftIndex >= 0) {
+                            const auto leftZ = points[leftIndex][2];
+                            if (std::abs(leftZ - thisZ) < zThreshold
+                                && std::abs(topZ - thisZ) < zThreshold)
+                            {
+                                faceIndices.push_back(i);
+                                faceIndices.push_back(leftIndex);
+                                faceIndices.push_back(topIndex);
+                            }
+                        }
+                    }
+
+                    if (x < imgWidth - 1) {
+                        const size_t topRightOrgIndex = topOrgIndex + 1;
+                        const int topRightIndex = pointIndices[topRightOrgIndex];
+                        if (topRightIndex >= 0) {
+                            const auto topRightZ = points[topRightIndex][2];
+                            if (std::abs(thisZ - topZ) < zThreshold
+                                && std::abs(topRightZ - topZ) < zThreshold)
+                            {
+                                faceIndices.push_back(i);
+                                faceIndices.push_back(topIndex);
+                                faceIndices.push_back(topRightIndex);
+                            }
+                        }
+                    }
                 }
-                if (x<imgWidth-1 && topRightIndex >= 0 && topIndex>=0
-                    && std::abs(thisZ - topZ) < zThreshold
-                    && std::abs(topRightZ - topZ) < zThreshold)
-                {
-                    faceIndices.push_back(i);
-                    faceIndices.push_back(topIndex);
-                    faceIndices.push_back(topRightIndex);
-                }
-            }*/
+            }
 
             // remember point index so we know it when required to add faces later
             pointIndices[pointOrgIndex] = i;
