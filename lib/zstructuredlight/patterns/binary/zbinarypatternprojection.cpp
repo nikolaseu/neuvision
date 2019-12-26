@@ -33,12 +33,12 @@
 #include <QDateTime>
 #include <QDebug>
 #include <QDir>
+#include <QElapsedTimer>
 #include <QGuiApplication>
 #include <QQmlContext>
 #include <QQuickView>
 #include <QScreen>
 #include <QThread>
-
 
 namespace Z3D
 {
@@ -248,7 +248,7 @@ void ZBinaryPatternProjection::beginScan()
     setVertical(m_vertical);
 
     /// acquisition time
-    QTime acquisitionTime;
+    QElapsedTimer acquisitionTime;
     acquisitionTime.start();
 
     for (int iPattern=0; iPattern <= m_maxUsefulPatterns; ++iPattern) {
@@ -297,7 +297,7 @@ void ZBinaryPatternProjection::beginScan()
     const int fringeStep = int(pow(2, firstPatternToShow));
     if (m_vertical) {
         for (int x = 0; x<projectionWidth; x++) {
-            const float val = std::floor(x/fringeStep);
+            const float val = std::floorf(x/fringeStep);
             for (int y = 0; y<projectionHeight; ++y) {
                 projectedPatternImg.at<float_t>(y, x) = val;
             }
@@ -305,7 +305,7 @@ void ZBinaryPatternProjection::beginScan()
     }
     else {
         for (int y = 0; y<projectionHeight; y++) {
-            const float val = std::floor(y/fringeStep);
+            const float val = std::floorf(y/fringeStep);
             for (int x = 0; x<projectionWidth; ++x) {
                 projectedPatternImg.at<float_t>(y, x) = val;
             }
@@ -337,20 +337,20 @@ void ZBinaryPatternProjection::processImages(std::vector<std::vector<ZCameraImag
     std::vector< std::vector< std::vector<cv::Mat> > > allImages;
 
     allImages.resize(numCameras);
-    for (unsigned int iCam=0; iCam<numCameras; ++iCam) {
+    for (size_t iCam=0; iCam<numCameras; ++iCam) {
         allImages[iCam].resize(2);
         allImages[iCam][0].resize(numPatterns); // images
         allImages[iCam][1].resize(numPatterns); // inverted images
 
-        for (unsigned int iPattern=0; iPattern<numPatterns; ++iPattern) {
-            int imageIndex = 2 * iPattern;
+        for (size_t iPattern=0; iPattern<numPatterns; ++iPattern) {
+            size_t imageIndex = 2 * iPattern;
             allImages[iCam][0][iPattern] = acquiredImages[imageIndex  ][iCam]->cvMat();
             allImages[iCam][1][iPattern] = acquiredImages[imageIndex+1][iCam]->cvMat();
         }
     }
 
     /// decodification time
-    QTime decodeTime;
+    QElapsedTimer decodeTime;
     decodeTime.start();
 
     std::vector<Z3D::ZDecodedPatternPtr> decodedPatternList;
