@@ -48,7 +48,7 @@
 int main(int argc, char* argv[])
 {
     QSurfaceFormat glFormat;
-    glFormat.setVersion(3, 2);
+    glFormat.setVersion(3, 3);
     glFormat.setProfile(QSurfaceFormat::CoreProfile);
     QSurfaceFormat::setDefaultFormat(glFormat);
 
@@ -56,7 +56,7 @@ int main(int argc, char* argv[])
     //qputenv("QT_DEBUG_PLUGINS", "1");
 
     QCoreApplication::setAttribute(Qt::AA_UseDesktopOpenGL, true);
-    QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
+    QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling, true);
 
     ///
     Z3D::ZApplication app(argc, argv);

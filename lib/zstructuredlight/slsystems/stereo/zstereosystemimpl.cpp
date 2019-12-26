@@ -115,7 +115,7 @@ ZPointCloudPtr process(const cv::Mat &colorImg, cv::Mat Q, cv::Mat leftImg, cv::
         T* rImgData = rightImg.ptr<T>(y);
         T* rImgDataNext = rImgData + 1;
         for (int x=0, rx=0; x<imgWidth; ++x, ++imgData, ++colorData, ++depthPtr) {
-            if (*imgData == ZDecodedPattern::NO_VALUE) {
+            if (!ZDecodedPattern::isValidValue(*imgData)) {
                 //qDebug() << "skipping left pixel x:" << x << "-> no data";
                 continue;
             }
@@ -124,7 +124,7 @@ ZPointCloudPtr process(const cv::Mat &colorImg, cv::Mat Q, cv::Mat leftImg, cv::
 
             bool shouldContinueInRight = true;
             for (; shouldContinueInRight && rx<imgWidth-1; ++rx, ++rImgData, ++rImgDataNext) {
-                if (*rImgData == ZDecodedPattern::NO_VALUE) {
+                if (!ZDecodedPattern::isValidValue(*rImgData)) {
                     //qDebug() << "skipping right pixel x:" << x << "-> no data";
                     continue;
                 }
@@ -182,9 +182,9 @@ ZPointCloudPtr process(const cv::Mat &colorImg, cv::Mat Q, cv::Mat leftImg, cv::
 
     ZSimplePointCloud::PointVector points(pointCloud.size().area());
     std::vector<int> pointIndices(points.size(), -1); // where each point was added
-    QVector<unsigned int> faceIndices;
+    QVector<uint32_t> faceIndices;
 
-    size_t i=0;
+    size_t validPointIndex=0;
     for (int y=0; y<imgHeight; ++y) {
         const uint8_t* invalidData = invalidDataMask.ptr<uint8_t>(y);
         const cv::Vec3f* positionData = pointCloud.ptr<cv::Vec3f>(y);
@@ -193,84 +193,156 @@ ZPointCloudPtr process(const cv::Mat &colorImg, cv::Mat Q, cv::Mat leftImg, cv::
         const float_t *nzData = normalsZ.ptr<float_t>(y);
         const uint8_t* colorData = colorImg.ptr<uint8_t>(y);
         for (int x=0; x<imgWidth; ++x, ++invalidData, ++positionData, ++nxData, ++nyData, ++nzData, ++colorData) {
-            if (*invalidData) {
+            const size_t pointOrgIndex = y*imgWidth+x;
+
+            // add point
+            if (!*invalidData) {
+                ZSimplePointCloud::PointType &point = points[validPointIndex];
+
+                const cv::Vec3f &position = *positionData;
+                point[0] = position[0];
+                point[1] = position[1];
+                point[2] = position[2];
+
+                point[3] = *nxData;
+                point[4] = *nyData;
+                point[5] = - *nzData;
+
+                union RGBAColor { // just to simplify converting color data
+                    uchar rgba[4];
+                    float asFloat;
+                } color;
+
+                color.rgba[0] = *colorData; // we don't really have RGB :(
+                color.rgba[1] = *colorData;
+                color.rgba[2] = *colorData;
+                color.rgba[3] = 255;
+
+                point[6] = color.asFloat;
+
+                // remember point index so we know it when required to add faces later
+                pointIndices[pointOrgIndex] = validPointIndex;
+
+                // valid data index/counter
+                ++validPointIndex;
+            }
+
+#if 1
+            // add face/s
+            if (y < 1 || x < 1) {
+                // we cannot add anything, we need previous row and previous column data
                 continue;
             }
 
-            const cv::Vec3f &position = *positionData;
-            points[i][0] = position[0];
-            points[i][1] = position[1];
-            points[i][2] = position[2];
+            const int thisIndex = pointIndices[pointOrgIndex];
 
-            points[i][3] = *nxData;
-            points[i][4] = *nyData;
-            points[i][5] = - *nzData;
+            const size_t topOrgIndex = pointOrgIndex - imgWidth;
+            const int topIndex = pointIndices[topOrgIndex];
 
-            union RGBAColor { // just to simplify converting color data
-                uchar rgba[4];
-                float asFloat;
-            } color;
+            const size_t topLeftOrgIndex = topOrgIndex - 1;
+            const int topLeftIndex = pointIndices[topLeftOrgIndex];
 
-            color.rgba[0] = *colorData; // we don't really have RGB :(
-            color.rgba[1] = *colorData;
-            color.rgba[2] = *colorData;
-            color.rgba[3] = 255;
+            const size_t leftOrgIndex = pointOrgIndex - 1;
+            const int leftIndex = pointIndices[leftOrgIndex];
 
-            points[i][6] = color.asFloat;
+            //! TODO make parameter, also probably using a maximum angle is easier to setup
+            constexpr float zThreshold = 1.f;
 
-            // add face/s
-            const size_t pointOrgIndex = y*imgWidth+x;
-            if (y>0) {
-                const size_t topOrgIndex = pointOrgIndex - imgWidth;
-                const int topIndex = pointIndices[topOrgIndex];
-                if (topIndex >= 0) {
-                    const auto topZ = points[topIndex][2];
-                    const auto thisZ = position[2];
-
-                    constexpr float zThreshold = 1.f; //! TODO make parameter
-
-                    if (x > 0) {
-                        const size_t leftOrgIndex = pointOrgIndex - 1;
-                        const int leftIndex = pointIndices[leftOrgIndex];
-                        if (leftIndex >= 0) {
-                            const auto leftZ = points[leftIndex][2];
-                            if (std::abs(leftZ - thisZ) < zThreshold
-                                && std::abs(topZ - thisZ) < zThreshold)
-                            {
-                                faceIndices.push_back(i);
-                                faceIndices.push_back(leftIndex);
-                                faceIndices.push_back(topIndex);
-                            }
-                        }
-                    }
-
-                    if (x < imgWidth - 1) {
-                        const size_t topRightOrgIndex = topOrgIndex + 1;
-                        const int topRightIndex = pointIndices[topRightOrgIndex];
-                        if (topRightIndex >= 0) {
-                            const auto topRightZ = points[topRightIndex][2];
-                            if (std::abs(thisZ - topZ) < zThreshold
-                                && std::abs(topRightZ - topZ) < zThreshold)
-                            {
-                                faceIndices.push_back(i);
-                                faceIndices.push_back(topIndex);
-                                faceIndices.push_back(topRightIndex);
-                            }
-                        }
-                    }
+            auto addThisAndTopLeftAndLeftTriangle = [&]() {
+                const auto thisZ = points[thisIndex][2];
+                const auto topLeftZ = points[topLeftIndex][2];
+                const auto leftZ = points[leftIndex][2];
+                if (std::abs(thisZ - leftZ) < zThreshold
+                    && std::abs(topLeftZ - leftZ) < zThreshold)
+                {
+                    faceIndices.push_back(thisIndex);
+                    faceIndices.push_back(topLeftIndex);
+                    faceIndices.push_back(leftIndex);
                 }
+            };
+
+            auto addThisAndTopAndTopLeftTriangle = [&]() {
+                const auto thisZ = points[thisIndex][2];
+                const auto topZ = points[topIndex][2];
+                const auto topLeftZ = points[topLeftIndex][2];
+                if (std::abs(thisZ - topZ) < zThreshold
+                    && std::abs(topLeftZ - topZ) < zThreshold)
+                {
+                    faceIndices.push_back(thisIndex);
+                    faceIndices.push_back(topIndex);
+                    faceIndices.push_back(topLeftIndex);
+                }
+            };
+
+            auto addThisAndTopAndLeftTriangle = [&]() {
+                const auto thisZ = points[thisIndex][2];
+                const auto topZ = points[topIndex][2];
+                const auto leftZ = points[leftIndex][2];
+                if (std::abs(topZ - thisZ) < zThreshold
+                    && std::abs(leftZ - thisZ) < zThreshold)
+                {
+                    faceIndices.push_back(thisIndex);
+                    faceIndices.push_back(topIndex);
+                    faceIndices.push_back(leftIndex);
+                }
+            };
+
+            auto addTopAndTopLeftAndLeftTriangle = [&]() {
+                const auto topZ = points[topIndex][2];
+                const auto topLeftZ = points[topLeftIndex][2];
+                const auto leftZ = points[leftIndex][2];
+                if (std::abs(topZ - topLeftZ) < zThreshold
+                    && std::abs(leftZ - topLeftZ) < zThreshold)
+                {
+                    faceIndices.push_back(topIndex);
+                    faceIndices.push_back(topLeftIndex);
+                    faceIndices.push_back(leftIndex);
+                }
+            };
+
+            if (thisIndex >= 0 && topLeftIndex >= 0 && leftIndex >= 0 && topIndex >= 0) {
+                // we can to fill the complete quad, and we have two options.
+                // to decide which one we'll use the difference of normals between the points on the
+                // diagonals, so we join based on the surface direction change.
+                // we could also chose based on the minimum diagonal distance, but we don't really care about
+                // shape of triangles.
+                auto getNormal = [](ZSimplePointCloud::PointType pointData) -> cv::Vec3f {
+                    return cv::Vec3f(pointData[3], pointData[4], pointData[5]);
+                };
+
+                const cv::Vec3f normalTopLeft = getNormal(points[topLeftIndex]);
+                const cv::Vec3f normalLeft = getNormal(points[leftIndex]);
+                const cv::Vec3f normalTop = getNormal(points[topIndex]);
+                const cv::Vec3f normal = getNormal(points[thisIndex]);
+                const float cosAngleBetweenThisAndTopLeft = normalTopLeft.dot(normal);
+                const float cosAngleBetweenLeftAndTop = normalLeft.dot(normalTop);
+                if (cosAngleBetweenThisAndTopLeft > cosAngleBetweenLeftAndTop) {
+                    // add -45 diagonal
+                    addThisAndTopLeftAndLeftTriangle();
+                    addThisAndTopAndTopLeftTriangle();
+                } else {
+                    // add +45 diagonal
+                    addThisAndTopAndLeftTriangle();
+                    addTopAndTopLeftAndLeftTriangle();
+                }
+            } else if (thisIndex >= 0 && topLeftIndex >= 0 && leftIndex >= 0) {
+                // top is missing
+                addThisAndTopLeftAndLeftTriangle();
+            } else if (thisIndex >= 0 && topIndex >= 0 && topLeftIndex >= 0) {
+                // left is missing
+                addThisAndTopAndTopLeftTriangle();
+            } else if (thisIndex >= 0 && topIndex >= 0 && leftIndex >= 0) {
+                // top left is missing
+                addThisAndTopAndLeftTriangle();
+            } else if (topIndex >= 0 && topLeftIndex >= 0 && leftIndex >= 0) {
+                // this is missing
+                addTopAndTopLeftAndLeftTriangle();
             }
-
-            // remember point index so we know it when required to add faces later
-            pointIndices[pointOrgIndex] = i;
-
-            // valid data index/counter
-            ++i;
+#endif
         }
     }
-    points.resize(i);
+    points.resize(validPointIndex);
 
-    qDebug() << "found" << points.size() << "matches";
     if (points.size() < 1) {
         return nullptr;
     }

@@ -31,7 +31,8 @@ namespace Z3D
 struct Z3D_STRUCTUREDLIGHT_SHARED_EXPORT ZDecodedPattern : public ZStructuredLightPattern
 {
 public:
-    static constexpr float_t NO_VALUE = std::numeric_limits<float_t>::min();
+    static constexpr float_t NO_VALUE = std::numeric_limits<float_t>::quiet_NaN();
+    static inline bool isValidValue(float_t value) { return !std::isnan(value); }
 
     explicit ZDecodedPattern(cv::Mat decodedImage,
                              cv::Mat intensityImg);

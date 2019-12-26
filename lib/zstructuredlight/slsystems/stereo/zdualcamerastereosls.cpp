@@ -29,7 +29,7 @@
 
 #include <QDebug>
 #include <QSettings>
-#include <QTime>
+#include <QElapsedTimer>
 
 namespace Z3D
 {
@@ -137,7 +137,7 @@ void ZDualCameraStereoSLS::onPatternProjected(ZProjectedPatternPtr pattern)
 
 void ZDualCameraStereoSLS::onPatternsDecoded(std::vector<ZDecodedPatternPtr> decodedPatterns)
 {
-    QTime startTime;
+    QElapsedTimer startTime;
     startTime.start();
 
     Z3D::ZPointCloudPtr cloud = triangulate(decodedPatterns[0]->intensityImg(),
