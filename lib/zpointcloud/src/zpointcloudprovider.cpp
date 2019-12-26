@@ -21,6 +21,7 @@
 #include "ZPointCloud/zpointcloudprovider.h"
 
 #include "ZPointCloud/zpointcloud.h"
+#include "ZPointCloud/zpointcloud_qml.h"
 #include "ZPointCloud/zpointcloudgeometry.h"
 #include "ZPointCloud/zpointcloudlistmodel.h"
 #include "ZPointCloud/zpointcloudplugininterface.h"
@@ -48,11 +49,18 @@ QMap< QString, ZPointCloudPluginInterface *> ZPointCloudProvider::m_plugins;
 
 void ZPointCloudProvider::registerMetaTypes()
 {
-    qRegisterMetaType<Z3D::ZPointCloudListModel*>("Z3D::ZPointCloudListModel*");
+    qRegisterMetaType<Z3D::ZPointCloudListModel *>("Z3D::ZPointCloudListModel*");
+    qRegisterMetaType<Z3D::ZPointCloud *>("Z3D::ZPointCloud*");
 
-    qmlRegisterUncreatableType<Z3D::ZPointCloud>("Z3D.ZPointCloud", 1, 0, "PointCloud", "ZPointCloud cannot be created, must be obtained from a PointCloudReader");
     qmlRegisterType<Z3D::ZPointCloudReader>("Z3D.ZPointCloud", 1, 0, "PointCloudReader");
     qmlRegisterType<Z3D::ZPointCloudGeometry>("Z3D.ZPointCloud", 1, 0, "PointCloudGeometry");
+
+    qmlRegisterSingletonType<Z3D::ZPointCloudInternal::ZPointCloud_QML>("Z3D.ZPointCloud", 1, 0, "Utils",
+        [](QQmlEngine *engine, QJSEngine *scriptEngine) -> QObject * {
+            Q_UNUSED(engine)
+            Q_UNUSED(scriptEngine)
+            return new Z3D::ZPointCloudInternal::ZPointCloud_QML();
+        });
 }
 
 void ZPointCloudProvider::loadPlugins()

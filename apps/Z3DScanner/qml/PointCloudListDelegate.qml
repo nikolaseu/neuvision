@@ -9,6 +9,8 @@ Item {
     property alias text: checkbox.text
     property alias hovered: mouseArea.containsMouse
 
+    property Menu contextMenu
+
     implicitHeight: layout.implicitHeight
 
     Column {
@@ -34,7 +36,13 @@ Item {
         anchors.fill: parent
 
         preventStealing: true
-        acceptedButtons: Qt.NoButton
+        acceptedButtons: Qt.RightButton
         hoverEnabled: true
+
+        onClicked: {
+            if (mouse.button == Qt.RightButton) {
+                root.contextMenu.open();
+            }
+        }
     }
 }

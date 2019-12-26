@@ -289,6 +289,27 @@ ApplicationWindow {
                                 model.highlighted = hovered && ListView.isCurrentItem
                             }
 
+                            contextMenu: Menu {
+                                MenuItem {
+                                    text: "Save as..."
+                                    onTriggered: {
+                                        savePointCloudDialog.open()
+                                    }
+
+                                    FileDialog {
+                                        id: savePointCloudDialog
+                                        title: "Save as..."
+                                        folder: shortcuts.home
+                                        modality: Qt.ApplicationModal
+                                        nameFilters: [ "PLY files (*.ply)" ]
+                                        selectExisting: false
+                                        onAccepted: {
+                                            ZPointCloud.Utils.savePLY(model.pointCloud, savePointCloudDialog.fileUrl);
+                                        }
+                                    }
+                                }
+                            }
+
                             Rectangle {
                                 visible: model.highlighted
                                 anchors.fill: parent

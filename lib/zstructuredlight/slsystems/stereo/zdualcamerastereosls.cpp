@@ -132,7 +132,7 @@ ZCameraList ZDualCameraStereoSLS::cameras() const
 
 void ZDualCameraStereoSLS::onPatternProjected(ZProjectedPatternPtr pattern)
 {
-    Q_UNUSED(pattern);
+    Q_UNUSED(pattern)
 }
 
 void ZDualCameraStereoSLS::onPatternsDecoded(std::vector<ZDecodedPatternPtr> decodedPatterns)
