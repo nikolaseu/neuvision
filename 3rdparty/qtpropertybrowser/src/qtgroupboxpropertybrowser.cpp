@@ -70,8 +70,8 @@ public:
 
     struct WidgetItem
     {
-        WidgetItem() : widget(0), label(0), widgetLabel(0),
-                groupBox(0), layout(0), line(0), parent(0) { }
+        WidgetItem() : widget(nullptr), label(nullptr), widgetLabel(nullptr),
+                groupBox(nullptr), layout(nullptr), line(nullptr), parent(nullptr) { }
         QWidget *widget; // can be null
         QLabel *label;
         QLabel *widgetLabel;
@@ -113,7 +113,7 @@ void QtGroupBoxPropertyBrowserPrivate::slotEditorDestroyed()
         return;
     if (!m_widgetToItem.contains(editor))
         return;
-    m_widgetToItem[editor]->widget = 0;
+    m_widgetToItem[editor]->widget = nullptr;
     m_widgetToItem.remove(editor);
 }
 
@@ -124,8 +124,8 @@ void QtGroupBoxPropertyBrowserPrivate::slotUpdate()
         WidgetItem *item = itItem.next();
 
         WidgetItem *par = item->parent;
-        QWidget *w = 0;
-        QGridLayout *l = 0;
+        QWidget *w = nullptr;
+        QGridLayout *l = nullptr;
         int oldRow = -1;
         if (!par) {
             w = q_ptr;
@@ -177,8 +177,8 @@ void QtGroupBoxPropertyBrowserPrivate::propertyInserted(QtBrowserItem *index, Qt
     WidgetItem *newItem = new WidgetItem();
     newItem->parent = parentItem;
 
-    QGridLayout *layout = 0;
-    QWidget *parentWidget = 0;
+    QGridLayout *layout = nullptr;
+    QWidget *parentWidget = nullptr;
     int row = -1;
     if (!afterItem) {
         row = 0;
@@ -205,8 +205,8 @@ void QtGroupBoxPropertyBrowserPrivate::propertyInserted(QtBrowserItem *index, Qt
         if (!parentItem->groupBox) {
             m_recreateQueue.removeAll(parentItem);
             WidgetItem *par = parentItem->parent;
-            QWidget *w = 0;
-            QGridLayout *l = 0;
+            QWidget *w = nullptr;
+            QGridLayout *l = nullptr;
             int oldRow = -1;
             if (!par) {
                 w = q_ptr;
@@ -225,7 +225,7 @@ void QtGroupBoxPropertyBrowserPrivate::propertyInserted(QtBrowserItem *index, Qt
             if (parentItem->label) {
                 l->removeWidget(parentItem->label);
                 delete parentItem->label;
-                parentItem->label = 0;
+                parentItem->label = nullptr;
             }
             if (parentItem->widget) {
                 l->removeWidget(parentItem->widget);
@@ -235,7 +235,7 @@ void QtGroupBoxPropertyBrowserPrivate::propertyInserted(QtBrowserItem *index, Qt
             } else if (parentItem->widgetLabel) {
                 l->removeWidget(parentItem->widgetLabel);
                 delete parentItem->widgetLabel;
-                parentItem->widgetLabel = 0;
+                parentItem->widgetLabel = nullptr;
             }
             if (parentItem->line) {
                 parentItem->line->setFrameShape(QFrame::HLine);
@@ -313,7 +313,7 @@ void QtGroupBoxPropertyBrowserPrivate::propertyRemoved(QtBrowserItem *index)
         removeRow(parentItem->layout, row);
     } else {
         WidgetItem *par = parentItem->parent;
-        QGridLayout *l = 0;
+        QGridLayout *l = nullptr;
         int oldRow = -1;
         if (!par) {
             l = m_mainLayout;
@@ -327,18 +327,18 @@ void QtGroupBoxPropertyBrowserPrivate::propertyRemoved(QtBrowserItem *index)
 
         if (parentItem->widget) {
             parentItem->widget->hide();
-            parentItem->widget->setParent(0);
+            parentItem->widget->setParent(nullptr);
         } else if (parentItem->widgetLabel) {
             parentItem->widgetLabel->hide();
-            parentItem->widgetLabel->setParent(0);
+            parentItem->widgetLabel->setParent(nullptr);
         } else {
             //parentItem->widgetLabel = new QLabel(w);
         }
         l->removeWidget(parentItem->groupBox);
         delete parentItem->groupBox;
-        parentItem->groupBox = 0;
-        parentItem->line = 0;
-        parentItem->layout = 0;
+        parentItem->groupBox = nullptr;
+        parentItem->line = nullptr;
+        parentItem->layout = nullptr;
         if (!m_recreateQueue.contains(parentItem))
             m_recreateQueue.append(parentItem);
         updateLater();
