@@ -60,9 +60,9 @@ bool ZCameraCalibration::getCalibratedSubPixel(float x, float y, float *calibrat
     /// we do a bilinear interpolation for subpixel values
     /// http://en.wikipedia.org/wiki/Bilinear_interpolation
 
-    int x1 = int(floorf(x));
+    int x1 = int(std::floor(x));
     int x2 = x1 + 1;
-    int y1 = int(floorf(y));
+    int y1 = int(std::floor(y));
     int y2 = y1 + 1;
 
     float cx11, cy11, cx12, cy12, cx21, cy21, cx22, cy22;
@@ -106,9 +106,9 @@ bool ZCameraCalibration::getWorldRayForSubPixel(float x, float y, cv::Vec3d &ori
     /// we do a bilinear interpolation for subpixel values
     /// http://en.wikipedia.org/wiki/Bilinear_interpolation
 
-    float x1 = floorf(x);
+    float x1 = std::floor(x);
     float x2 = x1 + 1;
-    float y1 = floorf(y);
+    float y1 = std::floor(y);
     float y2 = y1 + 1;
 
     /// check if the subpixel is inside the calibrated range

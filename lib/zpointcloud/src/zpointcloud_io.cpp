@@ -32,35 +32,37 @@ bool savePLY(const Z3D::ZPointCloud &cloud, const QString &fileName)
         return false;
     }
 
-    const size_t vertexCount = cloud.width() * cloud.height();
-
     QTextStream headerStream(&file);
     headerStream << "ply\n"
                  << "format binary_little_endian 1.0\n"
                  << "comment Created with Z3D\n"
-                 << "element vertex " << vertexCount << "\n"
+                 << "element vertex " << cloud.vertexCount() << "\n"
                  << "property float x\n"
                  << "property float y\n"
                  << "property float z\n";
 
-    //    if (cloud->hasNormals()) {
+    if (cloud.hasNormals()) {
         headerStream << "property float nx\n"
                      << "property float ny\n"
                      << "property float nz\n";
-    //    }
+    }
 
-//    if (cloud->hasColors()) {
+    if (cloud.hasColors()) {
         headerStream << "property uchar red\n"
                      << "property uchar green\n"
                      << "property uchar blue\n"
                      << "property uchar alpha\n";
-//    }
+    }
 
-    const size_t faceCount = cloud.indices().size() / 3; // we only handle triangular meshes
-//    if (cloud.hasTriangles()) {
+    if (cloud.hasRadii()) {
+        headerStream << "property float radii\n";
+    }
+
+    const auto faceCount = cloud.trianglesCount();
+    if (cloud.hasTriangles()) {
         headerStream << "element face " << faceCount << "\n"
                      << "property list uchar int vertex_indices\n";
-//    }
+    }
 
     headerStream << "end_header\n";
     headerStream.flush();
@@ -68,8 +70,8 @@ bool savePLY(const Z3D::ZPointCloud &cloud, const QString &fileName)
     QDataStream binaryDataStream(&file);
     binaryDataStream.writeRawData(cloud.vertexData().constData(), cloud.vertexData().size());
 
-//    if (cloud.hasTriangles()) {
-        const auto &indices = cloud.indices();
+    if (cloud.hasTriangles()) {
+        const uint32_t *indices = reinterpret_cast<uint32_t *>(cloud.trianglesData().data());
         for (size_t faceIndex = 0; faceIndex < faceCount; ++faceIndex) {
             // we only have triangles
             constexpr uchar three[1]{3};
@@ -80,7 +82,7 @@ bool savePLY(const Z3D::ZPointCloud &cloud, const QString &fileName)
                                        indices[faceIndex * 3 + 2]};
             binaryDataStream.writeRawData(reinterpret_cast<const char *>(faceData), 3 * 4);
         }
-//    }
+    }
 
     file.close();
 

@@ -30,10 +30,18 @@ namespace Z3D
 class Z3D_ZPOINTCLOUD_SHARED_EXPORT ZPointCloudPluginInterface
 {
 public:
+    enum Formats {
+        STL,
+        PLY,
+        OBJ,
+        PCD
+    };
+
     virtual ~ZPointCloudPluginInterface();
 
     /// IO utilities
-    virtual ZPointCloudPtr loadPointCloud(const QString &fileName) const = 0;
+    virtual std::vector<Formats> formats() const = 0;
+    virtual ZPointCloudUniquePtr loadPointCloud(const QString &fileName) const = 0;
 };
 
 } // namespace Z3D

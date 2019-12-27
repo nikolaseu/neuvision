@@ -34,9 +34,6 @@ class Z3D_ZPOINTCLOUD_SHARED_EXPORT ZPointCloudGeometry : public Qt3DRender::QGe
     Q_OBJECT
     Q_PROPERTY(Z3D::ZPointCloud *pointCloud READ pointCloud WRITE setPointCloud NOTIFY pointCloudChanged)
     Q_PROPERTY(uint levelOfDetail READ levelOfDetail WRITE setLevelOfDetail NOTIFY levelOfDetailChanged)
-    Q_PROPERTY(bool hasNormals READ hasNormals NOTIFY hasNormalsChanged)
-    Q_PROPERTY(bool hasColors READ hasColors NOTIFY hasColorsChanged)
-    Q_PROPERTY(bool hasTriangles READ hasTriangles NOTIFY hasTrianglesChanged)
 
 public:
     explicit ZPointCloudGeometry(QNode *parent = nullptr);
@@ -44,16 +41,10 @@ public:
 
     ZPointCloud *pointCloud() const;
     uint levelOfDetail() const;
-    bool hasNormals() const;
-    bool hasColors() const;
-    bool hasTriangles() const;
 
 signals:
     void pointCloudChanged(ZPointCloud *pointCloud);
     void levelOfDetailChanged(uint levelOfDetail);
-    void hasNormalsChanged(bool hasNormals);
-    void hasColorsChanged(bool hasColors);
-    void hasTrianglesChanged(bool hasTriangles);
 
 public slots:
     void setPointCloud(ZPointCloud *pointCloud);

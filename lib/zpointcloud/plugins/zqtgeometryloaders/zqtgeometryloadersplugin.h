@@ -36,7 +36,8 @@ public:
     explicit ZQtGeometryLoadersPlugin(QObject *parent = nullptr);
 
     // ZPointCloudPluginInterface interface
-    virtual ZPointCloudPtr loadPointCloud(const QString &fileName) const override;
+    std::vector<Formats> formats() const override;
+    ZPointCloudUniquePtr loadPointCloud(const QString &fileName) const override;
 };
 
 } // namespace Z3D

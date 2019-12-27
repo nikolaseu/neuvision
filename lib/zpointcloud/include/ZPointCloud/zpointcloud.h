@@ -20,10 +20,10 @@
 #pragma once
 
 #include "ZPointCloud/zpointcloud_global.h"
+#include "ZPointCloud/zpointcloud_fwd.h"
 
 #include <QObject>
 #include <QVector>
-#include <QVector3D>
 
 namespace Z3D
 {
@@ -38,24 +38,46 @@ class Z3D_ZPOINTCLOUD_SHARED_EXPORT ZPointCloud : public QObject
     Q_PROPERTY(unsigned int pointStep READ pointStep CONSTANT)
     Q_PROPERTY(unsigned int rowStep READ rowStep CONSTANT)
     Q_PROPERTY(QByteArray vertexData READ vertexData CONSTANT)
-    Q_PROPERTY(QVector<unsigned int> indices READ indices CONSTANT)
+    Q_PROPERTY(QByteArray trianglesData READ trianglesData CONSTANT)
+
+    Q_PROPERTY(bool hasNormals READ hasNormals CONSTANT)
+    Q_PROPERTY(bool hasColors READ hasColors CONSTANT)
+    Q_PROPERTY(bool hasRadii READ hasRadii CONSTANT)
+    Q_PROPERTY(bool hasTriangles READ hasTriangles CONSTANT)
 
 public:
-    explicit ZPointCloud(QObject *parent = nullptr);
+    explicit ZPointCloud(unsigned int height,
+                         unsigned int width,
+                         unsigned int pointStep,
+                         unsigned int rowStep,
+                         const std::vector<ZPointField *> fields,
+                         QObject *parent = nullptr);
+
     virtual ~ZPointCloud() override;
 
-    virtual void updateAttributes() = 0;
+    inline unsigned int height() const { return m_height; }
+    inline unsigned int width() const { return m_width; }
+    inline unsigned int pointStep() const { return m_pointStep; }
+    inline unsigned int rowStep() const { return m_rowStep; }
+    inline const std::vector<ZPointField *> &fields() const { return m_fields; }
 
-    virtual unsigned int height() const = 0;
-    virtual unsigned int width() const = 0;
+    unsigned int vertexCount() const;
+    unsigned int trianglesCount() const;
 
-    virtual unsigned int pointStep() const = 0;
-    virtual unsigned int rowStep() const = 0;
     virtual QByteArray vertexData() const = 0;
-    virtual QVector<unsigned int> indices() const = 0;
+    virtual QByteArray trianglesData() const = 0;
 
-    //! IMPORTANT: returns a reference, subclasses must not return temporaries!
-    virtual const std::vector<ZPointField *> &fields() const = 0;
+    bool hasNormals() const;
+    bool hasColors() const;
+    bool hasRadii() const;
+    bool hasTriangles() const;
+
+private:
+    const unsigned int m_height;
+    const unsigned int m_width;
+    const unsigned int m_pointStep;
+    const unsigned int m_rowStep;
+    std::vector<ZPointField *> m_fields;
 };
 
 } // namespace Z3D

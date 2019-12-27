@@ -48,6 +48,19 @@ public:
     };
     Q_ENUM(PointFieldTypes)
 
+    static ZPointField* position(unsigned int offset,
+                                 PointFieldTypes type,
+                                 unsigned int count);
+    static ZPointField* normal(unsigned int offset,
+                               PointFieldTypes type,
+                               unsigned int count);
+    static ZPointField* color(unsigned int offset,
+                              PointFieldTypes type,
+                              unsigned int count);
+    static ZPointField* radii(unsigned int offset,
+                              PointFieldTypes type,
+                              unsigned int count);
+
     explicit ZPointField(QString name,
                          unsigned int offset,
                          PointFieldTypes type,

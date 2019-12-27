@@ -33,6 +33,26 @@ Q_LOGGING_CATEGORY(loggingCategory, "z3d.zpointcloud.zpointfield", QtInfoMsg)
 
 } // anonymous namespace
 
+ZPointField *ZPointField::position(unsigned int offset, ZPointField::PointFieldTypes type, unsigned int count)
+{
+    return new ZPointField("position", offset, type, count);
+}
+
+ZPointField *ZPointField::normal(unsigned int offset, ZPointField::PointFieldTypes type, unsigned int count)
+{
+    return new ZPointField("normal", offset, type, count);
+}
+
+ZPointField *ZPointField::color(unsigned int offset, ZPointField::PointFieldTypes type, unsigned int count)
+{
+    return new ZPointField("rgb", offset, type, count);
+}
+
+ZPointField *ZPointField::radii(unsigned int offset, ZPointField::PointFieldTypes type, unsigned int count)
+{
+    return new ZPointField("radii", offset, type, count);
+}
+
 ZPointField::ZPointField(QString name, unsigned int offset, PointFieldTypes type, unsigned int count)
     : m_name(name)
     , m_offset(offset)

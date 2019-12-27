@@ -1,6 +1,6 @@
 import Qt3D.Core 2.12
-import Qt3D.Render 2.12
 import Qt3D.Extras 2.12
+import Qt3D.Render 2.12
 
 import Z3D.ZPointCloud 1.0
 
@@ -13,7 +13,7 @@ Entity {
     property Transform transform: Transform {}
 
     property real pointSize: 2
-    property real splatSize: 0.5 * pointSize * (levelOfDetail.enabled ? Math.pow(1.5, pointCloudGeometry.levelOfDetail) : 1)
+    property real splatSize: pointSize * (levelOfDetail.enabled ? Math.pow(1.5, pointCloudGeometry.levelOfDetail) : 1)
     property vector3d lightPosition: Qt.vector3d(0.0, 0.0, 100.0)
     property vector3d lightIntensity: Qt.vector3d(1.0, 1.0, 1.0)
     property real ambient: 0.5
@@ -28,7 +28,7 @@ Entity {
     GeometryRenderer {
         id: pointCloudMesh
 
-        primitiveType: pointCloudGeometry.hasTriangles
+        primitiveType: pointCloud.hasTriangles
                        ? GeometryRenderer.Triangles
                        : GeometryRenderer.Points
 
@@ -85,9 +85,10 @@ Entity {
                 Parameter { name: "lightIntensity"; value: root.lightIntensity },
                 Parameter { name: "splatSize"; value: root.splatSize },
                 Parameter { name: "pointSize"; value: root.pointSize },
-                Parameter { name: "hasColors"; value: pointCloudGeometry.hasColors && root.showColors },
                 Parameter { name: "defaultColor"; value: Qt.vector3d(root.defaultColor.r, root.defaultColor.g, root.defaultColor.b) },
-                Parameter { name: "hasNormals"; value: pointCloudGeometry.hasNormals }
+                Parameter { name: "hasColors"; value: root.pointCloud.hasColors && root.showColors },
+                Parameter { name: "hasNormals"; value: root.pointCloud.hasNormals },
+                Parameter { name: "hasRadii"; value: root.pointCloud.hasRadii }
             ]
 
             techniques: Technique {
@@ -104,7 +105,9 @@ Entity {
 
                 renderPasses: [
                     RenderPass {
-                        shaderProgram: pointCloudGeometry.hasNormals && root.renderPointsAsDiscs ? pointCloudShaderProgram : pointCloudShaderProgramSimple
+                        shaderProgram: pointCloud.hasNormals && root.renderPointsAsDiscs
+                                       ? pointCloudShaderProgram
+                                       : pointCloudShaderProgramSimple
                         renderStates: [
                             PointSize { sizeMode: PointSize.Programmable },
                             DepthTest { depthFunction: DepthTest.Less },
@@ -127,9 +130,9 @@ Entity {
 
     components: [
         pointCloudMesh,
-        !pointCloudGeometry.hasTriangles
+        !pointCloud.hasTriangles
             ? pointCloudMaterial
-            : (pointCloudGeometry.hasColors && root.showColors)
+            : (pointCloud.hasColors && root.showColors)
                 ? perVertexColorMaterial
                 : material,
         transform,

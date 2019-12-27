@@ -27,15 +27,15 @@ ApplicationWindow {
     QtObject {
         id: viewerSettings
 
-        property real pointSize: 3
+        property real pointSize: 2
 
         property real ambient: 0.5
         property real diffuse: 0.7
         property real specular: 0.1
-        property real shininess: 1.0
+        property real shininess: 10.0
 
         property bool showColors: false
-        property color defaultColor: Qt.rgba(0.5, 0.5, 0.5, 1)
+        property color defaultColor: Qt.rgba(0.6, 0.6, 0.6, 1)
     }
 
     Item {

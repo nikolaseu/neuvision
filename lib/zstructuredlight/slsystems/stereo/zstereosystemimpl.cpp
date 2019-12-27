@@ -138,7 +138,7 @@ ZPointCloudPtr process(const cv::Mat &colorImg, cv::Mat Q, cv::Mat leftImg, cv::
                 }
 
                 //! TODO this is a really naive way to find correspondeces ...
-                if (*imgData >= *rImgData && *imgData <= *rImgDataNext
+                if (*imgData >= *rImgData && *imgData < *rImgDataNext
                         && (*rImgDataNext - *rImgData) < 2.f)
                 {
                     const float range = *rImgDataNext - *rImgData;
@@ -158,24 +158,24 @@ ZPointCloudPtr process(const cv::Mat &colorImg, cv::Mat Q, cv::Mat leftImg, cv::
     cv::Mat pointCloud(imgSize, CV_32FC3);
     cv::reprojectImageTo3D(disparityImage, pointCloud, Q);
 
-    cv::Mat zChannel;
-    cv::extractChannel(pointCloud, zChannel, 2);
+    cv::Mat xyz[3];
+    cv::split(pointCloud, xyz);
+    cv::Mat &xChannel = xyz[0];
+    cv::Mat &yChannel = xyz[1];
+    cv::Mat &zChannel = xyz[2];
 
-    /// Gradients of z to compute normals
-    cv::Mat gradientX, gradientY;
-    const int sobelScale = 1;
-    const int sobelDelta = 0;
-    const int sobelDataTypeDepth = CV_32F;
-    cv::Sobel(zChannel, gradientX, sobelDataTypeDepth, 1, 0, 3, sobelScale, sobelDelta, cv::BORDER_DEFAULT );
-    cv::Sobel(zChannel, gradientY, sobelDataTypeDepth, 0, 1, 3, sobelScale, sobelDelta, cv::BORDER_DEFAULT );
+    /// Gradients to compute normals
+    cv::Mat deltas[3][2];
 
-    cv::Mat normalsMagnitude = gradientX.mul(gradientX) + gradientY.mul(gradientY) + 1;
-    cv::sqrt(normalsMagnitude, normalsMagnitude);
+    const cv::Mat_<float> diffKernelX = (cv::Mat_<float>(1, 3) << -1, 0, 1) / 2;
+    cv::filter2D(xChannel, deltas[0][0], CV_32F, diffKernelX);
+    cv::filter2D(yChannel, deltas[1][0], CV_32F, diffKernelX);
+    cv::filter2D(zChannel, deltas[2][0], CV_32F, diffKernelX);
 
-    /// Normals
-    cv::Mat normalsZ = 1 / normalsMagnitude;
-    cv::Mat normalsX = gradientX.mul(normalsZ);
-    cv::Mat normalsY = gradientY.mul(normalsZ);
+    const cv::Mat_<float> diffKernelY = (cv::Mat_<float>(3, 1) << -1, 0, 1) / 2;
+    cv::filter2D(xChannel, deltas[0][1], CV_32F, diffKernelY);
+    cv::filter2D(yChannel, deltas[1][1], CV_32F, diffKernelY);
+    cv::filter2D(zChannel, deltas[2][1], CV_32F, diffKernelY);
 
     cv::Mat invalidDataMask = disparityImage == 0;
     cv::dilate(invalidDataMask, invalidDataMask, cv::getStructuringElement(cv::MORPH_RECT, cv::Size(3, 3)));
@@ -184,15 +184,22 @@ ZPointCloudPtr process(const cv::Mat &colorImg, cv::Mat Q, cv::Mat leftImg, cv::
     std::vector<int> pointIndices(points.size(), -1); // where each point was added
     QVector<uint32_t> faceIndices;
 
-    size_t validPointIndex=0;
+    size_t validPointIndex = 0;
     for (int y=0; y<imgHeight; ++y) {
         const uint8_t* invalidData = invalidDataMask.ptr<uint8_t>(y);
         const cv::Vec3f* positionData = pointCloud.ptr<cv::Vec3f>(y);
-        const float_t *nxData = normalsX.ptr<float_t>(y);
-        const float_t *nyData = normalsY.ptr<float_t>(y);
-        const float_t *nzData = normalsZ.ptr<float_t>(y);
         const uint8_t* colorData = colorImg.ptr<uint8_t>(y);
-        for (int x=0; x<imgWidth; ++x, ++invalidData, ++positionData, ++nxData, ++nyData, ++nzData, ++colorData) {
+
+        const float_t *dxdx = deltas[0][0].ptr<float_t>(y);
+        const float_t *dydx = deltas[1][0].ptr<float_t>(y);
+        const float_t *dzdx = deltas[2][0].ptr<float_t>(y);
+        const float_t *dxdy = deltas[0][1].ptr<float_t>(y);
+        const float_t *dydy = deltas[1][1].ptr<float_t>(y);
+        const float_t *dzdy = deltas[2][1].ptr<float_t>(y);
+
+        for (int x = 0; x < imgWidth; ++x, ++invalidData, ++positionData, ++colorData,
+                 ++dxdx, ++dydx, ++dzdx, ++dxdy, ++dydy, ++dzdy)
+        {
             const size_t pointOrgIndex = y*imgWidth+x;
 
             // add point
@@ -204,9 +211,14 @@ ZPointCloudPtr process(const cv::Mat &colorImg, cv::Mat Q, cv::Mat leftImg, cv::
                 point[1] = position[1];
                 point[2] = position[2];
 
-                point[3] = *nxData;
-                point[4] = *nyData;
-                point[5] = - *nzData;
+                const cv::Vec3f dx(*dxdx, *dydx, *dzdx);
+                const cv::Vec3f dy(*dxdy, *dydy, *dzdy);
+                const cv::Vec3f vnormal = dy.cross(dx);
+                cv::Vec3f normal;
+                cv::normalize(vnormal, normal);
+                point[3] = normal[0];
+                point[4] = normal[1];
+                point[5] = normal[2];
 
                 union RGBAColor { // just to simplify converting color data
                     uchar rgba[4];
@@ -219,6 +231,9 @@ ZPointCloudPtr process(const cv::Mat &colorImg, cv::Mat Q, cv::Mat leftImg, cv::
                 color.rgba[3] = 255;
 
                 point[6] = color.asFloat;
+
+                // radii (it's not really radii since it's not a circle, but ...)
+                point[7] = std::min(0.1f, std::sqrt(float(cv::norm(vnormal)/M_PI)));
 
                 // remember point index so we know it when required to add faces later
                 pointIndices[pointOrgIndex] = validPointIndex;
@@ -341,11 +356,12 @@ ZPointCloudPtr process(const cv::Mat &colorImg, cv::Mat Q, cv::Mat leftImg, cv::
 #endif
         }
     }
-    points.resize(validPointIndex);
 
-    if (points.size() < 1) {
+    if (validPointIndex < 1) {
         return nullptr;
     }
+
+    points.resize(validPointIndex);
 
     return ZPointCloudPtr(new ZSimplePointCloud(points, faceIndices));
 }

@@ -1,17 +1,12 @@
 #pragma once
 
-#include "ZPointCloud/zpointcloud_fwd.h"
+#include "ZPointCloud/zpointcloud.h"
 
 class QString;
 
-namespace Z3D
+namespace Z3D::ZQtGeometryLoaders
 {
 
-namespace ZQtGeometryLoaders
-{
+ZPointCloudUniquePtr loadPointCloud(const QString &fileName);
 
-ZPointCloudPtr loadPointCloud(const QString &fileName);
-
-} // namespace ZQtGeometryLoaders
-
-} // namespace Z3D
+} // namespace Z3D::ZQtGeometryLoaders

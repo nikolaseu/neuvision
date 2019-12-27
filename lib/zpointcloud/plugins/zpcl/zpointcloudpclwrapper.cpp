@@ -57,20 +57,43 @@ ZPointField::PointFieldTypes fromPCLDatatype(const pcl::uint8_t &datatype)
     return ZPointField::INT8;
 }
 
-ZPointField *fromPclPointField(pcl::PCLPointField *field)
+ZPointField *fromPclPointField(const pcl::PCLPointField &field)
 {
-    if (strcmp(field->name.c_str(), "rgb") == 0 && field->datatype == pcl::PCLPointField::FLOAT32) {
-        // special handling for color since pcl says it's a float
-        return new ZPointField(field->name.c_str(), field->offset, ZPointField::UINT8, 4);
+    if ((strcmp(field.name.c_str(), "rgb") == 0 || strcmp(field.name.c_str(), "rgba") == 0)
+        && (field.datatype == pcl::PCLPointField::FLOAT32 || field.datatype == pcl::PCLPointField::UINT32))
+    {
+        // special handling for color since pcl says it's a float32 or uint32
+        return ZPointField::color(field.offset, ZPointField::UINT8, 4);
     }
 
-    return new ZPointField(field->name.c_str(), field->offset, fromPCLDatatype(field->datatype), field->count);
+    return new ZPointField(field.name.c_str(),
+                           field.offset,
+                           fromPCLDatatype(field.datatype),
+                           field.count);
 }
 
 } // anonymous namespace
 
-ZPointCloudPCLWrapper::ZPointCloudPCLWrapper(pcl::PCLPointCloud2 *pointCloud)
-    : ZPointCloud()
+ZPointCloudUniquePtr ZPointCloudPCLWrapper::create(pcl::PCLPointCloud2 *pointCloud)
+{
+    std::vector<ZPointField *> fields;
+    fields.reserve(pointCloud->fields.size());
+    for (const pcl::PCLPointField &pf : pointCloud->fields) {
+        fields.push_back(fromPclPointField(pf));
+    }
+
+    return std::make_unique<ZPointCloudPCLWrapper>(pointCloud, fields);
+}
+
+ZPointCloudPCLWrapper::ZPointCloudPCLWrapper(pcl::PCLPointCloud2 *pointCloud,
+                                             const std::vector<ZPointField *> fields,
+                                             QObject *parent)
+    : ZPointCloud(pointCloud->height,
+                  pointCloud->width,
+                  pointCloud->point_step,
+                  pointCloud->row_step,
+                  fields,
+                  parent)
     , m_pointCloud(pointCloud)
 {
     qDebug(loggingCategory) << "creating point cloud with" << width() * height() << "points,"
@@ -81,57 +104,18 @@ ZPointCloudPCLWrapper::~ZPointCloudPCLWrapper()
 {
     qDebug(loggingCategory) << "destroying" << this;
     delete m_pointCloud;
-    for (auto field : m_fields) {
-        delete field;
-    }
-}
-
-void ZPointCloudPCLWrapper::updateAttributes()
-{
-    for (auto field : m_fields) {
-        delete field;
-    }
-    m_fields.clear();
-    m_fields.reserve(m_pointCloud->fields.size());
-    for (pcl::PCLPointField &pf : m_pointCloud->fields) {
-        m_fields.push_back(fromPclPointField(&pf));
-    }
-}
-
-unsigned int ZPointCloudPCLWrapper::height() const
-{
-    return m_pointCloud->height;
-}
-
-unsigned int ZPointCloudPCLWrapper::width() const
-{
-    return m_pointCloud->width;
-}
-
-unsigned int ZPointCloudPCLWrapper::pointStep() const
-{
-    return m_pointCloud->point_step;
-}
-
-unsigned int ZPointCloudPCLWrapper::rowStep() const
-{
-    return m_pointCloud->row_step;
 }
 
 QByteArray ZPointCloudPCLWrapper::vertexData() const
 {
     /// do not copy data, but we need to be careful!
-    return QByteArray::fromRawData(reinterpret_cast<const char*>(&m_pointCloud->data[0]), int(m_pointCloud->data.size()));
+    return QByteArray::fromRawData(reinterpret_cast<const char*>(m_pointCloud->data.data()),
+                                   int(m_pointCloud->data.size()));
 }
 
-QVector<unsigned int> ZPointCloudPCLWrapper::indices() const
+QByteArray ZPointCloudPCLWrapper::trianglesData() const
 {
     return {};
-}
-
-const std::vector<ZPointField*> &ZPointCloudPCLWrapper::fields() const
-{
-    return m_fields;
 }
 
 } // namespace Z3D

@@ -31,7 +31,16 @@ ZQtGeometryLoadersPlugin::ZQtGeometryLoadersPlugin(QObject *parent)
 
 }
 
-ZPointCloudPtr ZQtGeometryLoadersPlugin::loadPointCloud(const QString &filename) const
+std::vector<ZPointCloudPluginInterface::Formats> ZQtGeometryLoadersPlugin::formats() const
+{
+    return {
+        Formats::STL,
+        Formats::OBJ,
+        Formats::PLY
+    };
+}
+
+ZPointCloudUniquePtr ZQtGeometryLoadersPlugin::loadPointCloud(const QString &filename) const
 {
     return ZQtGeometryLoaders::loadPointCloud(filename);
 }

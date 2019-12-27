@@ -33,30 +33,18 @@ class Z3D_STRUCTUREDLIGHT_SHARED_EXPORT ZSimplePointCloud : public ZPointCloud
     Q_OBJECT
 
 public:
-    using PointType = cv::Vec<float, 7>; // X Y Z NX NY NZ RGBX
+    using PointType = cv::Vec<float, 8>; // X Y Z NX NY NZ RGBX radii
     using PointVector = std::vector<PointType>;
 
     explicit ZSimplePointCloud(const PointVector points, QVector<unsigned int> indices = {}, QObject *parent = nullptr);
     ~ZSimplePointCloud() override;
 
     // ZPointCloud interface
-    virtual void updateAttributes() override;
-    virtual unsigned int height() const override;
-    virtual unsigned int width() const override;
-    virtual unsigned int pointStep() const override;
-    virtual unsigned int rowStep() const override;
-    virtual QByteArray vertexData() const override;
-    QVector<unsigned int> indices() const override;
-    virtual const std::vector<ZPointField *> &fields() const override;
+    QByteArray vertexData() const override Q_DECL_FINAL;
+    QByteArray trianglesData() const override Q_DECL_FINAL;
 
-public:
-    const std::vector<ZPointField*> m_fields;
-
+private:
     const PointVector m_points;
-
-    const unsigned int m_width;
-    const unsigned int m_height;
-
     QVector<unsigned int> m_indices;
 };
 

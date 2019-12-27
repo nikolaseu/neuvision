@@ -10,32 +10,29 @@
 #include <QDebug>
 #include <QFile>
 #include <QLoggingCategory>
-#include <Qt3DRender/QBuffer>
-//#include <Qt3DRender/private/qaxisalignedboundingbox_p.h>
 
 using namespace Qt3DRender;
 
-namespace Z3D
-{
-
-namespace ZQtGeometryLoaders
+namespace Z3D::ZQtGeometryLoaders
 {
 
 namespace // anonymous namespace
 {
 Q_LOGGING_CATEGORY(loggingCategory, "z3d.zpointcloud.plugins.zqtgeometryloaders")
 
-class ZQtPointCloud : public ZPointCloud
+class ZQtPointCloud Q_DECL_FINAL : public ZPointCloud
 {
 public:
-    explicit ZQtPointCloud(Qt3DRender::BaseGeometryLoader &loader)
+    static ZPointCloudUniquePtr create(Qt3DRender::BaseGeometryLoader &loader)
     {
-        const auto &m_points = loader.vertices();
-        count = m_points.size();
-        elementSize = 3
-            + (loader.hasNormals() ? 3 : 0)
-            + (loader.hasVertexColors() ? 1 : 0);
-        stride = elementSize * sizeof(float);
+        const auto &points = loader.vertices();
+        const auto count = points.size();
+        const auto elementSize = 3
+                      + (loader.hasNormals() ? 3 : 0)
+                      + (loader.hasVertexColors() ? 1 : 0);
+        const auto stride = elementSize * sizeof(float);
+
+        QByteArray bufferBytes;
         bufferBytes.resize(stride * count);
 
         qDebug(loggingCategory) << "creating point cloud with" << count << "points, size:" << bufferBytes.size() << "bytes";
@@ -47,9 +44,9 @@ public:
         const auto &m_normals = loader.normals();
         const auto &m_colors = loader.vertexColors();
         for (int index = 0; index < count; ++index) {
-            *fptr++ = m_points.at(index).x();
-            *fptr++ = m_points.at(index).y();
-            *fptr++ = m_points.at(index).z();
+            *fptr++ = points.at(index).x();
+            *fptr++ = points.at(index).y();
+            *fptr++ = points.at(index).z();
 
             if (hasNormals) {
                 *fptr++ = m_normals.at(index).x();
@@ -62,53 +59,64 @@ public:
             }
         } // of buffer filling loop
 
-        // basic fiels always
-        m_fields = {
-            new ZPointField("x", 0, ZPointField::FLOAT32, 1),
-            new ZPointField("y", 4, ZPointField::FLOAT32, 1),
-            new ZPointField("z", 8, ZPointField::FLOAT32, 1),
+        std::vector<ZPointField *> fields {
+            // position always available
+            ZPointField::position(0, ZPointField::FLOAT32, 3)
         };
 
         unsigned int offset = 12;
 
         // normals might not be available
         if (hasNormals) {
-            m_fields.push_back(new ZPointField("normal_x", offset+0, ZPointField::FLOAT32, 1));
-            m_fields.push_back(new ZPointField("normal_y", offset+4, ZPointField::FLOAT32, 1));
-            m_fields.push_back(new ZPointField("normal_z", offset+8, ZPointField::FLOAT32, 1));
+            fields.push_back(ZPointField::normal(offset, ZPointField::FLOAT32, 3));
             offset += 12;
         }
 
         if (hasColors) {
-            m_fields.push_back(new ZPointField("rgb", offset+0, ZPointField::UINT8, 4));
+            fields.push_back(ZPointField::color(offset, ZPointField::UINT8, 4));
             offset += 4;
         }
 
-        m_indices = loader.indices();
+        return ZPointCloudUniquePtr(new ZQtPointCloud(1, // height
+                                                      count, // width
+                                                      stride, // point step
+                                                      count * stride, // row step
+                                                      fields,
+                                                      bufferBytes,
+                                                      loader.indices()));
     }
 
-    void updateAttributes() override { }
-    unsigned int height() const override { return 1; }
-    unsigned int width() const override { return count; }
-    unsigned int pointStep() const override { return stride; }
-    unsigned int rowStep() const override { return width(); }
+    QByteArray vertexData() const override { return m_bufferBytes; }
 
-    QByteArray vertexData() const override { return bufferBytes; }
-    QVector<unsigned int> indices() const override { return m_indices; }
-    const std::vector<ZPointField *> &fields() const override { return m_fields; }
+    QByteArray trianglesData() const override {
+        /// do not copy data, but we need to be careful!
+        return QByteArray::fromRawData(reinterpret_cast<const char*>(m_indices.constData()),
+                                       int(sizeof(quint32)) * m_indices.size());
+    }
 
 private:
-    int count = 0;
-    quint32 elementSize = 0;
-    quint32 stride = 0;
-    std::vector<ZPointField *> m_fields;
-    QByteArray bufferBytes;
+    explicit ZQtPointCloud(unsigned int height,
+                           unsigned int width,
+                           unsigned int pointStep,
+                           unsigned int rowStep,
+                           const std::vector<ZPointField *> fields,
+                           QByteArray bufferBytes,
+                           QVector<unsigned int> indices,
+                           QObject *parent = nullptr)
+        : ZPointCloud(height, width, pointStep, rowStep, fields, parent)
+        , m_bufferBytes(bufferBytes)
+        , m_indices(indices)
+    {
+
+    }
+
+    QByteArray m_bufferBytes;
     QVector<unsigned int> m_indices;
 };
 
-}
+} // anonymous namespace
 
-ZPointCloudPtr loadPointCloud(const QString &fileName)
+ZPointCloudUniquePtr loadPointCloud(const QString &fileName)
 {
     qDebug(loggingCategory) << "Trying to read PointCloud from" << fileName;
 
@@ -130,14 +138,12 @@ ZPointCloudPtr loadPointCloud(const QString &fileName)
     }
 
     if (loader && loader->load(&file)) {
-        qDebug(loggingCategory) << "data loaded from" << fileName << ", creating point cloud...";
-        return ZPointCloudPtr(new ZQtPointCloud(*loader));
+        qDebug(loggingCategory).nospace() << "data loaded from " << fileName << ", creating point cloud...";
+        return ZQtPointCloud::create(*loader);
     }
 
     qWarning(loggingCategory) << "Failed to read PointCloud. Invalid/unrecognized format:" << fileName;
     return nullptr;
 }
 
-} // namespace ZQtGeometryLoaders
-
-} // namespace Z3D
+} // namespace Z3D::ZQtGeometryLoaders

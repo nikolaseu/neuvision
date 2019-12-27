@@ -32,23 +32,20 @@ namespace Z3D
 class ZPointCloudPCLWrapper : public ZPointCloud
 {
 public:
-    explicit ZPointCloudPCLWrapper(pcl::PCLPointCloud2 *pointCloud);
+    static ZPointCloudUniquePtr create(pcl::PCLPointCloud2 *pointCloud);
+
+    explicit ZPointCloudPCLWrapper(pcl::PCLPointCloud2 *pointCloud,
+                                   const std::vector<ZPointField *> fields,
+                                   QObject *parent = nullptr);
+
     virtual ~ZPointCloudPCLWrapper() override;
 
     // ZPointCloud interface
-    virtual void updateAttributes() override;
-    virtual unsigned int height() const override;
-    virtual unsigned int width() const override;
-    virtual unsigned int pointStep() const override;
-    virtual unsigned int rowStep() const override;
-    virtual QByteArray vertexData() const override;
-    virtual QVector<unsigned int> indices() const override;
-    virtual const std::vector<ZPointField *> &fields() const override;
+    QByteArray vertexData() const override;
+    QByteArray trianglesData() const override;
 
 private:
-    pcl::PCLPointCloud2 *m_pointCloud = nullptr;
-
-    std::vector<ZPointField*> m_fields;
+    const pcl::PCLPointCloud2 *m_pointCloud;
 };
 
 } // namespace Z3D

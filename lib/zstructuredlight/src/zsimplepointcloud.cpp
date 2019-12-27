@@ -25,71 +25,44 @@
 namespace Z3D
 {
 
-ZSimplePointCloud::ZSimplePointCloud(const ZSimplePointCloud::PointVector points, QVector<unsigned int> indices, QObject *parent)
-    : ZPointCloud(parent)
-    , m_fields({
-               new ZPointField("x",         0, ZPointField::FLOAT32, 1),
-               new ZPointField("y",         4, ZPointField::FLOAT32, 1),
-               new ZPointField("z",         8, ZPointField::FLOAT32, 1),
-               new ZPointField("normal_x", 12, ZPointField::FLOAT32, 1),
-               new ZPointField("normal_y", 16, ZPointField::FLOAT32, 1),
-               new ZPointField("normal_z", 20, ZPointField::FLOAT32, 1),
-               new ZPointField("rgb",      24, ZPointField::UINT8,   4)
-    })
+ZSimplePointCloud::ZSimplePointCloud(const ZSimplePointCloud::PointVector points,
+                                     QVector<unsigned int> indices,
+                                     QObject *parent)
+    : ZPointCloud(
+        1, // height
+        points.size(), // width
+        sizeof(PointType), // point step
+        sizeof(PointType) * points.size(), // row step
+        {
+            ZPointField::position(0, ZPointField::FLOAT32, 3),
+            ZPointField::normal(12, ZPointField::FLOAT32, 3),
+            ZPointField::color(24, ZPointField::UINT8, 4),
+            ZPointField::radii(28, ZPointField::FLOAT32, 1)
+        },
+        parent)
     , m_points(std::move(points))
-    , m_width(m_points.size())
-    , m_height(1)
-    , m_indices(indices)
+    , m_indices(std::move(indices))
 {
 
 }
 
 ZSimplePointCloud::~ZSimplePointCloud()
 {
-    for (auto field : m_fields) {
-        delete field;
-    }
-}
 
-void ZSimplePointCloud::updateAttributes()
-{
-    /// nothing to do, we don't have dynamic fields
-}
-
-unsigned int ZSimplePointCloud::height() const
-{
-    return m_height;
-}
-
-unsigned int ZSimplePointCloud::width() const
-{
-    return m_width;
-}
-
-unsigned int ZSimplePointCloud::pointStep() const
-{
-    return sizeof(PointType);
-}
-
-unsigned int ZSimplePointCloud::rowStep() const
-{
-    return width();
 }
 
 QByteArray ZSimplePointCloud::vertexData() const
 {
     /// do not copy data, but we need to be careful!
-    return QByteArray::fromRawData(reinterpret_cast<const char*>(m_points.data()), int(m_points.size() * pointStep()));
+    return QByteArray::fromRawData(reinterpret_cast<const char*>(m_points.data()),
+                                   int(m_points.size() * sizeof(PointType)));
 }
 
-QVector<unsigned int> ZSimplePointCloud::indices() const
+QByteArray ZSimplePointCloud::trianglesData() const
 {
-    return m_indices;
-}
-
-const std::vector<ZPointField *> &ZSimplePointCloud::fields() const
-{
-    return m_fields;
+    /// do not copy data, but we need to be careful!
+    return QByteArray::fromRawData(reinterpret_cast<const char*>(m_indices.constData()),
+                                   int(sizeof(quint32)) * m_indices.size());
 }
 
 } // namespace Z3D

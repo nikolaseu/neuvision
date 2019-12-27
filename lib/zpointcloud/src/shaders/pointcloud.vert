@@ -2,20 +2,15 @@
 
 // Splat code taken with modifications from http://www.mbroecker.com/research_pbr.html
 
-// The vertex data. The normal stores the normal and the
-// calculated radius of the splat.
-//layout(location = 0) in vec3 vertexPosition;
-//layout(location = 1) in vec3 vertexColor;
-//layout(location = 2) in vec4 vertexNormal;
-
 in vec3 vertexPosition;
 in vec4 vertexNormal;
 in vec3 vertexColor;
+in float vertexRadii;
 
-uniform bool hasColors = false;
 uniform vec3 defaultColor = vec3(0.5, 0.5, 0.5);
-
+uniform bool hasColors = false;
 uniform bool hasNormals = false;
+uniform bool hasRadii = false;
 
 out VertexData
 {
@@ -31,6 +26,6 @@ void main()
 
     vertexOut.position = vertexPosition;
     vertexOut.color = hasColors ? vertexColor.rgb : defaultColor;
-    vertexOut.normal = hasNormals ? vertexNormal.xyz : vec3(0.0,0.0,1.0);
-    vertexOut.radius = 0.1;//vertexNormal.w; // if we want to send normal.w for radius of splat
+    vertexOut.normal = hasNormals ? vertexNormal.xyz : vec3(0.0, 0.0, 1.0);
+    vertexOut.radius = hasRadii ? vertexRadii : 0.02;
 }

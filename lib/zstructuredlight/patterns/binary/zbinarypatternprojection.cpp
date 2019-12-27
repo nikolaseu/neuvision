@@ -297,7 +297,7 @@ void ZBinaryPatternProjection::beginScan()
     const int fringeStep = int(pow(2, firstPatternToShow));
     if (m_vertical) {
         for (int x = 0; x<projectionWidth; x++) {
-            const float val = std::floorf(x/fringeStep);
+            const float val = std::floor(float(x)/fringeStep);
             for (int y = 0; y<projectionHeight; ++y) {
                 projectedPatternImg.at<float_t>(y, x) = val;
             }
@@ -305,7 +305,7 @@ void ZBinaryPatternProjection::beginScan()
     }
     else {
         for (int y = 0; y<projectionHeight; y++) {
-            const float val = std::floorf(y/fringeStep);
+            const float val = std::floor(float(y)/fringeStep);
             for (int x = 0; x<projectionWidth; ++x) {
                 projectedPatternImg.at<float_t>(y, x) = val;
             }

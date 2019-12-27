@@ -24,7 +24,7 @@
 
 #include <QDebug>
 #include <QLoggingCategory>
-#include <pcl/io/auto_io.h>
+#include <pcl/io/pcd_io.h>
 
 namespace Z3D
 {
@@ -40,13 +40,20 @@ ZPointCloudLibraryPlugin::ZPointCloudLibraryPlugin(QObject *parent)
 
 }
 
-ZPointCloudPtr ZPointCloudLibraryPlugin::loadPointCloud(const QString &filename) const
+std::vector<ZPointCloudPluginInterface::Formats> ZPointCloudLibraryPlugin::formats() const
+{
+    return {
+        Formats::PCD
+    };
+}
+
+ZPointCloudUniquePtr ZPointCloudLibraryPlugin::loadPointCloud(const QString &filename) const
 {
     qDebug(pclLibraryCategory) << "Trying to read PointCloud from" << filename;
 
     auto pc = new pcl::PCLPointCloud2();
-    if (0 == pcl::io::load(filename.toStdString(), *pc)) {
-        return std::make_shared<ZPointCloudPCLWrapper>(pc);
+    if (0 == pcl::io::loadPCDFile(filename.toStdString(), *pc)) {
+        return ZPointCloudPCLWrapper::create(pc);
     }
 
     qWarning(pclLibraryCategory) << "Failed to read PointCloud. Invalid/unrecognized format:" << filename;
