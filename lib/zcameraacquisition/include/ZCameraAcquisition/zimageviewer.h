@@ -25,10 +25,12 @@
 #include <opencv2/core/mat.hpp>
 
 #include <QGraphicsView>
+#include <QHash>
 
+QT_BEGIN_NAMESPACE
 class QGraphicsPixmapItem;
 class QMenu;
-class QSignalMapper;
+QT_END_NAMESPACE
 
 namespace Z3D
 {
@@ -51,7 +53,7 @@ public slots:
     void setDeleteOnClose(bool deleteOnClose);
 
 protected slots:
-    void changeColormap(int colormapId);
+    void changeColormap(bool enabled, int colormapId);
     void saveImage();
 
 protected:
@@ -65,7 +67,7 @@ protected:
     QAction *m_fitToWindowAction;
 
     QMenu *m_colormapsMenu;
-    QSignalMapper *m_colormapSignalMapper;
+    QHash<int, QAction *> m_colormapActions;
     int m_colormap;
 
     QGraphicsScene* m_scene;

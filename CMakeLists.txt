@@ -50,3 +50,6 @@ add_subdirectory(3rdparty/qtpropertybrowser)
 
 add_subdirectory(lib)
 add_subdirectory(apps)
+
+include(FeatureSummary)
+feature_summary(WHAT ALL)

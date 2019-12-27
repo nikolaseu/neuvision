@@ -189,12 +189,14 @@ ZMultiCameraCalibrationPtr ZOpenCVCustomStereoMultiCameraCalibrator::getCalibrat
         }
     }
 
+#if 0
     //! FIXME debug only, show sorted vectors
     for (size_t ic = 1; ic < ncameras; ++ic) {
         for (size_t id = 0; id < 6; ++id) {
             qDebug() << QVector<double>(allData[ic-1][id].begin(), allData[ic-1][id].end());
         }
     }
+#endif
 
     Z3D::ZCameraCalibrationPtr cam0calib( new ZPinholeCameraCalibration(cameraMatrix[0], distCoeffs[0], imageSize[0]) );
 

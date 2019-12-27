@@ -30,7 +30,6 @@
 #include <QMenu>
 #include <QMouseEvent>
 #include <QScrollBar>
-#include <QSignalMapper>
 #include <qmath.h>
 
 namespace Z3D
@@ -84,21 +83,15 @@ ZImageViewer::ZImageViewer(QWidget *parent)
     m_contextMenu->addSeparator();
     m_colormapsMenu = m_contextMenu->addMenu(tr("Colormap"));
     m_colormapsMenu->setEnabled(false);
-    m_colormapSignalMapper = new QSignalMapper(this);
     for (auto &colormap : colormaps) {
         auto colormapAction = new QAction(colormap.second, this);
         colormapAction->setCheckable(true);
-        if (colormap.first == m_colormap) {
-            colormapAction->setChecked(true);
-        }
-        QObject::connect(colormapAction, static_cast<void(QAction::*)(bool)>(&QAction::triggered),
-                         m_colormapSignalMapper, static_cast<void(QSignalMapper::*)()>(&QSignalMapper::map));
-        m_colormapSignalMapper->setMapping(colormapAction, colormap.first);
+        colormapAction->setChecked(colormap.first == m_colormap);
+        QObject::connect(colormapAction, &QAction::toggled,
+                         this, std::bind(&ZImageViewer::changeColormap, this, std::placeholders::_1, colormap.first));
         m_colormapsMenu->addAction(colormapAction);
+        m_colormapActions.insert(colormap.first, colormapAction);
     }
-
-    QObject::connect(m_colormapSignalMapper, static_cast<void(QSignalMapper::*)(int)>(&QSignalMapper::mapped),
-                     this, &ZImageViewer::changeColormap);
 
     /// save image action
     auto saveImageAction = new QAction(tr("Save image as..."), m_contextMenu);
@@ -143,25 +136,37 @@ void ZImageViewer::setDeleteOnClose(bool deleteOnClose)
     m_deleteOnClose = deleteOnClose;
 }
 
-void ZImageViewer::changeColormap(int colormapId)
+void ZImageViewer::changeColormap(bool enabled, int colormapId)
 {
-    if (m_colormap == colormapId)
+    if (!enabled) {
+        // reset
+        changeColormap(true, -1);
         return;
+    }
+
+    if (m_colormap == colormapId) {
+        return;
+    }
 
     /// uncheck previous
-    auto colormapAction = dynamic_cast<QAction *>(m_colormapSignalMapper->mapping(m_colormap));
-    colormapAction->setChecked(false);
+    QAction *colormapActionPrevious = m_colormapActions[m_colormap];
+    const bool signalsWereBlockedPrevious = colormapActionPrevious->blockSignals(true);
+    colormapActionPrevious->setChecked(false);
+    colormapActionPrevious->blockSignals(signalsWereBlockedPrevious);
 
     /// update current
     m_colormap = colormapId;
 
     /// check current
-    colormapAction = dynamic_cast<QAction *>(m_colormapSignalMapper->mapping(m_colormap));
-    colormapAction->setChecked(true);
+    QAction *colormapActionNew = m_colormapActions[m_colormap];
+    const bool signalsWereBlockedNew = colormapActionNew->blockSignals(true);
+    colormapActionNew->setChecked(true);
+    colormapActionNew->blockSignals(signalsWereBlockedNew);
 
     /// if we were displaying an image, update to view current colormap
-    if (m_img.cols)
+    if (m_img.cols) {
         updateImage(m_img);
+    }
 }
 
 void ZImageViewer::saveImage()
