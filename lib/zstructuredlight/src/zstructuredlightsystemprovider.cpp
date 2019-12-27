@@ -38,7 +38,7 @@ void ZStructuredLightSystemProvider::loadPlugins()
     auto list = ZPluginLoader::plugins("structuredlight");
 
     for (auto pluginLoader : list) {
-        ZStructuredLightSystemPlugin *plugin = pluginLoader->instance<ZStructuredLightSystemPlugin>();
+        auto *plugin = pluginLoader->instance<ZStructuredLightSystemPlugin>();
         if (plugin) {
             qDebug() << "structured light system plugin loaded. type:" << pluginLoader->id();
             m_plugins[pluginLoader->id()] = plugin;

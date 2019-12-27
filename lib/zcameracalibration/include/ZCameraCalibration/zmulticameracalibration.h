@@ -28,7 +28,7 @@ namespace Z3D
 class Z3D_CAMERACALIBRATION_SHARED_EXPORT ZMultiCameraCalibration
 {
 public:
-    explicit ZMultiCameraCalibration(std::vector<ZCameraCalibrationPtr> calibrations);
+    explicit ZMultiCameraCalibration(const std::vector<ZCameraCalibrationPtr> &calibrations);
 
     virtual ~ZMultiCameraCalibration();
 

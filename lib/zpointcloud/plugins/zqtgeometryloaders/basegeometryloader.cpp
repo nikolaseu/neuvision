@@ -115,8 +115,8 @@ void BaseGeometryLoader::generateAveragedNormals(const QVector<QVector3D>& point
         normals[ faces[i+2] ] += n;
     }
 
-    for (int i = 0; i < normals.size(); ++i)
-        normals[i].normalize();
+    for (auto &normal : normals)
+        normal.normalize();
 }
 
 //void BaseGeometryLoader::generateGeometry()

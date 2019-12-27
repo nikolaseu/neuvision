@@ -25,7 +25,7 @@
 namespace Z3D
 {
 
-ZCorePlugin::ZCorePlugin(QString fileName)
+ZCorePlugin::ZCorePlugin(const QString &fileName)
     : m_loader(new QPluginLoader(fileName))
 {
 

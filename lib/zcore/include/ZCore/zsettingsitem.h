@@ -81,7 +81,7 @@ class Z3D_CORE_SHARED_EXPORT ZSettingsItemModel : public QAbstractListModel
     Q_OBJECT
 
 public:
-    explicit ZSettingsItemModel(const std::vector<ZSettingsItemPtr> settings, QObject *parent = nullptr);
+    explicit ZSettingsItemModel(const std::vector<ZSettingsItemPtr> &settings, QObject *parent = nullptr);
 
     // QAbstractItemModel interface
     int rowCount(const QModelIndex &parent) const override;

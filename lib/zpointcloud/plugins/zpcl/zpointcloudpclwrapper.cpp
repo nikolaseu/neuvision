@@ -86,7 +86,7 @@ ZPointCloudUniquePtr ZPointCloudPCLWrapper::create(pcl::PCLPointCloud2 *pointClo
 }
 
 ZPointCloudPCLWrapper::ZPointCloudPCLWrapper(pcl::PCLPointCloud2 *pointCloud,
-                                             const std::vector<ZPointField *> fields,
+                                             const std::vector<ZPointField *> &fields,
                                              QObject *parent)
     : ZPointCloud(pointCloud->height,
                   pointCloud->width,

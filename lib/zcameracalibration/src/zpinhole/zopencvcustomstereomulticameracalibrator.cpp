@@ -55,7 +55,7 @@ QString ZOpenCVCustomStereoMultiCameraCalibrator::name() const
 }
 
 ZMultiCameraCalibrationPtr ZOpenCVCustomStereoMultiCameraCalibrator::getCalibration(
-        std::vector<ZCameraCalibrationPtr> &initialCameraCalibrations,
+        const std::vector<ZCameraCalibrationPtr> &initialCameraCalibrations,
         std::vector< std::vector< std::vector< cv::Point2f > > > &imagePoints,
         std::vector<std::vector<cv::Point3f> > &objectPoints) const
 {
@@ -75,8 +75,8 @@ ZMultiCameraCalibrationPtr ZOpenCVCustomStereoMultiCameraCalibrator::getCalibrat
 
     qDebug() << "Running stereo calibration ...";
 
-    cv::Mat cameraMatrix[2]
-          , distCoeffs[2];
+    cv::Mat cameraMatrix[2];
+    cv::Mat distCoeffs[2];
     cameraMatrix[0] = cv::Mat::eye(3, 3, CV_64F);
     cameraMatrix[1] = cv::Mat::eye(3, 3, CV_64F);
 
@@ -148,8 +148,8 @@ ZMultiCameraCalibrationPtr ZOpenCVCustomStereoMultiCameraCalibrator::getCalibrat
             if (valid[ic][ii]) {
                 /// rotation was expressed as a vector, we need as matrix to apply transform easily
                 /// Use rodrigues' formula
-                cv::Vec3d rvec(rotationMats[ic][ii]);
-                cv::Rodrigues(rvec, rotations[ic-1]);
+                cv::Vec3d rvec2(rotationMats[ic][ii]);
+                cv::Rodrigues(rvec2, rotations[ic-1]);
                 //rotations[ic-1] = firstCameraR.t() * rotations[ic-1]; // not ok
                 rotations[ic-1] = firstCameraR * rotations[ic-1].t(); // 1: seems ok but is all inverse (need .t() at the end)
                 //rotations[ic-1] = rotations[ic-1] * firstCameraR.t(); // ok2
@@ -170,11 +170,11 @@ ZMultiCameraCalibrationPtr ZOpenCVCustomStereoMultiCameraCalibrator::getCalibrat
                 cv::Point3d &tvec = translations[ic-1];
                 /// rotation was expressed as a matrix, we'll use it as a vector to find median
                 /// Use rodrigues' formula
-                cv::Vec3d rvec;
-                cv::Rodrigues(rotations[ic-1], rvec);
-                allData[ic-1][0].push_back(rvec[0]);
-                allData[ic-1][1].push_back(rvec[1]);
-                allData[ic-1][2].push_back(rvec[2]);
+                cv::Vec3d rvec2;
+                cv::Rodrigues(rotations[ic-1], rvec2);
+                allData[ic-1][0].push_back(rvec2[0]);
+                allData[ic-1][1].push_back(rvec2[1]);
+                allData[ic-1][2].push_back(rvec2[2]);
                 allData[ic-1][3].push_back(tvec.x);
                 allData[ic-1][4].push_back(tvec.y);
                 allData[ic-1][5].push_back(tvec.z);
@@ -192,7 +192,7 @@ ZMultiCameraCalibrationPtr ZOpenCVCustomStereoMultiCameraCalibrator::getCalibrat
     //! FIXME debug only, show sorted vectors
     for (size_t ic = 1; ic < ncameras; ++ic) {
         for (size_t id = 0; id < 6; ++id) {
-            qDebug() << QVector<double>::fromStdVector(allData[ic-1][id]);
+            qDebug() << QVector<double>(allData[ic-1][id].begin(), allData[ic-1][id].end());
         }
     }
 
@@ -243,7 +243,7 @@ ZMultiCameraCalibrationPtr ZOpenCVCustomStereoMultiCameraCalibrator::getCalibrat
         cam0calib->setTranslation(-(rMat.t() * tvec));
     }
 
-    return ZMultiCameraCalibrationPtr(new ZMultiCameraCalibration(newCalibrations));
+    return std::make_shared<ZMultiCameraCalibration>(newCalibrations);
 }
 
 bool ZOpenCVCustomStereoMultiCameraCalibrator::fixIntrinsic() const

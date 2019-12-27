@@ -34,8 +34,8 @@ public:
     static constexpr float_t NO_VALUE = std::numeric_limits<float_t>::quiet_NaN();
     static inline bool isValidValue(float_t value) { return !std::isnan(value); }
 
-    explicit ZDecodedPattern(cv::Mat decodedImage,
-                             cv::Mat intensityImg);
+    explicit ZDecodedPattern(const cv::Mat &decodedImage,
+                             const cv::Mat &intensityImg);
 
     cv::Mat intensityImg() const;
 

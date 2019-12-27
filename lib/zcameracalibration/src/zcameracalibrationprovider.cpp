@@ -63,7 +63,8 @@ void ZCameraCalibrationProvider::unloadPlugins()
     m_plugins.clear();
 }
 
-ZCameraCalibrationPtr ZCameraCalibrationProvider::getCalibration(QString pluginName, QVariantMap options)
+ZCameraCalibrationPtr ZCameraCalibrationProvider::getCalibration(const QString &pluginName,
+                                                                 const QVariantMap &options)
 {
     if (!m_plugins.contains(pluginName)) {
         qWarning() << "camera calibration plugin not found:" << pluginName;

@@ -250,7 +250,7 @@ void ZQtCamera::onImageAvailable(int id, const QVideoFrame &buffer)
     qDebug() << "imageAvailable:" << id;
 }
 
-void ZQtCamera::onCaptureError(int id, QCameraImageCapture::Error error, const QString& message)
+void ZQtCamera::onCaptureError(int id, QCameraImageCapture::Error error, const QString &message)
 {
     qDebug() << "captureError:" << id << error << message;
     if (QCameraImageCapture::NotReadyError == error && m_isCapturing) {

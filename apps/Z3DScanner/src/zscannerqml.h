@@ -34,7 +34,8 @@ class ZScannerQML : public QObject
     Q_PROPERTY(Z3D::ZPointCloudListModel* model READ model CONSTANT)
 
 public:
-    explicit ZScannerQML(Z3D::ZStructuredLightSystemPtr structuredLightSystem, QObject *parent = nullptr);
+    explicit ZScannerQML(const Z3D::ZStructuredLightSystemPtr &structuredLightSystem,
+                         QObject *parent = nullptr);
 
     Z3D::ZSettingsItemModel* patternProjectionSettings() const;
     Z3D::ZSettingsItemModel* structuredLightSystemSettings() const;
@@ -47,7 +48,7 @@ public slots:
     void scan();
 
 private slots:
-    void addNewScan(Z3D::ZPointCloudPtr cloud);
+    void addNewScan(const Z3D::ZPointCloudPtr &cloud);
 
 private:
     const Z3D::ZStructuredLightSystemPtr m_structuredLightSystem;

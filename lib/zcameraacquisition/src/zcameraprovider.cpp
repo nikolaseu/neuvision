@@ -53,14 +53,15 @@ void ZCameraProvider::loadPlugins()
 
 void ZCameraProvider::unloadPlugins()
 {
-    for (const auto *plugin : m_plugins.values()) {
+    const auto plugins = m_plugins.values();
+    for (auto *plugin : plugins) {
         delete plugin;
     }
 
     m_plugins.clear();
 }
 
-ZCameraPtr ZCameraProvider::getCamera(QString pluginName, QVariantMap options)
+ZCameraPtr ZCameraProvider::getCamera(const QString &pluginName, const QVariantMap &options)
 {
     ZCameraPtr camera;
 
@@ -110,7 +111,7 @@ ZCameraPtr ZCameraProvider::getCamera(QSettings *settings)
     return getCamera(deviceType, options);
 }
 
-ZCameraList ZCameraProvider::loadCameras(QString folder)
+ZCameraList ZCameraProvider::loadCameras(const QString &folder)
 {
     QDir configDir = QDir(folder);
 
@@ -163,7 +164,8 @@ QList<ZCameraPluginInterface *> ZCameraProvider::availablePlugins()
 {
     QList<ZCameraPluginInterface *> pluginList;
 
-    for (auto *plugin : m_plugins.values()) {
+    const auto plugins = m_plugins.values();
+    for (auto *plugin : plugins) {
         pluginList << plugin;
     }
 

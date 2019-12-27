@@ -30,9 +30,9 @@ namespace Z3D
 
 static int z3dCalibratedCameraListPtrTypeId = qRegisterMetaType< QList<Z3D::ZCalibratedCameraPtr> >("QList<Z3D::ZCalibratedCameraPtr>");
 
-ZCalibratedCamera::ZCalibratedCamera(ZCameraPtr camera, ZCameraCalibrationPtr cameraCalibration)
-    : m_camera(std::move(camera))
-    , m_cameraCalibration(std::move(cameraCalibration))
+ZCalibratedCamera::ZCalibratedCamera(const ZCameraPtr &camera, const ZCameraCalibrationPtr &cameraCalibration)
+    : m_camera(camera)
+    , m_cameraCalibration(cameraCalibration)
 {
 
 }
@@ -42,10 +42,11 @@ ZCalibratedCamera::~ZCalibratedCamera()
 //    qDebug() << Q_FUNC_INFO;
 }
 
-void ZCalibratedCamera::setCalibration(ZCameraCalibrationPtr newCalibration)
+void ZCalibratedCamera::setCalibration(const ZCameraCalibrationPtr &newCalibration)
 {
-    if (m_cameraCalibration == newCalibration)
+    if (m_cameraCalibration == newCalibration) {
         return;
+    }
 
     m_cameraCalibration = newCalibration;
 

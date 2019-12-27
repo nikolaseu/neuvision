@@ -44,7 +44,7 @@ protected:
     explicit ZCameraSelectorDialog(QWidget *parent = nullptr);
 
 protected slots:
-    void onCameraSelected(Z3D::ZCameraPtr camera);
+    void onCameraSelected(const ZCameraPtr &camera);
 
 private:
     Ui::ZCameraSelectorDialog *ui;

@@ -29,7 +29,7 @@ namespace Z3D
 struct Z3D_STRUCTUREDLIGHT_SHARED_EXPORT ZProjectedPattern : public ZStructuredLightPattern
 {
 public:
-    explicit ZProjectedPattern(cv::Mat decodedImage);
+    explicit ZProjectedPattern(const cv::Mat &decodedImage);
 };
 
 } // namespace Z3D

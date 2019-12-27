@@ -36,7 +36,7 @@ public:
     using PointType = cv::Vec<float, 8>; // X Y Z NX NY NZ RGBX radii
     using PointVector = std::vector<PointType>;
 
-    explicit ZSimplePointCloud(const PointVector points, QVector<unsigned int> indices = {}, QObject *parent = nullptr);
+    explicit ZSimplePointCloud(const PointVector &points, const QVector<unsigned int> &indices = {}, QObject *parent = nullptr);
     ~ZSimplePointCloud() override;
 
     // ZPointCloud interface

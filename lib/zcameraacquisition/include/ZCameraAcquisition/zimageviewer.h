@@ -42,7 +42,7 @@ public:
     ~ZImageViewer() override;
 
 public slots:
-    void updateImage(Z3D::ZCameraImagePtr image);
+    void updateImage(const Z3D::ZCameraImagePtr &image);
     void updateImage(const cv::Mat &image);
     void updateImage(const cv::Mat &image, float minValue, float maxValue);
     void updateImage(const QImage &image);

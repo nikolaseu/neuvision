@@ -33,6 +33,7 @@ class ZPointField;
 class Z3D_ZPOINTCLOUD_SHARED_EXPORT ZPointCloud : public QObject
 {
     Q_OBJECT
+
     Q_PROPERTY(unsigned int height READ height CONSTANT)
     Q_PROPERTY(unsigned int width READ width CONSTANT)
     Q_PROPERTY(unsigned int pointStep READ pointStep CONSTANT)
@@ -50,7 +51,7 @@ public:
                          unsigned int width,
                          unsigned int pointStep,
                          unsigned int rowStep,
-                         const std::vector<ZPointField *> fields,
+                         const std::vector<ZPointField *> &fields,
                          QObject *parent = nullptr);
 
     virtual ~ZPointCloud() override;

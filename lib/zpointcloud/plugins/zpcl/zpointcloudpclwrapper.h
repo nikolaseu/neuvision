@@ -35,7 +35,7 @@ public:
     static ZPointCloudUniquePtr create(pcl::PCLPointCloud2 *pointCloud);
 
     explicit ZPointCloudPCLWrapper(pcl::PCLPointCloud2 *pointCloud,
-                                   const std::vector<ZPointField *> fields,
+                                   const std::vector<ZPointField *> &fields,
                                    QObject *parent = nullptr);
 
     virtual ~ZPointCloudPCLWrapper() override;

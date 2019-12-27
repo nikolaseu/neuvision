@@ -53,7 +53,7 @@ ZPointField *ZPointField::radii(unsigned int offset, ZPointField::PointFieldType
     return new ZPointField("radii", offset, type, count);
 }
 
-ZPointField::ZPointField(QString name, unsigned int offset, PointFieldTypes type, unsigned int count)
+ZPointField::ZPointField(const QString &name, unsigned int offset, PointFieldTypes type, unsigned int count)
     : m_name(name)
     , m_offset(offset)
     , m_dataType(type)

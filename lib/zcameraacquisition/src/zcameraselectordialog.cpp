@@ -59,7 +59,7 @@ ZCameraPtr ZCameraSelectorDialog::getCamera()
     return cameraSelector.m_selectedCamera;
 }
 
-void ZCameraSelectorDialog::onCameraSelected(ZCameraPtr camera)
+void ZCameraSelectorDialog::onCameraSelected(const ZCameraPtr &camera)
 {
     m_selectedCamera = camera;
 

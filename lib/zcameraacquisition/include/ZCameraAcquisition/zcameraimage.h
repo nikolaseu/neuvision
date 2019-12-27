@@ -35,7 +35,7 @@ public:
     explicit ZImageGrayscale(int width, int height, int xOffset = 0, int yOffset = 0, int bytesPerPixel = 1);
 
     /// create new image from OpenCV cv::Mat
-    explicit ZImageGrayscale(cv::Mat mat);
+    explicit ZImageGrayscale(const cv::Mat &mat);
 
     /// create new image from externally managed buffer
     explicit ZImageGrayscale(int width, int height, int xOffset, int yOffset, int bytesPerPixel, void *externalBuffer);
@@ -76,7 +76,7 @@ private:
 };
 
 namespace ZCameraImage {
-Z3D_CAMERAACQUISITION_SHARED_EXPORT ZCameraImagePtr fromFile(const QString& fileName);
+Z3D_CAMERAACQUISITION_SHARED_EXPORT ZCameraImagePtr fromFile(const QString &fileName);
 Z3D_CAMERAACQUISITION_SHARED_EXPORT bool save(const ZCameraImagePtr &image, const QString &fileName);
 } // namespace ZCameraImage
 

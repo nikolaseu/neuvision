@@ -24,14 +24,13 @@
 
 #include <opencv2/imgproc.hpp>
 
+#include <QDebug>
+#include <QFileDialog>
+#include <QGraphicsPixmapItem>
 #include <QMenu>
 #include <QMouseEvent>
-#include <QFileDialog>
-#include <QDebug>
 #include <QScrollBar>
 #include <QSignalMapper>
-#include <QGraphicsPixmapItem>
-
 #include <qmath.h>
 
 namespace Z3D
@@ -150,14 +149,14 @@ void ZImageViewer::changeColormap(int colormapId)
         return;
 
     /// uncheck previous
-    auto colormapAction = static_cast<QAction*>(m_colormapSignalMapper->mapping(m_colormap));
+    auto colormapAction = dynamic_cast<QAction *>(m_colormapSignalMapper->mapping(m_colormap));
     colormapAction->setChecked(false);
 
     /// update current
     m_colormap = colormapId;
 
     /// check current
-    colormapAction = static_cast<QAction*>(m_colormapSignalMapper->mapping(m_colormap));
+    colormapAction = dynamic_cast<QAction *>(m_colormapSignalMapper->mapping(m_colormap));
     colormapAction->setChecked(true);
 
     /// if we were displaying an image, update to view current colormap
@@ -200,12 +199,26 @@ void ZImageViewer::wheelEvent(QWheelEvent* event)
         /// disable fit to window
         setFitToWindow(false);
 
-        if (event->delta() > 0)
-            m_zoomFactor++;
-        else
-            m_zoomFactor--;
+        const QPoint numPixels = event->pixelDelta();
+        const QPoint numDegrees = event->angleDelta() / 8;
 
-        qreal scale = qPow(qreal(2), qreal(m_zoomFactor) / qreal(10)); /// este 10 tiene que ser el mismo que uso en setFitToWindow!
+        int delta = 0;
+        if (!numPixels.isNull()) {
+            delta = numPixels.y();
+        }
+        else if (!numDegrees.isNull()) {
+            QPoint numSteps = numDegrees / 15;
+            delta = numSteps.y();
+        }
+
+        if (delta > 0) {
+            m_zoomFactor++;
+        }
+        else {
+            m_zoomFactor--;
+        }
+
+        const qreal scale = qPow(qreal(2), qreal(m_zoomFactor) / qreal(10)); /// este 10 tiene que ser el mismo que uso en setFitToWindow!
 
         QMatrix matrix;
         matrix.scale(scale, scale);
@@ -236,7 +249,7 @@ void ZImageViewer::closeEvent(QCloseEvent *event)
     QGraphicsView::closeEvent(event);
 }
 
-void ZImageViewer::updateImage(ZCameraImagePtr image)
+void ZImageViewer::updateImage(const ZCameraImagePtr &image)
 {
     if (image)
         updateImage(image->cvMat());

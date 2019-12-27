@@ -29,7 +29,7 @@ namespace Z3D
 
 static int z3dDecodedPatternPtrTypeId = qRegisterMetaType<Z3D::ZProjectedPatternPtr>("Z3D::ZProjectedPatternPtr");
 
-ZProjectedPattern::ZProjectedPattern(cv::Mat decodedImage)
+ZProjectedPattern::ZProjectedPattern(const cv::Mat &decodedImage)
     : ZStructuredLightPattern(decodedImage)
 {
 

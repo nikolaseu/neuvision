@@ -66,12 +66,11 @@ QSplashScreen * ZApplication::showSplashScreen()
         m_splash->show();
 
         connect(ZPluginLoader::instance(), &ZPluginLoader::progressChanged,
-                [&](float progress, QString message) {
+                [&](float progress, const QString &message) {
                     qDebug() << "progress:" << progress << "message:" << message;
                     m_splash->showMessage(message);
                     processEvents();
-                }
-        );
+                });
     }
 
     return m_splash;

@@ -164,7 +164,7 @@ bool ZCameraCalibration::setRotation(cv::Matx33d rotation)
     return true;
 }
 
-bool ZCameraCalibration::setTranslation(cv::Vec3d translation)
+bool ZCameraCalibration::setTranslation(const cv::Vec3d &translation)
 {
     m_translation = translation;
     return true;

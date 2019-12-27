@@ -39,7 +39,7 @@ class Z3D_CAMERAACQUISITION_SHARED_EXPORT ZCameraInfo : public QObject
     Q_PROPERTY(QVariantMap extraData READ extraData  CONSTANT)
 
 public:
-    ZCameraInfo(ZCameraPluginInterface *plugin, QString name, QVariantMap extraData, QObject *parent = nullptr);
+    ZCameraInfo(ZCameraPluginInterface *plugin, const QString &name, const QVariantMap &extraData, QObject *parent = nullptr);
     ~ZCameraInfo();
 
     QString name() const;

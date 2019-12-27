@@ -35,6 +35,9 @@ endif()
 
 add_compile_definitions(_USE_MATH_DEFINES)
 
+# disable all the deprecated APIs in Qt <= 6
+add_compile_definitions(QT_DISABLE_DEPRECATED_BEFORE=0x060000)
+
 # Output directories
 set(Z3D_OUTPUT_DIRECTORY ${NEUVision_BINARY_DIR}/bin)
 foreach(type LIBRARY RUNTIME ARCHIVE)

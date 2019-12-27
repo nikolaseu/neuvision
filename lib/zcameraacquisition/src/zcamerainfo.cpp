@@ -21,19 +21,17 @@
 #include "ZCameraAcquisition/zcamerainfo.h"
 #include "ZCameraAcquisition/zcameraplugininterface.h"
 
-#include <utility>
-
 namespace Z3D
 {
 
 ZCameraInfo::ZCameraInfo(ZCameraPluginInterface *plugin,
-                         QString name,
-                         QVariantMap extraData,
+                         const QString &name,
+                         const QVariantMap &extraData,
                          QObject *parent)
     : QObject(parent)
     , m_plugin(plugin)
-    , m_name(std::move(name))
-    , m_extraData(std::move(extraData))
+    , m_name(name)
+    , m_extraData(extraData)
 {
 
 }

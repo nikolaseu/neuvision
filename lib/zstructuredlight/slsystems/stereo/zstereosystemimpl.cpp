@@ -98,7 +98,7 @@ void ZStereoSystemImpl::stereoRectify(double alpha)
 }
 
 template<typename T>
-ZPointCloudPtr process(const cv::Mat &colorImg, cv::Mat Q, cv::Mat leftImg, cv::Mat rightImg)
+ZPointCloudPtr process(const cv::Mat &colorImg, const cv::Mat& Q, cv::Mat leftImg, cv::Mat rightImg)
 {
     const cv::Size &imgSize = leftImg.size();
     const int &imgHeight = imgSize.height;

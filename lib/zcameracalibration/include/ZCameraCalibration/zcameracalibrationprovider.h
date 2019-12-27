@@ -32,12 +32,11 @@ namespace Z3D
 
 class Z3D_CAMERACALIBRATION_SHARED_EXPORT ZCameraCalibrationProvider
 {
-
 public:
     static void loadPlugins();
     static void unloadPlugins();
 
-    static ZCameraCalibrationPtr getCalibration(QString pluginName, QVariantMap options);
+    static ZCameraCalibrationPtr getCalibration(const QString &pluginName, const QVariantMap &options);
     static ZCameraCalibrationPtr getCalibration(QSettings *settings);
 
     static QList<ZCameraCalibrator *> getCameraCalibrators();

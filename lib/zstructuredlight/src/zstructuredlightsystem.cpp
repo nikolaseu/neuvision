@@ -37,12 +37,12 @@ namespace Z3D
 {
 
 ZStructuredLightSystem::ZStructuredLightSystem(
-        ZCameraAcquisitionManagerPtr acquisitionManager,
-        ZPatternProjectionPtr patternProjection,
+        const ZCameraAcquisitionManagerPtr &acquisitionManager,
+        const ZPatternProjectionPtr &patternProjection,
         QObject *parent)
     : QObject(parent)
-    , m_acqManager(std::move(acquisitionManager))
-    , m_patternProjection(std::move(patternProjection))
+    , m_acqManager(acquisitionManager)
+    , m_patternProjection(patternProjection)
     , m_ready(false)
     , m_debugShowDecodedImages(false)
 {
@@ -113,7 +113,7 @@ bool ZStructuredLightSystem::setDebugShowDecodedImages(bool debugShowDecodedImag
     return true;
 }
 
-void ZStructuredLightSystem::onPatternsDecodedDebug(std::vector<ZDecodedPatternPtr> patterns)
+void ZStructuredLightSystem::onPatternsDecodedDebug(const std::vector<ZDecodedPatternPtr> &patterns)
 {
     if (!m_debugShowDecodedImages) {
         return;
@@ -162,7 +162,7 @@ void ZStructuredLightSystem::onPatternsDecodedDebug(std::vector<ZDecodedPatternP
 
     for (size_t iCam = 0; iCam<decodedImagesClean.size(); ++iCam) {
         const auto &decodedImage = decodedImagesClean[iCam];
-        Z3D::ZImageViewer *imageWidget = new Z3D::ZImageViewer();
+        auto *imageWidget = new Z3D::ZImageViewer();
         imageWidget->setDeleteOnClose(true);
         imageWidget->setWindowTitle(QString("Decoded image [Camera %1]").arg(iCam));
         imageWidget->updateImage(decodedImage, absMinVal, absMaxVal);
@@ -173,7 +173,7 @@ void ZStructuredLightSystem::onPatternsDecodedDebug(std::vector<ZDecodedPatternP
         cv::Mat gradX;
         filter2D(decodedImage, gradX, -1, diffKernel, cv::Point(-1, 0), 0, cv::BORDER_CONSTANT);
 
-        Z3D::ZImageViewer *gradientImageWidget = new Z3D::ZImageViewer();
+        auto *gradientImageWidget = new Z3D::ZImageViewer();
         gradientImageWidget->setDeleteOnClose(true);
         gradientImageWidget->setWindowTitle(QString("Decoded image [Camera %1] - Gradient x").arg(iCam));
         gradientImageWidget->updateImage(gradX, 0.f, 0.5f);

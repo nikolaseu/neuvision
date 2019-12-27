@@ -39,14 +39,14 @@ class Z3D_CAMERAACQUISITION_SHARED_EXPORT ZCameraSettingsWidget : public ZWidget
     Q_OBJECT
 
 public:
-    explicit ZCameraSettingsWidget(ZCameraWeakPtr camera, QWidget *parent = nullptr);
+    explicit ZCameraSettingsWidget(const ZCameraWeakPtr &camera, QWidget *parent = nullptr);
     ~ZCameraSettingsWidget();
 
 protected slots:
     void propertyChanged(QtProperty *property);
     void updateProperties();
 
-    void onCameraAttributeChanged(QString name, QVariant value);
+    void onCameraAttributeChanged(const QString &name, const QVariant& value);
 
 private:
     Ui::ZCameraSettingsWidget *ui;

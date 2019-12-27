@@ -23,8 +23,8 @@
 namespace Z3D
 {
 
-ZStructuredLightPattern::ZStructuredLightPattern(cv::Mat decodedImage)
-    : m_decodedImage(std::move(decodedImage))
+ZStructuredLightPattern::ZStructuredLightPattern(const cv::Mat &decodedImage)
+    : m_decodedImage(decodedImage)
 {
 
 }

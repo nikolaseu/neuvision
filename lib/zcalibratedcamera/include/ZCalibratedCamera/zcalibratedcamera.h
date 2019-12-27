@@ -32,13 +32,13 @@ class Z3D_CALIBRATEDCAMERA_SHARED_EXPORT ZCalibratedCamera : public QObject
     Q_OBJECT
 
 public:
-    explicit ZCalibratedCamera(ZCameraPtr camera, ZCameraCalibrationPtr cameraCalibration);
+    explicit ZCalibratedCamera(const ZCameraPtr &camera, const ZCameraCalibrationPtr &cameraCalibration);
     ~ZCalibratedCamera();
 
     ZCameraPtr camera() const { return m_camera; }
     ZCameraCalibrationPtr calibration() const { return m_cameraCalibration; }
 
-    void setCalibration(Z3D::ZCameraCalibrationPtr newCalibration);
+    void setCalibration(const Z3D::ZCameraCalibrationPtr& newCalibration);
 
 signals:
     void calibrationChanged(Z3D::ZCameraCalibrationPtr newCalibration);

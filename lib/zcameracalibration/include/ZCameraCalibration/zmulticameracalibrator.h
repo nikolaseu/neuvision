@@ -42,7 +42,7 @@ public:
     virtual QString name() const = 0;
 
     virtual ZMultiCameraCalibrationPtr getCalibration(
-            std::vector< Z3D::ZCameraCalibrationPtr > &initialCameraCalibrations,
+            const std::vector< Z3D::ZCameraCalibrationPtr > &initialCameraCalibrations,
             std::vector< std::vector< std::vector< cv::Point2f > > > &imagePoints,
             std::vector< std::vector< cv::Point3f > > &objectPoints) const = 0;
 };

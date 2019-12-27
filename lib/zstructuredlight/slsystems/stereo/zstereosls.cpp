@@ -25,15 +25,18 @@
 #include "ZStructuredLight/zcameraacquisitionmanager.h"
 
 #include <QDebug>
+#include <memory>
 
 namespace Z3D
 {
 
-ZStereoSLS::ZStereoSLS(ZCameraList cameras,
-                       ZMultiCameraCalibrationPtr stereoCalibration,
-                       ZPatternProjectionPtr patternProjection,
+ZStereoSLS::ZStereoSLS(const ZCameraList &cameras,
+                       const ZMultiCameraCalibrationPtr &stereoCalibration,
+                       const ZPatternProjectionPtr &patternProjection,
                        QObject *parent)
-    : ZStructuredLightSystem(ZCameraAcquisitionManagerPtr(new ZCameraAcquisitionManager(cameras)), patternProjection, parent)
+    : ZStructuredLightSystem(std::make_shared<ZCameraAcquisitionManager>(cameras),
+                             patternProjection,
+                             parent)
     , m_maxValidDistance(0.001)
     , m_stereoSystem(new ZStereoSystemImpl(stereoCalibration))
 {

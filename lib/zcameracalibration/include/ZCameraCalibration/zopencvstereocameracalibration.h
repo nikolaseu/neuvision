@@ -51,7 +51,7 @@ public:
 
     const std::vector<std::vector<cv::Point3f>> objectPoints;
     const std::vector<std::vector<std::vector<cv::Point2f>>> imagePoints;
-    std::vector<std::vector<std::vector<double>>> imagePointsEpipolarError;
+    std::vector<std::vector<std::vector<float>>> imagePointsEpipolarError;
     const cv::Mat cameraMatrix[2];
     const cv::Mat distCoeffs[2];
     const cv::Size imageSize[2];

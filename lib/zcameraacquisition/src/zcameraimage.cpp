@@ -20,12 +20,12 @@
 
 #include "ZCameraAcquisition/zcameraimage.h"
 
+#include <QDebug>
+#include <QMetaType>
 #include <cstring> // memcpy
 #include <memory>
 #include <opencv2/imgcodecs.hpp>
-#include <utility>
-#include <QDebug>
-#include <QMetaType>
+
 //! FIXME esto no va acá!!
 static int z3dImagePtrTypeId = qRegisterMetaType<Z3D::ZCameraImagePtr>("Z3D::ZCameraImagePtr");
 
@@ -55,8 +55,8 @@ ZImageGrayscale::ZImageGrayscale(int width, int height, int xOffset, int yOffset
     //qDebug() << Q_FUNC_INFO << (long)this << bufferSize();
 }
 
-ZImageGrayscale::ZImageGrayscale(cv::Mat mat)
-    : m_cvMat(std::move(mat))
+ZImageGrayscale::ZImageGrayscale(const cv::Mat &mat)
+    : m_cvMat(mat)
     , m_width(m_cvMat.cols)
     , m_height(m_cvMat.rows)
     , m_xOffset(0)
@@ -120,7 +120,7 @@ bool ZImageGrayscale::setBuffer(void *otherBuffer)
     return nullptr != memcpy(m_cvMat.data, otherBuffer, bufferSize());
 }
 
-bool ZCameraImage::save(const ZCameraImagePtr &image, const QString& fileName)
+bool ZCameraImage::save(const ZCameraImagePtr &image, const QString &fileName)
 {
     return cv::imwrite(qPrintable(fileName), image->cvMat());
 }

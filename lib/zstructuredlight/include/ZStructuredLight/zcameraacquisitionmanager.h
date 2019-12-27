@@ -40,8 +40,8 @@ signals:
     void acquisitionFinished(std::vector< std::vector<Z3D::ZCameraImagePtr> > &acquiredImages, QString acquisitionId);
 
 public slots:
-    void prepareAcquisition(QString acquisitionId);
-    void acquireSingle(QString id);
+    void prepareAcquisition(const QString &acquisitionId);
+    void acquireSingle(const QString &id);
     void finishAcquisition();
 
 private:
@@ -53,7 +53,7 @@ private:
 
     QString m_acquisitionId;
 
-    bool m_debugMode;
+    bool m_debugMode = false;
 };
 
 } // namespace Z3D

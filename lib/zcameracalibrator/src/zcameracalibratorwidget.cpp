@@ -143,7 +143,7 @@ ZCameraCalibratorWidget::ZCameraCalibratorWidget(ZCalibratedCameraPtr camera, QW
     if (m_camera) {
         /// set up camera image preview
         QObject::connect(m_camera->camera().get(), &ZCameraInterface::newImageReceived,
-                         ui->cameraImageViewer, static_cast<void (ZImageViewer::*)(ZCameraImagePtr)>(&ZImageViewer::updateImage));
+                         ui->cameraImageViewer, static_cast<void (ZImageViewer::*)(const ZCameraImagePtr &)>(&ZImageViewer::updateImage));
 
         /// show current calibration, but a copy of it
         /// we don't want to change anything from the original, unless the user

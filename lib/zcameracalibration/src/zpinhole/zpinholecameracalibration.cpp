@@ -28,6 +28,7 @@
 #include <QDateTime>
 #include <QDebug>
 #include <QDir>
+#include <QElapsedTimer>
 #include <QSettings>
 #include <QtConcurrentRun>
 
@@ -692,7 +693,7 @@ void ZPinholeCameraCalibration::generateLookUpTable()
 
     std::size_t pixelCount = m_sensorWidth * m_sensorHeight;
 
-    QTime time;
+    QElapsedTimer time;
     time.start();
 
     qDebug() << "initializing undistorted rays lookup table with" << pixelCount << "values";

@@ -47,7 +47,7 @@ public:
     static void loadPlugins();
     static void unloadPlugins();
 
-    static ZPointCloudPtr loadPointCloud(const QString &fileName);
+    static ZPointCloudUniquePtr loadPointCloud(const QString &fileName);
 
 private:
     explicit ZPointCloudProvider() {}

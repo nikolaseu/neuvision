@@ -45,12 +45,12 @@ public:
     ZPointCloud *pointCloud() const;
 
 public slots:
-    void setFilename(QString filename);
-    void setSource(QUrl source);
+    void setFilename(const QString &filename);
+    void setSource(const QUrl &source);
 
 signals:
     void filenameChanged(QString filename);
-    void pointCloudChanged(ZPointCloud * pointcloud);
+    void pointCloudChanged(Z3D::ZPointCloud *pointcloud);
     void sourceChanged(QUrl source);
 
 private:

@@ -152,8 +152,8 @@ QList<ZCameraInterface::ZCameraAttribute> OpenCVVideoCaptureCamera::getAllAttrib
         qDebug() << "cv::CAP_PROP_SUPPORTED_PREVIEW_SIZES_STRING" << u.name;
     */
 
-    int currentWidth = (int) m_capture->get( cv::CAP_PROP_FRAME_WIDTH );
-    int currentHeight = (int) m_capture->get( cv::CAP_PROP_FRAME_HEIGHT );
+    const int currentWidth = int(m_capture->get( cv::CAP_PROP_FRAME_WIDTH ));
+    const int currentHeight = int(m_capture->get( cv::CAP_PROP_FRAME_HEIGHT ));
 
     ZCameraInterface::ZCameraAttribute mode;
     mode.type = ZCameraInterface::CameraAttributeTypeEnum;
@@ -175,7 +175,8 @@ QList<ZCameraInterface::ZCameraAttribute> OpenCVVideoCaptureCamera::getAllAttrib
     mode.writable = true;
     attributeList << mode;
 
-    for (int key : m_opencvAttributeNames.keys()) {
+    const auto keys = m_opencvAttributeNames.keys();
+    for (auto &key : keys) {
         ZCameraInterface::ZCameraAttribute attr;
         if (key == cv::CAP_PROP_FRAME_WIDTH || key == cv::CAP_PROP_FRAME_HEIGHT) {
             attr.type = ZCameraInterface::CameraAttributeTypeInt;
@@ -221,12 +222,15 @@ bool OpenCVVideoCaptureCamera::setAttribute(const QString &name, const QVariant 
         if (name == ATTR_MODE) {
             QString mode = value.toString();
             if (mode != ATTR_MODE_CUSTOM) {
-                QStringList size = mode.split("x");
-                int width = size[0].toInt();
-                int height = size[1].toInt();
+                const QStringList size = mode.split("x");
+                const int width = size[0].toInt();
+                const int height = size[1].toInt();
+
+                const int currentWidth = int(m_capture->get( cv::CAP_PROP_FRAME_WIDTH));
+                const int currentHeight = int(m_capture->get( cv::CAP_PROP_FRAME_HEIGHT));
 
                 /// set values
-                if (m_capture->get( cv::CAP_PROP_FRAME_WIDTH) != width || m_capture->get( cv::CAP_PROP_FRAME_HEIGHT) != height) {
+                if (currentWidth != width || currentHeight != height) {
                     /// set both together, this values doesn't change independently,
                     /// they are valid only in certain combinations supported by
                     /// the device
@@ -241,21 +245,23 @@ bool OpenCVVideoCaptureCamera::setAttribute(const QString &name, const QVariant 
                 if (!changed)
                     qWarning() << "unable to change resolution to" << width << "x" << height;
             }
-        } else if (-666 != m_opencvAttributeNames.key(name, -666)) {
-            int key = m_opencvAttributeNames.key(name);
-            int doubleValue(value.toDouble());
-            if (m_capture->get( key) != doubleValue) {
-                m_capture->set( key, doubleValue );
-                changed = m_capture->get( key ) == doubleValue;
+        }
+        else if (const int key = m_opencvAttributeNames.key(name, -666); key != -666) {
+            const double newValue = value.toDouble();
+            if (m_capture->get( key) != newValue) {
+                m_capture->set(key, newValue);
+                changed = m_capture->get(key) == newValue;
             }
-        } else {
+        }
+        else {
             qWarning() << "unknown attribute" << name;
         }
     }
 
     /// now the mutex is released, we could update settings in case something changed
-    if (notify)
-        emit attributeChanged("","");
+    if (notify) {
+        emit attributeChanged("", "");
+    }
 
     return changed;
 }

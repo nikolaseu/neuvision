@@ -30,7 +30,7 @@ namespace // anonymous namespace
 Q_LOGGING_CATEGORY(loggingCategory, "z3d.zpointcloud.zpointcloudlistitem", QtInfoMsg)
 }
 
-ZPointCloudListItem::ZPointCloudListItem(ZPointCloudPtr pointCloud,
+ZPointCloudListItem::ZPointCloudListItem(const ZPointCloudPtr &pointCloud,
                                          const QString &name,
                                          QObject *parent)
     : QObject(parent)

@@ -69,7 +69,7 @@ ZStructuredLightSystemPtr ZStereoSLSPlugin::get(QSettings *settings)
             settings->endGroup();
         settings->endGroup();
 
-        for (auto camera : cameras) {
+        for (const auto &camera : cameras) {
             if (!camera) {
                 qWarning() << "failed to load cameras for" << mode;
                 return nullptr;

@@ -53,7 +53,7 @@ namespace {
 class PlyDataReader
 {
 public:
-    virtual ~PlyDataReader() {}
+    virtual ~PlyDataReader() = default;
 
     virtual int readIntValue(PlyGeometryLoader::DataType type) = 0;
     virtual float readFloatValue(PlyGeometryLoader::DataType type) = 0;
@@ -384,7 +384,7 @@ bool PlyGeometryLoader::parseMesh(QIODevice *ioDev)
                 float asFloat;
             };
 
-            RGBAColor color;
+            RGBAColor color {};
             color.rgba[3] = 0xFF; // if there's no alpha in any vertex, it will be 255
 
             QVector<unsigned int> faceIndices;

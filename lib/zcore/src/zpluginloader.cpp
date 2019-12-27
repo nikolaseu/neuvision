@@ -138,7 +138,7 @@ void ZPluginLoader::unloadPlugins()
 
 }
 
-const QList<ZCorePlugin *> ZPluginLoader::plugins(const QString &pluginType)
+QList<ZCorePlugin *> ZPluginLoader::plugins(const QString &pluginType)
 {
     auto &plugins = instance()->m_plugins;
     if (plugins.find(pluginType) != plugins.end()) {

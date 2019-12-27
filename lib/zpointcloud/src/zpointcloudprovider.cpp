@@ -80,18 +80,20 @@ void ZPointCloudProvider::loadPlugins()
 
 void ZPointCloudProvider::unloadPlugins()
 {
-    for (const auto *plugin : m_plugins.values()) {
+    const auto plugins = m_plugins.values();
+    for (const auto *plugin : plugins) {
         delete plugin;
     }
 
     m_plugins.clear();
 }
 
-ZPointCloudPtr ZPointCloudProvider::loadPointCloud(const QString &fileName)
+ZPointCloudUniquePtr ZPointCloudProvider::loadPointCloud(const QString &fileName)
 {
     qDebug(loggingCategory) << "Trying to read PointCloud from" << fileName;
 
-    for (const auto *plugin : m_plugins.values()) {
+    const auto plugins = m_plugins.values();
+    for (const auto *plugin : plugins) {
         if (auto pc = plugin->loadPointCloud(fileName)) {
             return pc;
         }

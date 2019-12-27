@@ -68,7 +68,7 @@ QString ZOpenCVStereoMultiCameraCalibrator::name() const
 }
 
 ZMultiCameraCalibrationPtr ZOpenCVStereoMultiCameraCalibrator::getCalibration(
-        std::vector<ZCameraCalibrationPtr> &initialCameraCalibrations,
+        const std::vector<ZCameraCalibrationPtr> &initialCameraCalibrations,
         std::vector< std::vector< std::vector< cv::Point2f > > > &imagePoints,
         std::vector< std::vector< cv::Point3f > > &objectPoints) const
 {

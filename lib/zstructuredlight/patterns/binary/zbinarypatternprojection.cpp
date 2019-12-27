@@ -27,8 +27,6 @@
 #include "ZStructuredLight/zdecodedpattern.h"
 #include "ZStructuredLight/zprojectedpattern.h"
 
-#include <opencv2/imgcodecs.hpp>
-
 #include <QCoreApplication>
 #include <QDateTime>
 #include <QDebug>
@@ -39,6 +37,7 @@
 #include <QQuickView>
 #include <QScreen>
 #include <QThread>
+#include <opencv2/imgcodecs.hpp>
 
 namespace Z3D
 {
@@ -73,17 +72,21 @@ ZBinaryPatternProjection::ZBinaryPatternProjection(QObject *parent)
 
     const QString projectorScreen("Projector screen");
 
-    std::shared_ptr<ZSettingsItemEnum> screenOption = std::unique_ptr<ZSettingsItemEnum>(new ZSettingsItemEnum(projectorScreen, "Projector", "Screen/projector to use",
-                                                                                             [=](){
-        std::vector<QString> screens;
-        for (const auto *screen : qGuiApp->screens()) {
-            const auto size = screen->size();
-            screens.push_back(QString("%2x%3 [%1]").arg(screen->name()).arg(size.width()).arg(size.height()));
-        }
-        return screens;
-    },
-                                                                        [=](){ return selectedScreen(); },
-    std::bind(&ZBinaryPatternProjection::setSelectedScreen, this, std::placeholders::_1)));
+    std::shared_ptr<ZSettingsItemEnum> screenOption = std::make_unique<ZSettingsItemEnum>(
+        projectorScreen,
+        "Projector",
+        "Screen/projector to use",
+        [=]() {
+            std::vector<QString> screens;
+            for (const auto *screen : qGuiApp->screens()) {
+                const auto size = screen->size();
+                screens.push_back(
+                    QString("%2x%3 [%1]").arg(screen->name()).arg(size.width()).arg(size.height()));
+            }
+            return screens;
+        },
+        [=]() { return selectedScreen(); },
+        std::bind(&ZBinaryPatternProjection::setSelectedScreen, this, std::placeholders::_1));
     QObject::connect(qGuiApp, &QGuiApplication::screenAdded,
                      screenOption.get(), &ZSettingsItemEnum::optionsChanged);
     QObject::connect(qGuiApp, &QGuiApplication::screenRemoved,
@@ -355,7 +358,7 @@ void ZBinaryPatternProjection::processImages(std::vector<std::vector<ZCameraImag
 
     std::vector<Z3D::ZDecodedPatternPtr> decodedPatternList;
 
-    for (unsigned int iCam=0; iCam<numCameras; ++iCam) {
+    for (size_t iCam=0; iCam<numCameras; ++iCam) {
         /// decode images
 
         auto &cameraImages = allImages[iCam];
@@ -626,7 +629,7 @@ bool ZBinaryPatternProjection::setSelectedScreen(int index)
 
 void ZBinaryPatternProjection::updateMaxUsefulPatterns()
 {
-    const auto& geometry = m_dlpview->geometry();
+    const auto geometry = m_dlpview->geometry();
 
     /// to skip useless patterns
     /// log2(number) == log(number)/log(2)

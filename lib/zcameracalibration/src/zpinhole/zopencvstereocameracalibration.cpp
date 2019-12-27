@@ -31,25 +31,25 @@ namespace Z3D
 {
 
 ZOpenCVStereoCameraCalibration::ZOpenCVStereoCameraCalibration(const std::vector<ZCameraCalibrationPtr> &calibrations,
-                                                               const std::vector<std::vector<cv::Point3f> > &objectPoints,
-                                                               const std::vector<std::vector<std::vector<cv::Point2f> > > &imagePoints,
-                                                               const cv::Mat cameraMatrix[],
-                                                               const cv::Mat distCoeffs[],
-                                                               const cv::Size imageSize[],
-                                                               const cv::Mat &R,
-                                                               const cv::Mat &T,
-                                                               const cv::Mat &E,
-                                                               const cv::Mat &F)
+                                                               const std::vector<std::vector<cv::Point3f> > &objectPoints_,
+                                                               const std::vector<std::vector<std::vector<cv::Point2f> > > &imagePoints_,
+                                                               const cv::Mat cameraMatrix_[],
+                                                               const cv::Mat distCoeffs_[],
+                                                               const cv::Size imageSize_[],
+                                                               const cv::Mat &R_,
+                                                               const cv::Mat &T_,
+                                                               const cv::Mat &E_,
+                                                               const cv::Mat &F_)
     : ZMultiCameraCalibration(calibrations)
-    , objectPoints(objectPoints)
-    , imagePoints(imagePoints)
-    , cameraMatrix { cameraMatrix[0], cameraMatrix[1] }
-    , distCoeffs { distCoeffs[0], distCoeffs[1] }
-    , imageSize { imageSize[0], imageSize[1] }
-    , R(R)
-    , T(T)
-    , E(E)
-    , F(F)
+    , objectPoints(objectPoints_)
+    , imagePoints(imagePoints_)
+    , cameraMatrix { cameraMatrix_[0], cameraMatrix_[1] }
+    , distCoeffs { distCoeffs_[0], distCoeffs_[1] }
+    , imageSize { imageSize_[0], imageSize_[1] }
+    , R(R_)
+    , T(T_)
+    , E(E_)
+    , F(F_)
 {
     const auto ncameras = 2;
     const auto nimages = imagePoints.empty() ? 0 : imagePoints[0].size();
@@ -57,7 +57,7 @@ ZOpenCVStereoCameraCalibration::ZOpenCVStereoCameraCalibration(const std::vector
     for (size_t cam=0; cam<ncameras; ++cam) {
         imagePointsEpipolarError[cam].resize(nimages);
         for (size_t image=0; image<nimages; ++image) {
-            const int npoints = imagePoints[cam][image].size();
+            const size_t npoints = imagePoints[cam][image].size();
             imagePointsEpipolarError[cam][image].resize(npoints);
         }
     }
@@ -68,7 +68,7 @@ ZOpenCVStereoCameraCalibration::ZOpenCVStereoCameraCalibration(const std::vector
     // we can check the quality of calibration using the
     // epipolar geometry constraint: m2^t*F*m1=0
     double err = 0;
-    int npoints = 0;
+    size_t npoints = 0;
     std::vector<cv::Vec3f> lines[2];
     for (size_t i = 0; i < nimages; i++ ) {
         const auto npt = imagePoints[0][i].size();
@@ -77,12 +77,12 @@ ZOpenCVStereoCameraCalibration::ZOpenCVStereoCameraCalibration(const std::vector
         for (size_t k = 0; k < 2; k++ ) {
             imgpt[k] = cv::Mat(imagePoints[k][i]);
             cv::undistortPoints(imgpt[k], imgpt[k], cameraMatrix[k], distCoeffs[k], cv::Mat(), cameraMatrix[k]);
-            cv::computeCorrespondEpilines(imgpt[k], k+1, F, lines[k]);
+            cv::computeCorrespondEpilines(imgpt[k], int(k+1), F, lines[k]);
         }
 
         for (size_t j = 0; j < npt; j++ ) {
-            double &leftError = imagePointsEpipolarError[0][i][j];
-            double &rightError = imagePointsEpipolarError[1][i][j];
+            float &leftError = imagePointsEpipolarError[0][i][j];
+            float &rightError = imagePointsEpipolarError[1][i][j];
 
             leftError = imagePoints[0][i][j].x*lines[1][j][0] +
                     imagePoints[0][i][j].y*lines[1][j][1] +
@@ -92,7 +92,7 @@ ZOpenCVStereoCameraCalibration::ZOpenCVStereoCameraCalibration(const std::vector
                     imagePoints[1][i][j].y*lines[0][j][1] +
                     lines[0][j][2];
 
-            double errij = fabs(leftError) + fabs(rightError);
+            const double errij = double(fabs(leftError) + fabs(rightError));
             err += errij;
         }
         npoints += npt;
@@ -103,14 +103,16 @@ ZOpenCVStereoCameraCalibration::ZOpenCVStereoCameraCalibration(const std::vector
              << "pixels (sum of error is" << err << "for" << npoints << "points)";
 }
 
-ZOpenCVStereoCameraCalibration::ZOpenCVStereoCameraCalibration(const cv::Mat cameraMatrix[],
-                                                               const cv::Mat distCoeffs[],
-                                                               const cv::Size imageSize[],
-                                                               const cv::Mat &R,
-                                                               const cv::Mat &T,
-                                                               const cv::Mat &E,
-                                                               const cv::Mat &F)
-    : ZOpenCVStereoCameraCalibration({ ZCameraCalibrationPtr(new ZPinholeCameraCalibration(cameraMatrix[0], distCoeffs[0], imageSize[0])), ZCameraCalibrationPtr(new ZPinholeCameraCalibration(cameraMatrix[1], distCoeffs[1], imageSize[1])) }, {}, {}, cameraMatrix, distCoeffs, imageSize, R, T, E, F)
+ZOpenCVStereoCameraCalibration::ZOpenCVStereoCameraCalibration(const cv::Mat cameraMatrix_[],
+                                                               const cv::Mat distCoeffs_[],
+                                                               const cv::Size imageSize_[],
+                                                               const cv::Mat &R_,
+                                                               const cv::Mat &T_,
+                                                               const cv::Mat &E_,
+                                                               const cv::Mat &F_)
+    : ZOpenCVStereoCameraCalibration({ std::make_shared<ZPinholeCameraCalibration>(cameraMatrix_[0], distCoeffs_[0], imageSize_[0]),
+                                       std::make_shared<ZPinholeCameraCalibration>(cameraMatrix_[1], distCoeffs_[1], imageSize_[1]) },
+                                     {}, {}, cameraMatrix_, distCoeffs_, imageSize_, R_, T_, E_, F_)
 {
 
 }

@@ -28,15 +28,15 @@
 #include "ZStructuredLight/zdecodedpattern.h"
 
 #include <QDebug>
-#include <QSettings>
 #include <QElapsedTimer>
+#include <QSettings>
 
 namespace Z3D
 {
 
-ZDualCameraStereoSLS::ZDualCameraStereoSLS(ZCameraList cameras,
-                                           ZMultiCameraCalibrationPtr stereoCalibration,
-                                           ZPatternProjectionPtr patternProjection,
+ZDualCameraStereoSLS::ZDualCameraStereoSLS(const ZCameraList &cameras,
+                                           const ZMultiCameraCalibrationPtr &stereoCalibration,
+                                           const ZPatternProjectionPtr &patternProjection,
                                            QObject *parent)
     : ZStereoSLS(cameras, stereoCalibration, patternProjection, parent)
     , m_cameras(cameras)
@@ -130,12 +130,12 @@ ZCameraList ZDualCameraStereoSLS::cameras() const
     return m_cameras;
 }
 
-void ZDualCameraStereoSLS::onPatternProjected(ZProjectedPatternPtr pattern)
+void ZDualCameraStereoSLS::onPatternProjected(const ZProjectedPatternPtr &pattern)
 {
     Q_UNUSED(pattern)
 }
 
-void ZDualCameraStereoSLS::onPatternsDecoded(std::vector<ZDecodedPatternPtr> decodedPatterns)
+void ZDualCameraStereoSLS::onPatternsDecoded(const std::vector<ZDecodedPatternPtr> &decodedPatterns)
 {
     QElapsedTimer startTime;
     startTime.start();

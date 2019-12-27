@@ -30,7 +30,7 @@
 #include "ZCameraCalibration/zmulticameracalibrator.h"
 
 #include <QCoreApplication>
-#include <QTime>
+#include <QElapsedTimer>
 #include <QtConcurrentMap>
 #include <QtConcurrentRun>
 
@@ -39,9 +39,6 @@ namespace Z3D
 
 ZMultiCameraCalibratorWorker::ZMultiCameraCalibratorWorker(QObject *parent)
     : QObject(parent)
-    , m_patternFinder(nullptr)
-    , m_cameraCalibrator(nullptr)
-    , m_progress(1.f)
 {
     /// connect future watcher signals to monitor progress
     QObject::connect(&m_patternFinderFutureWatcher, &QFutureWatcher<void>::progressRangeChanged,
@@ -196,7 +193,7 @@ void ZMultiCameraCalibratorWorker::findCalibrationPattern()
                                   }));
 }
 
-void ZMultiCameraCalibratorWorker::calibrate(std::vector<ZCameraCalibrationPtr> currentCalibrations)
+void ZMultiCameraCalibratorWorker::calibrate(const std::vector<ZCameraCalibrationPtr> &currentCalibrations)
 {
     if (!m_imageModel)
         return;
@@ -218,7 +215,7 @@ void ZMultiCameraCalibratorWorker::calibrate(std::vector<ZCameraCalibrationPtr> 
                 QtConcurrent::run(this, &ZMultiCameraCalibratorWorker::calibrateFunctionImpl, currentCalibrations) );
 }
 
-void ZMultiCameraCalibratorWorker::calibrateFunctionImpl(std::vector<ZCameraCalibrationPtr> currentCalibrations)
+void ZMultiCameraCalibratorWorker::calibrateFunctionImpl(const std::vector<ZCameraCalibrationPtr> &currentCalibrations)
 {
     if (m_patternFinderFutureWatcher.isRunning()) {
         qWarning() << Q_FUNC_INFO << "waiting for pattern finder to finish...";
@@ -227,7 +224,7 @@ void ZMultiCameraCalibratorWorker::calibrateFunctionImpl(std::vector<ZCameraCali
 
     qDebug() << Q_FUNC_INFO << "starting...";
 
-    QTime time;
+    QElapsedTimer time;
     time.start();
 
     /// 0%
@@ -378,8 +375,7 @@ void ZMultiCameraCalibratorWorker::calibrateFunctionImpl(std::vector<ZCameraCali
 
     /// this function is run from a thread in the QThreadPool, we need to move
     /// the qobject to a thread that has an event loop running
-    for (size_t i=0; i<newCalibrations.size(); ++i) {
-        ZCameraCalibrationPtr calibration = newCalibrations[i];
+    for (ZCameraCalibrationPtr &calibration : newCalibrations) {
         if (calibration) {
             while (!calibration->ready()) {
                 QThread::msleep(100);

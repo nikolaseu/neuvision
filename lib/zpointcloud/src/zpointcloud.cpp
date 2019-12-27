@@ -36,7 +36,7 @@ ZPointCloud::ZPointCloud(unsigned int height,
                          unsigned int width,
                          unsigned int pointStep,
                          unsigned int rowStep,
-                         const std::vector<ZPointField *> fields,
+                         const std::vector<ZPointField *> &fields,
                          QObject *parent)
     : QObject(parent)
     , m_height(height)

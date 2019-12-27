@@ -113,7 +113,7 @@ QVariant ZSimulatedCamera::getAttribute(const QString &name) const
     return QString("INVALID");
 }
 
-void ZSimulatedCamera::loadImageFromFilename(const QString& fileName)
+void ZSimulatedCamera::loadImageFromFilename(const QString &fileName)
 {
     m_currentFile = fileName;
 

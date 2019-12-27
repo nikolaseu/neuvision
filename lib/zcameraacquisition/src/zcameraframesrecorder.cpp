@@ -28,14 +28,13 @@
 #include <QDebug>
 #include <QDir>
 #include <opencv2/imgcodecs.hpp>
-#include <utility>
 
 namespace Z3D
 {
 
-ZCameraFramesRecorder::ZCameraFramesRecorder(ZCameraWeakPtr camera, QObject *parent)
+ZCameraFramesRecorder::ZCameraFramesRecorder(const ZCameraWeakPtr &camera, QObject *parent)
     : QObject(parent)
-    , m_camera(std::move(camera))
+    , m_camera(camera)
     , m_basePath(QDir(QCoreApplication::applicationDirPath()).absoluteFilePath(QLatin1String("acquisition")))
 {
     if (!m_camera.isNull()) {
@@ -54,11 +53,11 @@ ZCameraFramesRecorder::ZCameraFramesRecorder(ZCameraWeakPtr camera, QObject *par
 void ZCameraFramesRecorder::onAcquisitionStarted()
 {
     /// update current save path
-    QDir dir(m_basePath);
+    const QDir dir(m_basePath);
     m_currentSavePath = dir.absoluteFilePath(
                 QString("%1/%2")
-                    .arg( QDateTime::currentDateTime().toString("yyyy-MM-dd_hh-mm-ss") )
-                    .arg( m_camera->uuid() )
+                    .arg(QDateTime::currentDateTime().toString("yyyy-MM-dd_hh-mm-ss"))
+                    .arg(m_camera->uuid())
     );
 
     if (!dir.mkpath(m_currentSavePath)) {
@@ -66,7 +65,7 @@ void ZCameraFramesRecorder::onAcquisitionStarted()
     }
 }
 
-void ZCameraFramesRecorder::onNewImageReceived(ZCameraImagePtr image)
+void ZCameraFramesRecorder::onNewImageReceived(const ZCameraImagePtr &image)
 {
     QString currentImageFileName = QString("%1/%2.tiff")
             .arg(m_currentSavePath)

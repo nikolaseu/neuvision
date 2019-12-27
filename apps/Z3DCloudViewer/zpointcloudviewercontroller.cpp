@@ -1,5 +1,6 @@
 #include "zpointcloudviewercontroller.h"
 
+#include "ZPointCloud/zpointcloud.h"
 #include "ZPointCloud/zpointcloudlistitem.h"
 #include "ZPointCloud/zpointcloudlistmodel.h"
 #include "ZPointCloud/zpointcloudprovider.h"
@@ -61,7 +62,7 @@ void ZPointCloudViewerController::loadFile(const QUrl &fileUrl)
 
                 if (auto pc = ZPointCloudProvider::loadPointCloud(projectFile.filename)) {
                     const QFileInfo projectFileInfo(projectFile.filename);
-                    auto item = new ZPointCloudListItem(pc, projectFileInfo.fileName());
+                    auto item = new ZPointCloudListItem(std::move(pc), projectFileInfo.fileName());
                     item->setTransformation(projectFile.transformation);
                     items.push_back(item);
                 } else {
@@ -83,7 +84,7 @@ void ZPointCloudViewerController::loadFile(const QUrl &fileUrl)
         }
 
         if (auto pc = ZPointCloudProvider::loadPointCloud(fileInfo.absoluteFilePath())) {
-            auto item = new ZPointCloudListItem(pc, fileInfo.fileName());
+            auto item = new ZPointCloudListItem(std::move(pc), fileInfo.fileName());
             m_model->addPointCloud(item);
 
             emit message(QString("finished loading %1").arg(fileInfo.fileName()));

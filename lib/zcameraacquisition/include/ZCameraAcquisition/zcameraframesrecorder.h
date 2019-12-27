@@ -32,14 +32,14 @@ class Z3D_CAMERAACQUISITION_SHARED_EXPORT ZCameraFramesRecorder : public QObject
     Q_OBJECT
 
 public:
-    explicit ZCameraFramesRecorder(ZCameraWeakPtr camera, QObject *parent = nullptr);
+    explicit ZCameraFramesRecorder(const ZCameraWeakPtr &camera, QObject *parent = nullptr);
 
 signals:
 
 public slots:
     void onAcquisitionStarted();
 
-    void onNewImageReceived(Z3D::ZCameraImagePtr image);
+    void onNewImageReceived(const Z3D::ZCameraImagePtr &image);
 
 private:
     const ZCameraWeakPtr m_camera;

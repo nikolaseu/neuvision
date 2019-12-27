@@ -91,16 +91,17 @@ class ZSettingsItemModelPrivate : public QQmlObjectListModel<ZSettingsItem>
 public:
     friend class ZSettingsItemModel;
 
-    explicit ZSettingsItemModelPrivate(const std::vector<ZSettingsItemPtr> settings, QObject *parent = nullptr)
+    explicit ZSettingsItemModelPrivate(const std::vector<ZSettingsItemPtr> &settings,
+                                       QObject *parent = nullptr)
         : QQmlObjectListModel<ZSettingsItem>(parent)
     {
-        for (ZSettingsItemPtr setting : settings) {
+        for (const ZSettingsItemPtr &setting : settings) {
             append(setting.get());
         }
     }
 };
 
-ZSettingsItemModel::ZSettingsItemModel(const std::vector<ZSettingsItemPtr> settings, QObject *parent)
+ZSettingsItemModel::ZSettingsItemModel(const std::vector<ZSettingsItemPtr> &settings, QObject *parent)
     : QAbstractListModel(parent)
     , m_p(new ZSettingsItemModelPrivate(settings, this))
 {

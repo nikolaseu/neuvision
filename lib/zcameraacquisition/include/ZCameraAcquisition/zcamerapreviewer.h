@@ -38,11 +38,11 @@ class Z3D_CAMERAACQUISITION_SHARED_EXPORT ZCameraPreviewer : public ZWidget
     
 public:
     explicit ZCameraPreviewer(QWidget *parent = nullptr);
-    explicit ZCameraPreviewer(ZCameraPtr camera, QWidget *parent = nullptr);
+    explicit ZCameraPreviewer(const ZCameraPtr &camera, QWidget *parent = nullptr);
     ~ZCameraPreviewer();
 
 public slots:
-    void setCamera(Z3D::ZCameraPtr camera);
+    void setCamera(const ZCameraPtr &camera);
 
 protected slots:
     void closeEvent(QCloseEvent *);

@@ -147,7 +147,7 @@ public:
     cv::Vec3d translation() { return m_translation; }
 
     bool setRotation(cv::Matx33d rotation);
-    bool setTranslation(cv::Vec3d translation);
+    bool setTranslation(const cv::Vec3d &translation);
 
 signals:
     void calibrationChanged();

@@ -40,8 +40,8 @@ class Z3D_STRUCTUREDLIGHT_SHARED_EXPORT ZStructuredLightSystem : public QObject
     Q_PROPERTY(bool debugShowDecodedImages READ debugShowDecodedImages WRITE setDebugShowDecodedImages NOTIFY debugShowDecodedImagesChanged)
 
 public:
-    explicit ZStructuredLightSystem(ZCameraAcquisitionManagerPtr acquisitionManager,
-                                    ZPatternProjectionPtr patternProjection,
+    explicit ZStructuredLightSystem(const ZCameraAcquisitionManagerPtr &acquisitionManager,
+                                    const ZPatternProjectionPtr &patternProjection,
                                     QObject *parent = nullptr);
 
     virtual ~ZStructuredLightSystem();
@@ -66,11 +66,11 @@ public slots:
     bool setDebugShowDecodedImages(bool debugShowDecodedImages);
 
 protected slots:
-    virtual void onPatternProjected(Z3D::ZProjectedPatternPtr pattern) = 0;
-    virtual void onPatternsDecoded(std::vector<Z3D::ZDecodedPatternPtr> patterns) = 0;
+    virtual void onPatternProjected(const Z3D::ZProjectedPatternPtr &pattern) = 0;
+    virtual void onPatternsDecoded(const std::vector<Z3D::ZDecodedPatternPtr> &patterns) = 0;
 
 private slots:
-    void onPatternsDecodedDebug(std::vector<Z3D::ZDecodedPatternPtr> patterns);
+    void onPatternsDecodedDebug(const std::vector<Z3D::ZDecodedPatternPtr> &patterns);
 
 private:
     void setupConnections();

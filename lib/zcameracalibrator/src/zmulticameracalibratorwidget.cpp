@@ -50,7 +50,7 @@
 namespace Z3D
 {
 
-ZMultiCameraCalibratorWidget::ZMultiCameraCalibratorWidget(ZCameraList cameras, QWidget *parent)
+ZMultiCameraCalibratorWidget::ZMultiCameraCalibratorWidget(const ZCameraList &cameras, QWidget *parent)
     : ZWidget(parent)
     , ui(new Ui::ZMultiCameraCalibratorWidget)
     , m_model(new ZMultiCalibrationImageModel(this))
@@ -62,7 +62,7 @@ ZMultiCameraCalibratorWidget::ZMultiCameraCalibratorWidget(ZCameraList cameras, 
     updateWindowTitle();
 
     bool hasAnyRealCamera = false;
-    for (auto camera : m_cameras) {
+    for (auto &camera : m_cameras) {
         /// camera views
         ZImageViewer *cameraImageViewer = new ZImageViewer(ui->cameraViewsLayout->widget());
         ui->cameraViewsLayout->addWidget(cameraImageViewer, 1);
@@ -72,7 +72,7 @@ ZMultiCameraCalibratorWidget::ZMultiCameraCalibratorWidget(ZCameraList cameras, 
         if (camera) {
             hasAnyRealCamera = true;
             QObject::connect(camera.get(), &ZCameraInterface::newImageReceived,
-                             cameraImageViewer, static_cast<void(ZImageViewer::*)(Z3D::ZCameraImagePtr)>(&ZImageViewer::updateImage));
+                             cameraImageViewer, static_cast<void(ZImageViewer::*)(const Z3D::ZCameraImagePtr &)>(&ZImageViewer::updateImage));
         }
 
         /// image views
@@ -118,8 +118,9 @@ ZMultiCameraCalibratorWidget::ZMultiCameraCalibratorWidget(ZCameraList cameras, 
     /// load different calibration pattern finder types
     m_patternFinderList = ZCalibrationPatternFinderProvider::getAll();
 
-    for (auto patternFinder : m_patternFinderList)
+    for (auto &patternFinder : m_patternFinderList) {
         ui->calibrationPatternTypeComboBox->addItem(patternFinder->name());
+    }
 
     /// configure image list view
     ui->listView->setModel(m_model);
@@ -147,17 +148,19 @@ ZMultiCameraCalibratorWidget::ZMultiCameraCalibratorWidget(ZCameraList cameras, 
     m_calibratorWorker->moveToThread(m_workerThread);
 
     //! TODO esto es necesario?
-    for (auto cameraCalibrator : m_cameraCalibratorList)
+    for (auto &cameraCalibrator : m_cameraCalibratorList) {
         cameraCalibrator->moveToThread(m_workerThread);
-    for (auto patternFinder : m_patternFinderList)
+    }
+    for (auto &patternFinder : m_patternFinderList) {
         patternFinder->moveToThread(m_workerThread);
+    }
 
     m_workerThread->start();
 }
 
 ZMultiCameraCalibratorWidget::~ZMultiCameraCalibratorWidget()
 {
-    for (auto camera : m_cameras) {
+    for (auto &camera : m_cameras) {
         if (camera && ui->stackedWidget->currentIndex() == CAMERA_VIEW) {
             camera->stopAcquisition();
         }
@@ -188,12 +191,14 @@ void ZMultiCameraCalibratorWidget::updateWindowTitle()
 
 void ZMultiCameraCalibratorWidget::setCurrentView(int newView)
 {
-    if (ui->stackedWidget->currentIndex() == newView)
+    if (ui->stackedWidget->currentIndex() == newView) {
         return;
+    }
 
-    for (auto camera : m_cameras) {
-        if (camera && ui->stackedWidget->currentIndex() == CAMERA_VIEW && newView != CAMERA_VIEW)
+    for (auto &camera : m_cameras) {
+        if (camera && ui->stackedWidget->currentIndex() == CAMERA_VIEW && newView != CAMERA_VIEW) {
             camera->stopAcquisition();
+        }
     }
 
     switch (newView) {
@@ -206,9 +211,10 @@ void ZMultiCameraCalibratorWidget::setCurrentView(int newView)
         break;
     case CAMERA_VIEW:
         ui->stackedWidget->setCurrentIndex(newView);
-        for (auto camera : m_cameras) {
-            if (camera)
+        for (auto &camera : m_cameras) {
+            if (camera) {
                 camera->startAcquisition();
+            }
         }
         break;
     case CALIBRATION_VIEW:
@@ -287,15 +293,17 @@ void ZMultiCameraCalibratorWidget::onCalibrationPatternTypeChanged(int index)
     currentWidget->setVisible(true);
 }
 
-void ZMultiCameraCalibratorWidget::onProgressChanged(float progress, QString message)
+void ZMultiCameraCalibratorWidget::onProgressChanged(float progress, const QString &message)
 {
     m_statusProgressBar->setValue(100 * progress);
     m_statusProgressBar->setVisible(progress < 1.f);
 
-    if (progress == 1.f && message.isEmpty())
+    if (progress == 1.f && message.isEmpty()) {
         ui->statusbar->showMessage(tr(""), 5000);
-    else if (!message.isEmpty())
+    }
+    else if (!message.isEmpty()) {
         ui->statusbar->showMessage(message, progress < 1 ? 0 : 5000);
+    }
 }
 
 void ZMultiCameraCalibratorWidget::onCalibrationChanged(ZMultiCameraCalibrationPtr calibrationResult)
@@ -435,7 +443,7 @@ void ZMultiCameraCalibratorWidget::on_saveCameraImageButton_clicked()
     QList<ZCameraImagePtr> imagesList;
     QList<ZCalibrationImagePtr> calibrationImagesList;
 
-    for (auto camera : m_cameras) {
+    for (auto &camera : m_cameras) {
         imagesList << camera->getSnapshot();
     }
 
@@ -490,7 +498,7 @@ void ZMultiCameraCalibratorWidget::on_saveCameraImageButton_clicked()
 
 void ZMultiCameraCalibratorWidget::on_cameraSettingsButton_clicked()
 {
-    for (auto camera : m_cameras) {
+    for (auto &camera : m_cameras) {
         if (camera) {
             camera->showSettingsDialog();
         }

@@ -28,12 +28,11 @@
 namespace Z3D
 {
 
-ZSingleCameraStereoSLS::ZSingleCameraStereoSLS(
-        ZCameraPtr camera,
-        ZMultiCameraCalibrationPtr stereoCalibration,
-        ZPatternProjectionPtr patternProjection,
-        QObject *parent)
-    : ZStereoSLS({ camera }, stereoCalibration, patternProjection, parent)
+ZSingleCameraStereoSLS::ZSingleCameraStereoSLS(const ZCameraPtr &camera,
+                                               const ZMultiCameraCalibrationPtr &stereoCalibration,
+                                               const ZPatternProjectionPtr &patternProjection,
+                                               QObject *parent)
+    : ZStereoSLS({camera}, stereoCalibration, patternProjection, parent)
 {
 
 }
@@ -52,42 +51,42 @@ const std::vector<ZSettingsItemPtr> &ZSingleCameraStereoSLS::settings()
 void ZSingleCameraStereoSLS::processPatterns()
 {
     /// is there something to process?
-    if (!projectedPattern || decodedPatterns.empty()) {
+    if (!m_projectedPattern || m_decodedPatterns.empty()) {
         return;
     }
 
-    Z3D::ZPointCloudPtr cloud = triangulate(decodedPatterns[0]->intensityImg(),
-            decodedPatterns[0]->decodedImage(),
-            projectedPattern->decodedImage());
+    Z3D::ZPointCloudPtr cloud = triangulate(m_decodedPatterns[0]->intensityImg(),
+            m_decodedPatterns[0]->decodedImage(),
+            m_projectedPattern->decodedImage());
 
     if (cloud) {
         emit scanFinished(cloud);
     }
 
-    projectedPattern = nullptr;
-    decodedPatterns.clear();
+    m_projectedPattern = nullptr;
+    m_decodedPatterns.clear();
 }
 
-void ZSingleCameraStereoSLS::onPatternProjected(ZProjectedPatternPtr pattern)
+void ZSingleCameraStereoSLS::onPatternProjected(const ZProjectedPatternPtr &pattern)
 {
     if (pattern) {
-        projectedPattern = pattern;
+        m_projectedPattern = pattern;
         processPatterns();
     } else {
-        decodedPatterns.clear();
+        m_decodedPatterns.clear();
     }
 }
 
-void ZSingleCameraStereoSLS::onPatternsDecoded(std::vector<ZDecodedPatternPtr> patterns)
+void ZSingleCameraStereoSLS::onPatternsDecoded(const std::vector<ZDecodedPatternPtr> &patterns)
 {
     for (const auto &decodedPattern : patterns) {
         if (!decodedPattern) {
-            projectedPattern = nullptr;
+            m_projectedPattern = nullptr;
             return;
         }
     }
 
-    decodedPatterns = patterns;
+    m_decodedPatterns = patterns;
     processPatterns();
 }
 

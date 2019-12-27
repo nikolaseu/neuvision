@@ -34,7 +34,7 @@ ZCameraAcquisitionManager::ZCameraAcquisitionManager(ZCameraList cameras, QObjec
 
 }
 
-void ZCameraAcquisitionManager::prepareAcquisition(QString acquisitionId)
+void ZCameraAcquisitionManager::prepareAcquisition(const QString &acquisitionId)
 {
     m_acquisitionId = acquisitionId;
 
@@ -43,7 +43,7 @@ void ZCameraAcquisitionManager::prepareAcquisition(QString acquisitionId)
 
     ///
     if (m_debugMode) {
-        for (auto cam : m_cameras) {
+        for (auto &cam : m_cameras) {
             QString cameraFolder = QString("%1/%2")
                     .arg(m_acquisitionId)
                     .arg(cam->uuid());
@@ -55,16 +55,16 @@ void ZCameraAcquisitionManager::prepareAcquisition(QString acquisitionId)
     }
 
     /// start acquisition
-    for (auto cam : m_cameras) {
+    for (auto &cam : m_cameras) {
         cam->startAcquisition();
     }
 
     emit acquisitionReady(m_acquisitionId);
 }
 
-void ZCameraAcquisitionManager::acquireSingle(QString id)
+void ZCameraAcquisitionManager::acquireSingle(const QString &id)
 {
-    for (auto cam : m_cameras) {
+    for (auto &cam : m_cameras) {
         /// if the camera is simulated, set which image should use now
         if (cam->uuid().startsWith("ZSIMULATED")) {
             qDebug() << "camera is simulated. using image" << id;
@@ -79,7 +79,7 @@ void ZCameraAcquisitionManager::acquireSingle(QString id)
     auto &images = m_images.back();
     images.reserve(m_cameras.size());
 
-    for (auto cam : m_cameras) {
+    for (auto &cam : m_cameras) {
         /// Retrieve the image, this will block until the snapshot is retrieved
         auto imptr = cam->getSnapshot();
 
@@ -107,7 +107,7 @@ void ZCameraAcquisitionManager::acquireSingle(QString id)
 void ZCameraAcquisitionManager::finishAcquisition()
 {
     /// stop acquisition
-    for (auto cam : m_cameras) {
+    for (auto &cam : m_cameras) {
         cam->stopAcquisition();
     }
 

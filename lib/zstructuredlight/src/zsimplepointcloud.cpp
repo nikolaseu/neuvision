@@ -25,8 +25,8 @@
 namespace Z3D
 {
 
-ZSimplePointCloud::ZSimplePointCloud(const ZSimplePointCloud::PointVector points,
-                                     QVector<unsigned int> indices,
+ZSimplePointCloud::ZSimplePointCloud(const ZSimplePointCloud::PointVector &points,
+                                     const QVector<unsigned int> &indices,
                                      QObject *parent)
     : ZPointCloud(
         1, // height
@@ -40,8 +40,8 @@ ZSimplePointCloud::ZSimplePointCloud(const ZSimplePointCloud::PointVector points
             ZPointField::radii(28, ZPointField::FLOAT32, 1)
         },
         parent)
-    , m_points(std::move(points))
-    , m_indices(std::move(indices))
+    , m_points(points)
+    , m_indices(indices)
 {
 
 }

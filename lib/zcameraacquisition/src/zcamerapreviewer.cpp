@@ -20,11 +20,11 @@
 
 #include "ZCameraAcquisition/zcamerapreviewer.h"
 #include "ui_zcamerapreviewer.h"
+
 #include "ZCameraAcquisition/zcamerainterface.h"
 
-#include <opencv2/core/mat.hpp>
-
 #include <QDebug>
+#include <opencv2/core/mat.hpp>
 
 namespace Z3D
 {
@@ -40,7 +40,7 @@ ZCameraPreviewer::ZCameraPreviewer(QWidget *parent)
     setCamera(nullptr);
 }
 
-ZCameraPreviewer::ZCameraPreviewer(ZCameraPtr camera, QWidget *parent)
+ZCameraPreviewer::ZCameraPreviewer(const ZCameraPtr &camera, QWidget *parent)
     : ZCameraPreviewer(parent)
 {
     setCamera(camera);
@@ -53,7 +53,7 @@ ZCameraPreviewer::~ZCameraPreviewer()
     delete ui;
 }
 
-void ZCameraPreviewer::setCamera(ZCameraPtr camera)
+void ZCameraPreviewer::setCamera(const ZCameraPtr &camera)
 {
     if (m_camera) {
         /// need to disconect previous camera
@@ -61,7 +61,7 @@ void ZCameraPreviewer::setCamera(ZCameraPtr camera)
                             this, &ZCameraPreviewer::onCameraRunningChanged);
 
         QObject::disconnect(m_camera.get(), &ZCameraInterface::newImageReceived,
-                            ui->imageView, static_cast<void(ZImageViewer::*)(Z3D::ZCameraImagePtr)>(&ZImageViewer::updateImage));
+                            ui->imageView, static_cast<void(ZImageViewer::*)(const Z3D::ZCameraImagePtr &)>(&ZImageViewer::updateImage));
 
         QObject::disconnect(ui->settingsButton, &QPushButton::clicked,
                             m_camera.get(), &ZCameraInterface::showSettingsDialog);
@@ -81,7 +81,7 @@ void ZCameraPreviewer::setCamera(ZCameraPtr camera)
                          this, &ZCameraPreviewer::onCameraRunningChanged);
 
         QObject::connect(m_camera.get(), &ZCameraInterface::newImageReceived,
-                         ui->imageView, static_cast<void(ZImageViewer::*)(Z3D::ZCameraImagePtr)>(&ZImageViewer::updateImage));
+                         ui->imageView, static_cast<void(ZImageViewer::*)(const Z3D::ZCameraImagePtr &)>(&ZImageViewer::updateImage));
 
         QObject::connect(ui->settingsButton, &QPushButton::clicked,
                          m_camera.get(), &ZCameraInterface::showSettingsDialog,

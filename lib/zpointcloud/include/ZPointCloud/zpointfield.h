@@ -61,7 +61,7 @@ public:
                               PointFieldTypes type,
                               unsigned int count);
 
-    explicit ZPointField(QString name,
+    explicit ZPointField(const QString &name,
                          unsigned int offset,
                          PointFieldTypes type,
                          unsigned int count);

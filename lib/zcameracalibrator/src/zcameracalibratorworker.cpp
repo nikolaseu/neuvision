@@ -28,7 +28,7 @@
 #include "ZCameraCalibration/zcameracalibrator.h"
 
 #include <QCoreApplication>
-#include <QTime>
+#include <QElapsedTimer>
 #include <QtConcurrentMap>
 #include <QtConcurrentRun>
 
@@ -225,7 +225,7 @@ void ZCameraCalibratorWorker::calibrateFunctionImpl()
 
     qDebug() << Q_FUNC_INFO << "starting...";
 
-    QTime time;
+    QElapsedTimer time;
     time.start();
 
     /// 0%

@@ -43,11 +43,11 @@ public:
     uint levelOfDetail() const;
 
 signals:
-    void pointCloudChanged(ZPointCloud *pointCloud);
+    void pointCloudChanged(Z3D::ZPointCloud *pointCloud);
     void levelOfDetailChanged(uint levelOfDetail);
 
 public slots:
-    void setPointCloud(ZPointCloud *pointCloud);
+    void setPointCloud(Z3D::ZPointCloud *pointCloud);
     void setLevelOfDetail(uint levelOfDetail);
 
 private slots:

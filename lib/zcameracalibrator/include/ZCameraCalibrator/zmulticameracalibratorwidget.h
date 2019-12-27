@@ -44,7 +44,7 @@ class Z3D_CAMERACALIBRATOR_SHARED_EXPORT ZMultiCameraCalibratorWidget : public Z
     Q_OBJECT
 
 public:
-    explicit ZMultiCameraCalibratorWidget(ZCameraList cameras, QWidget *parent = nullptr);
+    explicit ZMultiCameraCalibratorWidget(const ZCameraList &cameras, QWidget *parent = nullptr);
     ~ZMultiCameraCalibratorWidget();
 
 private slots:
@@ -59,8 +59,8 @@ private slots:
     void onCameraModelTypeChanged(int index);
     void onCalibrationPatternTypeChanged(int index);
 
-    void onProgressChanged(float progress, QString message);
-    void onCalibrationChanged(ZMultiCameraCalibrationPtr calibrationResult);
+    void onProgressChanged(float progress, const QString &message);
+    void onCalibrationChanged(Z3D::ZMultiCameraCalibrationPtr calibrationResult);
 
     void loadSession();
     void newSession();

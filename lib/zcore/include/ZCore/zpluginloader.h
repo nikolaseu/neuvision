@@ -37,7 +37,7 @@ public:
     void loadPlugins(QString folder = QString());
     void unloadPlugins();
 
-    static const QList<ZCorePlugin *> plugins(const QString &pluginType);
+    static QList<ZCorePlugin *> plugins(const QString &pluginType);
 
 signals:
     void progressChanged(float progress, QString message);

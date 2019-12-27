@@ -63,21 +63,21 @@ public slots:
     void setProgressRange(int min, int max);
 
     void findCalibrationPattern();
-    void calibrate(std::vector<Z3D::ZCameraCalibrationPtr> currentCalibrations);
+    void calibrate(const std::vector<ZCameraCalibrationPtr> &currentCalibrations);
 
 protected:
-    void calibrateFunctionImpl(std::vector<ZCameraCalibrationPtr> currentCalibrations);
+    void calibrateFunctionImpl(const std::vector<ZCameraCalibrationPtr> &currentCalibrations);
 
-    Z3D::ZMultiCalibrationImageModelWeakPtr m_imageModel;
-    Z3D::ZCalibrationPatternFinderPtr m_patternFinder;
-    Z3D::ZMultiCameraCalibrator *m_cameraCalibrator;
+    Z3D::ZMultiCalibrationImageModelWeakPtr m_imageModel = nullptr;
+    Z3D::ZCalibrationPatternFinderPtr m_patternFinder = nullptr;
+    Z3D::ZMultiCameraCalibrator *m_cameraCalibrator = nullptr;
 
     QFutureWatcher<void> m_patternFinderFutureWatcher;
     QFutureWatcher<void> m_calibrateFutureWatcher;
 
-    float m_progress;
-    int m_minProgressValue;
-    int m_maxProgressValue;
+    float m_progress = 0;
+    int m_minProgressValue = 0;
+    int m_maxProgressValue = 0;
 };
 
 } // namespace Z3D

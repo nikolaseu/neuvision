@@ -37,7 +37,7 @@ public:
     ~MainWindow() override;
 
 private slots:
-    void onCameraSelected(Z3D::ZCameraPtr camera);
+    void onCameraSelected(const Z3D::ZCameraPtr &camera);
 
     void onContinueButtonClicked();
     void onFinishButtonClicked();

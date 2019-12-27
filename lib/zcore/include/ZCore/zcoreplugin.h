@@ -32,7 +32,7 @@ class Z3D_CORE_SHARED_EXPORT ZCorePlugin
 {
 
 public:
-    explicit ZCorePlugin(QString fileName);
+    explicit ZCorePlugin(const QString &fileName);
     virtual ~ZCorePlugin();
 
     /// plugin information
@@ -55,8 +55,8 @@ public:
     }
 
 private:
-    QPluginLoader *m_loader;
-    QObject *m_pluginInstance;
+    QPluginLoader *const m_loader;
+    QObject *m_pluginInstance = nullptr;
 };
 
 } // namespace Z3D

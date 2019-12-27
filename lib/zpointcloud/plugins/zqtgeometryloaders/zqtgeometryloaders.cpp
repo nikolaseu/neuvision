@@ -86,9 +86,10 @@ public:
                                                       loader.indices()));
     }
 
-    QByteArray vertexData() const override { return m_bufferBytes; }
+    [[nodiscard]] QByteArray vertexData() const override { return m_bufferBytes; }
 
-    QByteArray trianglesData() const override {
+    [[nodiscard]] QByteArray trianglesData() const override
+    {
         /// do not copy data, but we need to be careful!
         return QByteArray::fromRawData(reinterpret_cast<const char*>(m_indices.constData()),
                                        int(sizeof(quint32)) * m_indices.size());
@@ -99,9 +100,9 @@ private:
                            unsigned int width,
                            unsigned int pointStep,
                            unsigned int rowStep,
-                           const std::vector<ZPointField *> fields,
-                           QByteArray bufferBytes,
-                           QVector<unsigned int> indices,
+                           const std::vector<ZPointField *> &fields,
+                           const QByteArray &bufferBytes,
+                           const QVector<unsigned int> &indices,
                            QObject *parent = nullptr)
         : ZPointCloud(height, width, pointStep, rowStep, fields, parent)
         , m_bufferBytes(bufferBytes)
@@ -128,13 +129,11 @@ ZPointCloudUniquePtr loadPointCloud(const QString &fileName)
 
     std::shared_ptr<Qt3DRender::BaseGeometryLoader> loader;
     if (fileName.endsWith(".ply", Qt::CaseInsensitive)) {
-        loader.reset(new Qt3DRender::PlyGeometryLoader);
-    }
-    else if (fileName.endsWith(".stl", Qt::CaseInsensitive)) {
-        loader.reset(new Qt3DRender::StlGeometryLoader);
-    }
-    else if (fileName.endsWith(".obj", Qt::CaseInsensitive)) {
-        loader.reset(new Qt3DRender::ObjGeometryLoader);
+        loader = std::make_shared<Qt3DRender::PlyGeometryLoader>();
+    } else if (fileName.endsWith(".stl", Qt::CaseInsensitive)) {
+        loader = std::make_shared<Qt3DRender::StlGeometryLoader>();
+    } else if (fileName.endsWith(".obj", Qt::CaseInsensitive)) {
+        loader = std::make_shared<Qt3DRender::ObjGeometryLoader>();
     }
 
     if (loader && loader->load(&file)) {

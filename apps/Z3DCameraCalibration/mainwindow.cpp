@@ -47,7 +47,7 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
-void MainWindow::onCameraSelected(Z3D::ZCameraPtr camera)
+void MainWindow::onCameraSelected(const Z3D::ZCameraPtr &camera)
 {
     m_selectedCamera = camera;
 
