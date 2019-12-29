@@ -194,7 +194,7 @@ ApplicationWindow {
                                 }
                             }
                         }
-//                        renderPolicy: RenderSettings.OnDemand // seems like this makes it stutter (at least in macOS)
+                        renderPolicy: RenderSettings.OnDemand // seems like this makes it stutter (at least in macOS)
                         pickingSettings.faceOrientationPickingMode: PickingSettings.FrontAndBackFace // also pick on the "inside" of objects
                         pickingSettings.pickMethod: PickingSettings.PrimitivePicking
                         pickingSettings.pickResultMode: PickingSettings.NearestPick

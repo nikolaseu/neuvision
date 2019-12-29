@@ -29,7 +29,7 @@ namespace Z3D {
 
 namespace // anonymous namespace
 {
-Q_LOGGING_CATEGORY(loggingCategory, "z3d.zpointcloud.zpointcloud")//, QtInfoMsg)
+Q_LOGGING_CATEGORY(loggingCategory, "z3d.zpointcloud.zpointcloud", QtInfoMsg)
 } // anonymous namespace
 
 ZPointCloud::ZPointCloud(unsigned int height,
