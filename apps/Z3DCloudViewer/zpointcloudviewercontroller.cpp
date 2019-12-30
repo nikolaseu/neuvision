@@ -8,8 +8,8 @@
 
 #include <QFileInfo>
 #include <QLoggingCategory>
-#include <QtConcurrentRun>
 #include <QUrl>
+#include <QtConcurrentRun>
 
 namespace Z3D
 {

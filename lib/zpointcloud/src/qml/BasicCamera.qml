@@ -15,7 +15,7 @@ Camera {
     property real animationDuration: 500
     property bool animationEnabled: true
     // we cannot use something different because it's restarted as camera can move continuously
-    property var animationEasing: Easing.Linear
+    property var animationEasing: Easing.InOutQuad
     Behavior on position {
         enabled: mainCamera.animationEnabled
         Vector3dAnimation {

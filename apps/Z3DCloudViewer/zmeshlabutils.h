@@ -3,10 +3,7 @@
 #include <QMatrix4x4>
 #include <QString>
 
-namespace Z3D
-{
-
-namespace ZMeshlabUtils
+namespace Z3D::ZMeshlabUtils
 {
 
 struct MeshlabProjectData {
@@ -16,6 +13,4 @@ struct MeshlabProjectData {
 
 std::vector<MeshlabProjectData> parseMeshlabProject(const QString &fileName);
 
-} // namespace ZMeshlabUtils
-
-} // namespace Z3D
+} // namespace Z3D::ZMeshlabUtils
