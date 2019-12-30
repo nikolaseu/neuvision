@@ -11,13 +11,14 @@ file(GLOB SRC_FILES
 
 add_library(${PROJECT_NAME} SHARED
     ${HEADER_FILES}
-    ${SRC_FILES}
-)
+    ${SRC_FILES})
 
 target_compile_definitions(${PROJECT_NAME} PRIVATE Z3D_${PROJECT_NAME}_LIBRARY)
 
-target_include_directories(${PROJECT_NAME} PUBLIC
-    ${PROJECT_SOURCE_DIR}/include)
+target_include_directories(${PROJECT_NAME}
+    PUBLIC
+        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+        $<INSTALL_INTERFACE:include>)
 
 target_link_libraries(${PROJECT_NAME}
     PRIVATE
@@ -26,10 +27,25 @@ target_link_libraries(${PROJECT_NAME}
     PUBLIC
         ZCore
         ZCameraAcquisition
-        ZPointCloud
-)
+        ZPointCloud)
 
 set_target_properties(${PROJECT_NAME} PROPERTIES VERSION ${CMAKE_PROJECT_VERSION})
 
+install(TARGETS ${PROJECT_NAME}
+    EXPORT ${PROJECT_NAME}Config
+    RUNTIME
+        DESTINATION bin
+    LIBRARY
+        DESTINATION lib
+    ARCHIVE
+        DESTINATION lib)
+
+install(EXPORT ${PROJECT_NAME}Config
+    FILE ${PROJECT_NAME}Config.cmake
+    DESTINATION cmake)
+
+install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/include DESTINATION .)
+
+# plugins
 add_subdirectory(patterns)
 add_subdirectory(slsystems)

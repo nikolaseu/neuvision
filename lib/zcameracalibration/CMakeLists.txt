@@ -15,15 +15,14 @@ file(GLOB UI_FILES
 add_library(${PROJECT_NAME} SHARED
     ${HEADER_FILES}
     ${SRC_FILES}
-    ${UI_FILES}
-)
+    ${UI_FILES})
 
-target_compile_definitions(${PROJECT_NAME} PRIVATE Z3D_CAMERACALIBRATION_LIBRARY)
+target_compile_definitions(${PROJECT_NAME} PRIVATE Z3D_${PROJECT_NAME}_LIBRARY)
 
 target_include_directories(${PROJECT_NAME}
     PUBLIC
-        ${PROJECT_SOURCE_DIR}/include
-)
+        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+        $<INSTALL_INTERFACE:include>)
 
 target_link_libraries(${PROJECT_NAME}
     PRIVATE
@@ -32,7 +31,21 @@ target_link_libraries(${PROJECT_NAME}
         ${OpenCV_LIBS}
     PUBLIC
         ZCore
-        ZGui
-)
+        ZGui)
 
 set_target_properties(${PROJECT_NAME} PROPERTIES VERSION ${CMAKE_PROJECT_VERSION})
+
+install(TARGETS ${PROJECT_NAME}
+    EXPORT ${PROJECT_NAME}Config
+    RUNTIME
+        DESTINATION bin
+    LIBRARY
+        DESTINATION lib
+    ARCHIVE
+        DESTINATION lib)
+
+install(EXPORT ${PROJECT_NAME}Config
+    FILE ${PROJECT_NAME}Config.cmake
+    DESTINATION cmake)
+
+install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/include DESTINATION .)

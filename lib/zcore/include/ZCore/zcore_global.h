@@ -21,7 +21,7 @@
 
 #include <QtCore/QtGlobal>
 
-#if defined(Z3D_CORE_LIBRARY)
+#if defined(Z3D_ZCore_LIBRARY)
 #  define Z3D_CORE_SHARED_EXPORT Q_DECL_EXPORT
 #else
 #  define Z3D_CORE_SHARED_EXPORT Q_DECL_IMPORT

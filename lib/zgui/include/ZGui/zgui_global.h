@@ -21,7 +21,7 @@
 
 #include <QtCore/QtGlobal>
 
-#if defined(Z3D_GUI_LIBRARY)
+#if defined(Z3D_ZGui_LIBRARY)
 #  define Z3D_GUI_SHARED_EXPORT Q_DECL_EXPORT
 #else
 #  define Z3D_GUI_SHARED_EXPORT Q_DECL_IMPORT

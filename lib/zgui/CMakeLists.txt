@@ -14,20 +14,20 @@ endif()
 
 add_library(${PROJECT_NAME} SHARED
     ${HEADER_FILES}
-    ${SRC_FILES}
-)
+    ${SRC_FILES})
 
-target_compile_definitions(${PROJECT_NAME} PRIVATE Z3D_GUI_LIBRARY)
+target_compile_definitions(${PROJECT_NAME} PRIVATE Z3D_${PROJECT_NAME}_LIBRARY)
 
-target_include_directories(${PROJECT_NAME} PUBLIC
-    ${PROJECT_SOURCE_DIR}/include)
+target_include_directories(${PROJECT_NAME}
+    PUBLIC
+        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+        $<INSTALL_INTERFACE:include>)
 
 target_link_libraries(${PROJECT_NAME}
     PRIVATE
         Qt5::Widgets
     PUBLIC
-        ZCore
-)
+        ZCore)
 
 if(APPLE)
     # for macOS
@@ -35,3 +35,18 @@ if(APPLE)
 endif()
 
 set_target_properties(${PROJECT_NAME} PROPERTIES VERSION ${CMAKE_PROJECT_VERSION})
+
+install(TARGETS ${PROJECT_NAME}
+    EXPORT ${PROJECT_NAME}Config
+    RUNTIME
+        DESTINATION bin
+    LIBRARY
+        DESTINATION lib
+    ARCHIVE
+        DESTINATION lib)
+
+install(EXPORT ${PROJECT_NAME}Config
+    FILE ${PROJECT_NAME}Config.cmake
+    DESTINATION cmake)
+
+install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/include DESTINATION .)

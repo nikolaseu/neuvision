@@ -54,10 +54,13 @@ after_build:
   - cp "C:/Tools/vcpkg/installed/x64-windows/bin"/*.dll . # copy dependencies
   - del /s /q *.lib # remove unnecessary lib files
   - del /s /q *.exp # remove unnecessary exp files
+  - del /s /q *.manifest # remove unnecessary manifest files
 artifacts:
   # pushing entire folder as a zip archive
   - path: build/Release/bin
     name: NEUVision-Windows-x64-v$(appveyor_build_version)
+  - path: build/install
+    name: NEUVision-dev-Windows-x64-v$(appveyor_build_version)
 deploy:
   release: NEUVision-Windows-x64-v$(appveyor_build_version)
   description: 'Automatic snapshot release from CI'

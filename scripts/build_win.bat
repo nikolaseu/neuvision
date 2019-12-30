@@ -4,7 +4,7 @@ set OpenCV_DIR=C:/Tools/vcpkg/installed/x64-windows
 set BUILD_TYPE=Release
 set STARTING_DIR=%cd%
 set BUILD_DIR=%STARTING_DIR%\build\%BUILD_TYPE%
-set INSTALL_DIR=%BUILD_DIR%\install
+set INSTALL_DIR=%STARTING_DIR%\build\install\%BUILD_TYPE%
 
 md "%BUILD_DIR%"
 cd "%BUILD_DIR%"
