@@ -340,6 +340,11 @@ ApplicationWindow {
                         }
 
                         Button {
+                            text: "View all"
+                            onClicked: mainCamera.viewAll()
+                        }
+
+                        Button {
                             text: "Settings"
                             onClicked: drawer.open()
                         }

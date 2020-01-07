@@ -15,9 +15,13 @@ On Linux & macOS you can also use the libgphoto2 plugin.
 
 There are also [a lot of plugins](./lib/zcameraacquisition/plugins) that (used to) make it work with
 a lot of different cameras, mostly industrial GigE or USB cameras, but since I don't have access to
-them anymore, they are not tested/enabled anymore. Contact me if you have a camera from:
+them anymore, they are not tested/enabled anymore.
+
+The windows release should have working plugins for:
 - [Basler](https://www.baslerweb.com)
 - [AVT / Allied Vision](https://www.alliedvision.com)
+
+There are also some old plugins (might require fixes/changes) for:
 - [Point Grey](https://www.ptgrey.com)
 - [Pleora Technologies](https://www.pleora.com)
 
@@ -28,9 +32,9 @@ version 5.12).
 
 You'll also need some libraries:
 
-- [OpenCV](http://opencv.org) (tested with version 4.1.x)
+- [OpenCV](http://opencv.org) (mostly tested with version 4.1.x)
 
-For the point cloud viewer you might also want to include, optionally:
+For the point cloud viewer you might also want to include, optionally (just to open PCD files):
 
 - [PCL](http://www.pointclouds.org) (tested with version 1.9.x)
 
@@ -52,8 +56,26 @@ vcpkg install opencv:x64-windows
 vcpkg install pcl:x64-windows
 ```
 
-If you have `vcpkg` installed at `C:\Tools\vcpkg\` then there's nothing else to do. If you have it
-somewhere else you'll have to update all the include and lib paths.
+### Linux
+
+For Linux it should be easy, just use the official package manager to install the dependencies.
+
+## Building and running
+
+For building you can simply run:
+
+```
+mkdir build
+cd build
+cmake ..
+cmake --build .
+```
+
+Check the [CI scripts](./scripts) for more details.
+
+You can also open the CMake project with QtCreator (version 4.11 has good support for CMake projects) and just run the applications from there.
+
+### Notes for Windows users
 
 To run the applications you also need to add the binaries (*.dll) to the `PATH`.
 Open the _Projects_ tab in the left toolbar of QtCreator and go to the _Build_ (or _Run_) configurations.
@@ -66,21 +88,3 @@ You should use the _Batch Edit_ button to make it easier. In that case:
 
 > It's really important that you add only the ones corresponding to the build configuration you're
 > currently trying to build/run!
-
-### Others
-
-For Linux and other Windows setups you will have to update the paths so Qt can find each library to
-compile/link/run the application. Check the `*.pri` files in the [3rdparty](./3rdparty/) folder.
-
-## Applications
-
-### 3D scanner
-
-To run the 3D scanner app, just open the Qt Creator project file [Z3DScanner.pro](./Z3DScanner.pro)
-
-> You'll need a configuration file, there's none included right now so it will NOT just work.
-> Contact me if you need help.
-
-### Multi camera calibration
-
-To run the stereo calibration app, open the Qt Creator project file [Z3DMultiCameraCalibration.pro](./Z3DMultiCameraCalibration.pro)
