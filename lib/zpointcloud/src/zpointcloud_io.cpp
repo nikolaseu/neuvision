@@ -71,7 +71,7 @@ bool savePLY(const Z3D::ZPointCloud &cloud, const QString &fileName)
     binaryDataStream.writeRawData(cloud.vertexData().constData(), cloud.vertexData().size());
 
     if (cloud.hasTriangles()) {
-        const uint32_t *indices = reinterpret_cast<uint32_t *>(cloud.trianglesData().data());
+        const uint32_t *indices = reinterpret_cast<const uint32_t *>(cloud.trianglesData().constData());
         for (size_t faceIndex = 0; faceIndex < faceCount; ++faceIndex) {
             // we only have triangles
             constexpr uchar three[1]{3};

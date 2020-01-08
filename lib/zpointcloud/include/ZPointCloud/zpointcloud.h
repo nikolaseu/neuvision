@@ -23,7 +23,6 @@
 #include "ZPointCloud/zpointcloud_fwd.h"
 
 #include <QObject>
-#include <QVector>
 
 namespace Z3D
 {

@@ -182,7 +182,8 @@ ZPointCloudPtr process(const cv::Mat &colorImg, const cv::Mat& Q, cv::Mat leftIm
 
     ZSimplePointCloud::PointVector points(pointCloud.size().area());
     std::vector<int> pointIndices(points.size(), -1); // where each point was added
-    QVector<uint32_t> faceIndices;
+    std::vector<uint32_t> faceIndices;
+    faceIndices.reserve(3 * 2 * points.size()); // reserve approx maximum size
 
     size_t validPointIndex = 0;
     for (int y=0; y<imgHeight; ++y) {

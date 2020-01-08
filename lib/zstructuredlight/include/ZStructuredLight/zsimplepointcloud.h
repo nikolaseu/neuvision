@@ -28,7 +28,7 @@
 namespace Z3D
 {
 
-class Z3D_STRUCTUREDLIGHT_SHARED_EXPORT ZSimplePointCloud : public ZPointCloud
+class Z3D_STRUCTUREDLIGHT_SHARED_EXPORT ZSimplePointCloud Q_DECL_FINAL : public ZPointCloud
 {
     Q_OBJECT
 
@@ -36,16 +36,16 @@ public:
     using PointType = cv::Vec<float, 8>; // X Y Z NX NY NZ RGBX radii
     using PointVector = std::vector<PointType>;
 
-    explicit ZSimplePointCloud(const PointVector &points, const QVector<unsigned int> &indices = {}, QObject *parent = nullptr);
+    explicit ZSimplePointCloud(const PointVector &points, const std::vector<uint32_t> &indices = {}, QObject *parent = nullptr);
     ~ZSimplePointCloud() override;
 
     // ZPointCloud interface
-    QByteArray vertexData() const override Q_DECL_FINAL;
-    QByteArray trianglesData() const override Q_DECL_FINAL;
+    QByteArray vertexData() const override;
+    QByteArray trianglesData() const override;
 
 private:
     const PointVector m_points;
-    QVector<unsigned int> m_indices;
+    const std::vector<uint32_t> m_indices;
 };
 
 } // namespace Z3D

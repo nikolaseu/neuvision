@@ -26,7 +26,7 @@ namespace Z3D
 {
 
 ZSimplePointCloud::ZSimplePointCloud(const ZSimplePointCloud::PointVector &points,
-                                     const QVector<unsigned int> &indices,
+                                     const std::vector<uint32_t> &indices,
                                      QObject *parent)
     : ZPointCloud(
         1, // height
@@ -61,8 +61,8 @@ QByteArray ZSimplePointCloud::vertexData() const
 QByteArray ZSimplePointCloud::trianglesData() const
 {
     /// do not copy data, but we need to be careful!
-    return QByteArray::fromRawData(reinterpret_cast<const char*>(m_indices.constData()),
-                                   int(sizeof(quint32)) * m_indices.size());
+    return QByteArray::fromRawData(reinterpret_cast<const char*>(m_indices.data()),
+                                   int(m_indices.size() * sizeof(uint32_t)));
 }
 
 } // namespace Z3D
