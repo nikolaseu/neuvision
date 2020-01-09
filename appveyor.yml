@@ -66,7 +66,7 @@ deploy:
   description: 'Automatic snapshot release from CI'
   provider: GitHub
   auth_token:
-    secure: aHV+YRaW2BChwsCNWDuyIcIMS6WLL8Y/owvslumt0sXRrtbtPHHj3p7/7OdToJ5t
+    secure: HB3l4Z3rheEHCGg+L8nuqS3uxbm+hX807Um8YG+IFj2uWDolRuiJVR1Kx99T8bwC
   artifact: /.*\.zip/            # upload all zip packages to release assets
   draft: true
   prerelease: true
