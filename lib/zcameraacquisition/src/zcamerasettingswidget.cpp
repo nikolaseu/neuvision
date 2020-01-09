@@ -18,13 +18,14 @@
 // along with Z3D.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-#include "zcamerasettingswidget.h"
+#include "ZCameraAcquisition/zcamerasettingswidget.h"
 #include "ui_zcamerasettingswidget.h"
+
+#include "ZCameraAcquisition/zcamerainterface.h"
 
 #include "qtpropertymanager.h"
 #include "qteditorfactory.h"
 #include "qttreepropertybrowser.h"
-#include "zcamerainterface.h"
 
 #include <QDebug>
 #include <QTimer>
@@ -32,7 +33,7 @@
 namespace Z3D
 {
 
-ZCameraSettingsWidget::ZCameraSettingsWidget(ZCameraWeakPtr camera, QWidget *parent)
+ZCameraSettingsWidget::ZCameraSettingsWidget(const ZCameraWeakPtr &camera, QWidget *parent)
     : ZWidget(parent)
     , ui(new Ui::ZCameraSettingsWidget)
     , m_camera(camera)
@@ -331,7 +332,7 @@ void ZCameraSettingsWidget::updateProperties()
                      this, &ZCameraSettingsWidget::propertyChanged);
 }
 
-void ZCameraSettingsWidget::onCameraAttributeChanged(QString name, QVariant value)
+void ZCameraSettingsWidget::onCameraAttributeChanged(const QString &name, const QVariant& value)
 {
     Q_UNUSED(value)
     QtProperty *m_currentProperty;

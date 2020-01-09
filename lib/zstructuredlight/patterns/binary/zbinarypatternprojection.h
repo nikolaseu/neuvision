@@ -19,7 +19,7 @@
 
 #pragma once
 
-#include "zpatternprojection.h"
+#include "ZStructuredLight/zpatternprojection.h"
 
 class QQuickView;
 

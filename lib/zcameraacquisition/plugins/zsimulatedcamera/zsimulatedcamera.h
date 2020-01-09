@@ -19,7 +19,7 @@
 
 #pragma once
 
-#include "zcamerainterface_p.h"
+#include "ZCameraAcquisition/zcamerainterface_p.h"
 
 #include <QCache>
 #include <QDir>
@@ -41,11 +41,11 @@ public slots:
     virtual bool startAcquisition() override;
     virtual bool stopAcquisition() override;
 
-    virtual QList<ZCameraAttribute> getAllAttributes() override;
+    virtual QList<Z3D::ZCameraInterface::ZCameraAttribute> getAllAttributes() override;
     virtual QVariant getAttribute(const QString &name) const override;
 
     /// this is unique, only for simulated camera
-    void loadImageFromFilename(QString fileName);
+    void loadImageFromFilename(const QString &fileName);
 
 protected slots:
     virtual bool setAttribute(const QString &name, const QVariant &value, bool notify) override;

@@ -18,11 +18,12 @@
 // along with Z3D.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-#include "zcalibrationpatternfinderprovider.h"
+#include "ZCameraCalibrator/zcalibrationpatternfinderprovider.h"
 
-#include "zcalibrationpatternfinderplugininterface.h"
-#include "zcoreplugin.h"
-#include "zpluginloader.h"
+#include "ZCameraCalibrator/zcalibrationpatternfinderplugininterface.h"
+
+#include "ZCore/zcoreplugin.h"
+#include "ZCore/zpluginloader.h"
 
 #include <QDebug>
 

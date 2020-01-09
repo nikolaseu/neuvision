@@ -34,8 +34,8 @@ Entity {
         onClicked: mouseClicked(mouse)
         onDoubleClicked: mouseDoubleClicked(mouse)
         onWheel: {
-            var d = (root.camera.viewCenter.minus(root.camera.position)).length() * 0.2;
-            var tz = (wheel.angleDelta.y / 120) * d;
+            const d = (root.camera.viewCenter.minus(root.camera.position)).length() * 0.2;
+            const tz = (wheel.angleDelta.y / 120) * d;
             root.camera.translate(Qt.vector3d(0, 0, tz), Camera.DontTranslateViewCenter)
         }
     }
@@ -123,23 +123,23 @@ Entity {
     components: [
         FrameAction {
             onTriggered: {
-                if(actionMMB.active || (actionLMB.active && actionShift.active)) { // translate
-                    var d = (root.camera.viewCenter.minus(root.camera.position)).length() * 0.03;
-                    var tx = axisMX.value * root.translateSpeed * d;
-                    var ty = axisMY.value * root.translateSpeed * d;
+                if (actionMMB.active || (actionLMB.active && actionShift.active)) { // translate
+                    const d = (root.camera.viewCenter.minus(root.camera.position)).length() * 0.03;
+                    const tx = axisMX.value * root.translateSpeed * d;
+                    const ty = axisMY.value * root.translateSpeed * d;
                     root.camera.translate(Qt.vector3d(-tx, -ty, 0).times(dt))
                     return;
                 }
-                if(actionLMB.active) { // rotate
-                    var rx = -axisMX.value;
-                    var ry = -axisMY.value;
-                    root.camera.panAboutViewCenter(root.panSpeed * rx * dt, Qt.vector3d(0,1,0))
+                if (actionRMB.active) { // rotate
+                    const rx = -axisMX.value;
+                    const ry = -axisMY.value;
+                    root.camera.panAboutViewCenter(root.panSpeed * rx * dt, camera.upVector)
                     root.camera.tiltAboutViewCenter(root.tiltSpeed * ry * dt)
                     return;
                 }
-                if(actionAlt.active && actionRMB.active) { // zoom with alt + RMD
-                    var d = (root.camera.viewCenter.minus(root.camera.position)).length() * 0.1;
-                    var tz = axisMX.value * root.translateSpeed * d;
+                if (actionAlt.active && actionRMB.active) { // zoom with alt + RMD
+                    const d = (root.camera.viewCenter.minus(root.camera.position)).length() * 0.1;
+                    const tz = axisMX.value * root.translateSpeed * d;
                     root.camera.translate(Qt.vector3d(0, 0, tz).times(dt), Camera.DontTranslateViewCenter)
                     return;
                 }

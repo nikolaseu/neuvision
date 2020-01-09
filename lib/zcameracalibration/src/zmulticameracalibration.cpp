@@ -18,14 +18,14 @@
 // along with Z3D.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-#include "zmulticameracalibration.h"
+#include "ZCameraCalibration/zmulticameracalibration.h"
 
 namespace Z3D
 {
 
 static const int ZMultiCameraCalibrationPtrId = qRegisterMetaType<Z3D::ZMultiCameraCalibrationPtr>("Z3D::ZMultiCameraCalibrationPtr");
 
-ZMultiCameraCalibration::ZMultiCameraCalibration(std::vector<ZCameraCalibrationPtr> calibrations)
+ZMultiCameraCalibration::ZMultiCameraCalibration(const std::vector<ZCameraCalibrationPtr> &calibrations)
     : m_calibrations(calibrations)
 {
 

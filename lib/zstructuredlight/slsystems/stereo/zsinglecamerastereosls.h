@@ -31,9 +31,9 @@ class ZSingleCameraStereoSLS : public ZStereoSLS
     Q_OBJECT
 
 public:
-    explicit ZSingleCameraStereoSLS(ZCameraPtr camera,
-                                    ZMultiCameraCalibrationPtr stereoCalibration,
-                                    ZPatternProjectionPtr patternProjection,
+    explicit ZSingleCameraStereoSLS(const ZCameraPtr &camera,
+                                    const ZMultiCameraCalibrationPtr &stereoCalibration,
+                                    const ZPatternProjectionPtr &patternProjection,
                                     QObject *parent = nullptr);
 
     ~ZSingleCameraStereoSLS() override;
@@ -41,18 +41,17 @@ public:
     // ZStructuredLightSystem interface
     virtual const std::vector<ZSettingsItemPtr> &settings() override;
 
+    // ZStructuredLightSystem interface
+protected slots:
+    virtual void onPatternProjected(const Z3D::ZProjectedPatternPtr &pattern) override;
+    virtual void onPatternsDecoded(const std::vector<Z3D::ZDecodedPatternPtr> &patterns) override;
+
 private:
     void processPatterns();
 
-    ZProjectedPatternPtr projectedPattern;
-    std::vector<ZDecodedPatternPtr> decodedPatterns;
+    ZProjectedPatternPtr m_projectedPattern;
+    std::vector<ZDecodedPatternPtr> m_decodedPatterns;
 
-    // ZStructuredLightSystem interface
-protected slots:
-    virtual void onPatternProjected(ZProjectedPatternPtr pattern) override;
-    virtual void onPatternsDecoded(std::vector<ZDecodedPatternPtr> patterns) override;
-
-private:
     std::vector<ZSettingsItemPtr> m_settings;
 };
 

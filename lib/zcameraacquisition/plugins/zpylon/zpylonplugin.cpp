@@ -21,7 +21,8 @@
 #include "zpylonplugin.h"
 
 #include "zpyloncamera.h"
-#include "zcamerainfo.h"
+
+#include "ZCameraAcquisition/zcamerainfo.h"
 
 #include <pylon/PylonIncludes.h>
 

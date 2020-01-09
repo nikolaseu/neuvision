@@ -19,7 +19,7 @@
 
 #pragma once
 
-#include "zcamerainterface_p.h"
+#include "ZCameraAcquisition/zcamerainterface_p.h"
 
 #include <QCamera>
 #include <QCameraImageCapture>
@@ -39,17 +39,17 @@ public slots:
     virtual bool startAcquisition() override;
     virtual bool stopAcquisition() override;
 
-    virtual QList<ZCameraAttribute> getAllAttributes() override;
+    virtual QList<Z3D::ZCameraInterface::ZCameraAttribute> getAllAttributes() override;
     virtual bool setAttribute(const QString &name, const QVariant &value) override;
     virtual QVariant getAttribute(const QString &name) const override;
 
 protected slots:
     virtual bool setAttribute(const QString &name, const QVariant &value, bool notify) override;
 
-    void onImageCaptured(int id, const QImage & preview);
+    void onImageCaptured(int id, const QImage &preview);
     void onImageSaved(int id, const QString &fileName);
-    void onImageAvailable(int id, const QVideoFrame & buffer);
-    void onCaptureError(int id, QCameraImageCapture::Error error, QString message);
+    void onImageAvailable(int id, const QVideoFrame &buffer);
+    void onCaptureError(int id, QCameraImageCapture::Error error, const QString &message);
     void onReadyForCaptureChanged(bool ready);
 
 private:

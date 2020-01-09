@@ -1,4 +1,4 @@
-image: Visual Studio 2017
+image: Visual Studio 2019
 platform: x64
 configuration: Release
 init:
@@ -46,20 +46,21 @@ install: # scripts that run after cloning repository
   - dir "C:/Tools/vcpkg/installed/x64-windows/lib" & exit 0
   - dir "C:/Tools/vcpkg/installed/x64-windows/bin" & exit 0
 build_script:
-  - cd build
-  - call "C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Auxiliary\Build\vcvarsall.bat" x86_amd64
-  - call "C:\Qt\5.12\msvc2017_64\bin\qmake.exe" ..\neuvision.pro -spec win32-msvc
-  - nmake
+  - call "C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Auxiliary\Build\vcvarsall.bat" x86_amd64
+  - call .\scripts\build_win.bat
 after_build:
-  - cd %APPVEYOR_BUILD_FOLDER%/bin/release5
-  - call "C:\Qt\5.12\msvc2017_64\bin\windeployqt.exe" -concurrent -multimedia -multimediawidgets --qmldir ./../../Z3DScanner/qml/ --qmldir ./../../Z3DCloudViewer/qml/ ./Z3DScanner.exe
+  - cd %APPVEYOR_BUILD_FOLDER%/build/Release/bin
+  - call "%Qt5_DIR%\bin\windeployqt.exe" -concurrent -multimedia -multimediawidgets --qmldir ./../../../apps/Z3DScanner/qml/ --qmldir ./../../../apps/Z3DCloudViewer/qml/ ./Z3DScanner.exe ./Z3DCloudViewer.exe
   - cp "C:/Tools/vcpkg/installed/x64-windows/bin"/*.dll . # copy dependencies
   - del /s /q *.lib # remove unnecessary lib files
   - del /s /q *.exp # remove unnecessary exp files
+  - del /s /q *.manifest # remove unnecessary manifest files
 artifacts:
   # pushing entire folder as a zip archive
-  - path: bin/release5
+  - path: build/Release/bin
     name: NEUVision-Windows-x64-v$(appveyor_build_version)
+  - path: build/install
+    name: NEUVision-dev-Windows-x64-v$(appveyor_build_version)
 deploy:
   release: NEUVision-Windows-x64-v$(appveyor_build_version)
   description: 'Automatic snapshot release from CI'

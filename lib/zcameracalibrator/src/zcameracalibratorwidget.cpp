@@ -18,19 +18,20 @@
 // along with Z3D.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-#include "zcameracalibratorwidget.h"
+#include "ZCameraCalibrator/zcameracalibratorwidget.h"
 #include "ui_zcameracalibratorwidget.h"
 
-#include "zcalibrationimagemodel.h"
-#include "zcalibrationpatternfinder.h"
-#include "zcalibrationpatternfinderprovider.h"
-#include "zcalibratedcamera.h"
-#include "zcameracalibration.h"
-#include "zcameracalibrationprovider.h"
-#include "zcameracalibrator.h"
-#include "zcameracalibratorworker.h"
-#include "zcameraimage.h"
-#include "zcamerainterface.h"
+#include "ZCameraCalibrator/zcalibrationimagemodel.h"
+#include "ZCameraCalibrator/zcalibrationpatternfinder.h"
+#include "ZCameraCalibrator/zcalibrationpatternfinderprovider.h"
+#include "ZCameraCalibrator/zcameracalibratorworker.h"
+
+#include "ZCalibratedCamera/zcalibratedcamera.h"
+#include "ZCameraAcquisition/zcameraimage.h"
+#include "ZCameraAcquisition/zcamerainterface.h"
+#include "ZCameraCalibration/zcameracalibration.h"
+#include "ZCameraCalibration/zcameracalibrationprovider.h"
+#include "ZCameraCalibration/zcameracalibrator.h"
 
 #include "3rdParty/objectcontroller.h"
 
@@ -142,7 +143,7 @@ ZCameraCalibratorWidget::ZCameraCalibratorWidget(ZCalibratedCameraPtr camera, QW
     if (m_camera) {
         /// set up camera image preview
         QObject::connect(m_camera->camera().get(), &ZCameraInterface::newImageReceived,
-                         ui->cameraImageViewer, static_cast<void (ZImageViewer::*)(ZCameraImagePtr)>(&ZImageViewer::updateImage));
+                         ui->cameraImageViewer, static_cast<void (ZImageViewer::*)(const ZCameraImagePtr &)>(&ZImageViewer::updateImage));
 
         /// show current calibration, but a copy of it
         /// we don't want to change anything from the original, unless the user
@@ -298,8 +299,8 @@ void ZCameraCalibratorWidget::onCameraModelTypeChanged(int index)
     /// add config widget
     QWidget *currentWidget = ZCameraCalibrationProvider::getConfigWidget(currentCameraCalibrator);
     if (currentWidget) {
-        currentWidget->setVisible(true);
         ui->cameraModelConfigLayout->addWidget(currentWidget);
+        currentWidget->setVisible(true);
     }
 }
 
@@ -319,8 +320,8 @@ void ZCameraCalibratorWidget::onCalibrationPatternTypeChanged(int index)
 
     /// add config widget
     QWidget *currentWidget = ZCalibrationPatternFinderProvider::getConfigWidget(m_currentPatternFinder.get());
-    currentWidget->setVisible(true);
     ui->calibrationPatternConfigLayout->addWidget(currentWidget);
+    currentWidget->setVisible(true);
 }
 
 void ZCameraCalibratorWidget::onProgressChanged(float progress, QString /*message*/)

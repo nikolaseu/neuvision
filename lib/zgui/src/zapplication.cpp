@@ -18,10 +18,10 @@
 // along with Z3D.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-#include "zapplication.h"
+#include "ZGui/zapplication.h"
 
-#include "zloghandler_p.h"
-#include "zpluginloader.h"
+#include "ZCore/zloghandler_p.h"
+#include "ZCore/zpluginloader.h"
 
 #include <QDebug>
 #include <QFileInfo>
@@ -46,7 +46,7 @@ ZApplication::ZApplication(int &argc, char **argv)
 
     setOrganizationDomain("z3d.neuvision");
     setOrganizationName("Z3D");
-    setApplicationName(QFileInfo(applicationFilePath()).baseName());
+    setApplicationName(QFileInfo(argv[0]).baseName());
     setApplicationVersion(Z3D_VERSION_BUILD_STR);
 
     qInfo() << "starting" << applicationName()
@@ -66,12 +66,11 @@ QSplashScreen * ZApplication::showSplashScreen()
         m_splash->show();
 
         connect(ZPluginLoader::instance(), &ZPluginLoader::progressChanged,
-                [&](float progress, QString message) {
+                [&](float progress, const QString &message) {
                     qDebug() << "progress:" << progress << "message:" << message;
                     m_splash->showMessage(message);
                     processEvents();
-                }
-        );
+                });
     }
 
     return m_splash;

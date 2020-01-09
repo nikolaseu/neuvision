@@ -19,7 +19,7 @@
 
 #pragma once
 
-#include "zstructuredlightsystem.h"
+#include "ZStructuredLight/zstructuredlightsystem.h"
 
 #include <Z3DCameraAcquisition>
 #include <Z3DCameraCalibration>
@@ -38,9 +38,9 @@ class ZStereoSLS : public ZStructuredLightSystem
     Q_PROPERTY(double maxValidDistance READ maxValidDistance WRITE setMaxValidDistance NOTIFY maxValidDistanceChanged)
 
 public:
-    explicit ZStereoSLS(ZCameraList cameras,
-                        ZMultiCameraCalibrationPtr stereoCalibration,
-                        ZPatternProjectionPtr patternProjection,
+    explicit ZStereoSLS(const ZCameraList &cameras,
+                        const ZMultiCameraCalibrationPtr &stereoCalibration,
+                        const ZPatternProjectionPtr &patternProjection,
                         QObject *parent = nullptr);
 
     ~ZStereoSLS() override;

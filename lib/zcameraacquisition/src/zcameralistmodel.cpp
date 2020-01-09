@@ -18,9 +18,9 @@
 // along with Z3D.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-#include "zcameralistmodel.h"
+#include "ZCameraAcquisition/zcameralistmodel.h"
 
-#include "zcamerainterface.h"
+#include "ZCameraAcquisition/zcamerainterface.h"
 
 namespace Z3D
 {
@@ -44,9 +44,9 @@ int ZCameraListModel::rowCount(const QModelIndex &parent) const
 {
     if (parent.isValid()) {
         return 0;
-    } else {
-        return m_cameraList.size();
     }
+
+    return m_cameraList.size();
 }
 
 
@@ -64,8 +64,7 @@ QVariant ZCameraListModel::data(const QModelIndex &index, int role) const
     return QVariant::fromValue((QObject*) camera.get());
 }
 
-
-void ZCameraListModel::add(ZCameraPtr camera)
+void ZCameraListModel::add(const ZCameraPtr &camera)
 {
     /// insert at the end
     int row = m_cameraList.size();
@@ -83,7 +82,7 @@ void ZCameraListModel::add(ZCameraPtr camera)
 
 void ZCameraListModel::onCameraDeleted(QObject *object)
 {
-    ZCameraInterface *camera = static_cast<ZCameraInterface*>(object);
+    auto *camera = dynamic_cast<ZCameraInterface*>(object);
 
     for (auto it = m_cameraList.cbegin(); it != m_cameraList.cend(); ++it) {
         if (it->get() == camera) {

@@ -20,8 +20,9 @@
 
 #include "zsimulatedcameraplugin.h"
 
-#include "zcamerainfo.h"
 #include "zsimulatedcamera.h"
+
+#include "ZCameraAcquisition/zcamerainfo.h"
 
 namespace Z3D
 {

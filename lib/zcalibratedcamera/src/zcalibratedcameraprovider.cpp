@@ -18,15 +18,17 @@
 // along with Z3D.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-#include "zcalibratedcameraprovider.h"
+#include "ZCalibratedCamera/zcalibratedcameraprovider.h"
 
-#include "zcalibratedcamera.h"
-#include "zcameracalibrationprovider.h"
-#include "zcameraprovider.h"
+#include "ZCalibratedCamera/zcalibratedcamera.h"
+
+#include "ZCameraAcquisition/zcameraprovider.h"
+#include "ZCameraCalibration/zcameracalibrationprovider.h"
 
 #include <QDebug>
 #include <QDir>
 #include <QSettings>
+#include <memory>
 
 namespace Z3D
 {
@@ -36,7 +38,7 @@ ZCalibratedCameraProvider::ZCalibratedCameraProvider()
 
 }
 
-QList<ZCalibratedCameraPtr> ZCalibratedCameraProvider::loadCameras(QString folder)
+QList<ZCalibratedCameraPtr> ZCalibratedCameraProvider::loadCameras(const QString &folder)
 {
     auto configDir = QDir(folder);
 
@@ -114,7 +116,7 @@ ZCalibratedCameraPtr ZCalibratedCameraProvider::getCalibratedCamera(QSettings *s
     }
     settings->endGroup();
 
-    return ZCalibratedCameraPtr(new ZCalibratedCamera(camera, cameraCalibration));
+    return std::make_shared<ZCalibratedCamera>(camera, cameraCalibration);
 }
 
 } // namespace Z3D

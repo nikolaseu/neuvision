@@ -18,10 +18,10 @@
 // along with Z3D.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-#include "zwidget.h"
+#include "ZGui/zwidget.h"
 
 #if defined(Q_OS_MACOS)
-#include "zosxutils.h"
+#include "ZGui/zosxutils.h"
 #endif
 
 namespace Z3D {

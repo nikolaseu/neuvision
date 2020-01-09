@@ -19,9 +19,9 @@
 
 #pragma once
 
-#include "zstructuredlight_fwd.h"
+#include "ZStructuredLight/zstructuredlight_fwd.h"
 
-#include "zpointcloud_fwd.h"
+#include "ZPointCloud/zpointcloud_fwd.h"
 #include <Z3DCameraCalibration>
 
 #include <QObject>
@@ -61,6 +61,8 @@ protected:
     std::vector<cv::Mat> m_R;
     std::vector<cv::Mat> m_P;
     cv::Mat m_Q;
+
+    cv::Mat m_rectifyMaps[2][2];
 
 private:
     bool m_ready;

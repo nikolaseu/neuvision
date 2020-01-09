@@ -18,9 +18,9 @@
 // along with Z3D.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-#include "zpluginloader.h"
+#include "ZCore/zpluginloader.h"
 
-#include "zcoreplugin.h"
+#include "ZCore/zcoreplugin.h"
 
 #include <QCoreApplication>
 #include <QDebug>
@@ -138,7 +138,7 @@ void ZPluginLoader::unloadPlugins()
 
 }
 
-const QList<ZCorePlugin *> ZPluginLoader::plugins(const QString &pluginType)
+QList<ZCorePlugin *> ZPluginLoader::plugins(const QString &pluginType)
 {
     auto &plugins = instance()->m_plugins;
     if (plugins.find(pluginType) != plugins.end()) {

@@ -19,7 +19,7 @@
 
 #pragma once
 
-#include "zcalibrationpatternfinder.h"
+#include "ZCameraCalibrator/zcalibrationpatternfinder.h"
 
 namespace Z3D
 {

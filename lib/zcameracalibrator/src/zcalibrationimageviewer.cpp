@@ -18,7 +18,7 @@
 // along with Z3D.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-#include "zcalibrationimageviewer.h"
+#include "ZCameraCalibrator/zcalibrationimageviewer.h"
 
 #include <QDebug>
 #include <QGraphicsEllipseItem>
@@ -47,28 +47,26 @@ void ZCalibrationImageViewer::setDisplayMode(ZCalibrationImageViewer::DisplayMod
 
     m_displayMode = displayMode;
 
-    for (std::vector<QGraphicsItem*>::iterator it = m_calibrationPoints.begin(); it != m_calibrationPoints.end(); ++it) {
-        QGraphicsItem *item = *it;
+    for (auto *item : m_calibrationPoints) {
         item->setVisible(m_displayMode != NoMarkers);
     }
 
-    for (std::vector<QGraphicsItem*>::iterator it = m_calibrationCoords.begin(); it != m_calibrationCoords.end(); ++it) {
-        QGraphicsItem *item = *it;
+    for (auto *item : m_calibrationCoords) {
         item->setVisible(m_displayMode == ShowMarkersAndCoords);
     }
 }
 
 void ZCalibrationImageViewer::updateCalibrationImage(ZCalibrationImagePtr image)
 {
-    for (std::vector<QGraphicsItem*>::iterator it = m_calibrationPoints.begin(); it != m_calibrationPoints.end(); ++it) {
-        m_scene->removeItem(*it);
-        delete *it;
+    for (auto &calibrationPoint : m_calibrationPoints) {
+        m_scene->removeItem(calibrationPoint);
+        delete calibrationPoint;
     }
     m_calibrationPoints.clear();
 
-    for (std::vector<QGraphicsItem*>::iterator it = m_calibrationCoords.begin(); it != m_calibrationCoords.end(); ++it) {
-        m_scene->removeItem(*it);
-        delete *it;
+    for (auto &calibrationCoord : m_calibrationCoords) {
+        m_scene->removeItem(calibrationCoord);
+        delete calibrationCoord;
     }
     m_calibrationCoords.clear();
 

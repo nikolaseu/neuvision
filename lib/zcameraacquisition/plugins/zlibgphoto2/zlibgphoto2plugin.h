@@ -19,7 +19,7 @@
 
 #pragma once
 
-#include "zcameraplugininterface.h"
+#include "ZCameraAcquisition/zcameraplugininterface.h"
 
 #include <gphoto2/gphoto2-context.h>
 

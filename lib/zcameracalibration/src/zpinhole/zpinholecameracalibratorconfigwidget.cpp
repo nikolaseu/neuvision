@@ -18,10 +18,10 @@
 // along with Z3D.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-#include "zpinholecameracalibratorconfigwidget.h"
+#include "ZCameraCalibration/zpinholecameracalibratorconfigwidget.h"
 #include "ui_zpinholecameracalibratorconfigwidget.h"
 
-#include "zpinholecameracalibrator.h"
+#include "ZCameraCalibration/zpinholecameracalibrator.h"
 
 namespace Z3D
 {

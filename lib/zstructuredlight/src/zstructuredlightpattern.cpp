@@ -18,36 +18,20 @@
 // along with Z3D.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-#include "zstructuredlightpattern.h"
+#include "ZStructuredLight/zstructuredlightpattern.h"
 
 namespace Z3D
 {
 
-ZStructuredLightPattern::ZStructuredLightPattern(cv::Mat decodedImage,
-                                                 std::map<int, std::vector<cv::Vec2f> > fringePointsList)
+ZStructuredLightPattern::ZStructuredLightPattern(const cv::Mat &decodedImage)
     : m_decodedImage(decodedImage)
-    , m_estimatedCloudPoints(0)
 {
-    m_fringePointsList = std::move(fringePointsList);
 
-    for (auto it = fringePointsList.cbegin(), itEnd = fringePointsList.cend(); it != itEnd; ++it) {
-        m_estimatedCloudPoints += it->second.size();
-    }
 }
 
 cv::Mat ZStructuredLightPattern::decodedImage() const
 {
     return m_decodedImage;
-}
-
-std::map<int, std::vector<cv::Vec2f> > ZStructuredLightPattern::fringePointsList() const
-{
-    return m_fringePointsList;
-}
-
-int ZStructuredLightPattern::estimatedCloudPoints() const
-{
-    return m_estimatedCloudPoints;
 }
 
 } // namespace Z3D

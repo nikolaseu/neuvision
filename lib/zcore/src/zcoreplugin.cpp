@@ -18,14 +18,14 @@
 // along with Z3D.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-#include "zcoreplugin.h"
+#include "ZCore/zcoreplugin.h"
 
 #include <QPluginLoader>
 
 namespace Z3D
 {
 
-ZCorePlugin::ZCorePlugin(QString fileName)
+ZCorePlugin::ZCorePlugin(const QString &fileName)
     : m_loader(new QPluginLoader(fileName))
 {
 

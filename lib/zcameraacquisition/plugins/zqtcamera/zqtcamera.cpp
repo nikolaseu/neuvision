@@ -20,7 +20,7 @@
 
 #include "zqtcamera.h"
 
-#include "zcameraimage.h"
+#include "ZCameraAcquisition/zcameraimage.h"
 
 #include <opencv2/core/mat.hpp>
 #include <opencv2/imgproc.hpp>
@@ -61,7 +61,7 @@ ZQtCamera::ZQtCamera(QCamera *qcamera)
     connect(m_qcameraImageCapture, static_cast<void(QCameraImageCapture::*)(int, QCameraImageCapture::Error, const QString &)>(&QCameraImageCapture::error),
             this, &ZQtCamera::onCaptureError);
 
-    QCameraViewfinder *viewfinder = new QCameraViewfinder();
+    auto *viewfinder = new QCameraViewfinder();
     //viewfinder->show();
     m_qcamera->setViewfinder(viewfinder);
     m_qcamera->start();
@@ -157,10 +157,9 @@ bool ZQtCamera::setAttribute(const QString &name, const QVariant &value)
     qDebug() << "trying to set" << name << "to" << value;
     QImageEncoderSettings settings = m_qcameraImageCapture->encodingSettings();
     if (name == "Resolution") {
-        int width, height;
         QStringList sizes = value.toString().split("x");
-        width = sizes.front().toInt();
-        height = sizes.back().toInt();
+        const int width = sizes.front().toInt();
+        const int height = sizes.back().toInt();
         settings.setResolution(width, height);
     } else if (name == "Codec") {
         settings.setCodec(value.toString());
@@ -201,8 +200,8 @@ void ZQtCamera::onImageCaptured(int id, const QImage &preview)
 {
     //qDebug() << "imageCaptured:" << id << "format:" << preview.format();
 
-    const auto &imgWidth = preview.width()
-             , &imgHeight = preview.height();
+    const auto &imgWidth = preview.width();
+    const auto &imgHeight = preview.height();
 
     cv::Mat cvImage8UC1;
     cv::Mat cvImageOrig;
@@ -251,7 +250,7 @@ void ZQtCamera::onImageAvailable(int id, const QVideoFrame &buffer)
     qDebug() << "imageAvailable:" << id;
 }
 
-void ZQtCamera::onCaptureError(int id, QCameraImageCapture::Error error, QString message)
+void ZQtCamera::onCaptureError(int id, QCameraImageCapture::Error error, const QString &message)
 {
     qDebug() << "captureError:" << id << error << message;
     if (QCameraImageCapture::NotReadyError == error && m_isCapturing) {

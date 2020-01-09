@@ -20,7 +20,7 @@
 
 #include "zsimulatedcamera.h"
 
-#include "zcameraimage.h"
+#include "ZCameraAcquisition/zcameraimage.h"
 
 #include <QDebug>
 #include <QTimer>
@@ -54,7 +54,7 @@ ZSimulatedCamera::ZSimulatedCamera(QVariantMap options, QObject *parent)
     }
 
     const auto entries = m_dir.entryList(QStringList() << "*.png", QDir::Files);
-    if (entries.size()) {
+    if (!entries.empty()) {
         loadImageFromFilename(entries.first());
     }
 }
@@ -113,7 +113,7 @@ QVariant ZSimulatedCamera::getAttribute(const QString &name) const
     return QString("INVALID");
 }
 
-void ZSimulatedCamera::loadImageFromFilename(QString fileName)
+void ZSimulatedCamera::loadImageFromFilename(const QString &fileName)
 {
     m_currentFile = fileName;
 

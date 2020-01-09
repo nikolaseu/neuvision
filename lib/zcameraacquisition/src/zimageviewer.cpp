@@ -18,19 +18,18 @@
 // along with Z3D.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-#include "zcameraimage.h"
-#include "zimageviewer.h"
+#include "ZCameraAcquisition/zimageviewer.h"
+
+#include "ZCameraAcquisition/zcameraimage.h"
 
 #include <opencv2/imgproc.hpp>
 
+#include <QDebug>
+#include <QFileDialog>
+#include <QGraphicsPixmapItem>
 #include <QMenu>
 #include <QMouseEvent>
-#include <QFileDialog>
-#include <QDebug>
 #include <QScrollBar>
-#include <QSignalMapper>
-#include <QGraphicsPixmapItem>
-
 #include <qmath.h>
 
 namespace Z3D
@@ -84,21 +83,15 @@ ZImageViewer::ZImageViewer(QWidget *parent)
     m_contextMenu->addSeparator();
     m_colormapsMenu = m_contextMenu->addMenu(tr("Colormap"));
     m_colormapsMenu->setEnabled(false);
-    m_colormapSignalMapper = new QSignalMapper(this);
-    for (int i = 0; i<colormaps.size(); ++i) {
-        auto colormapAction = new QAction(colormaps[i].second, this);
+    for (auto &colormap : colormaps) {
+        auto colormapAction = new QAction(colormap.second, this);
         colormapAction->setCheckable(true);
-        if (colormaps[i].first == m_colormap) {
-            colormapAction->setChecked(true);
-        }
-        QObject::connect(colormapAction, static_cast<void(QAction::*)(bool)>(&QAction::triggered),
-                         m_colormapSignalMapper, static_cast<void(QSignalMapper::*)()>(&QSignalMapper::map));
-        m_colormapSignalMapper->setMapping(colormapAction, colormaps[i].first);
+        colormapAction->setChecked(colormap.first == m_colormap);
+        QObject::connect(colormapAction, &QAction::toggled,
+                         this, std::bind(&ZImageViewer::changeColormap, this, std::placeholders::_1, colormap.first));
         m_colormapsMenu->addAction(colormapAction);
+        m_colormapActions.insert(colormap.first, colormapAction);
     }
-
-    QObject::connect(m_colormapSignalMapper, static_cast<void(QSignalMapper::*)(int)>(&QSignalMapper::mapped),
-                     this, &ZImageViewer::changeColormap);
 
     /// save image action
     auto saveImageAction = new QAction(tr("Save image as..."), m_contextMenu);
@@ -143,25 +136,37 @@ void ZImageViewer::setDeleteOnClose(bool deleteOnClose)
     m_deleteOnClose = deleteOnClose;
 }
 
-void ZImageViewer::changeColormap(int colormapId)
+void ZImageViewer::changeColormap(bool enabled, int colormapId)
 {
-    if (m_colormap == colormapId)
+    if (!enabled) {
+        // reset
+        changeColormap(true, -1);
         return;
+    }
+
+    if (m_colormap == colormapId) {
+        return;
+    }
 
     /// uncheck previous
-    auto colormapAction = static_cast<QAction*>(m_colormapSignalMapper->mapping(m_colormap));
-    colormapAction->setChecked(false);
+    QAction *colormapActionPrevious = m_colormapActions[m_colormap];
+    const bool signalsWereBlockedPrevious = colormapActionPrevious->blockSignals(true);
+    colormapActionPrevious->setChecked(false);
+    colormapActionPrevious->blockSignals(signalsWereBlockedPrevious);
 
     /// update current
     m_colormap = colormapId;
 
     /// check current
-    colormapAction = static_cast<QAction*>(m_colormapSignalMapper->mapping(m_colormap));
-    colormapAction->setChecked(true);
+    QAction *colormapActionNew = m_colormapActions[m_colormap];
+    const bool signalsWereBlockedNew = colormapActionNew->blockSignals(true);
+    colormapActionNew->setChecked(true);
+    colormapActionNew->blockSignals(signalsWereBlockedNew);
 
     /// if we were displaying an image, update to view current colormap
-    if (m_img.cols)
+    if (m_img.cols) {
         updateImage(m_img);
+    }
 }
 
 void ZImageViewer::saveImage()
@@ -199,12 +204,26 @@ void ZImageViewer::wheelEvent(QWheelEvent* event)
         /// disable fit to window
         setFitToWindow(false);
 
-        if (event->delta() > 0)
-            m_zoomFactor++;
-        else
-            m_zoomFactor--;
+        const QPoint numPixels = event->pixelDelta();
+        const QPoint numDegrees = event->angleDelta() / 8;
 
-        qreal scale = qPow(qreal(2), qreal(m_zoomFactor) / qreal(10)); /// este 10 tiene que ser el mismo que uso en setFitToWindow!
+        int delta = 0;
+        if (!numPixels.isNull()) {
+            delta = numPixels.y();
+        }
+        else if (!numDegrees.isNull()) {
+            QPoint numSteps = numDegrees / 15;
+            delta = numSteps.y();
+        }
+
+        if (delta > 0) {
+            m_zoomFactor++;
+        }
+        else {
+            m_zoomFactor--;
+        }
+
+        const qreal scale = qPow(qreal(2), qreal(m_zoomFactor) / qreal(10)); /// este 10 tiene que ser el mismo que uso en setFitToWindow!
 
         QMatrix matrix;
         matrix.scale(scale, scale);
@@ -235,7 +254,7 @@ void ZImageViewer::closeEvent(QCloseEvent *event)
     QGraphicsView::closeEvent(event);
 }
 
-void ZImageViewer::updateImage(ZCameraImagePtr image)
+void ZImageViewer::updateImage(const ZCameraImagePtr &image)
 {
     if (image)
         updateImage(image->cvMat());
@@ -303,6 +322,22 @@ void ZImageViewer::updateImage(const cv::Mat &image)
     //qImage = qImage.rgbSwapped();
 
     updateImage(qImage);
+}
+
+void ZImageViewer::updateImage(const cv::Mat &image, float minValue, float maxValue)
+{
+    if (m_img.channels() != 1) {
+        qCritical() << "cannot show image with min/max range because it has more than one channel!";
+        return;
+    }
+
+    /// convert to "visible" image to show in window
+    const float range = maxValue - minValue;
+    cv::Mat img;
+    //! FIXME this loses a lot of detail
+    image.convertTo(img, CV_8UC1, 256/range, -minValue * 256/range);
+
+    updateImage(img);
 }
 
 void ZImageViewer::updateImage(const QImage &image)

@@ -20,8 +20,9 @@
 
 #include "zopencvvideocaptureplugin.h"
 
-#include "zcamerainfo.h"
 #include "zopencvvideocapturecamera.h"
+
+#include "ZCameraAcquisition/zcamerainfo.h"
 
 #include <QDebug>
 
@@ -49,7 +50,7 @@ QList<ZCameraInfo *> ZOpenCVVideoCapturePlugin::getConnectedCameras()
 
     int cameraDeviceID = 0;
     while (true) {
-        cv::VideoCapture *capture = new cv::VideoCapture(cameraDeviceID);
+        auto *capture = new cv::VideoCapture(cameraDeviceID);
         if (capture->isOpened()) {
             delete capture;
             capture = nullptr;
@@ -104,7 +105,7 @@ ZCameraPtr ZOpenCVVideoCapturePlugin::getCamera(QVariantMap options)
     }
     else {
         int cameraDeviceID = options.value("DeviceID").toInt();
-        cv::VideoCapture *capture = new cv::VideoCapture(cameraDeviceID);
+        auto *capture = new cv::VideoCapture(cameraDeviceID);
         if (capture->isOpened()) {
             camera = new OpenCVVideoCaptureCamera(capture);
         } else {

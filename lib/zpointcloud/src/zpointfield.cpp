@@ -18,7 +18,7 @@
 // along with Z3D.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-#include "zpointfield.h"
+#include "ZPointCloud/zpointfield.h"
 
 #include <QDebug>
 #include <QLoggingCategory>
@@ -33,17 +33,38 @@ Q_LOGGING_CATEGORY(loggingCategory, "z3d.zpointcloud.zpointfield", QtInfoMsg)
 
 } // anonymous namespace
 
-ZPointField::ZPointField(QString name, unsigned int offset, PointFieldTypes type, unsigned int count, QObject *parent)
-    : QObject(parent)
-    , m_name(name)
+ZPointField *ZPointField::position(unsigned int offset, ZPointField::PointFieldTypes type, unsigned int count)
+{
+    return new ZPointField("position", offset, type, count);
+}
+
+ZPointField *ZPointField::normal(unsigned int offset, ZPointField::PointFieldTypes type, unsigned int count)
+{
+    return new ZPointField("normal", offset, type, count);
+}
+
+ZPointField *ZPointField::color(unsigned int offset, ZPointField::PointFieldTypes type, unsigned int count)
+{
+    return new ZPointField("rgb", offset, type, count);
+}
+
+ZPointField *ZPointField::radii(unsigned int offset, ZPointField::PointFieldTypes type, unsigned int count)
+{
+    return new ZPointField("radii", offset, type, count);
+}
+
+ZPointField::ZPointField(const QString &name, unsigned int offset, PointFieldTypes type, unsigned int count)
+    : m_name(name)
     , m_offset(offset)
     , m_dataType(type)
     , m_count(count)
 {
-    qDebug(loggingCategory) << "creating field" << m_name
-                            << "offset:" << m_offset
-                            << "type:" << m_dataType
-                            << "count:" << m_count;
+    qDebug(loggingCategory) << "creating" << this;
+}
+
+ZPointField::~ZPointField()
+{
+    qDebug(loggingCategory) << "destroying" << this;
 }
 
 QString ZPointField::name() const
@@ -67,3 +88,14 @@ unsigned int ZPointField::count() const
 }
 
 } // namespace Z3D
+
+QDebug operator<< (QDebug debug, const Z3D::ZPointField *pointField)
+{
+    QDebugStateSaver saver(debug);
+    debug.nospace() << "Z3D::ZPointField(" << (void*)(pointField)
+                    << ") name: " << pointField->name()
+                    << ", offset: " << pointField->offset()
+                    << ", type: " << pointField->dataType()
+                    << ", count: " << pointField->count();
+    return debug;
+}

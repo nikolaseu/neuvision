@@ -21,24 +21,23 @@
 #include "zbinarypatternprojection.h"
 
 #include "zbinarypatterndecoder.h"
-#include "zcameraimage.h"
-#include "zdecodedpattern.h"
-#include "zprojectedpattern.h"
 
-#include "zsettingsitem.h"
-
-#include <opencv2/imgcodecs.hpp>
+#include "ZCameraAcquisition/zcameraimage.h"
+#include "ZCore/zsettingsitem.h"
+#include "ZStructuredLight/zdecodedpattern.h"
+#include "ZStructuredLight/zprojectedpattern.h"
 
 #include <QCoreApplication>
 #include <QDateTime>
 #include <QDebug>
 #include <QDir>
+#include <QElapsedTimer>
 #include <QGuiApplication>
 #include <QQmlContext>
 #include <QQuickView>
 #include <QScreen>
 #include <QThread>
-
+#include <opencv2/imgcodecs.hpp>
 
 namespace Z3D
 {
@@ -73,17 +72,21 @@ ZBinaryPatternProjection::ZBinaryPatternProjection(QObject *parent)
 
     const QString projectorScreen("Projector screen");
 
-    std::shared_ptr<ZSettingsItemEnum> screenOption = std::unique_ptr<ZSettingsItemEnum>(new ZSettingsItemEnum(projectorScreen, "Projector", "Screen/projector to use",
-                                                                                             [=](){
-        std::vector<QString> screens;
-        for (const auto *screen : qGuiApp->screens()) {
-            const auto size = screen->size();
-            screens.push_back(QString("%2x%3 [%1]").arg(screen->name()).arg(size.width()).arg(size.height()));
-        }
-        return screens;
-    },
-                                                                        [=](){ return selectedScreen(); },
-    std::bind(&ZBinaryPatternProjection::setSelectedScreen, this, std::placeholders::_1)));
+    std::shared_ptr<ZSettingsItemEnum> screenOption = std::make_unique<ZSettingsItemEnum>(
+        projectorScreen,
+        "Projector",
+        "Screen/projector to use",
+        [=]() {
+            std::vector<QString> screens;
+            for (const auto *screen : qGuiApp->screens()) {
+                const auto size = screen->size();
+                screens.push_back(
+                    QString("%2x%3 [%1]").arg(screen->name()).arg(size.width()).arg(size.height()));
+            }
+            return screens;
+        },
+        [=]() { return selectedScreen(); },
+        std::bind(&ZBinaryPatternProjection::setSelectedScreen, this, std::placeholders::_1));
     QObject::connect(qGuiApp, &QGuiApplication::screenAdded,
                      screenOption.get(), &ZSettingsItemEnum::optionsChanged);
     QObject::connect(qGuiApp, &QGuiApplication::screenRemoved,
@@ -248,7 +251,7 @@ void ZBinaryPatternProjection::beginScan()
     setVertical(m_vertical);
 
     /// acquisition time
-    QTime acquisitionTime;
+    QElapsedTimer acquisitionTime;
     acquisitionTime.start();
 
     for (int iPattern=0; iPattern <= m_maxUsefulPatterns; ++iPattern) {
@@ -290,33 +293,29 @@ void ZBinaryPatternProjection::beginScan()
     emit finishAcquisition();
 
     /// create the pattern that was just projected
-    std::map<int, std::vector<cv::Vec2f> > fringePoints;
     const auto geometry = m_dlpview->geometry();
     const auto projectionHeight = geometry.height();
     const auto projectionWidth = geometry.width();
+    cv::Mat projectedPatternImg(projectionHeight, projectionWidth, CV_32FC1);
     const int fringeStep = int(pow(2, firstPatternToShow));
     if (m_vertical) {
-        for (int x = fringeStep-1; x<projectionWidth-1; x+=fringeStep) {
-            std::vector<cv::Vec2f> fringe;
-            fringe.reserve(projectionHeight);
+        for (int x = 0; x<projectionWidth; x++) {
+            const float val = std::floor(float(x)/fringeStep);
             for (int y = 0; y<projectionHeight; ++y) {
-                fringe.push_back(cv::Vec2f(0.5f+x, y));
+                projectedPatternImg.at<float_t>(y, x) = val;
             }
-            fringePoints[x] = fringe;
-        }
-    } else {
-        for (int y = fringeStep-1; y<projectionHeight-1; y+=fringeStep) {
-            std::vector<cv::Vec2f> fringe;
-            fringe.reserve(projectionWidth);
-            for (int x = 0; x<projectionWidth; ++x) {
-                fringe.push_back(cv::Vec2f(x, 0.5f+y));
-            }
-            fringePoints[y] = fringe;
         }
     }
-    qDebug() << "pattern has" << fringePoints.size() << "fringes";
+    else {
+        for (int y = 0; y<projectionHeight; y++) {
+            const float val = std::floor(float(y)/fringeStep);
+            for (int x = 0; x<projectionWidth; ++x) {
+                projectedPatternImg.at<float_t>(y, x) = val;
+            }
+        }
+    }
 
-    const Z3D::ZProjectedPatternPtr pattern(new Z3D::ZProjectedPattern(cv::Mat(), fringePoints));
+    const Z3D::ZProjectedPatternPtr pattern(new Z3D::ZProjectedPattern(projectedPatternImg));
 
     /// notify possible listeners
     emit patternProjected(pattern);
@@ -341,25 +340,25 @@ void ZBinaryPatternProjection::processImages(std::vector<std::vector<ZCameraImag
     std::vector< std::vector< std::vector<cv::Mat> > > allImages;
 
     allImages.resize(numCameras);
-    for (unsigned int iCam=0; iCam<numCameras; ++iCam) {
+    for (size_t iCam=0; iCam<numCameras; ++iCam) {
         allImages[iCam].resize(2);
         allImages[iCam][0].resize(numPatterns); // images
         allImages[iCam][1].resize(numPatterns); // inverted images
 
-        for (unsigned int iPattern=0; iPattern<numPatterns; ++iPattern) {
-            int imageIndex = 2 * iPattern;
+        for (size_t iPattern=0; iPattern<numPatterns; ++iPattern) {
+            size_t imageIndex = 2 * iPattern;
             allImages[iCam][0][iPattern] = acquiredImages[imageIndex  ][iCam]->cvMat();
             allImages[iCam][1][iPattern] = acquiredImages[imageIndex+1][iCam]->cvMat();
         }
     }
 
     /// decodification time
-    QTime decodeTime;
+    QElapsedTimer decodeTime;
     decodeTime.start();
 
     std::vector<Z3D::ZDecodedPatternPtr> decodedPatternList;
 
-    for (unsigned int iCam=0; iCam<numCameras; ++iCam) {
+    for (size_t iCam=0; iCam<numCameras; ++iCam) {
         /// decode images
 
         auto &cameraImages = allImages[iCam];
@@ -630,7 +629,7 @@ bool ZBinaryPatternProjection::setSelectedScreen(int index)
 
 void ZBinaryPatternProjection::updateMaxUsefulPatterns()
 {
-    const auto& geometry = m_dlpview->geometry();
+    const auto geometry = m_dlpview->geometry();
 
     /// to skip useless patterns
     /// log2(number) == log(number)/log(2)

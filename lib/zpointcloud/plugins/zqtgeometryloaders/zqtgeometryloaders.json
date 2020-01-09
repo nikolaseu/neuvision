@@ -1,0 +1,3 @@
+{
+    "notes": "ZQtGeometryLoaders uses private API and also some code originally taken from Qt3D geometry loaders plugin"
+}

@@ -1,0 +1,11 @@
+<RCC>
+    <qresource prefix="/">
+        <file>qml/main.qml</file>
+        <file alias="splash">res/splash.png</file>
+        <file>qml/settings/ZDoubleSpinBox.qml</file>
+        <file>qml/settings/ZSettingsItemDelegate.qml</file>
+        <file>qml/settings/ZSettingsListView.qml</file>
+        <file>qml/PointCloudListDelegate.qml</file>
+        <file>qml/ZFastBlur.qml</file>
+    </qresource>
+</RCC>

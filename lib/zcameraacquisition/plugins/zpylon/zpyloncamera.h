@@ -19,7 +19,7 @@
 
 #pragma once
 
-#include "zcamerainterface_p.h"
+#include "ZCameraAcquisition/zcamerainterface_p.h"
 
 #include <pylon/PylonIncludes.h>
 #include <pylon/usb/BaslerUsbInstantCamera.h>
@@ -38,7 +38,7 @@ class PylonCamera : public ZCameraBase
     public:
         explicit BaslerImageHandler(PylonCamera *camera);
 
-        virtual void OnImageGrabbed(Pylon::CInstantCamera& camera, const Pylon::CGrabResultPtr& grabResult) override;
+        virtual void OnImageGrabbed(Pylon::CInstantCamera &camera, const Pylon::CGrabResultPtr &grabResult) override;
     private:
         PylonCamera *m_camera;
     };

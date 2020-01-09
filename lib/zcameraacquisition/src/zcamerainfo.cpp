@@ -18,13 +18,16 @@
 // along with Z3D.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-#include "zcamerainfo.h"
-#include "zcameraplugininterface.h"
+#include "ZCameraAcquisition/zcamerainfo.h"
+#include "ZCameraAcquisition/zcameraplugininterface.h"
 
 namespace Z3D
 {
 
-ZCameraInfo::ZCameraInfo(ZCameraPluginInterface *plugin, QString name, QVariantMap extraData, QObject *parent)
+ZCameraInfo::ZCameraInfo(ZCameraPluginInterface *plugin,
+                         const QString &name,
+                         const QVariantMap &extraData,
+                         QObject *parent)
     : QObject(parent)
     , m_plugin(plugin)
     , m_name(name)

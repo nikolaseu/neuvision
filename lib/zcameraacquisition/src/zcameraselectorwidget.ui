@@ -87,7 +87,7 @@
   <customwidget>
    <class>Z3D::ZCameraPreviewer</class>
    <extends>QWidget</extends>
-   <header>zcamerapreviewer.h</header>
+   <header>ZCameraAcquisition/zcamerapreviewer.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

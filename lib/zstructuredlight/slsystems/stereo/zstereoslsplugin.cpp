@@ -20,11 +20,12 @@
 
 #include "zstereoslsplugin.h"
 
-#include "zcameracalibrationprovider.h"
-#include "zcameraprovider.h"
 #include "zdualcamerastereosls.h"
-#include "zpatternprojectionprovider.h"
 #include "zsinglecamerastereosls.h"
+
+#include "ZCameraAcquisition/zcameraprovider.h"
+#include "ZCameraCalibration/zcameracalibrationprovider.h"
+#include "ZStructuredLight/zpatternprojectionprovider.h"
 
 #include <QDebug>
 #include <QLabel>
@@ -68,7 +69,7 @@ ZStructuredLightSystemPtr ZStereoSLSPlugin::get(QSettings *settings)
             settings->endGroup();
         settings->endGroup();
 
-        for (auto camera : cameras) {
+        for (const auto &camera : cameras) {
             if (!camera) {
                 qWarning() << "failed to load cameras for" << mode;
                 return nullptr;

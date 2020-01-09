@@ -20,8 +20,9 @@
 
 #include "zlibgphoto2plugin.h"
 
-#include "zcamerainfo.h"
 #include "zlibgphoto2camera.h"
+
+#include "ZCameraAcquisition/zcamerainfo.h"
 
 #include <gphoto2/gphoto2-camera.h>
 

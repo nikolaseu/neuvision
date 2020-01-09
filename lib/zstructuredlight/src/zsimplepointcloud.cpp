@@ -18,41 +18,32 @@
 // along with Z3D.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-#include "zsimplepointcloud.h"
+#include "ZStructuredLight/zsimplepointcloud.h"
 
-#include <zpointfield.h>
+#include <ZPointCloud/zpointfield.h>
 
 namespace Z3D
 {
 
-ZSimplePointCloud::ZSimplePointCloud(const ZSimplePointCloud::PointVector points, QObject *parent)
-    : ZPointCloud(parent)
-    , m_fields({
-               new ZPointField("x",    0, ZPointField::FLOAT32, 1, this),
-               new ZPointField("y",    4, ZPointField::FLOAT32, 1, this),
-               new ZPointField("z",    8, ZPointField::FLOAT32, 1, this),
-               new ZPointField("rgb", 12, ZPointField::FLOAT32, 1, this)
-    })
-    , m_points(std::move(points))
-    , m_width(m_points.size())
-    , m_height(1)
+ZSimplePointCloud::ZSimplePointCloud(const ZSimplePointCloud::PointVector &points,
+                                     const std::vector<uint32_t> &indices,
+                                     QObject *parent)
+    : ZPointCloud(
+        1, // height
+        points.size(), // width
+        sizeof(PointType), // point step
+        sizeof(PointType) * points.size(), // row step
+        {
+            ZPointField::position(0, ZPointField::FLOAT32, 3),
+            ZPointField::normal(12, ZPointField::FLOAT32, 3),
+            ZPointField::color(24, ZPointField::UINT8, 4),
+            ZPointField::radii(28, ZPointField::FLOAT32, 1)
+        },
+        parent)
+    , m_points(points)
+    , m_indices(indices)
 {
-    PointType min = points.front()
-            , max = points.front();
 
-    for (const auto &point : points) {
-        for (int i=0; i<3; ++i) {
-            if (point[i] > max[i]) {
-                max[i] = point[i];
-            }
-            if (point[i] < min[i]) {
-                min[i] = point[i];
-            }
-        }
-    }
-
-    m_minimum = QVector3D(min[0], min[1], min[2]);
-    m_maximum = QVector3D(max[0], max[1], max[2]);
 }
 
 ZSimplePointCloud::~ZSimplePointCloud()
@@ -60,55 +51,18 @@ ZSimplePointCloud::~ZSimplePointCloud()
 
 }
 
-void ZSimplePointCloud::updateAttributes()
-{
-    /// nothing to do, we don't have dynamic fields
-}
-
-unsigned int ZSimplePointCloud::height() const
-{
-    return m_height;
-}
-
-unsigned int ZSimplePointCloud::width() const
-{
-    return m_width;
-}
-
-unsigned int ZSimplePointCloud::pointStep() const
-{
-    return sizeof(cv::Vec4f);
-}
-
-unsigned int ZSimplePointCloud::rowStep() const
-{
-    return width();
-}
-
-QByteArray ZSimplePointCloud::data() const
+QByteArray ZSimplePointCloud::vertexData() const
 {
     /// do not copy data, but we need to be careful!
-    return QByteArray::fromRawData(reinterpret_cast<const char*>(m_points.data()), int(m_points.size() * pointStep()));
+    return QByteArray::fromRawData(reinterpret_cast<const char*>(m_points.data()),
+                                   int(m_points.size() * sizeof(PointType)));
 }
 
-const std::vector<ZPointField *> &ZSimplePointCloud::fields() const
+QByteArray ZSimplePointCloud::trianglesData() const
 {
-    return m_fields;
-}
-
-QVector3D ZSimplePointCloud::minimum() const
-{
-    return m_minimum;
-}
-
-QVector3D ZSimplePointCloud::maximum() const
-{
-    return m_maximum;
-}
-
-QVector3D ZSimplePointCloud::center() const
-{
-    return (m_minimum + m_maximum) / 2.;
+    /// do not copy data, but we need to be careful!
+    return QByteArray::fromRawData(reinterpret_cast<const char*>(m_indices.data()),
+                                   int(m_indices.size() * sizeof(uint32_t)));
 }
 
 } // namespace Z3D

@@ -18,10 +18,10 @@
 // along with Z3D.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-#include "zmainwindow.h"
+#include "ZGui/zmainwindow.h"
 
 #if defined(Q_OS_MACOS)
-#include "zosxutils.h"
+#include "ZGui/zosxutils.h"
 #endif
 
 namespace Z3D {

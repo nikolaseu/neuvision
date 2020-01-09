@@ -529,7 +529,7 @@ QProgressBar::chunk:horizontal {
      <item>
       <widget class="QStackedWidget" name="stackedWidget">
        <property name="currentIndex">
-        <number>4</number>
+        <number>1</number>
        </property>
        <widget class="QWidget" name="calibrationPatternPage">
         <layout class="QGridLayout" name="gridLayout_4">
@@ -784,12 +784,12 @@ QProgressBar::chunk:horizontal {
   <customwidget>
    <class>Z3D::ZImageViewer</class>
    <extends>QGraphicsView</extends>
-   <header>zimageviewer.h</header>
+   <header>ZCameraAcquisition/zimageviewer.h</header>
   </customwidget>
   <customwidget>
    <class>Z3D::ZCalibrationImageViewer</class>
    <extends>QGraphicsView</extends>
-   <header>zcalibrationimageviewer.h</header>
+   <header>ZCameraCalibrator/zcalibrationimageviewer.h</header>
   </customwidget>
  </customwidgets>
  <resources/>

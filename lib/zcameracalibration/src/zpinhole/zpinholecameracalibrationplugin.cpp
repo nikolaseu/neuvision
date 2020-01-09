@@ -18,15 +18,16 @@
 // along with Z3D.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-#include "zpinholecameracalibrationplugin.h"
+#include "ZCameraCalibration/zpinholecameracalibrationplugin.h"
 
-#include "zopencvcustomstereomulticameracalibrator.h"
-#include "zopencvstereocameracalibration.h"
-#include "zopencvstereomulticameracalibrator.h"
-#include "zopencvstereomulticameracalibratorconfigwidget.h"
-#include "zpinholecameracalibration.h"
-#include "zpinholecameracalibrator.h"
-#include "zpinholecameracalibratorconfigwidget.h"
+#include "ZCameraCalibration/zopencvcustomstereomulticameracalibrator.h"
+#include "ZCameraCalibration/zopencvstereocameracalibration.h"
+#include "ZCameraCalibration/zopencvstereomulticameracalibrator.h"
+#include "ZCameraCalibration/zopencvstereomulticameracalibratorconfigwidget.h"
+#include "ZCameraCalibration/zpinholecameracalibrator.h"
+#include "ZCameraCalibration/zpinholecameracalibratorconfigwidget.h"
+
+#include "ZCameraCalibration/zpinholecameracalibration.h"
 
 #include <opencv2/core/persistence.hpp>
 

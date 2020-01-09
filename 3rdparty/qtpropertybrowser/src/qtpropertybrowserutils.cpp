@@ -298,7 +298,7 @@ QtKeySequenceEdit::QtKeySequenceEdit(QWidget *parent)
 {
     QHBoxLayout *layout = new QHBoxLayout(this);
     layout->addWidget(m_lineEdit);
-    layout->setMargin(0);
+    layout->setContentsMargins(0, 0, 0, 0);
     m_lineEdit->installEventFilter(this);
     m_lineEdit->setReadOnly(true);
     m_lineEdit->setFocusProxy(this);
@@ -322,7 +322,7 @@ bool QtKeySequenceEdit::eventFilter(QObject *o, QEvent *e)
                 actionString.remove(pos, actionString.length() - pos);
             action->setText(actionString);
         }
-        QAction *actionBefore = 0;
+        QAction *actionBefore = nullptr;
         if (actions.count() > 0)
             actionBefore = actions[0];
         QAction *clearAction = new QAction(tr("Clear Shortcut"), menu);

@@ -18,16 +18,13 @@
 // along with Z3D.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-#include "zapplicationstyle.h"
+#include "ZGui/zapplicationstyle.h"
 
 #include <QApplication>
 #include <QPalette>
 #include <QStyleFactory>
 
-namespace Z3D
-{
-
-namespace ZApplicationStyle
+namespace Z3D::ZApplicationStyle
 {
 
 void applyStyle(ZStyle style)
@@ -47,7 +44,6 @@ void applyStyle(ZStyle style)
         QColor baseColor(85, 85, 85);
         QColor buttonColor(93, 93, 93);
         QColor textColor(236, 236, 236);
-        p.setColor(QPalette::Background, windowColor);
         p.setColor(QPalette::Window, windowColor);
         p.setColor(QPalette::WindowText, textColor);
         p.setColor(QPalette::Disabled, QPalette::WindowText, textColor.darker(125));
@@ -85,6 +81,4 @@ void applyStyle(ZStyle style)
     qApp->setPalette(p);
 }
 
-} // namespace ZApplicationStyle
-
-} // namespace Z3D
+} // namespace Z3D::ZApplicationStyle

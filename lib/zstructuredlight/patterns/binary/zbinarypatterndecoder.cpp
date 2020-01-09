@@ -20,18 +20,12 @@
 
 #include "zbinarypatterndecoder.h"
 
-#include "zdecodedpattern.h"
+#include "ZStructuredLight/zdecodedpattern.h"
 
-#include <map>
-
-#include <opencv2/imgproc.hpp>
-
-#include <QDebug>
-
-namespace Z3D
+namespace Z3D::ZBinaryPatternDecoder
 {
 
-namespace ZBinaryPatternDecoder
+namespace // anonymous namespace
 {
 
 constexpr const uint16_t NO_VALUE = std::numeric_limits<uint16_t>::quiet_NaN();
@@ -40,7 +34,6 @@ unsigned int binaryToGray(unsigned int num)
 {
     return (num >> 1) ^ num;
 }
-
 
 unsigned int grayToBinary(unsigned int num)
 {
@@ -66,6 +59,8 @@ unsigned int grayToBinary(unsigned int num)
 
     return binary;
 }
+
+} // anonymous namespace
 
 
 cv::Mat decodeBinaryPatternImages(const std::vector<cv::Mat> &images, const std::vector<cv::Mat> &invImages, cv::Mat maskImg, bool isGrayCode)
@@ -150,60 +145,4 @@ cv::Mat decodeBinaryPatternImages(const std::vector<cv::Mat> &images, const std:
     return decodedConvertedImg;
 }
 
-
-cv::Mat simplifyBinaryPatternData(cv::Mat image, cv::Mat maskImg, std::map<int, std::vector<cv::Vec2f> > &fringePoints)
-{
-    const cv::Size &imgSize = image.size();
-
-    /// use 16 bits, it's enough
-    cv::Mat decodedImg(imgSize, CV_16U, cv::Scalar(0));
-
-    const int &imgHeight = imgSize.height;
-    const int &imgWidth = imgSize.width;
-
-    for (int y=0; y<imgHeight; ++y) {
-        /// get pointers to first item of the row
-        const uint8_t* maskImgData = maskImg.ptr<uint8_t>(y);
-        const uint16_t* imgData = image.ptr<uint16_t>(y);
-        uint16_t* decodedImgData = decodedImg.ptr<uint16_t>(y);
-        for (int x=0; x<imgWidth-1; ++x) {
-            /// get mask pixels
-            const uint8_t &maskValue     = *maskImgData;
-            maskImgData++; /// always advance pointer
-            const uint8_t &nextMaskValue = *maskImgData;
-
-            /// get image pixels
-            const uint16_t &value     = *imgData;
-            imgData++; /// always advance pointer
-            const uint16_t &nextValue = *imgData;
-
-            if (maskValue && nextMaskValue && nextValue != value) {
-                *decodedImgData = value;
-                //decodedImgData[x+1] = nextValue; // not both borders, it's useless. x => x+0.5
-                uint16_t imin = std::min(value, nextValue),
-                               imax = std::max(value, nextValue);
-                cv::Vec2f point(0.5f+x, y); // x => x+0.5
-                if (false) { /// THIS SHOULD BE ALWAYS FALSE
-                    /// todos?
-                    for (int i = imin; i < imax; ++i) { // not "<=" because we use the left border only
-                        fringePoints[i].push_back(point);
-                    }
-                } else {
-                    /// solo "bordes"
-                    fringePoints[imin].push_back(point);
-                    if (imax - imin > 1)
-                        fringePoints[imax-1].push_back(point);
-                }
-            }
-
-            /// always advance pointer
-            decodedImgData++;
-        }
-    }
-
-    return decodedImg;
-}
-
-} // namespace ZBinaryPatternDecoder
-
-} // namespace Z3D
+} // namespace Z3D::ZBinaryPatternDecoder

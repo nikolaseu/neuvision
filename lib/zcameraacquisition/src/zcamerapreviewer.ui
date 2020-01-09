@@ -82,7 +82,7 @@
   <customwidget>
    <class>Z3D::ZImageViewer</class>
    <extends>QGraphicsView</extends>
-   <header>zimageviewer.h</header>
+   <header>ZCameraAcquisition/zimageviewer.h</header>
   </customwidget>
  </customwidgets>
  <resources/>

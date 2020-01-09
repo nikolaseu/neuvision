@@ -18,9 +18,9 @@
 // along with Z3D.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-#include "zprojectedpattern.h"
+#include "ZStructuredLight/zprojectedpattern.h"
 
-#include "zstructuredlight_fwd.h"
+#include "ZStructuredLight/zstructuredlight_fwd.h"
 
 #include <QMetaType>
 
@@ -29,9 +29,8 @@ namespace Z3D
 
 static int z3dDecodedPatternPtrTypeId = qRegisterMetaType<Z3D::ZProjectedPatternPtr>("Z3D::ZProjectedPatternPtr");
 
-ZProjectedPattern::ZProjectedPattern(cv::Mat decodedImage,
-                                     std::map<int, std::vector<cv::Vec2f> > fringePointsList)
-    : ZStructuredLightPattern(decodedImage, fringePointsList)
+ZProjectedPattern::ZProjectedPattern(const cv::Mat &decodedImage)
+    : ZStructuredLightPattern(decodedImage)
 {
 
 }

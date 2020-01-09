@@ -18,13 +18,14 @@
 // along with Z3D.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-#include "zcameracalibrationprovider.h"
+#include "ZCameraCalibration/zcameracalibrationprovider.h"
 
-#include "zcameracalibration.h"
-#include "zcameracalibrationplugininterface.h"
-#include "zcoreplugin.h"
-#include "zpinhole/zpinholecameracalibrationplugin.h"
-#include "zpluginloader.h"
+#include "ZCameraCalibration/zcameracalibration.h"
+#include "ZCameraCalibration/zcameracalibrationplugininterface.h"
+#include "ZCameraCalibration/zpinholecameracalibrationplugin.h"
+
+#include "ZCore/zcoreplugin.h"
+#include "ZCore/zpluginloader.h"
 
 #include <QDebug>
 #include <QSettings>
@@ -62,7 +63,8 @@ void ZCameraCalibrationProvider::unloadPlugins()
     m_plugins.clear();
 }
 
-ZCameraCalibrationPtr ZCameraCalibrationProvider::getCalibration(QString pluginName, QVariantMap options)
+ZCameraCalibrationPtr ZCameraCalibrationProvider::getCalibration(const QString &pluginName,
+                                                                 const QVariantMap &options)
 {
     if (!m_plugins.contains(pluginName)) {
         qWarning() << "camera calibration plugin not found:" << pluginName;

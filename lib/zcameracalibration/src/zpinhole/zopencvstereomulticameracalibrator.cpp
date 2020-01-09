@@ -18,9 +18,11 @@
 // along with Z3D.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-#include "zopencvstereocameracalibration.h"
-#include "zopencvstereomulticameracalibrator.h"
-#include "zpinholecameracalibration.h"
+#include "ZCameraCalibration/zopencvstereomulticameracalibrator.h"
+
+#include "ZCameraCalibration/zopencvstereocameracalibration.h"
+
+#include "ZCameraCalibration/zpinholecameracalibration.h"
 
 #include <QDebug>
 
@@ -66,7 +68,7 @@ QString ZOpenCVStereoMultiCameraCalibrator::name() const
 }
 
 ZMultiCameraCalibrationPtr ZOpenCVStereoMultiCameraCalibrator::getCalibration(
-        std::vector<ZCameraCalibrationPtr> &initialCameraCalibrations,
+        const std::vector<ZCameraCalibrationPtr> &initialCameraCalibrations,
         std::vector< std::vector< std::vector< cv::Point2f > > > &imagePoints,
         std::vector< std::vector< cv::Point3f > > &objectPoints) const
 {

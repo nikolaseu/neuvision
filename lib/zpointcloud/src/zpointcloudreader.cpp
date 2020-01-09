@@ -18,9 +18,10 @@
 // along with Z3D.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-#include "zpointcloudreader.h"
+#include "ZPointCloud/zpointcloudreader.h"
 
-#include "zpointcloudprovider.h"
+#include "ZPointCloud/zpointcloud.h"
+#include "ZPointCloud/zpointcloudprovider.h"
 
 #include <QDebug>
 
@@ -47,7 +48,7 @@ ZPointCloud *ZPointCloudReader::pointCloud() const
     return m_pointCloud.get();
 }
 
-void ZPointCloudReader::setFilename(QString filename)
+void ZPointCloudReader::setFilename(const QString &filename)
 {
     if (m_filename == filename) {
         return;
@@ -60,7 +61,7 @@ void ZPointCloudReader::setFilename(QString filename)
     emit pointCloudChanged(m_pointCloud.get());
 }
 
-void ZPointCloudReader::setSource(QUrl source)
+void ZPointCloudReader::setSource(const QUrl &source)
 {
     if (m_source == source) {
         return;

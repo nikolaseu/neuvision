@@ -1014,7 +1014,7 @@ void QtLineEditFactoryPrivate::slotRegExpChanged(QtProperty *property,
         QLineEdit *editor = itEditor.next();
         editor->blockSignals(true);
         const QValidator *oldValidator = editor->validator();
-        QValidator *newValidator = 0;
+        QValidator *newValidator = nullptr;
         if (regExp.isValid()) {
             newValidator = new QRegExpValidator(regExp, editor);
         }
@@ -1656,7 +1656,7 @@ class QtCharEdit : public QWidget
 {
     Q_OBJECT
 public:
-    QtCharEdit(QWidget *parent = 0);
+    QtCharEdit(QWidget *parent = nullptr);
 
     QChar value() const;
     bool eventFilter(QObject *o, QEvent *e);
@@ -1685,7 +1685,7 @@ QtCharEdit::QtCharEdit(QWidget *parent)
 {
     QHBoxLayout *layout = new QHBoxLayout(this);
     layout->addWidget(m_lineEdit);
-    layout->setMargin(0);
+    layout->setContentsMargins(0, 0, 0, 0);
     m_lineEdit->installEventFilter(this);
     m_lineEdit->setReadOnly(true);
     m_lineEdit->setFocusProxy(this);
@@ -1709,7 +1709,7 @@ bool QtCharEdit::eventFilter(QObject *o, QEvent *e)
                 actionString = actionString.remove(pos, actionString.length() - pos);
             action->setText(actionString);
         }
-        QAction *actionBefore = 0;
+        QAction *actionBefore = nullptr;
         if (actions.count() > 0)
             actionBefore = actions[0];
         QAction *clearAction = new QAction(tr("Clear Char"), menu);
@@ -2247,7 +2247,7 @@ void QtCursorEditorFactory::connectPropertyManager(QtCursorPropertyManager *mana
 QWidget *QtCursorEditorFactory::createEditor(QtCursorPropertyManager *manager, QtProperty *property,
         QWidget *parent)
 {
-    QtProperty *enumProp = 0;
+    QtProperty *enumProp = nullptr;
     if (d_ptr->m_propertyToEnum.contains(property)) {
         enumProp = d_ptr->m_propertyToEnum[property];
     } else {
@@ -2345,11 +2345,9 @@ void QtColorEditWidget::setValue(const QColor &c)
 
 void QtColorEditWidget::buttonClicked()
 {
-    bool ok = false;
-    QRgb oldRgba = m_color.rgba();
-    QRgb newRgba = QColorDialog::getRgba(oldRgba, &ok, this);
-    if (ok && newRgba != oldRgba) {
-        setValue(QColor::fromRgba(newRgba));
+    QColor newColor = QColorDialog::getColor(m_color, this);
+    if (newColor.isValid() && newColor != m_color) {
+        setValue(newColor);
         emit valueChanged(m_color);
     }
 }

@@ -18,7 +18,7 @@
 // along with Z3D.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-#include "zpointcloudplugininterface.h"
+#include "ZPointCloud/zpointcloudplugininterface.h"
 
 Z3D::ZPointCloudPluginInterface::~ZPointCloudPluginInterface()
 {

@@ -18,14 +18,17 @@
 // along with Z3D.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-#include "zpointcloudprovider.h"
+#include "ZPointCloud/zpointcloudprovider.h"
 
-#include "zcoreplugin.h"
-#include "zpluginloader.h"
-#include "zpointcloud.h"
-#include "zpointcloudgeometry.h"
-#include "zpointcloudplugininterface.h"
-#include "zpointcloudreader.h"
+#include "ZPointCloud/zpointcloud.h"
+#include "ZPointCloud/zpointcloud_qml.h"
+#include "ZPointCloud/zpointcloudgeometry.h"
+#include "ZPointCloud/zpointcloudlistmodel.h"
+#include "ZPointCloud/zpointcloudplugininterface.h"
+#include "ZPointCloud/zpointcloudreader.h"
+
+#include "ZCore/zcoreplugin.h"
+#include "ZCore/zpluginloader.h"
 
 #include <QDebug>
 #include <QDir>
@@ -46,9 +49,18 @@ QMap< QString, ZPointCloudPluginInterface *> ZPointCloudProvider::m_plugins;
 
 void ZPointCloudProvider::registerMetaTypes()
 {
-    qmlRegisterUncreatableType<Z3D::ZPointCloud>("Z3D.ZPointCloud", 1, 0, "PointCloud", "ZPointCloud cannot be created, must be obtained from a PointCloudReader");
+    qRegisterMetaType<Z3D::ZPointCloudListModel *>("Z3D::ZPointCloudListModel*");
+    qRegisterMetaType<Z3D::ZPointCloud *>("Z3D::ZPointCloud*");
+
     qmlRegisterType<Z3D::ZPointCloudReader>("Z3D.ZPointCloud", 1, 0, "PointCloudReader");
     qmlRegisterType<Z3D::ZPointCloudGeometry>("Z3D.ZPointCloud", 1, 0, "PointCloudGeometry");
+
+    qmlRegisterSingletonType<Z3D::ZPointCloudInternal::ZPointCloud_QML>("Z3D.ZPointCloud", 1, 0, "Utils",
+        [](QQmlEngine *engine, QJSEngine *scriptEngine) -> QObject * {
+            Q_UNUSED(engine)
+            Q_UNUSED(scriptEngine)
+            return new Z3D::ZPointCloudInternal::ZPointCloud_QML();
+        });
 }
 
 void ZPointCloudProvider::loadPlugins()
@@ -68,18 +80,20 @@ void ZPointCloudProvider::loadPlugins()
 
 void ZPointCloudProvider::unloadPlugins()
 {
-    for (const auto *plugin : m_plugins.values()) {
+    const auto plugins = m_plugins.values();
+    for (const auto *plugin : plugins) {
         delete plugin;
     }
 
     m_plugins.clear();
 }
 
-ZPointCloudPtr ZPointCloudProvider::loadPointCloud(const QString &fileName)
+ZPointCloudUniquePtr ZPointCloudProvider::loadPointCloud(const QString &fileName)
 {
     qDebug(loggingCategory) << "Trying to read PointCloud from" << fileName;
 
-    for (const auto *plugin : m_plugins.values()) {
+    const auto plugins = m_plugins.values();
+    for (const auto *plugin : plugins) {
         if (auto pc = plugin->loadPointCloud(fileName)) {
             return pc;
         }
