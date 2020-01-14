@@ -91,6 +91,7 @@ ZPointCloud::ZPointCloud(unsigned int height,
 
 ZPointCloud::~ZPointCloud()
 {
+    qDebug(loggingCategory) << "deleting" << this;
     for (auto field : m_fields) {
         delete field;
     }

@@ -70,6 +70,16 @@ QMatrix4x4 ZPointCloudListItem::transformation() const
     return m_transformation;
 }
 
+void ZPointCloudListItem::setPointCloud(ZPointCloudPtr pointCloud)
+{
+    if (m_pointCloud == pointCloud) {
+        return;
+    }
+
+    m_pointCloud = pointCloud;
+    emit pointCloudChanged(m_pointCloud);
+}
+
 void ZPointCloudListItem::setVisible(bool visible)
 {
     if (m_visible == visible) {

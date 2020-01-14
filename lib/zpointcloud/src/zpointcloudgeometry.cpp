@@ -54,8 +54,6 @@ ZPointCloudGeometry::ZPointCloudGeometry(Qt3DCore::QNode *parent)
     , m_p(new ZPointCloudGeometryPrivate)
 {
     qDebug(loggingCategory) << "creating" << this;
-    m_p->vertexBuffer = new Qt3DRender::QBuffer(this);
-    m_p->indexBuffer = new Qt3DRender::QBuffer(this);
 }
 
 ZPointCloudGeometry::~ZPointCloudGeometry()
@@ -101,18 +99,6 @@ uint ZPointCloudGeometry::levelOfDetail() const
 
 void ZPointCloudGeometry::updateAttributes()
 {
-    // completely rebuild attribute list and remove all previous attributes
-    QVector<Qt3DRender::QAttribute *> atts = attributes();
-    for (Qt3DRender::QAttribute *attr : atts) {
-        if (attr->attributeType() == Qt3DRender::QAttribute::VertexAttribute) {
-            removeAttribute(attr);
-            attr->deleteLater();
-        }
-        else {
-            qDebug(loggingCategory) << "skipped index";
-        }
-    }
-
     const std::vector<ZPointField*> &fieldList = m_p->pointCloud->fields();
     auto findField = [&fieldList](const QString &name) -> ZPointField* {
         const auto it = std::find_if(fieldList.cbegin(), fieldList.cend(), [&name](const auto &field){
@@ -127,13 +113,13 @@ void ZPointCloudGeometry::updateAttributes()
     if (const auto *pf = findField("position")) {
         qDebug(loggingCategory) << "Adding position attribute, field:" << pf;
         auto *attrib = new Qt3DRender::QAttribute(m_p->vertexBuffer,
-                                                                    Qt3DRender::QAttribute::defaultPositionAttributeName(),
-                                                                    pointFieldTypeToAttributeType(pf->dataType()),
-                                                                    pf->count(),
-                                                                    m_p->pointCloud->vertexCount(),
-                                                                    pf->offset(),
-                                                                    m_p->pointCloud->pointStep(),
-                                                                    this);
+                                                  Qt3DRender::QAttribute::defaultPositionAttributeName(),
+                                                  pointFieldTypeToAttributeType(pf->dataType()),
+                                                  pf->count(),
+                                                  m_p->pointCloud->vertexCount(),
+                                                  pf->offset(),
+                                                  m_p->pointCloud->pointStep(),
+                                                  this);
         attrib->setAttributeType(Qt3DRender::QAttribute::VertexAttribute);
         addAttribute(attrib);
         setBoundingVolumePositionAttribute(attrib);
@@ -200,12 +186,34 @@ void ZPointCloudGeometry::setPointCloud(ZPointCloud *pointCloud)
         return;
     }
 
+    /// remove all attributes
+    const QVector<Qt3DRender::QAttribute *> atts = attributes();
+    for (Qt3DRender::QAttribute *attr : atts) {
+        removeAttribute(attr);
+        attr->deleteLater();
+    }
+
+    /// update point cloud
     m_p->pointCloud = pointCloud;
 
-    updateAttributes();
-
+    /// recreate buffers, changing data to previous buffer can be dangerous if old
+    /// data is not available anymore...
+    if (m_p->vertexBuffer) {
+        m_p->vertexBuffer->deleteLater();
+    }
+    m_p->vertexBuffer = new Qt3DRender::QBuffer(this);
+    m_p->vertexBuffer->setUsage(Qt3DRender::QBuffer::StaticDraw);
     m_p->vertexBuffer->setData(m_p->pointCloud->vertexData());
+
+    if (m_p->indexBuffer) {
+        m_p->indexBuffer->deleteLater();
+    }
+    m_p->indexBuffer = new Qt3DRender::QBuffer(this);
+    m_p->indexBuffer->setUsage(Qt3DRender::QBuffer::StaticDraw);
     m_p->indexBuffer->setData(m_p->pointCloud->trianglesData());
+
+    /// add new attributes
+    updateAttributes();
 
     emit pointCloudChanged(m_p->pointCloud);
 }
