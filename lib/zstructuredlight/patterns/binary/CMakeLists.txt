@@ -19,6 +19,7 @@ add_library(${PROJECT_NAME} SHARED
     ${HEADER_FILES}
     ${SRC_FILES}
     ${METADATA_FILES}
+    zbinarypatternprojection_resources.qrc
 )
 
 target_link_libraries(${PROJECT_NAME}

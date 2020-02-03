@@ -56,6 +56,7 @@ ZBinaryPatternProjection::ZBinaryPatternProjection(QObject *parent)
     , m_useGrayBinary(true)
     , m_debugMode(false)
     , m_previewEnabled(false)
+    , m_maxUsefulPatterns(m_numPatterns)
 {
     m_dlpview = new QQuickView();
     m_dlpview->setFlags(Qt::FramelessWindowHint
@@ -197,6 +198,8 @@ ZBinaryPatternProjection::ZBinaryPatternProjection(QObject *parent)
         intensityOption,
         saveDebugInfoOption
     };
+
+    setSelectedScreen(0);
 }
 
 ZBinaryPatternProjection::~ZBinaryPatternProjection()

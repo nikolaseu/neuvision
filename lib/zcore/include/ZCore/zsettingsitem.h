@@ -402,11 +402,10 @@ signals:
 public slots:
     virtual bool setValue(QVariant value) override
     {
-        const int index = value.toInt();
-        if (index == m_getSelectedIndex()) {
-            return true;
+        if (!value.canConvert<int>()) {
+            return false;
         }
-
+        const int index = value.toInt();
         return m_setSelectedIndex(index);
     }
 
