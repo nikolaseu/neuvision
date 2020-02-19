@@ -14,7 +14,7 @@ file(GLOB QQMLOBJECTLISTMODEL_SRC_FILES
 add_library(${PROJECT_NAME} SHARED
     ${HEADER_FILES}
     ${SRC_FILES}
-    src/zpointcloud_resources.qrc
+    zpointcloud_resources.qrc
     ${QQMLOBJECTLISTMODEL_SRC_FILES}) # FIXME
 
 target_compile_definitions(${PROJECT_NAME} PRIVATE Z3D_${PROJECT_NAME}_LIBRARY)

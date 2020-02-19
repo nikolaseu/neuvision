@@ -91,6 +91,15 @@ void main()
         u *= (splatSize / 2.0);
         v *= (splatSize / 2.0);
 
+        // Simple solution to nicer rendering when points are really far away:
+        // make sure we keep a minimum "pixel size" for the splats.
+        float dw = splatSize * projectionMatrix[1][1] / (mvp * pointCenter).w;
+        if (dw < 0.1) {
+            float factor = (0.1 / dw);
+            u *= factor;
+            v *= factor;
+        }
+
         // Compute color using a simple light model
         vec3 normal = normalize(modelViewNormal * -VertexIn[0].normal);
         vec3 ambient = lightIntensity * ka;

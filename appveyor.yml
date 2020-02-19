@@ -48,6 +48,8 @@ install: # scripts that run after cloning repository
 build_script:
   - call "C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Auxiliary\Build\vcvarsall.bat" x86_amd64
   - call .\scripts\build_win.bat
+#test_script:
+#  - cd %APPVEYOR_BUILD_FOLDER%/build/Release && ctest --output-on-failure
 after_build:
   - cd %APPVEYOR_BUILD_FOLDER%/build/Release/bin
   - call "%Qt5_DIR%\bin\windeployqt.exe" -concurrent -multimedia -multimediawidgets --qmldir ./../../../apps/Z3DScanner/qml/ --qmldir ./../../../apps/Z3DCloudViewer/qml/ ./Z3DScanner.exe ./Z3DCloudViewer.exe

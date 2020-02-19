@@ -84,7 +84,7 @@ public:
     explicit ZSettingsItemModel(const std::vector<ZSettingsItemPtr> &settings, QObject *parent = nullptr);
 
     // QAbstractItemModel interface
-    int rowCount(const QModelIndex &parent) const override;
+    int rowCount(const QModelIndex &parent = QModelIndex()) const override;
     QVariant data(const QModelIndex &index, int role) const override;
     QHash<int, QByteArray> roleNames() const override;
 

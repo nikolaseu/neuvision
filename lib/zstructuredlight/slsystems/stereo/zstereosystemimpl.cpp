@@ -20,21 +20,16 @@
 
 #include "zstereosystemimpl.h"
 
-#include "ZStructuredLight/zdecodedpattern.h"
-#include "ZStructuredLight/zgeometryutils.h"
 #include "ZCameraCalibration/zopencvstereocameracalibration.h"
 #include "ZCameraCalibration/zpinholecameracalibration.h"
+#include "ZStructuredLight/zdecodedpattern.h"
+#include "ZStructuredLight/zgeometryutils.h"
 #include "ZStructuredLight/zsimplepointcloud.h"
 
-#include <QAtomicInt>
-#include <QDateTime>
 #include <QDebug>
-#include <QFuture>
-#include <QtConcurrentMap>
 #include <QtConcurrentRun>
 
 #include <opencv2/calib3d.hpp>
-#include <opencv2/core.hpp>
 #include <opencv2/imgproc.hpp>
 
 namespace Z3D

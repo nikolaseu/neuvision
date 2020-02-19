@@ -51,5 +51,8 @@ add_subdirectory(3rdparty/qtpropertybrowser)
 add_subdirectory(lib)
 add_subdirectory(apps)
 
+enable_testing()
+add_subdirectory(tests)
+
 include(FeatureSummary)
 feature_summary(WHAT ALL)
