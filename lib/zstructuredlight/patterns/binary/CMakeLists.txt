@@ -2,6 +2,7 @@ project(ZBinaryPatternProjection LANGUAGES CXX)
 
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${Z3D_OUTPUT_DIRECTORY}/plugins/structuredlightpatterns)
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${Z3D_OUTPUT_DIRECTORY}/plugins/structuredlightpatterns)
+set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS ON) # it's a plugin, just export everything, makes it easier for tests
 
 find_package(Qt5 COMPONENTS Core Quick REQUIRED)
 find_package(OpenCV REQUIRED)
@@ -23,7 +24,7 @@ add_library(${PROJECT_NAME} SHARED
 )
 
 target_link_libraries(${PROJECT_NAME}
-    PRIVATE
+    PUBLIC # it's a plugin, so public is fine, and makes it easier for tests (no need to specify all dependencies)
         Qt5::Core
         Qt5::Quick
         ${OpenCV_LIBS}

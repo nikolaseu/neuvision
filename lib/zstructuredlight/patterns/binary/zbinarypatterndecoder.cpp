@@ -30,22 +30,24 @@ namespace // anonymous namespace
 
 constexpr const uint16_t NO_VALUE = std::numeric_limits<uint16_t>::quiet_NaN();
 
-unsigned int binaryToGray(unsigned int num)
+template<typename T>
+T binaryToGray(T num)
 {
     return (num >> 1) ^ num;
 }
 
-unsigned int grayToBinary(unsigned int num)
+template<typename T>
+T grayToBinary(T num)
 {
-    unsigned int len = 8 * sizeof(num);
-    unsigned int binary = 0;
+    T len = 8 * sizeof(num);
+    T binary = 0;
 
     /// mask the MSB.
-    unsigned int grayBit = 1 << ( len - 1 );
+    T grayBit = T(1) << ( len - 1 );
     /// copy the MSB.
     binary = num & grayBit;
     /// store the bit we just set.
-    unsigned int binBit = binary;
+    T binBit = binary;
     /// traverse remaining Gray bits.
     while( grayBit >>= 1 ) {
         /// shift the current binary bit
@@ -127,8 +129,8 @@ cv::Mat decodeBinaryPatternImages(const std::vector<cv::Mat> &images, const std:
                 continue;
             }
 
-            const int valueLeft = *(decodedImgData - 1);
-            const int valueRight = *(decodedImgData + 1);
+            const uint16_t valueLeft = *(decodedImgData - 1);
+            const uint16_t valueRight = *(decodedImgData + 1);
             if (valueLeft != NO_VALUE && valueRight == valueLeft) {
                 /// assign value
                 value = valueLeft;
