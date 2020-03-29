@@ -124,7 +124,7 @@ void ZImageViewer::setFitToWindow(const bool &enabled)
         /// update current zoom factor
         /// we need to calculate the inverse of what we do when doing zoom in/out
         /// qreal scale = qPow(qreal(2), (qreal)m_zoomFactor / qreal(10));
-        qreal scale = matrix().m11();
+        qreal scale = transform().m11();
         /// get exponent -> log_2(scale) == log(x)/log(2)
         qreal exp = log(scale) /  log(qreal(2));
         m_zoomFactor = exp * qreal(10); /// este 10 tiene que ser el mismo que uso en wheelEvent!
@@ -225,9 +225,9 @@ void ZImageViewer::wheelEvent(QWheelEvent* event)
 
         const qreal scale = qPow(qreal(2), qreal(m_zoomFactor) / qreal(10)); /// este 10 tiene que ser el mismo que uso en setFitToWindow!
 
-        QMatrix matrix;
+        QTransform matrix;
         matrix.scale(scale, scale);
-        setMatrix(matrix);
+        setTransform(matrix);
 
         event->accept();
     } else {

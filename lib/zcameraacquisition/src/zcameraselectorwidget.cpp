@@ -44,7 +44,11 @@ ZCameraSelectorWidget::ZCameraSelectorWidget(QWidget *parent)
     QObject::connect(this, &ZCameraSelectorWidget::cameraSelected,
                      ui->cameraPreview, &ZCameraPreviewer::setCamera);
 
+#if (QT_VERSION >= QT_VERSION_CHECK(5, 15, 0))
+    QObject::connect(ui->pluginsComboBox, &QComboBox::currentIndexChanged,
+#else
     QObject::connect(ui->pluginsComboBox, static_cast<void(QComboBox::*)(int)>(&QComboBox::currentIndexChanged),
+#endif
                      this, &ZCameraSelectorWidget::onPluginIndexChanged);
 
     QObject::connect(ui->cameraListWidget, &QListWidget::currentRowChanged,

@@ -79,7 +79,11 @@ ZCameraCalibratorWidget::ZCameraCalibratorWidget(ZCalibratedCameraPtr camera, QW
                      this, &ZCameraCalibratorWidget::loadSession);
 
     /// to update current camera calibration model
+#if (QT_VERSION >= QT_VERSION_CHECK(5, 15, 0))
+    QObject::connect(ui->cameraModelTypeComboBox, &QComboBox::currentIndexChanged,
+#else
     QObject::connect(ui->cameraModelTypeComboBox, static_cast<void (QComboBox::*)(int)>(&QComboBox::currentIndexChanged),
+#endif
                      this, &ZCameraCalibratorWidget::onCameraModelTypeChanged);
 
     /// available camera models
@@ -90,7 +94,11 @@ ZCameraCalibratorWidget::ZCameraCalibratorWidget(ZCalibratedCameraPtr camera, QW
     }
 
     /// to update current pattern finder
+#if (QT_VERSION >= QT_VERSION_CHECK(5, 15, 0))
+    QObject::connect(ui->calibrationPatternTypeComboBox, &QComboBox::currentIndexChanged,
+#else
     QObject::connect(ui->calibrationPatternTypeComboBox, static_cast<void (QComboBox::*)(int)>(&QComboBox::currentIndexChanged),
+#endif
                      this, &ZCameraCalibratorWidget::onCalibrationPatternTypeChanged);
 
     /// load different calibration pattern finder types
