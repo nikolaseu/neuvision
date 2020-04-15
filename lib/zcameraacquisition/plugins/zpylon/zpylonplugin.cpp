@@ -63,7 +63,12 @@ QList<ZCameraInfo *> ZPylonPlugin::getConnectedCameras()
         QVariantMap extraData;
         extraData["SerialNumber"] = device.GetSerialNumber().c_str();
         extraData["FullName"] = device.GetFullName().c_str();
-        camerasList << new ZCameraInfo(this, device.GetSerialNumber().c_str(), extraData);
+        camerasList << new ZCameraInfo(this,
+                                       QString("%1 %2 (%3)")
+                                               .arg(device.GetVendorName().c_str())
+                                               .arg(device.GetModelName().c_str())
+                                               .arg(device.GetSerialNumber().c_str()),
+                                       extraData);
     }
 
     return camerasList;

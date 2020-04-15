@@ -48,7 +48,7 @@ ZImageGrayscale::ZImageGrayscale(int width, int height, int xOffset, int yOffset
         m_cvMat.create(m_height, m_width, CV_16UC1);
         break;
     default:
-        qCritical() << "invalid image, only 8 or 16 bits per pixel are supported";
+        qCritical() << "invalid image, only 8 or 16 bits per pixel are supported. Invalid bytes per pixel value:" << m_bytesPerPixel;
         break;
     }
 
@@ -87,7 +87,7 @@ ZImageGrayscale::ZImageGrayscale(int width, int height, int xOffset, int yOffset
         m_cvMat = cv::Mat(m_height, m_width, CV_16UC1, externalBuffer);
         break;
     default:
-        qCritical() << "invalid image, only 8 or 16 bits per pixel are supported";
+        qCritical() << "invalid image, only 8 or 16 bits per pixel are supported. Invalid bytes per pixel value:" << m_bytesPerPixel;
         m_cvMat = cv::Mat();
         break;
     }

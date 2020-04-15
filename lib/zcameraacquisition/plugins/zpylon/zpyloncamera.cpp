@@ -24,10 +24,29 @@
 
 #include <QDebug>
 
-#include <GenApi/INodeMap.h>
+#include <genapi/INodeMap.h>
 
 namespace Z3D
 {
+
+namespace {
+
+int getBytesPerPixel(Pylon::EPixelType pixelType)
+{
+    //! FIXME handle all pixel types
+    switch (pixelType) {
+    case Pylon::EPixelType::PixelType_Mono8:
+        return 1;
+    case Pylon::EPixelType::PixelType_Mono10:
+    case Pylon::EPixelType::PixelType_Mono12:
+    case Pylon::EPixelType::PixelType_Mono16:
+        return 2;
+    }
+    qCritical() << "pixel type not handled: only Mono8, Mono10, Mono12 and Mono16 are supported currently";
+    return 0;
+}
+
+}
 
 PylonCamera::BaslerImageHandler::BaslerImageHandler(PylonCamera *camera)
     : Pylon::CImageEventHandler()
@@ -37,8 +56,10 @@ PylonCamera::BaslerImageHandler::BaslerImageHandler(PylonCamera *camera)
 
 void PylonCamera::BaslerImageHandler::OnImageGrabbed(Pylon::CInstantCamera&, const Pylon::CGrabResultPtr& grabResult)
 {
-    if (grabResult->GetErrorCode()) {
-        emit m_camera->error(QString(grabResult->GetErrorDescription()));
+    if (!grabResult->GrabSucceeded()) {
+        emit m_camera->error(QString("Error %1: %2")
+                                     .arg(grabResult->GetErrorCode())
+                                     .arg(grabResult->GetErrorDescription().c_str()));
         return;
     }
 
@@ -47,8 +68,7 @@ void PylonCamera::BaslerImageHandler::OnImageGrabbed(Pylon::CInstantCamera&, con
     const auto offsetX = grabResult->GetOffsetX();
     const auto offsetY = grabResult->GetOffsetY();
 
-    //! TODO properly set the correct bytesPerPixel value
-    const int bytesPerPixel = 1;
+    const int bytesPerPixel = getBytesPerPixel(grabResult->GetPixelType());
 
     /// get image from buffer
     ZCameraImagePtr currentImage = m_camera->getNextBufferImage(width, height, offsetX, offsetY, bytesPerPixel);
@@ -57,7 +77,7 @@ void PylonCamera::BaslerImageHandler::OnImageGrabbed(Pylon::CInstantCamera&, con
     currentImage->setBuffer(grabResult->GetBuffer());
 
     /// set image number
-    currentImage->setNumber(grabResult->GetFrameNumber());
+    currentImage->setNumber(grabResult->GetImageNumber());
 
     /// notify
     emit m_camera->newImageReceived(currentImage);
