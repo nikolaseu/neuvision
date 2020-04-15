@@ -38,7 +38,7 @@ public:
 private:
     explicit ZStructuredLightSystemProvider();
 
-    static std::map< QString, ZStructuredLightSystemPlugin *> m_plugins;
+    static QMap< QString, ZStructuredLightSystemPlugin *> m_plugins;
 };
 
 } // namespace Z3D

@@ -66,7 +66,7 @@ void ZCameraCalibrationProvider::unloadPlugins()
 ZCameraCalibrationPtr ZCameraCalibrationProvider::getCalibration(const QString &pluginName,
                                                                  const QVariantMap &options)
 {
-    if (!m_plugins.contains(pluginName)) {
+    if (m_plugins.find(pluginName) == m_plugins.end()) {
         qWarning() << "camera calibration plugin not found:" << pluginName;
         return nullptr;
     }
@@ -108,9 +108,9 @@ QWidget *ZCameraCalibrationProvider::getConfigWidget(ZCameraCalibrator *cameraCa
     return nullptr;
 }
 
-ZMultiCameraCalibrationPtr ZCameraCalibrationProvider::getMultiCameraCalibration(QString pluginName, QVariantMap options)
+ZMultiCameraCalibrationPtr ZCameraCalibrationProvider::getMultiCameraCalibration(const QString &pluginName, const QVariantMap &options)
 {
-    if (!m_plugins.contains(pluginName)) {
+    if (m_plugins.find(pluginName) == m_plugins.end()) {
         qWarning() << "camera calibration plugin not found:" << pluginName;
         return nullptr;
     }
@@ -125,7 +125,19 @@ ZMultiCameraCalibrationPtr ZCameraCalibrationProvider::getMultiCameraCalibration
         options[key] = settings->value(key);
     }
 
-    QString pluginName = options["Type"].toString();
+    const QString pluginName = settings->value("Type").toString();
+
+    if (m_plugins.find(pluginName) == m_plugins.end()) {
+        QStringList pluginsList;
+        for (const auto &key : m_plugins.keys()) {
+            pluginsList << key;
+        }
+        qWarning() << "calibration type not found:" << pluginName
+                   << "(available types:" << pluginsList.join(", ") << ")";
+        settings->setValue("Type", QString("<FIXME chose one of: %1>").arg(pluginsList.join(", ")));
+
+        return nullptr;
+    }
 
     return getMultiCameraCalibration(pluginName, options);
 }

@@ -22,9 +22,7 @@
 #include "zcameraacquisition_fwd.h"
 #include "zcameraacquisition_global.h"
 
-#include <QMap>
-#include <QSettings>
-#include <QVariantMap>
+class QSettings;
 
 namespace Z3D
 {

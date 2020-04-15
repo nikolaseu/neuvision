@@ -29,6 +29,9 @@
 
 #include <QDebug>
 #include <QDir>
+#include <QMap>
+#include <QSettings>
+#include <QVariantMap>
 
 namespace Z3D
 {

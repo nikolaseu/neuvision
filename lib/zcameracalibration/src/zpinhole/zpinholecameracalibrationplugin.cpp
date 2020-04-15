@@ -39,11 +39,16 @@
 namespace Z3D
 {
 
-ZMultiCameraCalibrationPtr readStereoCalibrationFile(QString fileName)
+ZMultiCameraCalibrationPtr readStereoCalibrationFile(const QString &fileName)
 {
-    cv::FileStorage fs(qPrintable(fileName), cv::FileStorage::READ);
-    if (!fs.isOpened()) {
-        qWarning() << "cannot read stereo calibration file" << fileName;
+    if (fileName.isNull() || fileName.isEmpty()) {
+        qWarning() << "cannot read stereo calibration file:" << fileName;
+        return nullptr;
+    }
+
+    cv::FileStorage fs;
+    if (!fs.open(qPrintable(fileName), cv::FileStorage::READ)) {
+        qWarning() << "cannot read stereo calibration file:" << fileName;
         return nullptr;
     }
 
@@ -124,10 +129,11 @@ QWidget *ZPinholeCameraCalibrationPlugin::getConfigWidget(ZCameraCalibrator *cam
 ZMultiCameraCalibrationPtr ZPinholeCameraCalibrationPlugin::getMultiCameraCalibration(QVariantMap options)
 {
     if (!options.contains("ConfigFile")) {
+        qCritical() << "'ConfigFile' field is missing!";
         return nullptr;
     }
 
-    QString configFileName = options.value("ConfigFile").toString();
+    const QString configFileName = options.value("ConfigFile").toString();
     return readStereoCalibrationFile(configFileName);
 }
 

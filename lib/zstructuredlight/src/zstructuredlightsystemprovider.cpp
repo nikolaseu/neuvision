@@ -31,7 +31,7 @@
 namespace Z3D
 {
 
-std::map<QString, ZStructuredLightSystemPlugin *> ZStructuredLightSystemProvider::m_plugins;
+QMap<QString, ZStructuredLightSystemPlugin *> ZStructuredLightSystemProvider::m_plugins;
 
 void ZStructuredLightSystemProvider::loadPlugins()
 {
@@ -64,7 +64,13 @@ ZStructuredLightSystemPtr ZStructuredLightSystemProvider::get(QSettings *setting
             const auto plugin = m_plugins[pluginId];
             structuredLightSystem = plugin->get(settings);
         } else {
-            qWarning() << "structured light type not found:" << pluginId;
+            QStringList typesList;
+            for (const auto &key : m_plugins.keys()) {
+                typesList << key;
+            }
+            qWarning() << "structured light type not found:" << pluginId
+                       << "(available types:" << typesList.join(", ") << ")";
+            settings->setValue("Type", QString("<FIXME chose one of: %1>").arg(typesList.join(", ")));
         }
     }
     settings->endGroup();
