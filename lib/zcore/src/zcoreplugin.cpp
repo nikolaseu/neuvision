@@ -20,7 +20,8 @@
 
 #include "ZCore/zcoreplugin.h"
 
-#include <QPluginLoader>
+#include <QtCore/QDebug>
+#include <QtCore/QPluginLoader>
 
 namespace Z3D
 {
@@ -44,7 +45,7 @@ QString ZCorePlugin::id() const
         return data["id"].toString();
     }
 
-    if (auto inst = instance<QObject>()) {
+    if (auto inst = qobject_cast<QObject *>(m_pluginInstance)) {
         /// otherwise, if plugin is loaded, use class name
         return inst->metaObject()->className();
     }
@@ -73,10 +74,16 @@ QJsonObject ZCorePlugin::metaData() const
 bool ZCorePlugin::load()
 {
     if (!m_loader->load()) {
+        qWarning() << "error loading plugin" << m_loader->fileName()
+                   << "->" << m_loader->errorString();
         return false;
     }
 
     m_pluginInstance = m_loader->instance();
+
+    qDebug() << "loaded plugin id:" << id()
+             << "version:" << version();
+
     return true;
 }
 

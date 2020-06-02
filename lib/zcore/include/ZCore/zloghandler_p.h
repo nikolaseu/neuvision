@@ -19,9 +19,9 @@
 
 #pragma once
 
-#include "zcore_global.h"
+#include "ZCore/zcore_global.h"
 
-#include <QDebug>
+#include <QtCore/QDebug>
 
 namespace Z3D {
 

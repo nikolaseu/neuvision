@@ -22,11 +22,10 @@
 
 #include "ZCore/zcoreplugin.h"
 
-#include <QCoreApplication>
-#include <QDebug>
-#include <QDir>
-#include <QFileInfo>
-#include <QJsonObject>
+#include <QtCore/QCoreApplication>
+#include <QtCore/QDir>
+#include <QtCore/QFileInfo>
+#include <QtCore/QJsonObject>
 
 namespace Z3D
 {
@@ -112,21 +111,15 @@ void ZPluginLoader::loadPlugins(QString folder)
             float progress = (float(folderIndex) + float(fileIndex)/fileCount) / folderCount;
             emit progressChanged(progress, tr("Loading %1").arg(fileName));
 
-            qDebug() << "trying to load plugin from:" << pluginFileName
+            qDebug() << "found plugin:" << pluginFileName
                      << "metaData:\n" << plugin->metaData();
-            if (plugin->load()) {
-                qDebug() << "loaded plugin id:" << plugin->id()
-                         << "version:" << plugin->version();
+
 #if defined(Q_OS_ANDROID)
-                QString pluginType = fileName.section('_', 1, 1);
-                m_plugins[pluginType] << plugin;
+            QString pluginType = fileName.section('_', 1, 1);
+            m_plugins[pluginType] << plugin;
 #else
-                m_plugins[folderName] << plugin;
+            m_plugins[folderName] << plugin;
 #endif
-            } else {
-                qWarning() << "error loading plugin" << fileName << "->" << plugin->errorString();
-                delete plugin;
-            }
         }
     }
 
@@ -145,7 +138,7 @@ QList<ZCorePlugin *> ZPluginLoader::plugins(const QString &pluginType)
         return plugins.at(pluginType);
     }
 
-    return QList<ZCorePlugin *>();
+    return {};
 }
 
 ZPluginLoader::ZPluginLoader(QObject *parent)

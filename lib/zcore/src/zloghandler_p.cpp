@@ -20,8 +20,8 @@
 
 #include "ZCore/zloghandler_p.h"
 
-#include <QDateTime>
-#include <QThread>
+#include <QtCore/QDateTime>
+#include <QtCore/QThread>
 
 namespace Z3D
 {

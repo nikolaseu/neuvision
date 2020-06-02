@@ -19,10 +19,10 @@
 
 #pragma once
 
-#include "zcore_fwd.h"
-#include "zcore_global.h"
+#include "ZCore/zcore_fwd.h"
+#include "ZCore/zcore_global.h"
 
-#include <QObject>
+#include <QtCore/QObject>
 
 namespace Z3D
 {

@@ -1,11 +1,11 @@
 #pragma once
 
-#include "zcore_fwd.h"
-#include "zcore_global.h"
+#include "ZCore/zcore_fwd.h"
+#include "ZCore/zcore_global.h"
 
-#include <QAbstractListModel>
-#include <QObject>
-#include <QVariant>
+#include <QtCore/QAbstractListModel>
+#include <QtCore/QObject>
+#include <QtCore/QVariant>
 
 namespace Z3D
 {

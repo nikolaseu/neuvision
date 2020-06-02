@@ -19,9 +19,9 @@
 
 #pragma once
 
-#include "zcore_global.h"
+#include "ZCore/zcore_global.h"
 
-#include <QObject>
+#include <QtCore/QObject>
 
 class QPluginLoader;
 
@@ -49,8 +49,12 @@ public:
 
     /// plugin instance
     template <class ZPlugin>
-    ZPlugin *instance() const
+    ZPlugin *instance()
     {
+        if (!m_pluginInstance && !load()) {
+            return nullptr;
+        }
+
         return qobject_cast<ZPlugin *>(m_pluginInstance);
     }
 
