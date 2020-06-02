@@ -21,12 +21,13 @@
 #include "ZCameraCalibration/zopencvstereomulticameracalibrator.h"
 
 #include "ZCameraCalibration/zopencvstereocameracalibration.h"
-
 #include "ZCameraCalibration/zpinholecameracalibration.h"
 
-#include <QDebug>
+#include "ZCore/zlogging.h"
 
 #include <opencv2/calib3d.hpp>
+
+Z3D_LOGGING_CATEGORY_FROM_FILE("z3d.zcameracalibration", QtInfoMsg)
 
 namespace Z3D
 {
@@ -74,13 +75,13 @@ ZMultiCameraCalibrationPtr ZOpenCVStereoMultiCameraCalibrator::getCalibration(
 {
     size_t ncameras = initialCameraCalibrations.size();
     if (ncameras != 2) {
-        qWarning() << "this only works with two cameras!";
+        zWarning() << "this only works with two cameras!";
         return nullptr;
     }
 
     cv::Size imageSize[2];
 
-    qDebug() << "Running stereo calibration ...";
+    zDebug() << "Running stereo calibration ...";
 
     cv::Mat cameraMatrix[2]
           , distCoeffs[2]
@@ -93,12 +94,12 @@ ZMultiCameraCalibrationPtr ZOpenCVStereoMultiCameraCalibrator::getCalibration(
         /// check first! this only works for pinhole cameras!
         auto calibration = std::dynamic_pointer_cast<Z3D::ZPinholeCameraCalibration>(initialCameraCalibrations[ic]);
         if (!calibration) {
-            qWarning() << "invalid calibration! this only works for pinhole cameras!";
+            zWarning() << "invalid calibration! this only works for pinhole cameras!";
             return nullptr;
         }
 
         if (calibration->sensorWidth() * calibration->sensorWidth() < 1) {
-            qWarning() << "invalid calibration config! camera sensor size is zero!";
+            zWarning() << "invalid calibration config! camera sensor size is zero!";
             return nullptr;
         }
 
@@ -107,7 +108,7 @@ ZMultiCameraCalibrationPtr ZOpenCVStereoMultiCameraCalibrator::getCalibration(
         cameraMatrix[ic] = calibration->cvCameraMatrix().clone();
         distCoeffs[ic] = calibration->cvDistortionCoeffs().clone();
 
-        qDebug() << "camera" << ic << "imageSize:" << imageSize[ic].width << "x" << imageSize[ic].height;
+        zDebug() << "camera" << ic << "imageSize:" << imageSize[ic].width << "x" << imageSize[ic].height;
     }
 
     /// load calibration flags
@@ -158,7 +159,7 @@ ZMultiCameraCalibrationPtr ZOpenCVStereoMultiCameraCalibrator::getCalibration(
             cv::TermCriteria(cv::TermCriteria::MAX_ITER + cv::TermCriteria::EPS, m_termCriteriaMaxIterations, m_termCriteriaEpsilon)
             );
 
-    qDebug() << "stereo calibration finished with RMS error:" << rms
+    zDebug() << "stereo calibration finished with RMS error:" << rms
              << ", distance between cameras:" << cv::norm(T);
 
     std::vector<ZCameraCalibrationPtr> newCalibrations;

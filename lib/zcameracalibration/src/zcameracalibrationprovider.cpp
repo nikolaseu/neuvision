@@ -24,11 +24,13 @@
 #include "ZCameraCalibration/zcameracalibrationplugininterface.h"
 #include "ZCameraCalibration/zpinholecameracalibrationplugin.h"
 
-#include "ZCore/zcoreplugin.h"
-#include "ZCore/zpluginloader.h"
+#include <ZCore/zcoreplugin.h>
+#include <ZCore/zlogging.h>
+#include <ZCore/zpluginloader.h>
 
-#include <QDebug>
 #include <QSettings>
+
+Z3D_LOGGING_CATEGORY_FROM_FILE("z3d.zcameracalibration", QtDebugMsg)
 
 namespace Z3D
 {
@@ -46,10 +48,10 @@ void ZCameraCalibrationProvider::loadPlugins()
     for (auto pluginLoader : list) {
         auto *plugin = pluginLoader->instance<ZCameraCalibrationPluginInterface>();
         if (plugin) {
-            qDebug() << "camera calibration plugin loaded. type:" << pluginLoader->id();
+            zDebug() << "camera calibration plugin loaded. type:" << pluginLoader->id();
             m_plugins.insert(pluginLoader->id(), plugin);
         } else {
-            qWarning() << "invalid camera calibration plugin:" << plugin;
+            zWarning() << "invalid camera calibration plugin:" << plugin;
         }
     }
 }
@@ -67,7 +69,7 @@ ZCameraCalibrationPtr ZCameraCalibrationProvider::getCalibration(const QString &
                                                                  const QVariantMap &options)
 {
     if (m_plugins.find(pluginName) == m_plugins.end()) {
-        qWarning() << "camera calibration plugin not found:" << pluginName;
+        zWarning() << "camera calibration plugin not found:" << pluginName;
         return nullptr;
     }
 
@@ -111,7 +113,7 @@ QWidget *ZCameraCalibrationProvider::getConfigWidget(ZCameraCalibrator *cameraCa
 ZMultiCameraCalibrationPtr ZCameraCalibrationProvider::getMultiCameraCalibration(const QString &pluginName, const QVariantMap &options)
 {
     if (m_plugins.find(pluginName) == m_plugins.end()) {
-        qWarning() << "camera calibration plugin not found:" << pluginName;
+        zWarning() << "camera calibration plugin not found:" << pluginName;
         return nullptr;
     }
 
@@ -132,7 +134,7 @@ ZMultiCameraCalibrationPtr ZCameraCalibrationProvider::getMultiCameraCalibration
         for (const auto &key : m_plugins.keys()) {
             pluginsList << key;
         }
-        qWarning() << "calibration type not found:" << pluginName
+        zWarning() << "calibration type not found:" << pluginName
                    << "(available types:" << pluginsList.join(", ") << ")";
         settings->setValue("Type", QString("<FIXME chose one of: %1>").arg(pluginsList.join(", ")));
 

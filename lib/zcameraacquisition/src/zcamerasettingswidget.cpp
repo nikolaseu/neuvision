@@ -23,12 +23,15 @@
 
 #include "ZCameraAcquisition/zcamerainterface.h"
 
+#include "ZCore/zlogging.h"
+
 #include "qtpropertymanager.h"
 #include "qteditorfactory.h"
 #include "qttreepropertybrowser.h"
 
-#include <QDebug>
 #include <QTimer>
+
+Z3D_LOGGING_CATEGORY_FROM_FILE("z3d.zcameraacquisition", QtInfoMsg)
 
 namespace Z3D
 {
@@ -128,7 +131,7 @@ void ZCameraSettingsWidget::propertyChanged(QtProperty *property)
     }
 
     if (!found)
-        qWarning() << "property changed not found in properties list:" << property->propertyName();
+        zWarning() << "property changed not found in properties list:" << property->propertyName();
 }
 
 void ZCameraSettingsWidget::updateProperties()
@@ -205,7 +208,7 @@ void ZCameraSettingsWidget::updateProperties()
             /// create property
             switch (attribute.type) {
             case Z3D::ZCameraInterface::CameraAttributeTypeUnknown:
-                //qWarning() << "Unknown attribute type" << attribute.name;
+                //zWarning() << "Unknown attribute type" << attribute.name;
                 m_currentProperty = m_groupManager->addProperty(attrName);
                 break;
             case Z3D::ZCameraInterface::CameraAttributeTypeBool:
@@ -227,7 +230,7 @@ void ZCameraSettingsWidget::updateProperties()
                 m_currentProperty = m_enumPropertyManager->addProperty(attrName);
                 break;
             case Z3D::ZCameraInterface::CameraAttributeTypeCommand:
-                //qWarning() << "Command attribute type not supported yet" << attribute.name;
+                //zWarning() << "Command attribute type not supported yet" << attribute.name;
                 /*
                 m_currentProperty = m_stringPropertyManager->addProperty(attrName);
                 m_currentProperty->setEnabled(false);
@@ -238,7 +241,7 @@ void ZCameraSettingsWidget::updateProperties()
             }
 
             if (!m_currentProperty) {
-                qWarning() << "Unable to add property" << attribute.id;
+                zWarning() << "Unable to add property" << attribute.id;
                 continue;
             }
 
@@ -257,7 +260,7 @@ void ZCameraSettingsWidget::updateProperties()
         /// set value
         switch (attribute.type) {
         case Z3D::ZCameraInterface::CameraAttributeTypeUnknown:
-            //qWarning() << "Unknown attribute type" << attribute.name;
+            //zWarning() << "Unknown attribute type" << attribute.name;
             //m_currentProperty = m_groupManager->addProperty(attrName);
             m_currentProperty->setEnabled(attribute.readable && attribute.writable);
             break;
@@ -307,7 +310,7 @@ void ZCameraSettingsWidget::updateProperties()
             m_currentProperty->setEnabled(attribute.readable && attribute.writable);
             break;
         case Z3D::ZCameraInterface::CameraAttributeTypeCommand:
-            //qWarning() << "Command attribute type not supported yet" << attribute.name;
+            //zWarning() << "Command attribute type not supported yet" << attribute.name;
             //m_currentProperty = m_groupManager->addProperty(attrName);
             m_enumPropertyManager->setValue(m_currentProperty, 0);
             m_enumPropertyManager->setEnumNames(m_currentProperty, QStringList() << "[COMMAND]" << "Execute command");

@@ -20,18 +20,12 @@
 
 #include "ZPointCloud/zpointfield.h"
 
-#include <QDebug>
-#include <QLoggingCategory>
+#include <ZCore/zlogging.h>
+
+Z3D_LOGGING_CATEGORY_FROM_FILE("z3d.zpointcloud", QtInfoMsg)
 
 namespace Z3D
 {
-
-namespace // anonymous namespace
-{
-
-Q_LOGGING_CATEGORY(loggingCategory, "z3d.zpointcloud.zpointfield", QtInfoMsg)
-
-} // anonymous namespace
 
 ZPointField *ZPointField::position(unsigned int offset, ZPointField::PointFieldTypes type, unsigned int count)
 {
@@ -59,12 +53,12 @@ ZPointField::ZPointField(const QString &name, unsigned int offset, PointFieldTyp
     , m_dataType(type)
     , m_count(count)
 {
-    qDebug(loggingCategory) << "creating" << this;
+    zDebug() << "creating" << this;
 }
 
 ZPointField::~ZPointField()
 {
-    qDebug(loggingCategory) << "destroying" << this;
+    zDebug() << "destroying" << this;
 }
 
 QString ZPointField::name() const

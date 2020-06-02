@@ -22,10 +22,14 @@
 
 #include "ZCameraAcquisition/zcameraimage.h"
 #include "ZCameraAcquisition/zcamerainterface.h"
+#include "ZCore/zlogging.h"
 
 #include <QDir>
 
-namespace Z3D {
+Z3D_LOGGING_CATEGORY_FROM_FILE("z3d.zstructuredlight", QtInfoMsg)
+
+namespace Z3D
+{
 
 ZCameraAcquisitionManager::ZCameraAcquisitionManager(ZCameraList cameras, QObject *parent)
     : QObject(parent)
@@ -48,7 +52,7 @@ void ZCameraAcquisitionManager::prepareAcquisition(const QString &acquisitionId)
                     .arg(m_acquisitionId)
                     .arg(cam->uuid());
             if (!QDir::current().mkpath(cameraFolder)) {
-                qWarning() << "Unable to create folder:" << cameraFolder;
+                zWarning() << "Unable to create folder:" << cameraFolder;
                 return;
             }
         }
@@ -67,7 +71,7 @@ void ZCameraAcquisitionManager::acquireSingle(const QString &id)
     for (auto &cam : m_cameras) {
         /// if the camera is simulated, set which image should use now
         if (cam->uuid().startsWith("ZSIMULATED")) {
-            qDebug() << "camera is simulated. using image" << id;
+            zDebug() << "camera is simulated. using image" << id;
             cam->setAttribute("CurrentFile", id);
         }
 
@@ -95,7 +99,7 @@ void ZCameraAcquisitionManager::acquireSingle(const QString &id)
                             .arg(id));
             }
         } else {
-            qCritical() << "error obtaining snapshot for camera" << cam->uuid();
+            zCritical() << "error obtaining snapshot for camera" << cam->uuid();
         }
 
         images.push_back(imptr);

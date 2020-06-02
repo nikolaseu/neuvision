@@ -20,10 +20,10 @@
 
 #include "zringgridpatternfinder.h"
 
+#include "ZCore/zlogging.h"
+
 #include <opencv2/imgproc.hpp>
 #include <opencv2/calib3d.hpp>
-
-#include <QDebug>
 
 //#define DEBUG_REFERENCE_DETECTOR
 //#define DEBUG_PERSPECTIVE_TRANSFORMATION
@@ -33,6 +33,7 @@
 #  include "opencv2/highgui.hpp" //to use imwrite, imshow
 #endif
 
+Z3D_LOGGING_CATEGORY_FROM_FILE("z3d.zcameracalibrator.finders.zringgrid2", QtInfoMsg)
 
 namespace Z3D
 {
@@ -109,7 +110,7 @@ bool ZRingGridPatternFinder::findCalibrationPattern(cv::Mat image, std::vector<c
             gray = image;
         }
     } else {
-        qWarning() << "unknown image type";
+        zWarning() << "unknown image type";
         return false;
     }
 
@@ -196,7 +197,7 @@ bool ZRingGridPatternFinder::findCalibrationPattern(cv::Mat image, std::vector<c
                             //cv::CALIB_CB_CLUSTERING |
                             cv::CALIB_CB_SYMMETRIC_GRID,
                             blobDetector)) {
-        qDebug() << "standard circle grid not found near bigger rings";
+        zDebug() << "standard circle grid not found near bigger rings";
         return false;
     }
 
@@ -238,7 +239,7 @@ bool ZRingGridPatternFinder::findCalibrationPattern(cv::Mat image, std::vector<c
 
     /// only continue if coord system was found
     if (!foundCoordSystem) {
-        qDebug() << "could not find reference coord system";
+        zDebug() << "could not find reference coord system";
         return false;
     }
 
@@ -262,7 +263,7 @@ bool ZRingGridPatternFinder::findCalibrationPattern(cv::Mat image, std::vector<c
 
 #ifdef DEBUG_REFERENCE_DETECTOR
         const auto &imagePoint = corners[index];
-        qDebug() << QString("pattern coords: (%1,%2) => (%3,%4)")
+        zDebug() << QString("pattern coords: (%1,%2) => (%3,%4)")
                     .arg(double(patternPoint.x))
                     .arg(double(patternPoint.y))
                     .arg(double(imagePoint.x))
@@ -300,7 +301,7 @@ bool ZRingGridPatternFinder::findCalibrationPattern(cv::Mat image, std::vector<c
             yIndex = index;
             yPattern = patternPoint;
         } else {
-            qWarning() << "we couldn't match markers to coord system!";
+            zWarning() << "we couldn't match markers to coord system!";
             return false;
         }
     }
@@ -454,18 +455,18 @@ bool ZRingGridPatternFinder::findCalibrationPattern(cv::Mat image, std::vector<c
                             const cv::Point2f &newImgPoint = newImgPointVec[0];
                             const cv::Point2f &originalImgPoint = detectedPatternPoints.at(indices[0]);
                             if (cv::norm(newImgPoint - originalImgPoint) > 0.05) {
-                                qDebug() << "original:" << originalImgPoint.x << originalImgPoint.y
+                                zDebug() << "original:" << originalImgPoint.x << originalImgPoint.y
                                          << "new:" << newImgPoint.x << newImgPoint.y;
                             }
                             cv::circle(imgRectifiedPatternPoint, detectedPoint, 6, cv::Scalar(255));
 #endif
 
                         } else {
-                            qWarning() << "the detector found" << keypoints.size() << "possible pattern points in the rectified image, but none were correct";
+                            zWarning() << "the detector found" << keypoints.size() << "possible pattern points in the rectified image, but none were correct";
                         }
 
                     } else {
-                        qWarning() << "the detector found nothing in the rectified image:";
+                        zWarning() << "the detector found nothing in the rectified image:";
                     }
 
 #if defined(DEBUG_PERSPECTIVE_TRANSFORMATION)

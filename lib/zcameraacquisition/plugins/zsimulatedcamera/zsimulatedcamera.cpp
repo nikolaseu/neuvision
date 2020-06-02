@@ -21,9 +21,11 @@
 #include "zsimulatedcamera.h"
 
 #include "ZCameraAcquisition/zcameraimage.h"
+#include "ZCore/zlogging.h"
 
-#include <QDebug>
 #include <QTimer>
+
+Z3D_LOGGING_CATEGORY_FROM_FILE("z3d.zcameraacquisition.zsimulatedcamera", QtInfoMsg)
 
 namespace Z3D
 {
@@ -50,7 +52,7 @@ ZSimulatedCamera::ZSimulatedCamera(QVariantMap options, QObject *parent)
             m_dir.cd(m_folder);
         } else
 #endif
-            qWarning() << "Folder" << m_folder << "not found in" << m_dir.absolutePath();
+            zWarning() << "Folder" << m_folder << "not found in" << m_dir.absolutePath();
     }
 
     const auto entries = m_dir.entryList(QStringList() << "*.png", QDir::Files);
@@ -120,11 +122,11 @@ void ZSimulatedCamera::loadImageFromFilename(const QString &fileName)
     QString file = m_dir.absoluteFilePath(m_currentFile);
 
     if (!m_imageCache.contains(file)) {
-        qDebug() << "image not found in cache:" << file;
+        zDebug() << "image not found in cache:" << file;
         //! FIXME why is this so complicated?
         auto newImage = ZCameraImage::fromFile(file);
         if (!newImage) {
-            qWarning() << "invalid image!" << fileName;
+            zWarning() << "invalid image!" << fileName;
             return;
         }
 
@@ -132,7 +134,7 @@ void ZSimulatedCamera::loadImageFromFilename(const QString &fileName)
 
         m_imageCache.insert(file, item, newImage->bufferSize());
     } else {
-        //qDebug() << "image loaded from cache:" << file;
+        //zDebug() << "image loaded from cache:" << file;
     }
 
     auto newImage = m_imageCache[file]->image;

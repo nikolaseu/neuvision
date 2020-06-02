@@ -20,17 +20,20 @@
 
 #include "ZCameraCalibration/zpinholecameracalibration.h"
 
+#include "ZCore/zlogging.h"
+
 #include <opencv2/imgproc.hpp> // undistortPoints
 #include <opencv2/calib3d.hpp> // rodrigues, solvePnP
 
 #include <iostream>
 
 #include <QDateTime>
-#include <QDebug>
 #include <QDir>
 #include <QElapsedTimer>
 #include <QSettings>
 #include <QtConcurrentRun>
+
+Z3D_LOGGING_CATEGORY_FROM_FILE("z3d.zcameracalibration", QtInfoMsg)
 
 namespace Z3D
 {
@@ -117,7 +120,7 @@ ZCameraCalibrationPtr ZPinholeCameraCalibration::clone() const
 
 bool ZPinholeCameraCalibration::getCalibratedPixel(int x, int y, float *calibratedX, float *calibratedY)
 {
-    //qDebug() << Q_FUNC_INFO << "x:" << x << "y:" << y;
+    //zDebug() << Q_FUNC_INFO << "x:" << x << "y:" << y;
 
     if (!ready()) {
         *calibratedX = x;
@@ -127,7 +130,7 @@ bool ZPinholeCameraCalibration::getCalibratedPixel(int x, int y, float *calibrat
 
     /// check if the pixel is inside the calibrated range
     if (x < 0 || x >= m_sensorWidth || y < 0 || y >= m_sensorHeight) {
-        qWarning() << "pixel outside the calibration range:" << x << "," << y << "calibrated size:" << m_sensorWidth << "," << m_sensorHeight;
+        zWarning() << "pixel outside the calibration range:" << x << "," << y << "calibrated size:" << m_sensorWidth << "," << m_sensorHeight;
         *calibratedX = x;
         *calibratedY = y;
         return false;
@@ -147,7 +150,7 @@ bool ZPinholeCameraCalibration::getRayForPixel(int x, int y, cv::Vec3d &origin, 
     }
 
     if (x < 0 || x >= m_sensorWidth || y < 0 || y >= m_sensorHeight) {
-        qWarning() << "pixel outside the calibration range:" << x << "," << y << "calibrated size:" << m_sensorWidth << "," << m_sensorHeight;
+        zWarning() << "pixel outside the calibration range:" << x << "," << y << "calibrated size:" << m_sensorWidth << "," << m_sensorHeight;
         return false;
     }
 
@@ -165,7 +168,7 @@ bool ZPinholeCameraCalibration::getWorldRayForPixel(int x, int y, cv::Vec3d &ori
     }
 
     if (x < 0 || x >= m_sensorWidth || y < 0 || y >= m_sensorHeight) {
-        qWarning() << "pixel outside the calibration range:" << x << "," << y << "calibrated size:" << m_sensorWidth << "," << m_sensorHeight;
+        zWarning() << "pixel outside the calibration range:" << x << "," << y << "calibrated size:" << m_sensorWidth << "," << m_sensorHeight;
         return false;
     }
 
@@ -220,7 +223,7 @@ bool ZPinholeCameraCalibration::loadFromFile(const QString &fileName)
     #endif
 
         if (!currentDir.exists(fileName)) {
-            qWarning() << "calibration file" << fileName << "not found in" << currentDir.absolutePath();
+            zWarning() << "calibration file" << fileName << "not found in" << currentDir.absolutePath();
             return false;
         }
     }
@@ -313,7 +316,7 @@ bool ZPinholeCameraCalibration::saveToFile(const QString &fileName)
     QSettings settings(fileName, QSettings::IniFormat);
 
     if (!settings.isWritable()) {
-        qWarning() << "Error: can not open/write calibration file" << fileName;
+        zWarning() << "Error: can not open/write calibration file" << fileName;
         return false;
     }
 
@@ -390,7 +393,7 @@ bool ZPinholeCameraCalibration::saveToFile(const QString &fileName)
         return true;
     }
 
-    qWarning() << "unable to save calibration. cannot open file:" << fileName;
+    zWarning() << "unable to save calibration. cannot open file:" << fileName;
     return false;*/
 }
 
@@ -696,7 +699,7 @@ void ZPinholeCameraCalibration::generateLookUpTable()
     QElapsedTimer time;
     time.start();
 
-    qDebug() << "initializing undistorted rays lookup table with" << pixelCount << "values";
+    zDebug() << "initializing undistorted rays lookup table with" << pixelCount << "values";
 
     /// fill "distorted" points for every pixel in the image
     std::vector<cv::Point2f> points;
@@ -740,7 +743,7 @@ void ZPinholeCameraCalibration::generateLookUpTable()
     /// undistortedPoints will now be in pixel again
     cv::undistortPoints(points, m_undistortedPoints, m_cvCameraMatrix, m_cvDistortionCoeffs, cv::Mat(), m_cvCameraMatrix);
 
-    qDebug() << "finished initialization of undistorted rays lookup table with" << pixelCount << "pixels in" << time.elapsed() << "msecs";
+    zDebug() << "finished initialization of undistorted rays lookup table with" << pixelCount << "pixels in" << time.elapsed() << "msecs";
 
     setReady(true);
 }

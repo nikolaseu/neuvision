@@ -23,11 +23,13 @@
 #include "ZCameraCalibration/zpinholecameracalibration.h"
 #include "ZCameraCalibration/zpinholecameracalibratorconfigwidget.h"
 
+#include "ZCore/zlogging.h"
+
 #include <opencv2/calib3d.hpp>
 
 #include <iostream>
 
-#include <QDebug>
+Z3D_LOGGING_CATEGORY_FROM_FILE("z3d.zcameracalibration", QtInfoMsg)
 
 namespace Z3D
 {
@@ -117,7 +119,7 @@ ZCameraCalibrationPtr ZPinholeCameraCalibrator::getCalibration(
         std::cout << cameraMatrix << std::endl;
         std::cout << distortionCoeffs << std::endl;
 
-        qDebug() << "Error:" << errorRms;
+        zDebug() << "Error:" << errorRms;
     }
 
     return ZCameraCalibrationPtr(new Z3D::ZPinholeCameraCalibration(cameraMatrix, distortionCoeffs, imageSize));

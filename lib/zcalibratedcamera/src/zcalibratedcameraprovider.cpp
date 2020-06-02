@@ -24,11 +24,13 @@
 
 #include "ZCameraAcquisition/zcameraprovider.h"
 #include "ZCameraCalibration/zcameracalibrationprovider.h"
+#include <ZCore/zlogging.h>
 
-#include <QDebug>
 #include <QDir>
 #include <QSettings>
 #include <memory>
+
+Z3D_LOGGING_CATEGORY_FROM_FILE("z3d.zcalibratedcamera", QtDebugMsg)
 
 namespace Z3D
 {
@@ -58,12 +60,12 @@ QList<ZCalibratedCameraPtr> ZCalibratedCameraProvider::loadCameras(const QString
     #endif
 
         if (!configDir.cd("cameras")) {
-            qWarning() << "cameras configuration folder 'cameras' not found in" << configDir.absolutePath();
+            zWarning() << "cameras configuration folder 'cameras' not found in" << configDir.absolutePath();
             return QList<Z3D::ZCalibratedCameraPtr>();
         }
     }
 
-    qDebug() << "loading cameras from" << configDir.absolutePath();
+    zDebug() << "loading cameras from" << configDir.absolutePath();
 
     QList<Z3D::ZCalibratedCameraPtr> cameraList;
 
@@ -72,13 +74,13 @@ QList<ZCalibratedCameraPtr> ZCalibratedCameraProvider::loadCameras(const QString
     configDir.setNameFilters(filters);
 
     for (const QString &fileName : configDir.entryList(QDir::Files)) {
-        qDebug() << "found" << fileName;
+        zDebug() << "found" << fileName;
         QSettings settings(configDir.absoluteFilePath(fileName), QSettings::IniFormat);
 
         ZCalibratedCameraPtr calibratedCamera = getCalibratedCamera(&settings);
 
         if (!calibratedCamera) {
-            qWarning() << "unable to load calibrated camera";
+            zWarning() << "unable to load calibrated camera";
             continue;
         }
 
@@ -99,7 +101,7 @@ ZCalibratedCameraPtr ZCalibratedCameraProvider::getCalibratedCamera(QSettings *s
     {
         camera = ZCameraProvider::getCamera(settings);
         if (!camera) {
-            qWarning() << "unable to load camera";
+            zWarning() << "unable to load camera";
             return nullptr;
         }
     }
@@ -110,7 +112,7 @@ ZCalibratedCameraPtr ZCalibratedCameraProvider::getCalibratedCamera(QSettings *s
     {
         cameraCalibration = ZCameraCalibrationProvider::getCalibration(settings);
         if (!cameraCalibration) {
-            qWarning() << "unable to load camera calibration";
+            zWarning() << "unable to load camera calibration";
             return nullptr;
         }
     }

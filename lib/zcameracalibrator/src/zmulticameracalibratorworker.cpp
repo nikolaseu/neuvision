@@ -28,11 +28,14 @@
 #include "ZCameraCalibration/zcameracalibration.h"
 #include "ZCameraCalibration/zmulticameracalibration.h"
 #include "ZCameraCalibration/zmulticameracalibrator.h"
+#include "ZCore/zlogging.h"
 
 #include <QCoreApplication>
 #include <QElapsedTimer>
 #include <QtConcurrentMap>
 #include <QtConcurrentRun>
+
+Z3D_LOGGING_CATEGORY_FROM_FILE("z3d.zcameracalibrator", QtInfoMsg)
 
 namespace Z3D
 {
@@ -54,12 +57,12 @@ ZMultiCameraCalibratorWorker::ZMultiCameraCalibratorWorker(QObject *parent)
 ZMultiCameraCalibratorWorker::~ZMultiCameraCalibratorWorker()
 {
     if (m_calibrateFutureWatcher.isRunning()) {
-        qWarning() << Q_FUNC_INFO << "canceling running calibrations task...";
+        zWarning() << Q_FUNC_INFO << "canceling running calibrations task...";
         m_calibrateFutureWatcher.future().cancel();
     }
 
     if (m_patternFinderFutureWatcher.isRunning()) {
-        qWarning() << Q_FUNC_INFO << "canceling running pattern finder tasks...";
+        zWarning() << Q_FUNC_INFO << "canceling running pattern finder tasks...";
         m_patternFinderFutureWatcher.future().cancel();
     }
 
@@ -171,7 +174,7 @@ void ZMultiCameraCalibratorWorker::findCalibrationPattern()
         return;
 
     if (m_patternFinderFutureWatcher.isRunning()) {
-        qWarning() << Q_FUNC_INFO << "canceling previous pattern finder...";
+        zWarning() << Q_FUNC_INFO << "canceling previous pattern finder...";
 
         /// 0%
         setProgress(-1.f, tr("Canceling previous calibration patterns search..."));
@@ -180,7 +183,7 @@ void ZMultiCameraCalibratorWorker::findCalibrationPattern()
         m_patternFinderFutureWatcher.waitForFinished();
     }
 
-    qDebug() << Q_FUNC_INFO << "using" << QThreadPool::globalInstance()->maxThreadCount() << "thread(s)...";
+    zDebug() << Q_FUNC_INFO << "using" << QThreadPool::globalInstance()->maxThreadCount() << "thread(s)...";
 
     /// 0%
     setProgress(0.f, tr("Finding calibration patterns..."));
@@ -201,7 +204,7 @@ void ZMultiCameraCalibratorWorker::calibrate(const std::vector<ZCameraCalibratio
     /// if for some reason the task is executed simultaneously, we need to wait
     /// to set the future to be able to exit cleanly
     if (m_calibrateFutureWatcher.isRunning()) {
-        qWarning() << Q_FUNC_INFO << "canceling previous calibration...";
+        zWarning() << Q_FUNC_INFO << "canceling previous calibration...";
 
         /// 0%
         setProgress(-1.f, tr("Canceling previous camera calibration..."));
@@ -218,11 +221,11 @@ void ZMultiCameraCalibratorWorker::calibrate(const std::vector<ZCameraCalibratio
 void ZMultiCameraCalibratorWorker::calibrateFunctionImpl(const std::vector<ZCameraCalibrationPtr> &currentCalibrations)
 {
     if (m_patternFinderFutureWatcher.isRunning()) {
-        qWarning() << Q_FUNC_INFO << "waiting for pattern finder to finish...";
+        zWarning() << Q_FUNC_INFO << "waiting for pattern finder to finish...";
         m_patternFinderFutureWatcher.waitForFinished();
     }
 
-    qDebug() << Q_FUNC_INFO << "starting...";
+    zDebug() << Q_FUNC_INFO << "starting...";
 
     QElapsedTimer time;
     time.start();
@@ -244,7 +247,7 @@ void ZMultiCameraCalibratorWorker::calibrateFunctionImpl(const std::vector<ZCame
             if (cameraCount == 0)
                 cameraCount = multiImage->images().size();
             else if (cameraCount != multiImage->images().size()) {
-                qWarning() << "The number of cameras is not the same for all images";
+                zWarning() << "The number of cameras is not the same for all images";
 
                 /// calibration end
                 setProgress(1.f);
@@ -258,7 +261,7 @@ void ZMultiCameraCalibratorWorker::calibrateFunctionImpl(const std::vector<ZCame
 
     if (cameraCount < 2) {
         /// not enough cameras, this is for multi camera setups!
-        qWarning() << "could not calibrate multi camera, not enough cameras";
+        zWarning() << "could not calibrate multi camera, not enough cameras";
 
         /// calibration end
         setProgress(1.f);
@@ -267,14 +270,14 @@ void ZMultiCameraCalibratorWorker::calibrateFunctionImpl(const std::vector<ZCame
 
         return;
     } else {
-        qDebug() << "number of cameras:" << cameraCount;
+        zDebug() << "number of cameras:" << cameraCount;
     }
 
     const auto validImageCount = validImages.size();
 
     if (validImageCount < 1) {
         /// not enough valid images
-        qWarning() << "could not calibrate camera, not enough images with calibration pattern found";
+        zWarning() << "could not calibrate camera, not enough images with calibration pattern found";
 
         /// calibration end
         setProgress(1.f);
@@ -283,7 +286,7 @@ void ZMultiCameraCalibratorWorker::calibrateFunctionImpl(const std::vector<ZCame
 
         return;
     } else {
-        qDebug() << "number of images:" << validImageCount;
+        zDebug() << "number of images:" << validImageCount;
     }
 
     /// 10% ¿?
@@ -339,7 +342,7 @@ void ZMultiCameraCalibratorWorker::calibrateFunctionImpl(const std::vector<ZCame
 
     if (pointsCount < 16 * imageCount) {
         /// not enough detected points
-        qWarning() << "could not calibrate multi camera, not enough points";
+        zWarning() << "could not calibrate multi camera, not enough points";
 
         /// calibration end
         setProgress(1.f);
@@ -348,7 +351,7 @@ void ZMultiCameraCalibratorWorker::calibrateFunctionImpl(const std::vector<ZCame
 
         return;
     } else {
-        qDebug() << "number of points:" << pointsCount;
+        zDebug() << "number of points:" << pointsCount;
     }
 
     /// 30% ¿?
@@ -357,7 +360,7 @@ void ZMultiCameraCalibratorWorker::calibrateFunctionImpl(const std::vector<ZCame
     Z3D::ZMultiCameraCalibrationPtr calibrationResult = m_cameraCalibrator->getCalibration(currentCalibrations, allImagePoints, realWorldPoints);
     if (!calibrationResult) {
         /// calibration failed
-        qWarning() << "could not calibrate multi camera, calibration algorithm failed";
+        zWarning() << "could not calibrate multi camera, calibration algorithm failed";
 
         /// calibration end
         setProgress(1.f);

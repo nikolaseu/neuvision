@@ -23,11 +23,13 @@
 #include "zpyloncamera.h"
 
 #include "ZCameraAcquisition/zcamerainfo.h"
+#include "ZCore/zlogging.h"
 
 #include <pylon/PylonIncludes.h>
 
-#include <QDebug>
 #include <QStringList>
+
+Z3D_LOGGING_CATEGORY_FROM_FILE("z3d.zcameraacquisition.zpylon", QtInfoMsg)
 
 namespace Z3D
 {
@@ -55,7 +57,7 @@ QList<ZCameraInfo *> ZPylonPlugin::getConnectedCameras()
     Pylon::CTlFactory& tlFactory = Pylon::CTlFactory::GetInstance();
 
     if (tlFactory.EnumerateDevices(devices) == 0) {
-        qWarning() << "failed to enumerate devices";
+        zWarning() << "failed to enumerate devices";
         return camerasList;
     }
 
@@ -90,7 +92,7 @@ ZCameraPtr ZPylonPlugin::getCamera(QVariantMap options)
     }
 
     if (fullName.isNull()) {
-        qWarning() << "couldn't find camera with serial number:" << serialNumber;
+        zWarning() << "couldn't find camera with serial number:" << serialNumber;
         return nullptr;
     }
 
@@ -98,7 +100,7 @@ ZCameraPtr ZPylonPlugin::getCamera(QVariantMap options)
             .CreateDevice(Pylon::CDeviceInfo().SetFullName(qPrintable(fullName)));
 
     if (!device) {
-        qWarning() << "couldn't connect to camera with serial number:" << serialNumber;
+        zWarning() << "couldn't connect to camera with serial number:" << serialNumber;
         return nullptr;
     }
 

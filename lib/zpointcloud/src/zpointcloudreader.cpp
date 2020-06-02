@@ -23,8 +23,6 @@
 #include "ZPointCloud/zpointcloud.h"
 #include "ZPointCloud/zpointcloudprovider.h"
 
-#include <QDebug>
-
 namespace Z3D
 {
 

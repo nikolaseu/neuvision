@@ -26,11 +26,14 @@
 
 #include "ZCameraCalibration/zcameracalibration.h"
 #include "ZCameraCalibration/zcameracalibrator.h"
+#include "ZCore/zlogging.h"
 
 #include <QCoreApplication>
 #include <QElapsedTimer>
 #include <QtConcurrentMap>
 #include <QtConcurrentRun>
+
+Z3D_LOGGING_CATEGORY_FROM_FILE("z3d.zcameracalibrator", QtInfoMsg)
 
 namespace Z3D
 {
@@ -55,12 +58,12 @@ ZCameraCalibratorWorker::ZCameraCalibratorWorker(QObject *parent)
 ZCameraCalibratorWorker::~ZCameraCalibratorWorker()
 {
     if (m_calibrateFutureWatcher.isRunning()) {
-        qWarning() << Q_FUNC_INFO << "canceling running calibrations task...";
+        zWarning() << Q_FUNC_INFO << "canceling running calibrations task...";
         m_calibrateFutureWatcher.future().cancel();
     }
 
     if (m_patternFinderFutureWatcher.isRunning()) {
-        qWarning() << Q_FUNC_INFO << "canceling running pattern finder tasks...";
+        zWarning() << Q_FUNC_INFO << "canceling running pattern finder tasks...";
         m_patternFinderFutureWatcher.future().cancel();
     }
 
@@ -172,7 +175,7 @@ void ZCameraCalibratorWorker::findCalibrationPattern()
         return;
 
     if (m_patternFinderFutureWatcher.isRunning()) {
-        qWarning() << Q_FUNC_INFO << "canceling previous pattern finder...";
+        zWarning() << Q_FUNC_INFO << "canceling previous pattern finder...";
 
         /// 0%
         setProgress(-1.f, tr("Canceling previous calibration patterns search..."));
@@ -181,7 +184,7 @@ void ZCameraCalibratorWorker::findCalibrationPattern()
         m_patternFinderFutureWatcher.waitForFinished();
     }
 
-    qDebug() << Q_FUNC_INFO << "using" << QThreadPool::globalInstance()->maxThreadCount() << "thread(s)...";
+    zDebug() << Q_FUNC_INFO << "using" << QThreadPool::globalInstance()->maxThreadCount() << "thread(s)...";
 
     /// 0%
     setProgress(0.f, tr("Finding calibration patterns..."));
@@ -202,7 +205,7 @@ void ZCameraCalibratorWorker::calibrate()
     /// if for some reason the task is executed simultaneously, we need to wait
     /// to set the future to be able to exit cleanly
     if (m_calibrateFutureWatcher.isRunning()) {
-        qWarning() << Q_FUNC_INFO << "canceling previous calibration...";
+        zWarning() << Q_FUNC_INFO << "canceling previous calibration...";
 
         /// 0%
         setProgress(-1.f, tr("Canceling previous camera calibration..."));
@@ -219,11 +222,11 @@ void ZCameraCalibratorWorker::calibrate()
 void ZCameraCalibratorWorker::calibrateFunctionImpl()
 {
     if (m_patternFinderFutureWatcher.isRunning()) {
-        qWarning() << Q_FUNC_INFO << "waiting for pattern finder to finish...";
+        zWarning() << Q_FUNC_INFO << "waiting for pattern finder to finish...";
         m_patternFinderFutureWatcher.waitForFinished();
     }
 
-    qDebug() << Q_FUNC_INFO << "starting...";
+    zDebug() << Q_FUNC_INFO << "starting...";
 
     QElapsedTimer time;
     time.start();
@@ -247,7 +250,7 @@ void ZCameraCalibratorWorker::calibrateFunctionImpl()
 
     if (validImageCount < 2) {
         /// not enough valid images
-        qWarning() << "could not calibrate camera, not enough images with calibration pattern found";
+        zWarning() << "could not calibrate camera, not enough images with calibration pattern found";
 
         /// calibration end
         setProgress(1.f, tr("Calibration failed. Not enough calibration patterns found"));

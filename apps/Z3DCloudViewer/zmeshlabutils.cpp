@@ -1,26 +1,24 @@
 #include "zmeshlabutils.h"
 
+#include "ZCore/zlogging.h"
+
 #include <QDir>
 #include <QDomDocument>
 #include <QFile>
 #include <QFileInfo>
-#include <QLoggingCategory>
 #include <QRegularExpression>
+
+Z3D_LOGGING_CATEGORY_FROM_FILE("z3d.apps.zcloudviewer", QtInfoMsg)
 
 namespace Z3D::ZMeshlabUtils
 {
-
-namespace // anonymous namespace
-{
-Q_LOGGING_CATEGORY(loggingCategory, "z3d.zcloudviewer.zmeshlabutils", QtInfoMsg);
-}
 
 std::vector<MeshlabProjectData> parseMeshlabProject(const QString &fileName)
 {
     QFile file(fileName);
     if (!file.open(QIODevice::ReadOnly)) {
         //open error
-        qCritical(loggingCategory) << "cannot open file" << fileName;
+        zCritical() << "cannot open file" << fileName;
         throw std::runtime_error("failed to open file");
     }
 
@@ -30,7 +28,7 @@ std::vector<MeshlabProjectData> parseMeshlabProject(const QString &fileName)
     int errorColumn;
     if (!doc.setContent(&file, false, &errorStr, &errorLine, &errorColumn)) {
         file.close();
-        qCritical(loggingCategory) << "cannot parse file as XML" << fileName;
+        zCritical() << "cannot parse file as XML" << fileName;
         throw std::runtime_error("cannot parse file as XML");
     }
 
@@ -39,13 +37,13 @@ std::vector<MeshlabProjectData> parseMeshlabProject(const QString &fileName)
 
     QDomElement docRoot = doc.documentElement();
     if (docRoot.isNull()) {
-        qCritical(loggingCategory) << "file has no XML root element" << fileName;
+        zCritical() << "file has no XML root element" << fileName;
         throw std::runtime_error("file has no root element");
     }
 
     QDomElement meshGroupElem = docRoot.firstChildElement("MeshGroup");
     if (meshGroupElem.isNull()) {
-        qCritical(loggingCategory) << "file has no MeshGroup element" << fileName;
+        zCritical() << "file has no MeshGroup element" << fileName;
         throw std::runtime_error("file has no MeshGroup element");
     }
 
@@ -56,7 +54,7 @@ std::vector<MeshlabProjectData> parseMeshlabProject(const QString &fileName)
         const QString mlMeshFileName = mesh.attribute("filename");
 
         const QDomElement matrixElem = mesh.firstChildElement("MLMatrix44");
-        qDebug(loggingCategory) << "matrix:" << matrixElem.text();
+        zDebug() << "matrix:" << matrixElem.text();
 
         const QString matrixText = matrixElem.text()
                                        .replace("\n", "")
@@ -66,7 +64,7 @@ std::vector<MeshlabProjectData> parseMeshlabProject(const QString &fileName)
         static QRegularExpression matrixRegExp(R"(([-+]?[0-9]*\.?[0-9]+) ([-+]?[0-9]*\.?[0-9]+) ([-+]?[0-9]*\.?[0-9]+) ([-+]?[0-9]*\.?[0-9]+) ([-+]?[0-9]*\.?[0-9]+) ([-+]?[0-9]*\.?[0-9]+) ([-+]?[0-9]*\.?[0-9]+) ([-+]?[0-9]*\.?[0-9]+) ([-+]?[0-9]*\.?[0-9]+) ([-+]?[0-9]*\.?[0-9]+) ([-+]?[0-9]*\.?[0-9]+) ([-+]?[0-9]*\.?[0-9]+) ([-+]?[0-9]*\.?[0-9]+) ([-+]?[0-9]*\.?[0-9]+) ([-+]?[0-9]*\.?[0-9]+) ([-+]?[0-9]*\.?[0-9]+))");
         QRegularExpressionMatch matrixMatch = matrixRegExp.match(matrixText);
         if (!matrixMatch.hasMatch()) {
-            qCritical(loggingCategory) << "MLMesh has invalid MLMatrix44" << matrixText;
+            zCritical() << "MLMesh has invalid MLMatrix44" << matrixText;
             throw std::runtime_error("MLMesh has invalid MLMatrix44");
         }
 
@@ -94,7 +92,7 @@ std::vector<MeshlabProjectData> parseMeshlabProject(const QString &fileName)
             : mlMeshFileName; // use the file name as it is
         meshData.transformation = transformation;
 
-        qDebug(loggingCategory) << "found file:" << meshData.filename
+        zDebug() << "found file:" << meshData.filename
                                 << "with transformation:" << meshData.transformation;
 
         data.push_back(meshData);

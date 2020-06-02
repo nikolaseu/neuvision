@@ -25,13 +25,15 @@
 #include "ZStructuredLight/zpatternprojection.h"
 
 #include "ZCameraAcquisition/zimageviewer.h"
+#include "ZCore/zlogging.h"
 
 #include <opencv2/core.hpp>
 #include <opencv2/imgproc.hpp>
 #include <opencv2/highgui.hpp>
 
-#include <QDebug>
 #include <QTimer>
+
+Z3D_LOGGING_CATEGORY_FROM_FILE("z3d.zstructuredlight", QtInfoMsg)
 
 namespace Z3D
 {
@@ -139,7 +141,7 @@ void ZStructuredLightSystem::onPatternsDecodedDebug(const std::vector<ZDecodedPa
         /// find correct minimum and maximum intensities (skipping zeros)
         cv::minMaxLoc(decoded, &minVal, &maxVal);
 
-        qDebug() << "min:" << minVal
+        zDebug() << "min:" << minVal
                  << "max:" << maxVal;
 
         if (absMinVal > minVal) {
@@ -156,7 +158,7 @@ void ZStructuredLightSystem::onPatternsDecodedDebug(const std::vector<ZDecodedPa
     /// range of values
     const double range = (absMaxVal - absMinVal);
 
-    qDebug() << "abs min:" << absMinVal
+    zDebug() << "abs min:" << absMinVal
              << "abs max:" << absMaxVal
              << "range:" << range;
 

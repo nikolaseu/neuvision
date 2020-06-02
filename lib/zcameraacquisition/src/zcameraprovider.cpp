@@ -24,14 +24,16 @@
 #include "ZCameraAcquisition/zcameralistmodel.h"
 #include "ZCameraAcquisition/zcameraplugininterface.h"
 
-#include "ZCore/zcoreplugin.h"
-#include "ZCore/zpluginloader.h"
+#include <ZCore/zcoreplugin.h>
+#include <ZCore/zlogging.h>
+#include <ZCore/zpluginloader.h>
 
-#include <QDebug>
 #include <QDir>
 #include <QMap>
 #include <QSettings>
 #include <QVariantMap>
+
+Z3D_LOGGING_CATEGORY_FROM_FILE("z3d.zcameraacquisition", QtInfoMsg)
 
 namespace Z3D
 {
@@ -46,10 +48,10 @@ void ZCameraProvider::loadPlugins()
     for (auto pluginLoader : list) {
         auto *plugin = pluginLoader->instance<ZCameraPluginInterface>();
         if (plugin) {
-            qDebug() << "camera plugin loaded. type:" << pluginLoader->id();
+            zDebug() << "camera plugin loaded. type:" << pluginLoader->id();
             m_plugins.insert(pluginLoader->id(), plugin);
         } else {
-            qWarning() << "invalid camera plugin:" << plugin;
+            zWarning() << "invalid camera plugin:" << plugin;
         }
     }
 }
@@ -88,14 +90,14 @@ ZCameraPtr ZCameraProvider::getCamera(const QString &pluginName, const QVariantM
             if (options.contains("BufferSize")) {
                 int bufferSize = options.value("BufferSize").toInt();
                 if (camera->setBufferSize(bufferSize)) {
-                    qDebug() << "camera" << camera->uuid() << "using a buffer size of" << bufferSize;
+                    zDebug() << "camera" << camera->uuid() << "using a buffer size of" << bufferSize;
                 }
             }
 
             m_model.add(camera);
         }
     } else {
-        qWarning() << "camera plugin not found:" << pluginName
+        zWarning() << "camera plugin not found:" << pluginName
                    << "available plugins:" << m_plugins.keys();
     }
 
@@ -134,12 +136,12 @@ ZCameraList ZCameraProvider::loadCameras(const QString &folder)
     #endif
 
         if (!configDir.cd("cameras")) {
-            qWarning() << "cameras configuration folder 'cameras' not found in" << configDir.absolutePath();
+            zWarning() << "cameras configuration folder 'cameras' not found in" << configDir.absolutePath();
             return ZCameraList();
         }
     }
 
-    qDebug() << "loading cameras from" << configDir.absolutePath();
+    zDebug() << "loading cameras from" << configDir.absolutePath();
 
     ZCameraList cameraList;
 
@@ -148,7 +150,7 @@ ZCameraList ZCameraProvider::loadCameras(const QString &folder)
     configDir.setNameFilters(filters);
 
     for (const auto &fileName : configDir.entryList(QDir::Files)) {
-        qDebug() << "found" << fileName;
+        zDebug() << "found" << fileName;
         QSettings settings(configDir.absoluteFilePath(fileName), QSettings::IniFormat);
         settings.beginGroup("Camera");
         cameraList.push_back(getCamera(&settings));

@@ -20,9 +20,9 @@
 #pragma once
 
 #define CAMERA_MESSAGE(str) QString("[%1] %2").arg(uuid()).arg(str)
-#define CAMERA_DEBUG(str)   qDebug()    << CAMERA_MESSAGE(str); emit message( CAMERA_MESSAGE(str) );
-#define CAMERA_WARNING(str) qWarning()  << CAMERA_MESSAGE(str); emit warning( CAMERA_MESSAGE(str) );
-#define CAMERA_ERROR(str)   qWarning()  << CAMERA_MESSAGE(str); emit error(   CAMERA_MESSAGE(str) );
+#define CAMERA_DEBUG(str)   zDebug()    << CAMERA_MESSAGE(str); emit message( CAMERA_MESSAGE(str) );
+#define CAMERA_WARNING(str) zWarning()  << CAMERA_MESSAGE(str); emit warning( CAMERA_MESSAGE(str) );
+#define CAMERA_ERROR(str)   zWarning()  << CAMERA_MESSAGE(str); emit error(   CAMERA_MESSAGE(str) );
 
 #include "zcameraacquisition_global.h"
 #include "zcamerainterface.h"

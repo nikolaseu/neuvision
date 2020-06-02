@@ -18,18 +18,20 @@
 // along with Z3D.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-#include <QDebug>
-#include <QDir>
-#include <QSettings>
-#include <QSplashScreen>
-
 #include "ZCameraAcquisition/zcameraprovider.h"
 #include "ZCameraAcquisition/zcameraprovider.h"
 #include "ZCameraCalibration/zcameracalibrationprovider.h"
 #include "ZCameraCalibrator/zcalibrationpatternfinderprovider.h"
 #include "ZCameraCalibrator/zmulticameracalibratorwidget.h"
+#include "ZCore/zlogging.h"
 #include "ZGui/zapplication.h"
 #include "ZGui/zapplicationstyle.h"
+
+#include <QDir>
+#include <QSettings>
+#include <QSplashScreen>
+
+Z3D_LOGGING_CATEGORY_FROM_FILE("z3d.apps.zmulticameracalibration", QtInfoMsg)
 
 int main(int argc, char* argv[])
 {
@@ -80,7 +82,7 @@ int main(int argc, char* argv[])
 #endif
 
         QString settingsFile = configDir.absoluteFilePath(QString("%1.ini").arg(QApplication::applicationName()));
-        qDebug() << "trying to load config from:" << settingsFile;
+        zDebug() << "trying to load config from:" << settingsFile;
         QSettings settings(settingsFile, QSettings::IniFormat);
 
         Z3D::ZCameraList cameras;
@@ -104,13 +106,13 @@ int main(int argc, char* argv[])
         result = app.exec();
     }
 
-    qDebug() << "unloading calibration pattern finder plugins...";
+    zDebug() << "unloading calibration pattern finder plugins...";
     Z3D::ZCalibrationPatternFinderProvider::unloadPlugins();
 
-    qDebug() << "unloading camera calibration plugins...";
+    zDebug() << "unloading camera calibration plugins...";
     Z3D::ZCameraCalibrationProvider::unloadPlugins();
 
-    qDebug() << "unloading camera plugins...";
+    zDebug() << "unloading camera plugins...";
     Z3D::ZCameraProvider::unloadPlugins();
 
     return result;

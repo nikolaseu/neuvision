@@ -20,18 +20,19 @@
 
 #include "zpointcloudpclwrapper.h"
 
+#include "ZCore/zlogging.h"
 #include "ZPointCloud/zpointfield.h"
 
-#include <QLoggingCategory>
 #include <pcl/PCLPointCloud2.h>
 #include <pcl/PCLPointField.h>
+
+Z3D_LOGGING_CATEGORY_FROM_FILE("z3d.zpointcloud.zpcl", QtInfoMsg)
 
 namespace Z3D
 {
 
 namespace // anonymous namespace
 {
-Q_LOGGING_CATEGORY(loggingCategory, "z3d.zpointcloud.plugins.zpcl.zpointcloudpclwrapper")
 
 ZPointField::PointFieldTypes fromPCLDatatype(const pcl::uint8_t &datatype)
 {
@@ -96,13 +97,13 @@ ZPointCloudPCLWrapper::ZPointCloudPCLWrapper(pcl::PCLPointCloud2 *pointCloud,
                   parent)
     , m_pointCloud(pointCloud)
 {
-    qDebug(loggingCategory) << "creating point cloud with" << width() * height() << "points,"
+    zDebug() << "creating point cloud with" << width() * height() << "points,"
              << "size:" << vertexData().size() << "bytes";
 }
 
 ZPointCloudPCLWrapper::~ZPointCloudPCLWrapper()
 {
-    qDebug(loggingCategory) << "destroying" << this;
+    zDebug() << "destroying" << this;
     delete m_pointCloud;
 }
 

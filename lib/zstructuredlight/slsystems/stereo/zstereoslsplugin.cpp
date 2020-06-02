@@ -25,13 +25,16 @@
 
 #include "ZCameraAcquisition/zcameraprovider.h"
 #include "ZCameraCalibration/zcameracalibrationprovider.h"
+#include "ZCore/zlogging.h"
 #include "ZStructuredLight/zpatternprojectionprovider.h"
 
-#include <QDebug>
 #include <QLabel>
 #include <QSettings>
 
-namespace Z3D {
+Z3D_LOGGING_CATEGORY_FROM_FILE("z3d.zstructuredlight.slsystems.stereo", QtInfoMsg)
+
+namespace Z3D
+{
 
 ZStereoSLSPlugin::ZStereoSLSPlugin()
 {
@@ -62,7 +65,7 @@ ZStructuredLightSystemPtr ZStereoSLSPlugin::get(QSettings *settings)
 
                 for (const auto &camera : cameras) {
                     if (!camera) {
-                        qWarning() << "failed to load cameras for DualCamera mode";
+                        zWarning() << "failed to load cameras for DualCamera mode";
                         return nullptr;
                     }
                 }
@@ -82,7 +85,7 @@ ZStructuredLightSystemPtr ZStereoSLSPlugin::get(QSettings *settings)
                 settings->endGroup();
 
                 if (!camera) {
-                    qWarning() << "failed to load camera for Projector+Camera mode";
+                    zWarning() << "failed to load camera for Projector+Camera mode";
                     return nullptr;
                 }
 
@@ -96,7 +99,7 @@ ZStructuredLightSystemPtr ZStereoSLSPlugin::get(QSettings *settings)
         for (const auto &key : slsModes.keys()) {
             modesList << key;
         }
-        qWarning() << "mode not found:" << mode
+        zWarning() << "mode not found:" << mode
                    << "(available modes:" << modesList.join(", ") << ")";
         settings->setValue("Mode", QString("<FIXME chose one of: %1>").arg(modesList.join(", ")));
 
@@ -108,13 +111,13 @@ ZStructuredLightSystemPtr ZStereoSLSPlugin::get(QSettings *settings)
     settings->endGroup();
 
     if (!stereoCalibration) {
-        qWarning() << "failed to load stereo calibration for mode:" << mode;
+        zWarning() << "failed to load stereo calibration for mode:" << mode;
         return nullptr;
     }
 
     auto patternProjection = ZPatternProjectionProvider::get(settings);
     if (!patternProjection) {
-        qWarning() << "failed to load pattern projection for mode:" << mode;
+        zWarning() << "failed to load pattern projection for mode:" << mode;
         return nullptr;
     }
 

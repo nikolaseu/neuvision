@@ -23,8 +23,11 @@
 
 #include "ZCameraAcquisition/zcamerainterface.h"
 
-#include <QDebug>
+#include "ZCore/zlogging.h"
+
 #include <opencv2/core/mat.hpp>
+
+Z3D_LOGGING_CATEGORY_FROM_FILE("z3d.zcameraacquisition", QtInfoMsg)
 
 namespace Z3D
 {
@@ -33,7 +36,7 @@ ZCameraPreviewer::ZCameraPreviewer(QWidget *parent)
     : ZWidget(parent)
     , ui(new Ui::ZCameraPreviewer)
 {
-    qDebug() << Q_FUNC_INFO;
+    zDebug() << Q_FUNC_INFO;
 
     ui->setupUi(this);
 
@@ -48,7 +51,7 @@ ZCameraPreviewer::ZCameraPreviewer(const ZCameraPtr &camera, QWidget *parent)
 
 ZCameraPreviewer::~ZCameraPreviewer()
 {
-    qDebug() << Q_FUNC_INFO;
+    zDebug() << Q_FUNC_INFO;
 
     delete ui;
 }
@@ -98,7 +101,7 @@ void ZCameraPreviewer::setCamera(const ZCameraPtr &camera)
 
 void ZCameraPreviewer::closeEvent(QCloseEvent *)
 {
-    qDebug() << Q_FUNC_INFO;
+    zDebug() << Q_FUNC_INFO;
 
     /// and delete dialog
     deleteLater();

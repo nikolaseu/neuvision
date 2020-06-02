@@ -20,7 +20,8 @@
 
 #include "ZCameraCalibrator/zcalibrationimageviewer.h"
 
-#include <QDebug>
+#include "ZCore/zlogging.h"
+
 #include <QGraphicsEllipseItem>
 #include <QGraphicsItem>
 #include <QGraphicsPolygonItem>

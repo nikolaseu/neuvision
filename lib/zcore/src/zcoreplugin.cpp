@@ -20,8 +20,11 @@
 
 #include "ZCore/zcoreplugin.h"
 
-#include <QtCore/QDebug>
+#include "ZCore/zlogging.h"
+
 #include <QtCore/QPluginLoader>
+
+Z3D_LOGGING_CATEGORY_FROM_FILE("z3d.zcore", QtInfoMsg)
 
 namespace Z3D
 {
@@ -74,14 +77,14 @@ QJsonObject ZCorePlugin::metaData() const
 bool ZCorePlugin::load()
 {
     if (!m_loader->load()) {
-        qWarning() << "error loading plugin" << m_loader->fileName()
+        zWarning() << "error loading plugin" << m_loader->fileName()
                    << "->" << m_loader->errorString();
         return false;
     }
 
     m_pluginInstance = m_loader->instance();
 
-    qDebug() << "loaded plugin id:" << id()
+    zDebug() << "loaded plugin id:" << id()
              << "version:" << version();
 
     return true;

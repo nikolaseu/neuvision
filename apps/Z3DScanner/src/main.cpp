@@ -23,6 +23,7 @@
 #include "ZCameraAcquisition/zcameraprovider.h"
 #include "ZCameraCalibration/zcameracalibrationprovider.h"
 #include "ZCameraCalibrator/zcalibrationpatternfinderprovider.h"
+#include "ZCore/zlogging.h"
 #include "ZCore/zsettingsitem.h"
 #include "ZGui/zapplication.h"
 #include "ZGui/zapplicationstyle.h"
@@ -35,7 +36,6 @@
 #include <QWindow>
 #endif
 
-#include <QDebug>
 #include <QDir>
 #include <QQmlApplicationEngine>
 #include <QQmlContext>
@@ -43,7 +43,7 @@
 #include <QSplashScreen>
 #include <QSurfaceFormat>
 
-
+Z3D_LOGGING_CATEGORY_FROM_FILE("z3d.apps.zscanner", QtInfoMsg)
 
 int main(int argc, char* argv[])
 {
@@ -55,15 +55,12 @@ int main(int argc, char* argv[])
     /// to print out diagnostic information about each plugin it (Qt) tries to load
     //qputenv("QT_DEBUG_PLUGINS", "1");
 
-    QCoreApplication::setAttribute(Qt::AA_UseDesktopOpenGL, true);
-    QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling, true);
-
     ///
     Z3D::ZApplication app(argc, argv);
 
     Z3D::ZApplicationStyle::applyStyle(Z3D::ZApplicationStyle::DarkStyle);
 
-    qDebug() << "available styles:" << QQuickStyle::availableStyles().join(", ");
+    zDebug() << "available styles:" << QQuickStyle::availableStyles().join(", ");
     QQuickStyle::setStyle("Universal");
 //    QQuickStyle::setStyle("Imagine");
 
@@ -119,7 +116,7 @@ int main(int argc, char* argv[])
 #endif
 
         QString settingsFile = configDir.absoluteFilePath(QString("%1.ini").arg(QApplication::applicationName()));
-        qDebug() << "trying to load config from:" << settingsFile;
+        zDebug() << "trying to load config from:" << settingsFile;
         QSettings settings(settingsFile, QSettings::IniFormat);
 
         splash.showMessage(QString("Loading settings file %1...").arg(settingsFile));
@@ -151,13 +148,13 @@ int main(int argc, char* argv[])
         result = app.exec();
     }
 
-    qDebug() << "unloading calibration pattern finder plugins...";
+    zDebug() << "unloading calibration pattern finder plugins...";
     Z3D::ZCalibrationPatternFinderProvider::unloadPlugins();
 
-    qDebug() << "unloading camera calibration plugins...";
+    zDebug() << "unloading camera calibration plugins...";
     Z3D::ZCameraCalibrationProvider::unloadPlugins();
 
-    qDebug() << "unloading camera plugins...";
+    zDebug() << "unloading camera plugins...";
     Z3D::ZCameraProvider::unloadPlugins();
 
     return result;

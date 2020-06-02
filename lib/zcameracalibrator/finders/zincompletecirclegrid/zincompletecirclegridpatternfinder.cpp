@@ -20,10 +20,10 @@
 
 #include "zincompletecirclegridpatternfinder.h"
 
+#include "ZCore/zlogging.h"
+
 #include <opencv2/imgproc.hpp>
 #include <opencv2/calib3d.hpp>
-
-#include <QDebug>
 
 //#define DEBUG_RECTANGLE_DETECTOR
 //#define DEBUG_PERSPECTIVE_TRANSFORMATION
@@ -33,6 +33,7 @@
 #  include "opencv2/highgui.hpp" //to use imwrite, imshow
 #endif
 
+Z3D_LOGGING_CATEGORY_FROM_FILE("z3d.zcameracalibrator.finders.zincompletecirclegrid", QtInfoMsg)
 
 namespace Z3D
 {
@@ -130,7 +131,7 @@ bool ZIncompleteCircleGridPatternFinder::findCalibrationPattern(cv::Mat image, s
             gray = image;
         }
     } else {
-        qWarning() << "unknown image type";
+        zWarning() << "unknown image type";
         return false;
     }
 
@@ -286,7 +287,7 @@ bool ZIncompleteCircleGridPatternFinder::findCalibrationPattern(cv::Mat image, s
             cv::Ptr<cv::FeatureDetector> blobDetector = cv::SimpleBlobDetector::create(blobDetectorParams);
 
 #ifdef DEBUG_RECTANGLE_DETECTOR
-            qDebug() << "board size:" << m_boardSize.width << "x" << m_boardSize.height
+            zDebug() << "board size:" << m_boardSize.width << "x" << m_boardSize.height
                      << "rect area:" << rectArea
                      << "min blob area:" << blobDetectorParams.minArea
                      << "max blob area:" << blobDetectorParams.maxArea;
@@ -385,7 +386,7 @@ bool ZIncompleteCircleGridPatternFinder::findCalibrationPattern(cv::Mat image, s
                         else
                             j = j2;
 
-//                        qDebug() << "looking for point (" << i << "," << j << ")";
+//                        zDebug() << "looking for point (" << i << "," << j << ")";
 
                         cv::Point2f idealPt;
                         if (m_isAsymmetricGrid)
@@ -561,18 +562,18 @@ bool ZIncompleteCircleGridPatternFinder::findCalibrationPattern(cv::Mat image, s
                                         const cv::Point2f &newImgPoint = newImgPointVec[0];
                                         const cv::Point2f &originalImgPoint = detectedPatternPoints.at(indices[0]);
                                         if (cv::norm(newImgPoint - originalImgPoint) > 0.05) {
-                                            qDebug() << "original:" << originalImgPoint.x << originalImgPoint.y
+                                            zDebug() << "original:" << originalImgPoint.x << originalImgPoint.y
                                                      << "new:" << newImgPoint.x << newImgPoint.y;
                                         }
                                         cv::circle(imgRectifiedPatternPoint, detectedPoint, 6, cv::Scalar(255));
 #endif
 
                                     } else {
-                                        qWarning() << "the detector found" << keypoints.size() << "possible pattern points in the rectified image, but none were correct";
+                                        zWarning() << "the detector found" << keypoints.size() << "possible pattern points in the rectified image, but none were correct";
                                     }
 
                                 } else {
-                                    qWarning() << "the detector found nothing in the rectified image:";
+                                    zWarning() << "the detector found nothing in the rectified image:";
                                 }
 
 #if defined(DEBUG_PERSPECTIVE_TRANSFORMATION)
@@ -596,19 +597,19 @@ bool ZIncompleteCircleGridPatternFinder::findCalibrationPattern(cv::Mat image, s
 
                 return true;
             } else {
-                qDebug() << "standard circle grid not found inside rectangle" << iRect;
+                zDebug() << "standard circle grid not found inside rectangle" << iRect;
             }
 
             iRect++;
         } else {
-            qDebug() << "found quadrilateral, but not used because mincos:" << mincos << "maxcos:" << maxcos;
+            zDebug() << "found quadrilateral, but not used because mincos:" << mincos << "maxcos:" << maxcos;
         }
     }
 
     corners.clear();
     patternPoints.clear();
 
-    qDebug() << "nothing found";
+    zDebug() << "nothing found";
     return false;
 }
 

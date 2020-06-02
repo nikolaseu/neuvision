@@ -24,8 +24,9 @@
 #include "ZCalibratedCamera/zcalibratedcamera.h"
 #include "ZCameraAcquisition/zcameraselectorwidget.h"
 #include "ZCameraCalibrator/zcameracalibratorwidget.h"
+#include "ZCore/zlogging.h"
 
-#include <QDebug>
+Z3D_LOGGING_CATEGORY_FROM_FILE("z3d.apps.zcameracalibration", QtInfoMsg)
 
 MainWindow::MainWindow(QWidget *parent)
     : Z3D::ZMainWindow(parent)
@@ -72,7 +73,7 @@ void MainWindow::onContinueButtonClicked()
         }
         ui->stackedWidget->setCurrentWidget(ui->pageCameraSelection);
     } else {
-        qWarning() << "something is wrong!";
+        zWarning() << "something is wrong!";
     }
 }
 

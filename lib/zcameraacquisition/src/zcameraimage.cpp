@@ -20,11 +20,14 @@
 
 #include "ZCameraAcquisition/zcameraimage.h"
 
-#include <QDebug>
+#include <ZCore/zlogging.h>
+
 #include <QMetaType>
 #include <cstring> // memcpy
 #include <memory>
 #include <opencv2/imgcodecs.hpp>
+
+Z3D_LOGGING_CATEGORY_FROM_FILE("z3d.zcameraacquisition", QtDebugMsg)
 
 //! FIXME esto no va acá!!
 static int z3dImagePtrTypeId = qRegisterMetaType<Z3D::ZCameraImagePtr>("Z3D::ZCameraImagePtr");
@@ -48,11 +51,11 @@ ZImageGrayscale::ZImageGrayscale(int width, int height, int xOffset, int yOffset
         m_cvMat.create(m_height, m_width, CV_16UC1);
         break;
     default:
-        qCritical() << "invalid image, only 8 or 16 bits per pixel are supported. Invalid bytes per pixel value:" << m_bytesPerPixel;
+        zCritical() << "invalid image, only 8 or 16 bits per pixel are supported. Invalid bytes per pixel value:" << m_bytesPerPixel;
         break;
     }
 
-    //qDebug() << Q_FUNC_INFO << (long)this << bufferSize();
+    //zDebug() << Q_FUNC_INFO << (long)this << bufferSize();
 }
 
 ZImageGrayscale::ZImageGrayscale(const cv::Mat &mat)
@@ -87,17 +90,17 @@ ZImageGrayscale::ZImageGrayscale(int width, int height, int xOffset, int yOffset
         m_cvMat = cv::Mat(m_height, m_width, CV_16UC1, externalBuffer);
         break;
     default:
-        qCritical() << "invalid image, only 8 or 16 bits per pixel are supported. Invalid bytes per pixel value:" << m_bytesPerPixel;
+        zCritical() << "invalid image, only 8 or 16 bits per pixel are supported. Invalid bytes per pixel value:" << m_bytesPerPixel;
         m_cvMat = cv::Mat();
         break;
     }
 
-    //qDebug() << Q_FUNC_INFO << (long)this << bufferSize();
+    //zDebug() << Q_FUNC_INFO << (long)this << bufferSize();
 }
 
 ZImageGrayscale::~ZImageGrayscale()
 {
-    //qDebug() << Q_FUNC_INFO << (long)this << bufferSize();
+    //zDebug() << Q_FUNC_INFO << (long)this << bufferSize();
 }
 
 ZCameraImagePtr ZImageGrayscale::clone()
@@ -131,7 +134,7 @@ ZCameraImagePtr ZCameraImage::fromFile(const QString &fileName)
         auto mat = cv::imread(qPrintable(fileName), cv::IMREAD_GRAYSCALE);
         return std::make_shared<ZImageGrayscale>(mat);
     } catch (...) {
-        qCritical() << "invalid image" << fileName;
+        zCritical() << "invalid image" << fileName;
         return nullptr;
     }
 }

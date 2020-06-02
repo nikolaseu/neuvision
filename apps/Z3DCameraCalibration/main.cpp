@@ -20,13 +20,16 @@
 
 #include "mainwindow.h"
 
-#include <QSplashScreen>
-
 #include "ZCameraAcquisition/zcameraprovider.h"
 #include "ZCameraCalibration/zcameracalibrationprovider.h"
 #include "ZCameraCalibrator/zcalibrationpatternfinderprovider.h"
+#include "ZCore/zlogging.h"
 #include "ZGui/zapplication.h"
 #include "ZGui/zapplicationstyle.h"
+
+#include <QSplashScreen>
+
+Z3D_LOGGING_CATEGORY_FROM_FILE("z3d.apps.zcameracalibration", QtInfoMsg)
 
 int main(int argc, char* argv[])
 {
@@ -70,13 +73,13 @@ int main(int argc, char* argv[])
         result = app.exec();
     }
 
-    qDebug() << "unloading calibration pattern finder plugins...";
+    zDebug() << "unloading calibration pattern finder plugins...";
     Z3D::ZCalibrationPatternFinderProvider::unloadPlugins();
 
-    qDebug() << "unloading camera calibration plugins...";
+    zDebug() << "unloading camera calibration plugins...";
     Z3D::ZCameraCalibrationProvider::unloadPlugins();
 
-    qDebug() << "unloading camera plugins...";
+    zDebug() << "unloading camera plugins...";
     Z3D::ZCameraProvider::unloadPlugins();
 
     return result;

@@ -22,15 +22,17 @@
 
 #include "ZCameraCalibration/zopencvstereocameracalibration.h"
 #include "ZCameraCalibration/zpinholecameracalibration.h"
+#include "ZCore/zlogging.h"
 #include "ZStructuredLight/zdecodedpattern.h"
 #include "ZStructuredLight/zgeometryutils.h"
 #include "ZStructuredLight/zsimplepointcloud.h"
 
-#include <QDebug>
 #include <QtConcurrentRun>
 
 #include <opencv2/calib3d.hpp>
 #include <opencv2/imgproc.hpp>
+
+Z3D_LOGGING_CATEGORY_FROM_FILE("z3d.zstructuredlight.slsystems.stereo", QtInfoMsg)
 
 namespace Z3D
 {
@@ -50,7 +52,7 @@ ZStereoSystemImpl::ZStereoSystemImpl(ZMultiCameraCalibrationPtr stereoCalibratio
 
 ZStereoSystemImpl::~ZStereoSystemImpl()
 {
-    qDebug() << Q_FUNC_INFO;
+    zDebug() << Q_FUNC_INFO;
 }
 
 bool ZStereoSystemImpl::ready() const
@@ -60,13 +62,13 @@ bool ZStereoSystemImpl::ready() const
 
 void ZStereoSystemImpl::stereoRectify(double alpha)
 {
-    qDebug() << Q_FUNC_INFO;
+    zDebug() << Q_FUNC_INFO;
 
     setReady(false);
 
     /// we need calibrated cameras!
     if (!m_calibration) {
-        qWarning() << "invalid calibration! this only works for stereo calibration!";
+        zWarning() << "invalid calibration! this only works for stereo calibration!";
         return;
     }
 
@@ -102,7 +104,7 @@ ZPointCloudPtr process(const cv::Mat &colorImg, const cv::Mat& Q, cv::Mat leftIm
     cv::Mat disparityImage(imgSize, CV_32FC1, cv::Scalar(0));
 
     for (int y=0; y<imgHeight; ++y) {
-        //qDebug() << "processing row" << y;
+        //zDebug() << "processing row" << y;
 
         const uint8_t* colorData = colorImg.ptr<uint8_t>(y);
         float *depthPtr = disparityImage.ptr<float>(y);
@@ -111,23 +113,23 @@ ZPointCloudPtr process(const cv::Mat &colorImg, const cv::Mat& Q, cv::Mat leftIm
         T* rImgDataNext = rImgData + 1;
         for (int x=0, rx=0; x<imgWidth; ++x, ++imgData, ++colorData, ++depthPtr) {
             if (!ZDecodedPattern::isValidValue(*imgData)) {
-                //qDebug() << "skipping left pixel x:" << x << "-> no data";
+                //zDebug() << "skipping left pixel x:" << x << "-> no data";
                 continue;
             }
 
-            //qDebug() << "processing col" << x << "value" << *imgData;
+            //zDebug() << "processing col" << x << "value" << *imgData;
 
             bool shouldContinueInRight = true;
             for (; shouldContinueInRight && rx<imgWidth-1; ++rx, ++rImgData, ++rImgDataNext) {
                 if (!ZDecodedPattern::isValidValue(*rImgData)) {
-                    //qDebug() << "skipping right pixel x:" << x << "-> no data";
+                    //zDebug() << "skipping right pixel x:" << x << "-> no data";
                     continue;
                 }
 
-                //qDebug() << "processing right col" << rx << "value" << *rImgData << "next" << *rImgDataNext;
+                //zDebug() << "processing right col" << rx << "value" << *rImgData << "next" << *rImgDataNext;
 
                 if (*imgData < *rImgData) {
-                    //qDebug() << "value in right image is higher than left image, advancing left pointer...";
+                    //zDebug() << "value in right image is higher than left image, advancing left pointer...";
                     shouldContinueInRight = false;
                     break;
                 }
@@ -375,7 +377,7 @@ Z3D::ZPointCloudPtr ZStereoSystemImpl::triangulate(const cv::Mat &leftColorImage
     case CV_32FC1: // float_t
         return process<float_t>(leftColorRemapedImage, m_Q, leftRemapedImage, rightRemapedImage);
     default:
-        qWarning() << "unkwnown image type:" << leftRemapedImage.type();
+        zWarning() << "unkwnown image type:" << leftRemapedImage.type();
     }
 
     return nullptr;

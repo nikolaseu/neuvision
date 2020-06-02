@@ -21,11 +21,14 @@
 #include "ZCore/zpluginloader.h"
 
 #include "ZCore/zcoreplugin.h"
+#include "ZCore/zlogging.h"
 
 #include <QtCore/QCoreApplication>
 #include <QtCore/QDir>
 #include <QtCore/QFileInfo>
 #include <QtCore/QJsonObject>
+
+Z3D_LOGGING_CATEGORY_FROM_FILE("z3d.zcore", QtDebugMsg)
 
 namespace Z3D
 {
@@ -65,14 +68,14 @@ void ZPluginLoader::loadPlugins(QString folder)
 #endif
 
         if (!pluginsDir.cd(folder)) {
-            qWarning() << "plugins folder" << folder << "not found in" << pluginsDir.absolutePath()
+            zWarning() << "plugins folder" << folder << "not found in" << pluginsDir.absolutePath()
                        << "available dirs/files:" << pluginsDir.entryList(QDir::AllEntries);
             return;
         }
     }
 #endif
 
-    qDebug() << "searching for plugin folders in" << pluginsDir.absolutePath();
+    zDebug() << "searching for plugin folders in" << pluginsDir.absolutePath();
 
     QStringList filters;
 #if defined(Q_OS_WIN)
@@ -95,7 +98,7 @@ void ZPluginLoader::loadPlugins(QString folder)
     for (const auto &folderName : foldersList) {
         folderIndex++;
         QString pluginsFolderName = pluginsDir.absoluteFilePath(folderName);
-        qDebug() << "loading plugins from" << pluginsFolderName;
+        zDebug() << "loading plugins from" << pluginsFolderName;
         QDir currentPluginsDir(pluginsFolderName);
         currentPluginsDir.setNameFilters(filters);
 
@@ -111,7 +114,7 @@ void ZPluginLoader::loadPlugins(QString folder)
             float progress = (float(folderIndex) + float(fileIndex)/fileCount) / folderCount;
             emit progressChanged(progress, tr("Loading %1").arg(fileName));
 
-            qDebug() << "found plugin:" << pluginFileName
+            zDebug() << "found plugin:" << pluginFileName
                      << "metaData:\n" << plugin->metaData();
 
 #if defined(Q_OS_ANDROID)

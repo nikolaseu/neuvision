@@ -18,14 +18,15 @@
 // along with Z3D.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-#include <QDebug>
-#include <QSplashScreen>
-
-#include "ZGui/zapplication.h"
-#include "ZGui/zapplicationstyle.h"
 #include "ZCameraAcquisition/zcameraprovider.h"
 #include "ZCameraAcquisition/zcameraselectorwidget.h"
+#include "ZCore/zlogging.h"
+#include "ZGui/zapplication.h"
+#include "ZGui/zapplicationstyle.h"
 
+#include <QSplashScreen>
+
+Z3D_LOGGING_CATEGORY_FROM_FILE("z3d.apps.zcameraviewer", QtInfoMsg)
 
 int main(int argc, char *argv[])
 {
@@ -40,7 +41,6 @@ int main(int argc, char *argv[])
     int result;
 
     {
-
         QSplashScreen &splash = *app.showSplashScreen();
 
         splash.showMessage("Loading plugins...");
@@ -62,7 +62,7 @@ int main(int argc, char *argv[])
         result = app.exec();
     }
 
-    qDebug() << "unloading camera plugins...";
+    zDebug() << "unloading camera plugins...";
     Z3D::ZCameraProvider::unloadPlugins();
 
     return result;

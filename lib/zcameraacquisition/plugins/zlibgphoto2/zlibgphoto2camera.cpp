@@ -21,13 +21,14 @@
 #include "zlibgphoto2camera.h"
 
 #include "ZCameraAcquisition/zcameraimage.h"
+#include "ZCore/zlogging.h"
 
-#include <QDebug>
 #include <QImage> //! FIXME we can replace QImage with cv::Mat to remove dependency in Qt5::Gui
 #include <QSize>
 #include <QThread>
 #include <QTimer>
 
+Z3D_LOGGING_CATEGORY_FROM_FILE("z3d.zcameraacquisition.zlibgphoto2", QtInfoMsg)
 
 namespace Z3D
 {
@@ -389,7 +390,7 @@ ZLibGPhoto2Camera::ZLibGPhoto2Camera(GPContext *context, Camera *camera, QObject
 
     /// create a thread for the camera and move the camera to it
     QThread *cameraThread = new QThread();
-    qDebug() << qPrintable(
+    zDebug() << qPrintable(
                     QString("[%1] moving camera to its own thread (0x%2)")
                     .arg(this->uuid())
                     .arg((long)cameraThread, 0, 16));
@@ -461,13 +462,13 @@ QVariant ZLibGPhoto2Camera::getAttribute(const QString &/*id*/) const
 
 bool ZLibGPhoto2Camera::setAttribute(const QString &id, const QVariant &value, bool notify)
 {
-    qDebug() << "trying to set" << id << "to" << value;
+    zDebug() << "trying to set" << id << "to" << value;
 
     QString propName = id.split("/").last();
 
     int ret = set_config_value_string(cam, qPrintable(propName), qPrintable(value.toString()), context);
     if (ret != GP_OK) {
-        qWarning() << "failed setting single config" << id << ret;
+        zWarning() << "failed setting single config" << id << ret;
         return false;
     }
 
@@ -503,7 +504,7 @@ void ZLibGPhoto2Camera::grabLoop()
         /// set image number
         currentImage->setNumber(++frameCounter);
 
-        //qDebug() << "frame" << frameCounter;
+        //zDebug() << "frame" << frameCounter;
 
         if (!m_stopThreadRequested) {
             /// notify
@@ -511,7 +512,7 @@ void ZLibGPhoto2Camera::grabLoop()
         }
     }
 
-    qDebug() << "acquired" << frameCounter << "images";
+    zDebug() << "acquired" << frameCounter << "images";
 
     if (!m_stopThreadRequested) {
         /// if we stopped because of some error, notify

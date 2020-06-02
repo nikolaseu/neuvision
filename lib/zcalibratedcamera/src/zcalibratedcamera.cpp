@@ -22,7 +22,6 @@
 
 #include "ZCalibratedCamera/zcalibratedcamera_fwd.h"
 
-#include <QDebug>
 #include <QMetaType>
 
 namespace Z3D
@@ -39,7 +38,7 @@ ZCalibratedCamera::ZCalibratedCamera(const ZCameraPtr &camera, const ZCameraCali
 
 ZCalibratedCamera::~ZCalibratedCamera()
 {
-//    qDebug() << Q_FUNC_INFO;
+
 }
 
 void ZCalibratedCamera::setCalibration(const ZCameraCalibrationPtr &newCalibration)

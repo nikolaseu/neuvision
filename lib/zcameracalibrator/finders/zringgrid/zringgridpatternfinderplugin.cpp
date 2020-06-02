@@ -23,7 +23,8 @@
 #include "zringgridpatternfinder.h"
 #include "zringgridpatternfinderconfigwidget.h"
 
-namespace Z3D {
+namespace Z3D
+{
 
 QList<ZCalibrationPatternFinderPtr> ZRingGridPatternFinderPlugin::getPatternFinders()
 {

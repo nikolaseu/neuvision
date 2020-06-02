@@ -36,6 +36,7 @@
 #include "ZCameraCalibration/zmulticameracalibration.h"
 #include "ZCameraCalibration/zmulticameracalibrator.h"
 #include "ZCameraCalibration/zpinholecameracalibration.h"
+#include "ZCore/zlogging.h"
 
 #include <QDateTime>
 #include <QFileDialog>
@@ -46,6 +47,8 @@
 #define IMAGE_VIEW 1
 #define CAMERA_VIEW 2
 #define CALIBRATION_VIEW 3
+
+Z3D_LOGGING_CATEGORY_FROM_FILE("z3d.zcameracalibrator", QtInfoMsg)
 
 namespace Z3D
 {
@@ -176,7 +179,7 @@ ZMultiCameraCalibratorWidget::~ZMultiCameraCalibratorWidget()
 
     m_workerThread->terminate();
     if (!m_workerThread->wait(3000)) {
-        qWarning() << "failed to finish worker thread";
+        zWarning() << "failed to finish worker thread";
     }
 
     delete ui;
@@ -324,7 +327,7 @@ void ZMultiCameraCalibratorWidget::onCalibrationChanged(ZMultiCameraCalibrationP
                 .arg(m_sessionFolder)
                 .arg(currentDateTime);
         if (!ZCameraCalibrationProvider::saveCameraCalibration(fileName, calibrationResult)) {
-            qWarning() << "unable to save multi calibration to file:" << fileName;
+            zWarning() << "unable to save multi calibration to file:" << fileName;
         }
 
         //! save individual camera calibration
@@ -338,13 +341,13 @@ void ZMultiCameraCalibratorWidget::onCalibrationChanged(ZMultiCameraCalibrationP
                     .arg(currentDateTime)
                     .arg(camera ? camera->uuid() : QString("camera%1").arg(i));
             if (!newCalibration->saveToFile(fileName)) {
-                qWarning() << "unable to save calibration to file:" << fileName;
+                zWarning() << "unable to save calibration to file:" << fileName;
             }
 
             //! TODO show calibration results!
         }
     } else {
-        qWarning() << "calibration went wrong";
+        zWarning() << "calibration went wrong";
     }
 
     /// enable button again, calibration has finished
@@ -377,7 +380,7 @@ void ZMultiCameraCalibratorWidget::newSession()
 
     /// common session folder
     if (!QDir::current().mkpath(m_sessionFolder)) {
-        qWarning() << "unable to create folder" << m_sessionFolder;
+        zWarning() << "unable to create folder" << m_sessionFolder;
         m_sessionFolder.clear();
     }
 
@@ -391,7 +394,7 @@ void ZMultiCameraCalibratorWidget::newSession()
                 .arg(camera ? camera->uuid() : QString("camera%1").arg(i));
 
         if (!QDir::current().mkpath(cameraFolder)) {
-            qWarning() << "unable to create folder" << cameraFolder;
+            zWarning() << "unable to create folder" << cameraFolder;
             m_sessionFolder.clear();
             break;
         }
@@ -472,7 +475,7 @@ void ZMultiCameraCalibratorWidget::on_saveCameraImageButton_clicked()
                 .arg(currentDateTime);
 
         if (ZCameraImage::save(image, fileName)) {
-            qDebug() << "saved image" << fileName;
+            zDebug() << "saved image" << fileName;
 
             /// add to calibration images model
             ZCalibrationImagePtr calibrationImage(new ZCalibrationImage(fileName));
@@ -494,7 +497,7 @@ void ZMultiCameraCalibratorWidget::on_saveCameraImageButton_clicked()
             }
         } else {
             isValid = false;
-            qWarning() << "unable to save image to" << fileName;
+            zWarning() << "unable to save image to" << fileName;
         }
     }
 

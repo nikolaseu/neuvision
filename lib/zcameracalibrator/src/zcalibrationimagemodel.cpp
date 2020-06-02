@@ -22,9 +22,12 @@
 
 #include "ZCameraCalibrator/zcalibrationimage.h"
 
-#include <QDebug>
+#include "ZCore/zlogging.h"
+
 #include <QDir>
 #include <QtConcurrent>
+
+Z3D_LOGGING_CATEGORY_FROM_FILE("z3d.zcameracalibrator", QtInfoMsg)
 
 namespace Z3D
 {
@@ -94,11 +97,11 @@ void ZCalibrationImageModel::addFolder(QString folder)
     /// we must wait for the previous task to finish
     /// because we use the static vector "images"
     if (m_futureWatcher.isRunning()) {
-        qWarning() << "waiting for previous task to finish...";
+        zWarning() << "waiting for previous task to finish...";
         m_futureWatcher.waitForFinished();
     }
 
-    qDebug() << "loading calibration images from" << folder;
+    zDebug() << "loading calibration images from" << folder;
 
     QStringList filters;
     filters << "*.jpg" << "*.bmp" << "*.png";
@@ -127,7 +130,7 @@ void ZCalibrationImageModel::addImage(ZCalibrationImagePtr image)
     /// we must wait for the previous task to finish
     /// because we use the static vector "images"
     if (m_futureWatcher.isRunning()) {
-        qWarning() << "waiting for previous task to finish...";
+        zWarning() << "waiting for previous task to finish...";
         m_futureWatcher.waitForFinished();
     }
 
@@ -168,11 +171,11 @@ void ZCalibrationImageModel::addImpl(ZCalibrationImagePtr image)
         m_width = image->width();
         m_height = image->height();
         emit imageSizeChanged();
-        qDebug() << "image size:" << m_width << "x" << m_height;
+        zDebug() << "image size:" << m_width << "x" << m_height;
     }
 
     if (image->width() != m_width || image->height() != m_height) {
-        qWarning() << "image not added. it is not the same size:" << image->fileName();
+        zWarning() << "image not added. it is not the same size:" << image->fileName();
         return;
     }
 
@@ -193,7 +196,7 @@ Z3D::ZCalibrationImagePtr ZCalibrationImageModel::imageAt(int index) const
     if (index >= 0 && index < m_images.size()) {
         return m_images[index];
     } else {
-        qCritical() << "invalid image index requested:" << index << " - model size:" << m_images.size();
+        zCritical() << "invalid image index requested:" << index << " - model size:" << m_images.size();
         return nullptr;
     }
 }

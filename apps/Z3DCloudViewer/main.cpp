@@ -43,9 +43,6 @@ int main(int argc, char *argv[])
     /// to print out diagnostic information about each plugin it (Qt) tries to load
     //qputenv("QT_DEBUG_PLUGINS", "1");
 
-    QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling, true);
-    QCoreApplication::setAttribute(Qt::AA_UseDesktopOpenGL, true);
-
     Z3D::ZApplication app(argc, argv);
     app.loadPlugins();
     Z3D::ZPointCloudProvider::loadPlugins();

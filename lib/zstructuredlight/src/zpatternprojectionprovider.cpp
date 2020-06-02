@@ -23,10 +23,12 @@
 #include "ZStructuredLight/zpatternprojectionplugin.h"
 
 #include "ZCore/zcoreplugin.h"
+#include "ZCore/zlogging.h"
 #include "ZCore/zpluginloader.h"
 
-#include <QDebug>
 #include <QSettings>
+
+Z3D_LOGGING_CATEGORY_FROM_FILE("z3d.zstructuredlight", QtInfoMsg)
 
 namespace Z3D
 {
@@ -40,10 +42,10 @@ void ZPatternProjectionProvider::loadPlugins()
     for (auto pluginLoader : list) {
         auto *plugin = pluginLoader->instance<ZPatternProjectionPlugin>();
         if (plugin) {
-            qDebug() << "pattern projection plugin loaded. type:" << pluginLoader->id();
+            zDebug() << "pattern projection plugin loaded. type:" << pluginLoader->id();
             m_plugins[pluginLoader->id()] = plugin;
         } else {
-            qWarning() << "invalid pattern projection plugin:" << plugin;
+            zWarning() << "invalid pattern projection plugin:" << plugin;
         }
     }
 }
@@ -64,7 +66,7 @@ ZPatternProjectionPtr ZPatternProjectionProvider::get(QSettings *settings)
             const auto plugin = m_plugins[pluginId];
             patternProjection = plugin->get(settings);
         } else {
-            qWarning() << "pattern projection type not found:" << pluginId;
+            zWarning() << "pattern projection type not found:" << pluginId;
         }
     }
     settings->endGroup();

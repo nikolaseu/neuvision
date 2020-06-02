@@ -22,10 +22,12 @@
 
 #include "zstereosystemimpl.h"
 
+#include "ZCore/zlogging.h"
 #include "ZStructuredLight/zcameraacquisitionmanager.h"
 
-#include <QDebug>
 #include <memory>
+
+Z3D_LOGGING_CATEGORY_FROM_FILE("z3d.zstructuredlight.slsystems.stereo", QtInfoMsg)
 
 namespace Z3D
 {
@@ -46,7 +48,7 @@ ZStereoSLS::ZStereoSLS(const ZCameraList &cameras,
 
 ZStereoSLS::~ZStereoSLS()
 {
-    qDebug() << "deleting stereo system...";
+    zDebug() << "deleting stereo system...";
     delete m_stereoSystem;
 }
 

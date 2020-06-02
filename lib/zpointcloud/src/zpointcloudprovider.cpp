@@ -27,23 +27,17 @@
 #include "ZPointCloud/zpointcloudplugininterface.h"
 #include "ZPointCloud/zpointcloudreader.h"
 
-#include "ZCore/zcoreplugin.h"
-#include "ZCore/zpluginloader.h"
+#include <ZCore/zcoreplugin.h>
+#include <ZCore/zlogging.h>
+#include <ZCore/zpluginloader.h>
 
-#include <QDebug>
 #include <QDir>
-#include <QLoggingCategory>
 #include <QQmlEngine>
+
+Z3D_LOGGING_CATEGORY_FROM_FILE("z3d.zpointcloud", QtInfoMsg)
 
 namespace Z3D
 {
-
-namespace // anonymous namespace
-{
-
-Q_LOGGING_CATEGORY(loggingCategory, "z3d.zpointcloud.zpointcloudprovider", QtInfoMsg)
-
-} // anonymous namespace
 
 QMap< QString, ZPointCloudPluginInterface *> ZPointCloudProvider::m_plugins;
 
@@ -70,10 +64,10 @@ void ZPointCloudProvider::loadPlugins()
     for (auto pluginLoader : list) {
         auto *plugin = pluginLoader->instance<ZPointCloudPluginInterface>();
         if (plugin) {
-            qDebug(loggingCategory) << "pointcloud plugin loaded. type:" << pluginLoader->id();
+            zDebug() << "pointcloud plugin loaded. type:" << pluginLoader->id();
             m_plugins.insert(pluginLoader->id(), plugin);
         } else {
-            qWarning(loggingCategory) << "invalid pointcloud plugin:" << plugin;
+            zWarning() << "invalid pointcloud plugin:" << plugin;
         }
     }
 }
@@ -90,7 +84,7 @@ void ZPointCloudProvider::unloadPlugins()
 
 ZPointCloudUniquePtr ZPointCloudProvider::loadPointCloud(const QString &fileName)
 {
-    qDebug(loggingCategory) << "Trying to read PointCloud from" << fileName;
+    zDebug() << "Trying to read PointCloud from" << fileName;
 
     const auto plugins = m_plugins.values();
     for (const auto *plugin : plugins) {
@@ -99,7 +93,7 @@ ZPointCloudUniquePtr ZPointCloudProvider::loadPointCloud(const QString &fileName
         }
     }
 
-    qWarning(loggingCategory) << "Failed to read PointCloud. No plugin can handle the format of the file:" << fileName;
+    zWarning() << "Failed to read PointCloud. No plugin can handle the format of the file:" << fileName;
     return nullptr;
 }
 

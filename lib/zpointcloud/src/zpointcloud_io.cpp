@@ -2,18 +2,16 @@
 
 #include "ZPointCloud/zpointcloud.h"
 
+#include <ZCore/zlogging.h>
+
 #include <QDataStream>
 #include <QFile>
-#include <QLoggingCategory>
 #include <QTextStream>
+
+Z3D_LOGGING_CATEGORY_FROM_FILE("z3d.zpointcloud", QtInfoMsg)
 
 namespace Z3D::ZPointCloudIO
 {
-
-namespace
-{
-Q_LOGGING_CATEGORY(loggingCategory, "z3d.zpointcloud.io", QtInfoMsg);
-}
 
 bool savePLY(const Z3D::ZPointCloud &cloud, const QString &fileName)
 {
@@ -22,13 +20,13 @@ bool savePLY(const Z3D::ZPointCloud &cloud, const QString &fileName)
     //! That's why we have point fields!
 
     if (!fileName.endsWith(".ply", Qt::CaseInsensitive)) {
-        qWarning(loggingCategory) << "file extension should be *.ply, it is:" << fileName;
+        zWarning() << "file extension should be *.ply, it is:" << fileName;
         return false;
     }
 
     QFile file(fileName);
     if (!file.open(QFile::WriteOnly)) {
-        qWarning(loggingCategory) << "cannot open file for writing:" << fileName;
+        zWarning() << "cannot open file for writing:" << fileName;
         return false;
     }
 

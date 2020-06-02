@@ -32,6 +32,7 @@
 #include "ZCameraCalibration/zcameracalibration.h"
 #include "ZCameraCalibration/zcameracalibrationprovider.h"
 #include "ZCameraCalibration/zcameracalibrator.h"
+#include "ZCore/zlogging.h"
 
 #include "3rdParty/objectcontroller.h"
 
@@ -47,6 +48,8 @@
 #define CAMERA_VIEW 2
 #define CALIBRATION_VIEW 3
 #define RESULTS_VIEW 4
+
+Z3D_LOGGING_CATEGORY_FROM_FILE("z3d.zcameracalibrator", QtInfoMsg)
 
 namespace Z3D
 {
@@ -385,7 +388,7 @@ void ZCameraCalibratorWidget::newSession()
             .arg(m_camera->camera()->uuid());
 
     if (!QDir::current().mkpath(m_sessionFolder)) {
-        qWarning() << "unable to create folder" << m_sessionFolder;
+        zWarning() << "unable to create folder" << m_sessionFolder;
         m_sessionFolder.clear();
     }
 
@@ -444,7 +447,7 @@ void ZCameraCalibratorWidget::on_saveCameraImageButton_clicked()
             .arg(QDateTime::currentDateTime().toString("yyyyMMddhhmmsszzz"));
 
     if (ZCameraImage::save(image, fileName)) {
-        qDebug() << "saved image" << fileName;
+        zDebug() << "saved image" << fileName;
 
         /// add to calibration images model
         ZCalibrationImagePtr calibrationImage(new ZCalibrationImage(fileName));
@@ -460,7 +463,7 @@ void ZCameraCalibratorWidget::on_saveCameraImageButton_clicked()
             m_calibratorWorker->findCalibrationPattern();
         }
     } else {
-        qWarning() << "unable to save image to" << fileName;
+        zWarning() << "unable to save image to" << fileName;
     }
 }
 

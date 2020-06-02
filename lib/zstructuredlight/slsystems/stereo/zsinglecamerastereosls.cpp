@@ -20,10 +20,11 @@
 
 #include "zsinglecamerastereosls.h"
 
+#include "ZCore/zlogging.h"
 #include "ZStructuredLight/zdecodedpattern.h"
 #include "ZStructuredLight/zprojectedpattern.h"
 
-#include <QDebug>
+Z3D_LOGGING_CATEGORY_FROM_FILE("z3d.zstructuredlight.slsystems.stereo", QtInfoMsg)
 
 namespace Z3D
 {
@@ -44,7 +45,7 @@ ZSingleCameraStereoSLS::~ZSingleCameraStereoSLS()
 
 const std::vector<ZSettingsItemPtr> &ZSingleCameraStereoSLS::settings()
 {
-    qDebug() << "returning settings for" << this;
+    zDebug() << "returning settings for" << this;
     return m_settings;
 }
 

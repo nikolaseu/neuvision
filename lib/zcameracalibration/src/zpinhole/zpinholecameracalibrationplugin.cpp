@@ -24,17 +24,19 @@
 #include "ZCameraCalibration/zopencvstereocameracalibration.h"
 #include "ZCameraCalibration/zopencvstereomulticameracalibrator.h"
 #include "ZCameraCalibration/zopencvstereomulticameracalibratorconfigwidget.h"
+#include "ZCameraCalibration/zpinholecameracalibration.h"
 #include "ZCameraCalibration/zpinholecameracalibrator.h"
 #include "ZCameraCalibration/zpinholecameracalibratorconfigwidget.h"
 
-#include "ZCameraCalibration/zpinholecameracalibration.h"
+#include "ZCore/zlogging.h"
 
 #include <opencv2/core/persistence.hpp>
 
-#include <QDebug>
 #include <QGroupBox>
 #include <QLabel>
 #include <QVBoxLayout>
+
+Z3D_LOGGING_CATEGORY_FROM_FILE("z3d.zcameracalibration", QtInfoMsg)
 
 namespace Z3D
 {
@@ -42,13 +44,13 @@ namespace Z3D
 ZMultiCameraCalibrationPtr readStereoCalibrationFile(const QString &fileName)
 {
     if (fileName.isNull() || fileName.isEmpty()) {
-        qWarning() << "cannot read stereo calibration file:" << fileName;
+        zWarning() << "cannot read stereo calibration file:" << fileName;
         return nullptr;
     }
 
     cv::FileStorage fs;
     if (!fs.open(qPrintable(fileName), cv::FileStorage::READ)) {
-        qWarning() << "cannot read stereo calibration file:" << fileName;
+        zWarning() << "cannot read stereo calibration file:" << fileName;
         return nullptr;
     }
 
@@ -129,7 +131,7 @@ QWidget *ZPinholeCameraCalibrationPlugin::getConfigWidget(ZCameraCalibrator *cam
 ZMultiCameraCalibrationPtr ZPinholeCameraCalibrationPlugin::getMultiCameraCalibration(QVariantMap options)
 {
     if (!options.contains("ConfigFile")) {
-        qCritical() << "'ConfigFile' field is missing!";
+        zCritical() << "'ConfigFile' field is missing!";
         return nullptr;
     }
 
@@ -151,7 +153,7 @@ bool ZPinholeCameraCalibrationPlugin::saveCalibration(const QString &fileName, Z
 
     cv::FileStorage fs(qPrintable(fileNameYML), cv::FileStorage::WRITE);
     if (!fs.isOpened()) {
-        qWarning() << "cannot save stereo calibration: cannot open file" << fileNameYML;
+        zWarning() << "cannot save stereo calibration: cannot open file" << fileNameYML;
         return false;
     }
 

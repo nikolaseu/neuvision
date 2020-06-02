@@ -23,19 +23,17 @@
 #include "zlibgphoto2camera.h"
 
 #include "ZCameraAcquisition/zcamerainfo.h"
+#include "ZCore/zlogging.h"
 
 #include <gphoto2/gphoto2-camera.h>
 
-#include <QDebug>
+Z3D_LOGGING_CATEGORY_FROM_FILE("z3d.zcameraacquisition.zlibgphoto2", QtInfoMsg)
 
 namespace Z3D
 {
 
-
-
-
-static GPPortInfoList  *portinfolist = NULL;
-static CameraAbilitiesList *abilities = NULL;
+static GPPortInfoList  *portinfolist = nullptr;
+static CameraAbilitiesList *abilities = nullptr;
 
 /*
  * This detects all currently attached cameras and returns
@@ -94,7 +92,7 @@ int sample_open_camera(Camera ** camera, const char *model, const char *port, GP
     p = gp_port_info_list_lookup_path (portinfolist, port);
     switch (p) {
     case GP_ERROR_UNKNOWN_PORT:
-        qWarning() << "The port you specified (" << port << "can not be found."
+        zWarning() << "The port you specified (" << port << "can not be found."
                    << "Please specify one of the ports found by 'gphoto2 --list-ports'"
                    << "and make sure the spelling is correct (i.e. with prefix 'serial:' or 'usb:').";
         break;
@@ -114,12 +112,12 @@ int sample_open_camera(Camera ** camera, const char *model, const char *port, GP
 
 static void ctx_error_func (GPContext * /*context*/, const char *str, void * /*data*/)
 {
-    qWarning() << str;
+    zWarning() << str;
 }
 
 static void ctx_status_func (GPContext * /*context*/, const char *str, void * /*data*/)
 {
-    qDebug() << str;
+    zDebug() << str;
 }
 
 
@@ -133,8 +131,8 @@ ZLibGPhoto2Plugin::ZLibGPhoto2Plugin()
     context = gp_context_new();
 
     /* All the parts below are optional! */
-    gp_context_set_error_func (context, ctx_error_func, NULL);
-    gp_context_set_status_func (context, ctx_status_func, NULL);
+    gp_context_set_error_func (context, ctx_error_func, nullptr);
+    gp_context_set_status_func (context, ctx_status_func, nullptr);
 
     /* also:
     gp_context_set_cancel_func    (p->context, ctx_cancel_func,  p);
@@ -164,17 +162,17 @@ QList<ZCameraInfo *> ZLibGPhoto2Plugin::getConnectedCameras()
     CameraList *list;
     int ret = gp_list_new(&list);
     if (ret < GP_OK) {
-        qWarning() << "Error trying to create CameraList" << ret;
+        zWarning() << "Error trying to create CameraList" << ret;
         return camerasList;
     }
 
     int count = sample_autodetect(list, context);
     if (count < GP_OK) {
-        qWarning() << "Error trying to detect cameras" << count;
+        zWarning() << "Error trying to detect cameras" << count;
         return camerasList;
     }
 
-    qDebug() << "found" << count << "cameras.";
+    zDebug() << "found" << count << "cameras.";
     for (int i = 0; i < count; i++) {
         Camera *cam;
         const char *name, *value;
@@ -182,7 +180,7 @@ QList<ZCameraInfo *> ZLibGPhoto2Plugin::getConnectedCameras()
         gp_list_get_value(list, i, &value);
         ret = sample_open_camera(&cam, name, value, context);
         if (ret < GP_OK) {
-            qWarning() << "Camera:" << name << "on port:" << value << "failed to open";
+            zWarning() << "Camera:" << name << "on port:" << value << "failed to open";
             continue;
         }
 
@@ -190,11 +188,11 @@ QList<ZCameraInfo *> ZLibGPhoto2Plugin::getConnectedCameras()
         CameraText text;
         ret = gp_camera_get_summary(cam, &text, context);
         if (ret < GP_OK) {
-            qWarning() << "Failed to get summary";
+            zWarning() << "Failed to get summary";
             continue;
         }
 
-        qDebug() << "Found camera:" << name << "on port:" << value << "\n"
+        zDebug() << "Found camera:" << name << "on port:" << value << "\n"
                  << "Summary:\n"
                  << text.text;
 
@@ -221,7 +219,7 @@ ZCameraPtr ZLibGPhoto2Plugin::getCamera(QVariantMap options)
     Camera *cam;
     int ret = sample_open_camera(&cam, qPrintable(model), qPrintable(port), context);
     if (ret < GP_OK) {
-        qWarning() << "Camera:" << model << "on port:" << port << "failed to open";
+        zWarning() << "Camera:" << model << "on port:" << port << "failed to open";
         return nullptr;
     }
 

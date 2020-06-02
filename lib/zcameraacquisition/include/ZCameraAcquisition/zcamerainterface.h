@@ -22,7 +22,6 @@
 #include "zcameraacquisition_fwd.h"
 #include "zcameraacquisition_global.h"
 
-#include <QDebug>
 #include <QObject>
 #include <QPointer>
 #include <QStringList>

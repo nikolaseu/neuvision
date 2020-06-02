@@ -23,20 +23,16 @@
 #include "ZPointCloud/zpointcloud.h"
 #include "ZPointCloud/zpointfield.h"
 
-#include <QLoggingCategory>
+#include <ZCore/zlogging.h>
+
 #include <Qt3DRender/QAttribute>
 #include <Qt3DRender/QBuffer>
 #include <cmath>
 
+Z3D_LOGGING_CATEGORY_FROM_FILE("z3d.zpointcloud", QtInfoMsg)
+
 namespace Z3D
 {
-
-namespace // anonymous namespace
-{
-
-Q_LOGGING_CATEGORY(loggingCategory, "z3d.zpointcloud.zpointcloudgeometry", QtInfoMsg)
-
-} // anonymous namespace
 
 class ZPointCloudGeometryPrivate
 {
@@ -53,12 +49,12 @@ ZPointCloudGeometry::ZPointCloudGeometry(Qt3DCore::QNode *parent)
     : Qt3DRender::QGeometry(parent)
     , m_p(new ZPointCloudGeometryPrivate)
 {
-    qDebug(loggingCategory) << "creating" << this;
+    zDebug() << "creating" << this;
 }
 
 ZPointCloudGeometry::~ZPointCloudGeometry()
 {
-    qDebug(loggingCategory) << "destroying" << this;
+    zDebug() << "destroying" << this;
     delete m_p;
 }
 
@@ -83,7 +79,7 @@ Qt3DRender::QAttribute::VertexBaseType pointFieldTypeToAttributeType(const ZPoin
         return Qt3DRender::QAttribute::Double;
     }
 
-    qCritical(loggingCategory) << "unhandled point field type" << inp;
+    zCritical() << "unhandled point field type" << inp;
     return Qt3DRender::QAttribute::Byte;
 }
 
@@ -111,7 +107,7 @@ void ZPointCloudGeometry::updateAttributes()
 
     // parse point fields and make reasonable attributes out of them
     if (const auto *pf = findField("position")) {
-        qDebug(loggingCategory) << "Adding position attribute, field:" << pf;
+        zDebug() << "Adding position attribute, field:" << pf;
         auto *attrib = new Qt3DRender::QAttribute(m_p->vertexBuffer,
                                                   Qt3DRender::QAttribute::defaultPositionAttributeName(),
                                                   pointFieldTypeToAttributeType(pf->dataType()),
@@ -126,7 +122,7 @@ void ZPointCloudGeometry::updateAttributes()
     }
 
     if (const auto *pf = findField("rgb")) {
-        qDebug(loggingCategory) << "Adding color attribute, field:" << pf;
+        zDebug() << "Adding color attribute, field:" << pf;
         auto *attrib = new Qt3DRender::QAttribute(m_p->vertexBuffer,
                                                   Qt3DRender::QAttribute::defaultColorAttributeName(),
                                                   pointFieldTypeToAttributeType(pf->dataType()),
@@ -140,7 +136,7 @@ void ZPointCloudGeometry::updateAttributes()
     }
 
     if (const auto *pf = findField("normal")) {
-        qDebug(loggingCategory) << "Adding normal attribute, field:" << pf;
+        zDebug() << "Adding normal attribute, field:" << pf;
         auto *attrib = new Qt3DRender::QAttribute(m_p->vertexBuffer,
                                                   Qt3DRender::QAttribute::defaultNormalAttributeName(),
                                                   pointFieldTypeToAttributeType(pf->dataType()),
@@ -154,7 +150,7 @@ void ZPointCloudGeometry::updateAttributes()
     }
 
     if (const auto *pf = findField("radii")) {
-        qDebug(loggingCategory) << "Adding radii attribute, field:" << pf;
+        zDebug() << "Adding radii attribute, field:" << pf;
         auto *attrib = new Qt3DRender::QAttribute(m_p->vertexBuffer,
                                                   "vertexRadii",
                                                   pointFieldTypeToAttributeType(pf->dataType()),
@@ -237,7 +233,7 @@ void ZPointCloudGeometry::setLevelOfDetail(uint levelOfDetail)
         levelOfDetailChangeFactor = powf(2.f, -levelOfDetailDiff);
     }
 
-    qDebug(loggingCategory) << "changing level of detail from" << m_p->levelOfDetail << "to" << levelOfDetail << "factor" << levelOfDetailChangeFactor;
+    zDebug(loggingCategory) << "changing level of detail from" << m_p->levelOfDetail << "to" << levelOfDetail << "factor" << levelOfDetailChangeFactor;
     for (auto &attr : attributes()) {
         attr->setCount(uint(levelOfDetailChangeFactor * attr->count()));
         attr->setByteStride(uint(attr->byteStride() / levelOfDetailChangeFactor));

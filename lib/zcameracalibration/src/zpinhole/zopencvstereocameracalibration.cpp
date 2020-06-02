@@ -22,10 +22,12 @@
 
 #include "ZCameraCalibration/zpinholecameracalibration.h"
 
+#include "ZCore/zlogging.h"
+
 #include <opencv2/calib3d.hpp>
 #include <opencv2/imgproc.hpp>
 
-#include <QDebug>
+Z3D_LOGGING_CATEGORY_FROM_FILE("z3d.zcameracalibration", QtInfoMsg)
 
 namespace Z3D
 {
@@ -98,7 +100,7 @@ ZOpenCVStereoCameraCalibration::ZOpenCVStereoCameraCalibration(const std::vector
         npoints += npt;
     }
 
-    qDebug() << "average reprojection error:"
+    zDebug() << "average reprojection error:"
              << err/npoints
              << "pixels (sum of error is" << err << "for" << npoints << "points)";
 }

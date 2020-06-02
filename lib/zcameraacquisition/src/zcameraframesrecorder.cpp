@@ -23,11 +23,14 @@
 #include "ZCameraAcquisition/zcameraimage.h"
 #include "ZCameraAcquisition/zcamerainterface.h"
 
+#include "ZCore/zlogging.h"
+
 #include <QCoreApplication>
 #include <QDateTime>
-#include <QDebug>
 #include <QDir>
 #include <opencv2/imgcodecs.hpp>
+
+Z3D_LOGGING_CATEGORY_FROM_FILE("z3d.zcameraacquisition", QtInfoMsg)
 
 namespace Z3D
 {
@@ -38,7 +41,7 @@ ZCameraFramesRecorder::ZCameraFramesRecorder(const ZCameraWeakPtr &camera, QObje
     , m_basePath(QDir(QCoreApplication::applicationDirPath()).absoluteFilePath(QLatin1String("acquisition")))
 {
     if (!m_camera.isNull()) {
-        qDebug() << "enabling frame recorder for camera:" << m_camera->uuid()
+        zDebug() << "enabling frame recorder for camera:" << m_camera->uuid()
                  << "saving frames to:" << m_basePath;
 
         /// connect signals
@@ -61,7 +64,7 @@ void ZCameraFramesRecorder::onAcquisitionStarted()
     );
 
     if (!dir.mkpath(m_currentSavePath)) {
-        qWarning() << "unable to create folder:" << m_currentSavePath;
+        zWarning() << "unable to create folder:" << m_currentSavePath;
     }
 }
 

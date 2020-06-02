@@ -21,15 +21,17 @@
 #include "zpyloncamera.h"
 
 #include "ZCameraAcquisition/zcameraimage.h"
-
-#include <QDebug>
+#include "ZCore/zlogging.h"
 
 #include <genapi/INodeMap.h>
+
+Z3D_LOGGING_CATEGORY_FROM_FILE("z3d.zcameraacquisition.zpylon", QtInfoMsg)
 
 namespace Z3D
 {
 
-namespace {
+namespace
+{
 
 int getBytesPerPixel(Pylon::EPixelType pixelType)
 {
@@ -42,7 +44,7 @@ int getBytesPerPixel(Pylon::EPixelType pixelType)
     case Pylon::EPixelType::PixelType_Mono16:
         return 2;
     }
-    qCritical() << "pixel type not handled: only Mono8, Mono10, Mono12 and Mono16 are supported currently";
+    zCritical() << "pixel type not handled: only Mono8, Mono10, Mono12 and Mono16 are supported currently";
     return 0;
 }
 
@@ -107,7 +109,7 @@ bool PylonCamera::startAcquisition()
     if (!ZCameraBase::startAcquisition())
         return false;
 
-    qDebug() << Q_FUNC_INFO;
+    zDebug() << Q_FUNC_INFO;
 
     m_camera.StartGrabbing(Pylon::GrabStrategy_OneByOne, Pylon::GrabLoop_ProvidedByInstantCamera);
 
@@ -119,7 +121,7 @@ bool PylonCamera::stopAcquisition()
     if (!ZCameraBase::stopAcquisition())
         return false;
 
-    qDebug() << Q_FUNC_INFO;
+    zDebug() << Q_FUNC_INFO;
 
     m_camera.StopGrabbing();
 
@@ -154,10 +156,10 @@ QList<ZCameraInterface::ZCameraAttribute> PylonCamera::getAllAttributes()
 
             switch (node->GetPrincipalInterfaceType()) {
             case GenApi::EInterfaceType::intfIValue:       //!< IValue interface
-                qWarning() << "unhandled type GenApi::EInterfaceType::intfIValue" << attr.path;
+                zWarning() << "unhandled type GenApi::EInterfaceType::intfIValue" << attr.path;
                 continue;
             case GenApi::EInterfaceType::intfIBase:        //!< IBase interface
-                qWarning() << "unhandled type GenApi::EInterfaceType::intfIBase" << attr.path;
+                zWarning() << "unhandled type GenApi::EInterfaceType::intfIBase" << attr.path;
                 continue;
             case GenApi::EInterfaceType::intfIInteger: {    //!< IInteger interface
                 GenApi::CIntegerPtr integerNode(node);
@@ -192,10 +194,10 @@ QList<ZCameraInterface::ZCameraAttribute> PylonCamera::getAllAttributes()
                 break;
             }
             case GenApi::EInterfaceType::intfIRegister:    //!< IRegister interface
-                qWarning() << "unhandled type GenApi::EInterfaceType::intfIRegister" << attr.path;
+                zWarning() << "unhandled type GenApi::EInterfaceType::intfIRegister" << attr.path;
                 continue;
             case GenApi::EInterfaceType::intfICategory:    //!< ICategory interface
-                qWarning() << "unhandled type GenApi::EInterfaceType::intfICategory" << attr.path;
+                zWarning() << "unhandled type GenApi::EInterfaceType::intfICategory" << attr.path;
                 continue;
             case GenApi::EInterfaceType::intfIEnumeration: {    //!< IEnumeration interface
                 try {
@@ -206,21 +208,21 @@ QList<ZCameraInterface::ZCameraAttribute> PylonCamera::getAllAttributes()
                     for (const auto &entry : entries) {
                         attr.enumNames << QString(entry->GetDisplayName().c_str());
                     }
-                    qDebug() << attr.path << enumNode->ToString().c_str();
+                    zDebug() << attr.path << enumNode->ToString().c_str();
                     attr.enumValue = enumNode->GetIntValue();
                 } catch (...) {
-                    qWarning() << "exception enumerating properties for" << attr.path;
+                    zWarning() << "exception enumerating properties for" << attr.path;
                 }
                 break;
             }
             case GenApi::EInterfaceType::intfIEnumEntry:   //!< IEnumEntry interface
-                qWarning() << "unhandled type GenApi::EInterfaceType::intfIEnumEntry" << attr.path;
+                zWarning() << "unhandled type GenApi::EInterfaceType::intfIEnumEntry" << attr.path;
                 break;
             case GenApi::EInterfaceType::intfIPort:         //!< IPort interface
-                qWarning() << "unhandled type GenApi::EInterfaceType::intfIPort" << attr.path;
+                zWarning() << "unhandled type GenApi::EInterfaceType::intfIPort" << attr.path;
                 continue;
             default:
-                qWarning() << "unknown type for" << attr.path;
+                zWarning() << "unknown type for" << attr.path;
             }
 
             parameters << attr;
@@ -240,11 +242,11 @@ QVariant PylonCamera::getAttribute(const QString &name) const
 
 bool PylonCamera::setAttribute(const QString &name, const QVariant &value, bool notify)
 {
-    qDebug() << "trying to set " << name << "to" << value;
+    zDebug() << "trying to set " << name << "to" << value;
 
     auto node = m_camera.GetNodeMap().GetNode(qPrintable(name));
     if (!GenApi::IsWritable(node)) {
-        qWarning() << "camera attribute is not writable" << name;
+        zWarning() << "camera attribute is not writable" << name;
         return false;
     }
 
@@ -252,10 +254,10 @@ bool PylonCamera::setAttribute(const QString &name, const QVariant &value, bool 
 
     switch (node->GetPrincipalInterfaceType()) {
     case GenApi::EInterfaceType::intfIValue:       //!< IValue interface
-        qWarning() << "unhandled type GenApi::EInterfaceType::intfIValue" << node->GetName(true);
+        zWarning() << "unhandled type GenApi::EInterfaceType::intfIValue" << node->GetName(true);
         break;
     case GenApi::EInterfaceType::intfIBase:        //!< IBase interface
-        qWarning() << "unhandled type GenApi::EInterfaceType::intfIBase" << node->GetName(true);
+        zWarning() << "unhandled type GenApi::EInterfaceType::intfIBase" << node->GetName(true);
         break;
     case GenApi::EInterfaceType::intfIInteger: {    //!< IInteger interface
         GenApi::CIntegerPtr integerNode(node);
@@ -288,10 +290,10 @@ bool PylonCamera::setAttribute(const QString &name, const QVariant &value, bool 
         break;
     }
     case GenApi::EInterfaceType::intfIRegister:    //!< IRegister interface
-        qWarning() << "unhandled type GenApi::EInterfaceType::intfIRegister" << node->GetName(true);
+        zWarning() << "unhandled type GenApi::EInterfaceType::intfIRegister" << node->GetName(true);
         break;
     case GenApi::EInterfaceType::intfICategory:    //!< ICategory interface
-        qWarning() << "unhandled type GenApi::EInterfaceType::intfICategory" << node->GetName(true);
+        zWarning() << "unhandled type GenApi::EInterfaceType::intfICategory" << node->GetName(true);
         break;
     case GenApi::EInterfaceType::intfIEnumeration: {    //!< IEnumeration interface
         GenApi::CEnumerationPtr enumNode(node);
@@ -309,18 +311,18 @@ bool PylonCamera::setAttribute(const QString &name, const QVariant &value, bool 
         break;
     }
     case GenApi::EInterfaceType::intfIEnumEntry:   //!< IEnumEntry interface
-        qWarning() << "unhandled type GenApi::EInterfaceType::intfIEnumEntry" << node->GetName(true);
+        zWarning() << "unhandled type GenApi::EInterfaceType::intfIEnumEntry" << node->GetName(true);
         break;
     case GenApi::EInterfaceType::intfIPort:         //!< IPort interface
-        qWarning() << "unhandled type GenApi::EInterfaceType::intfIPort" << node->GetName(true);
+        zWarning() << "unhandled type GenApi::EInterfaceType::intfIPort" << node->GetName(true);
         break;
     default:
-        qWarning() << "unknown type for" << node->GetName(true);
+        zWarning() << "unknown type for" << node->GetName(true);
         break;
     }
 
     if (!changed) {
-        qWarning() << "failed to change" << node->GetName(true) << "to" << value;
+        zWarning() << "failed to change" << node->GetName(true) << "to" << value;
     } else {
         if (notify) {
             emit attributeChanged(name, value);

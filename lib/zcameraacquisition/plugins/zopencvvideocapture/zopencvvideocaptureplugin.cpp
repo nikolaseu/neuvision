@@ -23,8 +23,9 @@
 #include "zopencvvideocapturecamera.h"
 
 #include "ZCameraAcquisition/zcamerainfo.h"
+#include "ZCore/zlogging.h"
 
-#include <QDebug>
+Z3D_LOGGING_CATEGORY_FROM_FILE("z3d.zcameraacquisition.zopencvvideocapture", QtInfoMsg)
 
 namespace Z3D
 {
@@ -118,7 +119,7 @@ ZCameraPtr ZOpenCVVideoCapturePlugin::getCamera(QVariantMap options)
         return ZCameraPtr(camera);
     }
 
-    qDebug() << "opencv camera not found:" << options;
+    zDebug() << "opencv camera not found:" << options;
 
     return nullptr;
 }

@@ -7,18 +7,19 @@
 #include "ZPointCloud/zpointcloud.h"
 #include "ZPointCloud/zpointfield.h"
 
-#include <QDebug>
-#include <QFile>
-#include <QLoggingCategory>
+#include <ZCore/zlogging.h>
 
-using namespace Qt3DRender;
+#include <QFile>
+
+Z3D_LOGGING_CATEGORY_FROM_FILE("z3d.zpointcloud.zqtgeometryloaders", QtDebugMsg)
 
 namespace Z3D::ZQtGeometryLoaders
 {
 
+using namespace Qt3DRender;
+
 namespace // anonymous namespace
 {
-Q_LOGGING_CATEGORY(loggingCategory, "z3d.zpointcloud.plugins.zqtgeometryloaders")
 
 class ZQtPointCloud Q_DECL_FINAL : public ZPointCloud
 {
@@ -35,7 +36,7 @@ public:
         QByteArray bufferBytes;
         bufferBytes.resize(stride * count);
 
-        qDebug(loggingCategory) << "creating point cloud with" << count << "points, size:" << bufferBytes.size() << "bytes";
+        zDebug() << "creating point cloud with" << count << "points, size:" << bufferBytes.size() << "bytes";
 
         float *fptr = reinterpret_cast<float*>(bufferBytes.data());
 
@@ -119,11 +120,11 @@ private:
 
 ZPointCloudUniquePtr loadPointCloud(const QString &fileName)
 {
-    qDebug(loggingCategory) << "Trying to read PointCloud from" << fileName;
+    zDebug() << "Trying to read PointCloud from" << fileName;
 
     QFile file(fileName);
     if (!file.open(QFile::ReadOnly)) {
-        qWarning(loggingCategory) << "Failed to open file:" << fileName;
+        zWarning() << "Failed to open file:" << fileName;
         return nullptr;
     }
 
@@ -137,11 +138,11 @@ ZPointCloudUniquePtr loadPointCloud(const QString &fileName)
     }
 
     if (loader && loader->load(&file)) {
-        qDebug(loggingCategory).nospace() << "data loaded from " << fileName << ", creating point cloud...";
+        zDebug().nospace() << "data loaded from " << fileName << ", creating point cloud...";
         return ZQtPointCloud::create(*loader);
     }
 
-    qWarning(loggingCategory) << "Failed to read PointCloud. Invalid/unrecognized format:" << fileName;
+    zWarning() << "Failed to read PointCloud. Invalid/unrecognized format:" << fileName;
     return nullptr;
 }
 

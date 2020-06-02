@@ -23,13 +23,13 @@
 #include "zbinarypatterndecoder.h"
 
 #include "ZCameraAcquisition/zcameraimage.h"
+#include "ZCore/zlogging.h"
 #include "ZCore/zsettingsitem.h"
 #include "ZStructuredLight/zdecodedpattern.h"
 #include "ZStructuredLight/zprojectedpattern.h"
 
 #include <QCoreApplication>
 #include <QDateTime>
-#include <QDebug>
 #include <QDir>
 #include <QElapsedTimer>
 #include <QGuiApplication>
@@ -38,6 +38,8 @@
 #include <QScreen>
 #include <QThread>
 #include <opencv2/imgcodecs.hpp>
+
+Z3D_LOGGING_CATEGORY_FROM_FILE("z3d.zstructuredlight.patterns.binary", QtInfoMsg)
 
 namespace Z3D
 {
@@ -204,7 +206,7 @@ ZBinaryPatternProjection::ZBinaryPatternProjection(QObject *parent)
 
 ZBinaryPatternProjection::~ZBinaryPatternProjection()
 {
-    qDebug() << "deleting projector window...";
+    zDebug() << "deleting projector window...";
     if (m_dlpview) {
         m_dlpview->deleteLater();
     }
@@ -244,8 +246,8 @@ void ZBinaryPatternProjection::beginScan()
         firstPatternToShow = m_maxUsefulPatterns - m_numPatterns;
     }
 
-    qDebug() << "maxUsefulPatterns:" << m_maxUsefulPatterns;
-    qDebug() << "numPatterns:" << m_numPatterns << "firstPatternToShow:" << firstPatternToShow;
+    zDebug() << "maxUsefulPatterns:" << m_maxUsefulPatterns;
+    zDebug() << "numPatterns:" << m_numPatterns << "firstPatternToShow:" << firstPatternToShow;
 
     QString scanTmpFolder = QString("tmp/dlpscans/%1").arg(QDateTime::currentDateTime().toString("yyyy.MM.dd_hh.mm.ss"));
 
@@ -291,7 +293,7 @@ void ZBinaryPatternProjection::beginScan()
         }
     }
 
-    qDebug() << "acquisition finished in" << acquisitionTime.elapsed() << "msecs";
+    zDebug() << "acquisition finished in" << acquisitionTime.elapsed() << "msecs";
 
     emit finishAcquisition();
 
@@ -397,7 +399,7 @@ void ZBinaryPatternProjection::processImages(std::vector<std::vector<ZCameraImag
         decodedPatternList.push_back(decodedPattern);
     }
 
-    qDebug() << "pattern decodification finished in" << decodeTime.elapsed() << "msecs";
+    zDebug() << "pattern decodification finished in" << decodeTime.elapsed() << "msecs";
 
     /// notify result
     emit patternsDecoded(decodedPatternList);
@@ -539,8 +541,8 @@ bool ZBinaryPatternProjection::setNumPatterns(int arg)
 
     if (!m_automaticPatternCount) {
         int firstPatternToShow = m_maxUsefulPatterns - m_numPatterns;
-        qDebug() << "not using automatic pattern count. maxUsefulPatterns:" << m_maxUsefulPatterns;
-        qDebug() << "numPatterns:" << m_numPatterns << "firstPatternToShow:" << firstPatternToShow;
+        zDebug() << "not using automatic pattern count. maxUsefulPatterns:" << m_maxUsefulPatterns;
+        zDebug() << "numPatterns:" << m_numPatterns << "firstPatternToShow:" << firstPatternToShow;
     }
 
     return true;
@@ -614,14 +616,14 @@ int ZBinaryPatternProjection::selectedScreen() const
         }
     }
 
-    qWarning() << "couldn't find screen being used for pattern projection!";
+    zWarning() << "couldn't find screen being used for pattern projection!";
 
     return -1;
 }
 
 bool ZBinaryPatternProjection::setSelectedScreen(int index)
 {
-    qDebug() << "setting screen to" << index;
+    zDebug() << "setting screen to" << index;
 
     const QList<QScreen*> screens = qGuiApp->screens();
     const QRect screenGeometry = screens[index]->geometry();
@@ -642,7 +644,7 @@ void ZBinaryPatternProjection::updateMaxUsefulPatterns()
         m_maxUsefulPatterns = int(ceil(log(double(geometry.height()))/log(2.)));
     }
 
-    qDebug() << "geometry:" << geometry << "maxUsefulPatterns:" << m_maxUsefulPatterns;
+    zDebug() << "geometry:" << geometry << "maxUsefulPatterns:" << m_maxUsefulPatterns;
 
     setAutomaticPatternCount(m_automaticPatternCount);
 }

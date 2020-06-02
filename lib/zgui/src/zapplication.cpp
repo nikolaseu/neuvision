@@ -20,13 +20,15 @@
 
 #include "ZGui/zapplication.h"
 
+#include "ZCore/zlogging.h"
 #include "ZCore/zloghandler_p.h"
 #include "ZCore/zpluginloader.h"
 
-#include <QDebug>
 #include <QFileInfo>
 #include <QSplashScreen>
 #include <QThreadPool>
+
+Z3D_LOGGING_CATEGORY_FROM_FILE("z3d.zgui", QtInfoMsg)
 
 namespace Z3D
 {
@@ -49,8 +51,15 @@ ZApplication::ZApplication(int &argc, char **argv)
     setApplicationName(QFileInfo(argv[0]).baseName());
     setApplicationVersion(Z3D_VERSION_BUILD_STR);
 
-    qInfo() << "starting" << applicationName()
+    zInfo() << "starting" << applicationName()
             << "version" << applicationVersion();
+
+    QApplication::setAttribute(Qt::AA_EnableHighDpiScaling, true);
+    QApplication::setAttribute(Qt::AA_UseDesktopOpenGL, true);
+
+#if (QT_VERSION >= QT_VERSION_CHECK(5, 14, 0))
+    QApplication::setHighDpiScaleFactorRoundingPolicy(Qt::HighDpiScaleFactorRoundingPolicy::PassThrough);
+#endif
 }
 
 void ZApplication::loadPlugins()
@@ -67,7 +76,7 @@ QSplashScreen * ZApplication::showSplashScreen()
 
         connect(ZPluginLoader::instance(), &ZPluginLoader::progressChanged,
                 [&](float progress, const QString &message) {
-                    qDebug() << "progress:" << progress << "message:" << message;
+                    zDebug() << "progress:" << progress << "message:" << message;
                     m_splash->showMessage(message);
                     processEvents();
                 });

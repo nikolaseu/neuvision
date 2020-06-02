@@ -20,7 +20,7 @@
 
 #include "ZCameraCalibrator/zcalibrationpatternfinder.h"
 
-#include <QDebug>
+#include "ZCore/zlogging.h"
 
 namespace Z3D
 {

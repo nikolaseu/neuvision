@@ -22,15 +22,12 @@
 
 #include "ZPointCloud/zpointfield.h"
 
-#include <QDebug>
-#include <QLoggingCategory>
+#include <ZCore/zlogging.h>
 
-namespace Z3D {
+Z3D_LOGGING_CATEGORY_FROM_FILE("z3d.zpointcloud", QtInfoMsg)
 
-namespace // anonymous namespace
+namespace Z3D
 {
-Q_LOGGING_CATEGORY(loggingCategory, "z3d.zpointcloud.zpointcloud", QtInfoMsg)
-} // anonymous namespace
 
 ZPointCloud::ZPointCloud(unsigned int height,
                          unsigned int width,
@@ -45,9 +42,9 @@ ZPointCloud::ZPointCloud(unsigned int height,
     , m_rowStep(rowStep)
     , m_fields(fields)
 {
-    qDebug(loggingCategory) << "creating point cloud with fields:";
+    zDebug() << "creating point cloud with fields:";
     for (const auto *field : m_fields) {
-        qDebug(loggingCategory) << field;
+        zDebug() << field;
     }
 
     // check for non-standard fields and add the ones we handle, when possible
@@ -69,7 +66,7 @@ ZPointCloud::ZPointCloud(unsigned int height,
             && positionZ->offset() - positionX->offset() == 8)
         {
             auto field = ZPointField::position(positionX->offset(), positionX->dataType(), 3);
-            qDebug(loggingCategory) << "adding new field from individual x y z attributes:" << field;
+            zDebug() << "adding new field from individual x y z attributes:" << field;
             m_fields.push_back(field);
         }
     }
@@ -83,7 +80,7 @@ ZPointCloud::ZPointCloud(unsigned int height,
             && normalZ->offset() - normalX->offset() == 8)
         {
             auto field = ZPointField::normal(normalX->offset(), normalX->dataType(), 3);
-            qDebug(loggingCategory) << "adding new field from individual normal_x normal_y normal_z attributes:" << field;
+            zDebug() << "adding new field from individual normal_x normal_y normal_z attributes:" << field;
             m_fields.push_back(field);
         }
     }
@@ -91,7 +88,7 @@ ZPointCloud::ZPointCloud(unsigned int height,
 
 ZPointCloud::~ZPointCloud()
 {
-    qDebug(loggingCategory) << "deleting" << this;
+    zDebug() << "deleting" << this;
     for (auto field : m_fields) {
         delete field;
     }

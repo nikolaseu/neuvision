@@ -21,6 +21,7 @@
 #include "zqtcamera.h"
 
 #include "ZCameraAcquisition/zcameraimage.h"
+#include "ZCore/zlogging.h"
 
 #include <opencv2/core/mat.hpp>
 #include <opencv2/imgproc.hpp>
@@ -29,6 +30,8 @@
 #include <QDir>
 #include <QFile>
 #include <QTimer>
+
+Z3D_LOGGING_CATEGORY_FROM_FILE("z3d.zcameraacquisition.zqtcamera", QtInfoMsg)
 
 namespace Z3D
 {
@@ -44,7 +47,7 @@ ZQtCamera::ZQtCamera(QCamera *qcamera)
     if (m_qcameraImageCapture->isCaptureDestinationSupported(QCameraImageCapture::CaptureToBuffer)) {
         m_qcameraImageCapture->setCaptureDestination(QCameraImageCapture::CaptureToBuffer);
     } else {
-        qWarning() << "QCameraImageCapture::CaptureToBuffer not supported, will save capture to files :(";
+        zWarning() << "QCameraImageCapture::CaptureToBuffer not supported, will save capture to files :(";
     }
     m_qcameraImageCapture->setBufferFormat(QVideoFrame::Format_RGB24);
     //m_qcameraImageCapture->setBufferFormat(QVideoFrame::Format_CameraRaw);
@@ -154,7 +157,7 @@ QList<ZCameraInterface::ZCameraAttribute> ZQtCamera::getAllAttributes()
 
 bool ZQtCamera::setAttribute(const QString &name, const QVariant &value)
 {
-    qDebug() << "trying to set" << name << "to" << value;
+    zDebug() << "trying to set" << name << "to" << value;
     QImageEncoderSettings settings = m_qcameraImageCapture->encodingSettings();
     if (name == "Resolution") {
         QStringList sizes = value.toString().split("x");
@@ -184,21 +187,21 @@ bool ZQtCamera::setAttribute(const QString &name, const QVariant &value)
 
 QVariant ZQtCamera::getAttribute(const QString &name) const
 {
-    qDebug() << "trying to get" << name;
+    zDebug() << "trying to get" << name;
     //! TODO
     return false;
 }
 
 bool ZQtCamera::setAttribute(const QString &name, const QVariant &value, bool notify)
 {
-    qDebug() << "trying to set" << name << "to" << value << ", with notify:" << notify;
+    zDebug() << "trying to set" << name << "to" << value << ", with notify:" << notify;
     //! TODO
     return false;
 }
 
 void ZQtCamera::onImageCaptured(int id, const QImage &preview)
 {
-    //qDebug() << "imageCaptured:" << id << "format:" << preview.format();
+    //zDebug() << "imageCaptured:" << id << "format:" << preview.format();
 
     const auto &imgWidth = preview.width();
     const auto &imgHeight = preview.height();
@@ -213,7 +216,7 @@ void ZQtCamera::onImageCaptured(int id, const QImage &preview)
         cv::cvtColor(cvImageOrig, cvImage8UC1, cv::COLOR_BGRA2GRAY);
         break;
     default:
-        qWarning() << "unknown format:" << preview.format();
+        zWarning() << "unknown format:" << preview.format();
     }
 
     if (!cvImage8UC1.empty()) {
@@ -238,21 +241,21 @@ void ZQtCamera::onImageCaptured(int id, const QImage &preview)
 void ZQtCamera::onImageSaved(int id, const QString &fileName)
 {
     if (QFile::remove(fileName)) {
-        qDebug() << "imageSaved and erased:" << id << fileName;
+        zDebug() << "imageSaved and erased:" << id << fileName;
     } else {
-        qDebug() << "imageSaved:" << id << fileName;
+        zDebug() << "imageSaved:" << id << fileName;
     }
 }
 
 void ZQtCamera::onImageAvailable(int id, const QVideoFrame &buffer)
 {
     Q_UNUSED(buffer)
-    qDebug() << "imageAvailable:" << id;
+    zDebug() << "imageAvailable:" << id;
 }
 
 void ZQtCamera::onCaptureError(int id, QCameraImageCapture::Error error, const QString &message)
 {
-    qDebug() << "captureError:" << id << error << message;
+    zDebug() << "captureError:" << id << error << message;
     if (QCameraImageCapture::NotReadyError == error && m_isCapturing) {
         QTimer::singleShot(100, [=](){
             m_qcameraImageCapture->capture();
@@ -262,7 +265,7 @@ void ZQtCamera::onCaptureError(int id, QCameraImageCapture::Error error, const Q
 
 void ZQtCamera::onReadyForCaptureChanged(bool ready)
 {
-    qDebug() << "readyForCaptureChanged:" << ready;
+    zDebug() << "readyForCaptureChanged:" << ready;
 }
 
 } // namespace Z3D

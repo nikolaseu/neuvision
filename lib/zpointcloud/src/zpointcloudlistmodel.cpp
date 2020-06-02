@@ -22,17 +22,14 @@
 
 #include "ZPointCloud/zpointcloudlistitem.h"
 
+#include <ZCore/zlogging.h>
+
 #include "QQmlObjectListModel.h"
 
-#include <QLoggingCategory>
+Z3D_LOGGING_CATEGORY_FROM_FILE("z3d.zpointcloud", QtInfoMsg)
 
 namespace Z3D
 {
-
-namespace // anonymous namespace
-{
-Q_LOGGING_CATEGORY(loggingCategory, "z3d.zpointcloud.zpointcloudlistmodel")//, QtInfoMsg)
-}
 
 class ZPointCloudListModelPrivate : public QQmlObjectListModel<ZPointCloudListItem>
 {
@@ -52,7 +49,7 @@ ZPointCloudListModel::ZPointCloudListModel(QObject *parent)
     : QAbstractListModel(parent)
     , m_p(new ZPointCloudListModelPrivate(this))
 {
-    qDebug(loggingCategory) << "creating" << this;
+    zDebug() << "creating" << this;
 
     // we have to forward all signals :(
 
@@ -91,7 +88,7 @@ ZPointCloudListModel::ZPointCloudListModel(QObject *parent)
 
 ZPointCloudListModel::~ZPointCloudListModel()
 {
-    qDebug(loggingCategory) << "destroying" << this;
+    zDebug() << "destroying" << this;
 }
 
 void ZPointCloudListModel::clear()

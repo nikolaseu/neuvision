@@ -23,12 +23,13 @@
 #include "ZCameraCalibration/zmulticameracalibration.h"
 #include "ZCameraCalibration/zpinholecameracalibration.h"
 
-#include <QDebug>
+#include <ZCore/zlogging.h>
 
 #include <opencv2/calib3d.hpp>
 
 #include <iostream>
 
+Z3D_LOGGING_CATEGORY_FROM_FILE("z3d.zcameracalibration", QtInfoMsg)
 
 namespace Z3D
 {
@@ -61,7 +62,7 @@ ZMultiCameraCalibrationPtr ZOpenCVCustomStereoMultiCameraCalibrator::getCalibrat
 {
     const auto ncameras = initialCameraCalibrations.size();
     if (ncameras != 2) {
-        qWarning() << "this only works with two cameras!";
+        zWarning() << "this only works with two cameras!";
         return nullptr;
     }
 
@@ -69,11 +70,11 @@ ZMultiCameraCalibrationPtr ZOpenCVCustomStereoMultiCameraCalibrator::getCalibrat
 
     const auto nimages = imagePoints[0].size();
 //    if (nimages < 2) {
-//        qWarning() << "Error: too little pairs to run the calibration";
+//        zWarning() << "Error: too little pairs to run the calibration";
 //        return newCalibrations;
 //    }
 
-    qDebug() << "Running stereo calibration ...";
+    zDebug() << "Running stereo calibration ...";
 
     cv::Mat cameraMatrix[2];
     cv::Mat distCoeffs[2];
@@ -84,12 +85,12 @@ ZMultiCameraCalibrationPtr ZOpenCVCustomStereoMultiCameraCalibrator::getCalibrat
         /// check first! this only works for pinhole cameras!
         auto calibration = std::dynamic_pointer_cast<Z3D::ZPinholeCameraCalibration>(initialCameraCalibrations[ic]);
         if (!calibration) {
-            qWarning() << "invalid calibration! this only works for pinhole cameras!";
+            zWarning() << "invalid calibration! this only works for pinhole cameras!";
             return nullptr;
         }
 
         if (calibration->sensorWidth() * calibration->sensorWidth() < 1) {
-            qWarning() << "invalid calibration config! camera sensor size is zero!";
+            zWarning() << "invalid calibration config! camera sensor size is zero!";
             return nullptr;
         }
 
@@ -98,7 +99,7 @@ ZMultiCameraCalibrationPtr ZOpenCVCustomStereoMultiCameraCalibrator::getCalibrat
         cameraMatrix[ic] = calibration->cvCameraMatrix().clone();
         distCoeffs[ic] = calibration->cvDistortionCoeffs().clone();
 
-        qDebug() << "camera" << ic << "imageSize:" << imageSize[ic].width << "x" << imageSize[ic].height;
+        zDebug() << "camera" << ic << "imageSize:" << imageSize[ic].width << "x" << imageSize[ic].height;
     }
 
     std::vector< std::vector<cv::Mat> > rotationMats(ncameras);
@@ -193,7 +194,7 @@ ZMultiCameraCalibrationPtr ZOpenCVCustomStereoMultiCameraCalibrator::getCalibrat
     //! FIXME debug only, show sorted vectors
     for (size_t ic = 1; ic < ncameras; ++ic) {
         for (size_t id = 0; id < 6; ++id) {
-            qDebug() << QVector<double>(allData[ic-1][id].begin(), allData[ic-1][id].end());
+            zDebug() << QVector<double>(allData[ic-1][id].begin(), allData[ic-1][id].end());
         }
     }
 #endif
@@ -206,7 +207,7 @@ ZMultiCameraCalibrationPtr ZOpenCVCustomStereoMultiCameraCalibrator::getCalibrat
     for (size_t ic = 1; ic < ncameras; ++ic) {
         size_t size = allData[ic-1][0].size();
         if (!size) {
-            qWarning() << "not enough valid calibration pattern images for camera" << ic;
+            zWarning() << "not enough valid calibration pattern images for camera" << ic;
             continue;
         }
         size_t middleIndex = 0;

@@ -23,7 +23,8 @@
 #include "ZCameraCalibrator/zcalibrationpatternfinder.h"
 #include "ZCameraCalibration/zcameracalibration.h"
 
-#include <QDebug>
+#include "ZCore/zlogging.h"
+
 #include <QFile>
 #include <QPainter>
 
@@ -32,6 +33,8 @@
 #ifndef MAX_THUMBNAIL_SIZE
 #define MAX_THUMBNAIL_SIZE 218
 #endif
+
+Z3D_LOGGING_CATEGORY_FROM_FILE("z3d.zcameracalibrator", QtInfoMsg)
 
 namespace Z3D
 {
@@ -47,12 +50,12 @@ ZCalibrationImage::ZCalibrationImage(QString fileName, QObject *parent)
     , m_height(-1)
     , m_state(UnknownState)
 {
-    //qDebug() << "created image:" << m_fileName;
+    //zDebug() << "created image:" << m_fileName;
 }
 
 ZCalibrationImage::~ZCalibrationImage()
 {
-    //qDebug() << "destroying image:" << m_fileName;
+    //zDebug() << "destroying image:" << m_fileName;
 }
 
 bool ZCalibrationImage::isValid()
@@ -165,12 +168,12 @@ QImage ZCalibrationImage::imageFromUrl(int viewStyle) const
                 }
             }
         } else {
-            //qDebug() << "requested pattern image but the pattern wasn't detected. returning original image...";
+            //zDebug() << "requested pattern image but the pattern wasn't detected. returning original image...";
             image = QImage(m_fileName);
         }
         break; // useless
     default:
-        qWarning() << "invalid viewStyle requested" << viewStyle;
+        zWarning() << "invalid viewStyle requested" << viewStyle;
     }
 
     return image;
@@ -235,7 +238,7 @@ bool ZCalibrationImage::findPattern(ZCalibrationPatternFinder *patternFinder)
         try {
             patternFound = patternFinder->findCalibrationPattern(mat(), m_corners, m_worldCorners, m_patternCorners);
         } catch (std::exception e) {
-            qWarning() << "exception thrown while finding calibration pattern:" << e.what();
+            zWarning() << "exception thrown while finding calibration pattern:" << e.what();
             patternFound = false;
         }
 
@@ -316,7 +319,7 @@ bool ZCalibrationImage::loadBasicImageInfo()
 {
     QImage fullImage = QImage(m_fileName);
     if (fullImage.isNull()) {
-        qWarning() << "image is null" << m_fileName;
+        zWarning() << "image is null" << m_fileName;
         setState(InvalidState);
         return false;
     }

@@ -23,10 +23,12 @@
 #include "ZStructuredLight/zstructuredlightsystemplugin.h"
 
 #include "ZCore/zcoreplugin.h"
+#include "ZCore/zlogging.h"
 #include "ZCore/zpluginloader.h"
 
-#include <QDebug>
 #include <QSettings>
+
+Z3D_LOGGING_CATEGORY_FROM_FILE("z3d.zstructuredlight", QtInfoMsg)
 
 namespace Z3D
 {
@@ -40,10 +42,10 @@ void ZStructuredLightSystemProvider::loadPlugins()
     for (auto pluginLoader : list) {
         auto *plugin = pluginLoader->instance<ZStructuredLightSystemPlugin>();
         if (plugin) {
-            qDebug() << "structured light system plugin loaded. type:" << pluginLoader->id();
+            zDebug() << "structured light system plugin loaded. type:" << pluginLoader->id();
             m_plugins[pluginLoader->id()] = plugin;
         } else {
-            qWarning() << "invalid structured light system plugin:" << plugin;
+            zWarning() << "invalid structured light system plugin:" << plugin;
         }
     }
 }
@@ -68,7 +70,7 @@ ZStructuredLightSystemPtr ZStructuredLightSystemProvider::get(QSettings *setting
             for (const auto &key : m_plugins.keys()) {
                 typesList << key;
             }
-            qWarning() << "structured light type not found:" << pluginId
+            zWarning() << "structured light type not found:" << pluginId
                        << "(available types:" << typesList.join(", ") << ")";
             settings->setValue("Type", QString("<FIXME chose one of: %1>").arg(typesList.join(", ")));
         }

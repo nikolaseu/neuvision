@@ -23,10 +23,14 @@
 #include "zqtcamera.h"
 
 #include "ZCameraAcquisition/zcamerainfo.h"
+#include "ZCore/zlogging.h"
 
 #include <QCameraInfo>
 
-namespace Z3D {
+Z3D_LOGGING_CATEGORY_FROM_FILE("z3d.zcameraacquisition.zqtcamera", QtInfoMsg)
+
+namespace Z3D
+{
 
 QString ZQtCameraPlugin::displayName() const
 {
@@ -38,7 +42,7 @@ QList<ZCameraInfo *> ZQtCameraPlugin::getConnectedCameras()
     QList<ZCameraInfo *> cameraList;
 
     QList<QCameraInfo> cameras = QCameraInfo::availableCameras();
-    qDebug() << "found" << cameras.size() << "cameras.";
+    zDebug() << "found" << cameras.size() << "cameras.";
     for (const QCameraInfo &qtcameraInfo : cameras) {
         QVariantMap extraData;
         extraData["description"] = qtcameraInfo.description();

@@ -23,13 +23,15 @@
 #include "ZCameraAcquisition/zcamerainterface.h"
 #include "ZCameraAcquisition/zcamerapreviewer.h"
 #include "ZCameraCalibrator/zmulticameracalibratorwidget.h"
+#include "ZCore/zlogging.h"
 #include "ZCore/zsettingsitem.h"
 #include "ZPointCloud/zpointcloud.h"
 #include "ZStructuredLight/zdecodedpattern.h"
 
-#include <QDebug>
 #include <QElapsedTimer>
 #include <QSettings>
+
+Z3D_LOGGING_CATEGORY_FROM_FILE("z3d.zstructuredlight.slsystems.stereo", QtInfoMsg)
 
 namespace Z3D
 {
@@ -42,7 +44,7 @@ ZDualCameraStereoSLS::ZDualCameraStereoSLS(const ZCameraList &cameras,
     , m_cameras(cameras)
 {
     if (m_cameras.size() != 2) {
-        qWarning() << "there must be exactly 2 cameras!";
+        zWarning() << "there must be exactly 2 cameras!";
         return;
     }
 
@@ -121,7 +123,7 @@ ZDualCameraStereoSLS::~ZDualCameraStereoSLS()
 
 const std::vector<ZSettingsItemPtr> &ZDualCameraStereoSLS::settings()
 {
-    qDebug() << "returning settings for" << this;
+    zDebug() << "returning settings for" << this;
     return m_settings;
 }
 
@@ -145,11 +147,11 @@ void ZDualCameraStereoSLS::onPatternsDecoded(const std::vector<ZDecodedPatternPt
             decodedPatterns[1]->decodedImage());
 
     if (cloud) {
-        qDebug() << "finished calculating point cloud with" << cloud->width() * cloud->height()
+        zDebug() << "finished calculating point cloud with" << cloud->width() * cloud->height()
                  << "points in" << startTime.elapsed() << "msecs";
         emit scanFinished(cloud);
     } else {
-        qDebug() << "finished calculating point cloud in" << startTime.elapsed() << "msecs";
+        zDebug() << "finished calculating point cloud in" << startTime.elapsed() << "msecs";
     }
 }
 

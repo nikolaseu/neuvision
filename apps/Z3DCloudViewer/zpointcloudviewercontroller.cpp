@@ -1,5 +1,6 @@
 #include "zpointcloudviewercontroller.h"
 
+#include "ZCore/zlogging.h"
 #include "ZPointCloud/zpointcloud.h"
 #include "ZPointCloud/zpointcloudlistitem.h"
 #include "ZPointCloud/zpointcloudlistmodel.h"
@@ -7,17 +8,13 @@
 #include "zmeshlabutils.h"
 
 #include <QFileInfo>
-#include <QLoggingCategory>
 #include <QUrl>
 #include <QtConcurrentRun>
 
+Z3D_LOGGING_CATEGORY_FROM_FILE("z3d.apps.zcloudviewer", QtInfoMsg)
+
 namespace Z3D
 {
-
-namespace // anonymous namespace
-{
-Q_LOGGING_CATEGORY(loggingCategory, "z3d.zcloudviewer.zpointcloudviewercontroller", QtInfoMsg);
-}
 
 ZPointCloudViewerController::ZPointCloudViewerController(QObject *parent)
     : QObject(parent)
@@ -28,7 +25,7 @@ ZPointCloudViewerController::ZPointCloudViewerController(QObject *parent)
 
 ZPointCloudViewerController::~ZPointCloudViewerController()
 {
-    qDebug(loggingCategory) << "destroying" << this;
+    zDebug() << "destroying" << this;
 }
 
 ZPointCloudListModel *ZPointCloudViewerController::model() const
@@ -38,7 +35,7 @@ ZPointCloudListModel *ZPointCloudViewerController::model() const
 
 void ZPointCloudViewerController::loadFile(const QUrl &fileUrl)
 {
-    qInfo(loggingCategory) << "trying to load file" << fileUrl;
+    zInfo() << "trying to load file" << fileUrl;
 
     QtConcurrent::run([=](){
         const QFileInfo fileInfo(fileUrl.toLocalFile());
@@ -66,11 +63,11 @@ void ZPointCloudViewerController::loadFile(const QUrl &fileUrl)
                     item->setTransformation(projectFile.transformation);
                     items.push_back(item);
                 } else {
-                    qWarning(loggingCategory) << "failed to load file inside the project:" << projectFile.filename;
+                    zWarning() << "failed to load file inside the project:" << projectFile.filename;
                 }
 
                 if (i == 0 || items.size() >= INSERT_BATCH_SIZE) {
-                    qDebug(loggingCategory) << "inserting batch of items";
+                    zDebug() << "inserting batch of items";
                     m_model->addPointClouds(items);
                     items.clear();
                 }

@@ -21,16 +21,18 @@
 #include "zopencvvideocapturecamera.h"
 
 #include "ZCameraAcquisition/zcameraimage.h"
+#include "ZCore/zlogging.h"
 
 #include <opencv2/imgproc.hpp>
 
-#include <QDebug>
 #include <QSize>
 #include <QThread>
 #include <QTimer>
 
 #define ATTR_MODE "Mode"
 #define ATTR_MODE_CUSTOM "CUSTOM"
+
+Z3D_LOGGING_CATEGORY_FROM_FILE("z3d.zcameraacquisition.zopencvvideocapture", QtInfoMsg)
 
 namespace Z3D
 {
@@ -63,7 +65,7 @@ OpenCVVideoCaptureCamera::OpenCVVideoCaptureCamera(cv::VideoCapture *videoCaptur
     // VideoCapture::get can return 0.0 or -1.0 if it doesn't support
     // cv::CAP_PROP_SUPPORTED_PREVIEW_SIZES_STRING
     if (u.prop != 0.0 && u.prop != -1.0) {
-        qDebug() << "cv::CAP_PROP_SUPPORTED_PREVIEW_SIZES_STRING" << u.name;
+        zDebug() << "cv::CAP_PROP_SUPPORTED_PREVIEW_SIZES_STRING" << u.name;
     } else */{
         m_frameSizes << QSize(320, 240)
                      << QSize(640, 480)
@@ -77,7 +79,7 @@ OpenCVVideoCaptureCamera::OpenCVVideoCaptureCamera(cv::VideoCapture *videoCaptur
 
     /// create a thread for the camera and move the camera to it
     auto *cameraThread = new QThread();
-    qDebug() << qPrintable(
+    zDebug() << qPrintable(
                     QString("[%1] moving camera to its own thread (0x%2)")
                     .arg(this->uuid())
                     .arg(long(cameraThread), 0, 16));
@@ -86,7 +88,7 @@ OpenCVVideoCaptureCamera::OpenCVVideoCaptureCamera(cv::VideoCapture *videoCaptur
     cameraThread->start(QThread::HighPriority);
 
     ///
-    qDebug() << Q_FUNC_INFO << uuid();
+    zDebug() << Q_FUNC_INFO << uuid();
 }
 
 OpenCVVideoCaptureCamera::~OpenCVVideoCaptureCamera()
@@ -98,7 +100,7 @@ OpenCVVideoCaptureCamera::~OpenCVVideoCaptureCamera()
         stopAcquisition();
     }
 
-    qDebug() << Q_FUNC_INFO << uuid();
+    zDebug() << Q_FUNC_INFO << uuid();
 
     delete m_capture;
     m_capture = nullptr;
@@ -109,7 +111,7 @@ bool OpenCVVideoCaptureCamera::startAcquisition()
     if (!ZCameraBase::startAcquisition())
         return false;
 
-    qDebug() << Q_FUNC_INFO;
+    zDebug() << Q_FUNC_INFO;
 
     /// start running grab loop in the camera's thread
     m_stopThreadRequested = false;
@@ -123,7 +125,7 @@ bool OpenCVVideoCaptureCamera::stopAcquisition()
     if (!ZCameraBase::stopAcquisition())
         return false;
 
-    qDebug() << Q_FUNC_INFO;
+    zDebug() << Q_FUNC_INFO;
 
     m_stopThreadRequested = true;
 
@@ -141,7 +143,7 @@ QList<ZCameraInterface::ZCameraAttribute> OpenCVVideoCaptureCamera::getAllAttrib
     for (int i=0; i<1100; ++i) {
         double v = m_capture->get(i);
         if (v != -1.)
-            qDebug() << i << v;
+            zDebug() << i << v;
     }
 
     union {double prop; const char* name;} u;
@@ -149,7 +151,7 @@ QList<ZCameraInterface::ZCameraAttribute> OpenCVVideoCaptureCamera::getAllAttrib
     // VideoCapture::get can return 0.0 or -1.0 if it doesn't support
     // cv::CAP_PROP_SUPPORTED_PREVIEW_SIZES_STRING
     if (u.prop != 0.0 && u.prop != -1.0)
-        qDebug() << "cv::CAP_PROP_SUPPORTED_PREVIEW_SIZES_STRING" << u.name;
+        zDebug() << "cv::CAP_PROP_SUPPORTED_PREVIEW_SIZES_STRING" << u.name;
     */
 
     const int currentWidth = int(m_capture->get( cv::CAP_PROP_FRAME_WIDTH ));
@@ -217,7 +219,7 @@ bool OpenCVVideoCaptureCamera::setAttribute(const QString &name, const QVariant 
         /// thread safe
         QMutexLocker locker(&m_mutex);
 
-        qDebug() << "setting attribute" << name << "to" << value;
+        zDebug() << "setting attribute" << name << "to" << value;
 
         if (name == ATTR_MODE) {
             QString mode = value.toString();
@@ -243,7 +245,7 @@ bool OpenCVVideoCaptureCamera::setAttribute(const QString &name, const QVariant 
                 }
 
                 if (!changed)
-                    qWarning() << "unable to change resolution to" << width << "x" << height;
+                    zWarning() << "unable to change resolution to" << width << "x" << height;
             }
         }
         else if (const int key = m_opencvAttributeNames.key(name, -666); key != -666) {
@@ -254,7 +256,7 @@ bool OpenCVVideoCaptureCamera::setAttribute(const QString &name, const QVariant 
             }
         }
         else {
-            qWarning() << "unknown attribute" << name;
+            zWarning() << "unknown attribute" << name;
         }
     }
 
@@ -287,11 +289,11 @@ void OpenCVVideoCaptureCamera::grabLoop()
         }
 
         if (frame.empty()) {
-            qWarning() << "error getting frame. frame is empty!";
+            zWarning() << "error getting frame. frame is empty!";
             break;
         }
 
-        qDebug() << "acquired image" << frameCounter
+        zDebug() << "acquired image" << frameCounter
                  << "at" << m_capture->get(cv::CAP_PROP_FPS) << "FPS"
                  << "pos frames:" << m_capture->get(cv::CAP_PROP_POS_FRAMES)
                  << "pos msec:" << m_capture->get(cv::CAP_PROP_POS_MSEC);
@@ -319,13 +321,13 @@ void OpenCVVideoCaptureCamera::grabLoop()
         /// set image number
         currentImage->setNumber(++frameCounter);
 
-        //qDebug() << "frame" << frameCounter;
+        //zDebug() << "frame" << frameCounter;
 
         /// notify
         emit newImageReceived(currentImage);
     }
 
-    qDebug() << "acquired" << frameCounter << "images";
+    zDebug() << "acquired" << frameCounter << "images";
 
     if (!m_stopThreadRequested) {
         /// if we stopped because of some error, notify

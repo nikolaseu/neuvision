@@ -23,9 +23,10 @@
 #include "ZCameraCalibrator/zcalibrationpatternfinderplugininterface.h"
 
 #include "ZCore/zcoreplugin.h"
+#include "ZCore/zlogging.h"
 #include "ZCore/zpluginloader.h"
 
-#include <QDebug>
+Z3D_LOGGING_CATEGORY_FROM_FILE("z3d.zcameracalibrator", QtInfoMsg)
 
 namespace Z3D
 {
@@ -39,10 +40,10 @@ void ZCalibrationPatternFinderProvider::loadPlugins()
     for (auto pluginLoader : list) {
         auto *plugin = pluginLoader->instance<ZCalibrationPatternFinderPluginInterface>();
         if (plugin) {
-            qDebug() << "pattern finder plugin loaded. type:" << pluginLoader->id();
+            zDebug() << "pattern finder plugin loaded. type:" << pluginLoader->id();
             m_plugins.insert(pluginLoader->id(), plugin);
         } else {
-            qWarning() << "invalid pattern finder plugin:" << plugin;
+            zWarning() << "invalid pattern finder plugin:" << plugin;
         }
     }
 }

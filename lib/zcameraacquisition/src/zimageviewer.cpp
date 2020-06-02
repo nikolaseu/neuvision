@@ -22,15 +22,18 @@
 
 #include "ZCameraAcquisition/zcameraimage.h"
 
+#include "ZCore/zlogging.h"
+
 #include <opencv2/imgproc.hpp>
 
-#include <QDebug>
 #include <QFileDialog>
 #include <QGraphicsPixmapItem>
 #include <QMenu>
 #include <QMouseEvent>
 #include <QScrollBar>
 #include <qmath.h>
+
+Z3D_LOGGING_CATEGORY_FROM_FILE("z3d.zcameraacquisition", QtInfoMsg)
 
 namespace Z3D
 {
@@ -108,7 +111,7 @@ ZImageViewer::ZImageViewer(QWidget *parent)
 
 ZImageViewer::~ZImageViewer ()
 {
-    qDebug() << Q_FUNC_INFO;
+    zDebug() << Q_FUNC_INFO;
 }
 
 void ZImageViewer::setFitToWindow(const bool &enabled)
@@ -184,7 +187,7 @@ void ZImageViewer::saveImage()
     /// format=0 (use filename extension)
     /// quality=100 (maximum)
     if (!m_image.save(fileName /*, 0, 100*/)) {
-        qCritical() << "unable to save image to file" << fileName;
+        zCritical() << "unable to save image to file" << fileName;
         //QMessageBox::
     }
 }
@@ -302,13 +305,13 @@ void ZImageViewer::updateImage(const cv::Mat &image)
 
         return;
     } else {
-        qCritical() << "unsupported image type:" << m_img.type() << "size:" << m_img.cols << "x" << m_img.rows;
+        zCritical() << "unsupported image type:" << m_img.type() << "size:" << m_img.cols << "x" << m_img.rows;
         return;
     }
 
     /// last check, later we assume we have rgb 8 bit per channel!
     if (m_visibleImage.type() != CV_8UC3) {
-        qDebug() << "converting image to CV_8UC3 from type:" << m_visibleImage.type();
+        zDebug() << "converting image to CV_8UC3 from type:" << m_visibleImage.type();
         m_visibleImage.convertTo(m_visibleImage, CV_8UC3);
     }
 
@@ -327,7 +330,7 @@ void ZImageViewer::updateImage(const cv::Mat &image)
 void ZImageViewer::updateImage(const cv::Mat &image, float minValue, float maxValue)
 {
     if (m_img.channels() != 1) {
-        qCritical() << "cannot show image with min/max range because it has more than one channel!";
+        zCritical() << "cannot show image with min/max range because it has more than one channel!";
         return;
     }
 

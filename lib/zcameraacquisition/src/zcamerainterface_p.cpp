@@ -23,11 +23,14 @@
 #include "ZCameraAcquisition/zcameraimage.h"
 #include "ZCameraAcquisition/zcamerasettingswidget.h"
 
+#include "ZCore/zlogging.h"
+
 #include <QCoreApplication>
-#include <QDebug>
 #include <QDir>
 #include <QSettings>
 #include <QStringList>
+
+Z3D_LOGGING_CATEGORY_FROM_FILE("z3d.zcameraacquisition", QtInfoMsg)
 
 namespace Z3D
 {
@@ -176,7 +179,7 @@ bool ZCameraBase::loadConfiguration(QString configFileName)
             currAttr.value = settings.value("value");
             settingsGroup.append(currAttr);
 
-//            qDebug() << currAttr.name << "=" << currAttr.value;
+//            zDebug() << currAttr.name << "=" << currAttr.value;
 
             settings.endGroup();
         }
@@ -208,7 +211,7 @@ bool ZCameraBase::loadPresetConfiguration(QString presetName)
         for (const ZCameraAttribute &attr : presetAttributesList) {
             if (!setAttribute(attr.id, attr.value, false)) {
                 error = true;
-//                qWarning() << "unable to set attribute" << attr.name << "to" << attr.value;
+//                zWarning() << "unable to set attribute" << attr.name << "to" << attr.value;
             }
         }
 
@@ -239,7 +242,7 @@ ZCameraImagePtr ZCameraBase::getNextBufferImage(int width, int height, int xOffs
     m_currentImageBufferIndex++;
 
     const int index = m_currentImageBufferIndex  % m_imagesBuffer.size();
-    //qDebug() << "bufferIndex" << index;
+    //zDebug() << "bufferIndex" << index;
 
     /// update last retrieved image
     m_lastRetrievedImage = &m_imagesBuffer[index];
@@ -253,22 +256,22 @@ ZCameraImagePtr ZCameraBase::getNextBufferImage(int width, int height, int xOffs
             (*m_lastRetrievedImage)->bytesPerPixel() != bytesPerPixel) {
 
         if (!m_lastRetrievedImage->get())
-            qDebug() << "last image was null";
+            zDebug() << "last image was null";
         else
-            qDebug() << "lastImage"
+            zDebug() << "lastImage"
                      << "size" << (*m_lastRetrievedImage)->width() << "x" << (*m_lastRetrievedImage)->height()
                      << "offset" << (*m_lastRetrievedImage)->xOffset() << "," << (*m_lastRetrievedImage)->yOffset()
                      << "bytesPerPixel" << (*m_lastRetrievedImage)->bytesPerPixel();
 
         if (externalBuffer) {
-            qDebug() << "creating new image from external buffer of size:" << width << "x" << height << " bytesPerPixel:" << bytesPerPixel;
+            zDebug() << "creating new image from external buffer of size:" << width << "x" << height << " bytesPerPixel:" << bytesPerPixel;
             ZCameraImagePtr newImage(new ZImageGrayscale(width, height,
                                                             xOffset, yOffset,
                                                             bytesPerPixel,
                                                             externalBuffer));
             m_lastRetrievedImage->swap( newImage );
         } else {
-            qDebug() << "creating new image of size:" << width << "x" << height << " bytesPerPixel:" << bytesPerPixel;
+            zDebug() << "creating new image of size:" << width << "x" << height << " bytesPerPixel:" << bytesPerPixel;
             ZCameraImagePtr newImage(new ZImageGrayscale(width, height,
                                                             xOffset, yOffset,
                                                             bytesPerPixel));

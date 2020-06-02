@@ -20,15 +20,12 @@
 
 #include "ZPointCloud/zpointcloudlistitem.h"
 
-#include <QLoggingCategory>
+#include <ZCore/zlogging.h>
+
+Z3D_LOGGING_CATEGORY_FROM_FILE("z3d.zpointcloud", QtInfoMsg)
 
 namespace Z3D
 {
-
-namespace // anonymous namespace
-{
-Q_LOGGING_CATEGORY(loggingCategory, "z3d.zpointcloud.zpointcloudlistitem", QtInfoMsg)
-}
 
 ZPointCloudListItem::ZPointCloudListItem(const ZPointCloudPtr &pointCloud,
                                          const QString &name,
@@ -37,12 +34,12 @@ ZPointCloudListItem::ZPointCloudListItem(const ZPointCloudPtr &pointCloud,
     , m_pointCloud(pointCloud)
     , m_name(name)
 {
-    qDebug(loggingCategory) << "creating" << this;
+    zDebug() << "creating" << this;
 }
 
 ZPointCloudListItem::~ZPointCloudListItem()
 {
-    qDebug(loggingCategory) << "destroying" << this;
+    zDebug() << "destroying" << this;
 }
 
 ZPointCloud *ZPointCloudListItem::pointCloud() const

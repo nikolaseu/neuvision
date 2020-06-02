@@ -22,8 +22,12 @@
 
 #include "ZCameraCalibrator/zmulticalibrationimage.h"
 
+#include "ZCore/zlogging.h"
+
 #include <QDir>
 #include <QtConcurrent>
+
+Z3D_LOGGING_CATEGORY_FROM_FILE("z3d.zcameracalibrator", QtInfoMsg)
 
 namespace Z3D
 {
@@ -100,11 +104,11 @@ void ZMultiCalibrationImageModel::addFolder(QString folder)
     /// we must wait for the previous task to finish
     /// because we use the static vector "images"
     if (m_futureWatcher.isRunning()) {
-        qWarning() << "waiting for previous task to finish...";
+        zWarning() << "waiting for previous task to finish...";
         m_futureWatcher.waitForFinished();
     }
 
-    qDebug() << "loading calibration images from" << folder;
+    zDebug() << "loading calibration images from" << folder;
 
     QStringList filters;
     filters << "*.jpg" << "*.bmp" << "*.png";
@@ -113,7 +117,7 @@ void ZMultiCalibrationImageModel::addFolder(QString folder)
     QStringList cameraFolders = camerasDir.entryList(QDir::Dirs | QDir::NoDotAndDotDot, QDir::Name);
 
     if (cameraFolders.empty()) {
-        qWarning() << "not even one camera folder found!";
+        zWarning() << "not even one camera folder found!";
         return;
     }
 
@@ -149,7 +153,7 @@ void ZMultiCalibrationImageModel::addImage(Z3D::ZMultiCalibrationImagePtr image)
     /// we must wait for the previous task to finish
     /// because we use the static vector "images"
     if (m_futureWatcher.isRunning()) {
-        qWarning() << "waiting for previous task to finish...";
+        zWarning() << "waiting for previous task to finish...";
         m_futureWatcher.waitForFinished();
     }
 
@@ -190,11 +194,11 @@ void ZMultiCalibrationImageModel::addImpl(ZMultiCalibrationImagePtr image)
         m_width = image->width();
         m_height = image->height();
         emit imageSizeChanged();
-        qDebug() << "image size:" << m_width << "x" << m_height;
+        zDebug() << "image size:" << m_width << "x" << m_height;
     }
 
     if (image->width() != m_width || image->height() != m_height) {
-        qWarning() << "image not added. it is not the same size:" << image->fileName();
+        zWarning() << "image not added. it is not the same size:" << image->fileName();
         return;
     }*/
 
@@ -215,7 +219,7 @@ ZMultiCalibrationImagePtr ZMultiCalibrationImageModel::imageAt(int index) const
     if (index >= 0 && index < m_images.size()) {
         return m_images[index];
     } else {
-        qCritical() << "invalid image index requested:" << index << " - model size:" << m_images.size();
+        zCritical() << "invalid image index requested:" << index << " - model size:" << m_images.size();
         return nullptr;
     }
 }
