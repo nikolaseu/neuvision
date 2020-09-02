@@ -8,6 +8,8 @@
 #include <QFileInfo>
 #include <QRegularExpression>
 
+#include <stdexcept>
+
 Z3D_LOGGING_CATEGORY_FROM_FILE("z3d.apps.zcloudviewer", QtInfoMsg)
 
 namespace Z3D::ZMeshlabUtils
