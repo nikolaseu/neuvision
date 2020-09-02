@@ -8,7 +8,7 @@ import QtGraphicalEffects 1.12
 Item {
     id: root
     property alias source: effectSource.sourceItem
-    property int radius: 256
+    property int radius: 64
 
     // Should be more efficient than using big radius in blur?
     // Also because using just radius 256 does not work in FastBlur.
@@ -20,11 +20,32 @@ Item {
                                    ? 0.5
                                    : 1
 
+    property point sourcePosition: mapToItem(source, 0, 0)
+    property rect sourceRect: Qt.rect(sourcePosition.x, sourcePosition.y, width, height)
+
+    function updateSourceRect() {
+        sourcePosition = mapToItem(source, 0, 0)
+    }
+
+    Component.onCompleted: {
+        // a hack for getting updates every time this item global position changes
+        let current = root;
+        while (current && current.parent) {
+            current.onXChanged.connect(updateSourceRect);
+            current.onYChanged.connect(updateSourceRect);
+            current = current.parent;
+        }
+
+        updateSourceRect();
+    }
+
     ShaderEffectSource {
         id: effectSource
         anchors.fill: parent
+        live: true
         visible: false
-        sourceRect: mapToItem(sourceItem, x, y, width, height)
+        wrapMode: ShaderEffectSource.Repeat
+        sourceRect: root.sourceRect
         textureSize: Qt.size(_textureScale * width, _textureScale * height)
     }
 
