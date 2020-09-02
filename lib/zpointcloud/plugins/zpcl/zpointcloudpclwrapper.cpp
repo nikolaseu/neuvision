@@ -34,7 +34,7 @@ namespace Z3D
 namespace // anonymous namespace
 {
 
-ZPointField::PointFieldTypes fromPCLDatatype(const pcl::uint8_t &datatype)
+ZPointField::PointFieldTypes fromPCLDatatype(const std::uint8_t &datatype)
 {
     switch (datatype) {
     case pcl::PCLPointField::INT8:
