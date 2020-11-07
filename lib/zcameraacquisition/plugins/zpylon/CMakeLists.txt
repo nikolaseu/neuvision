@@ -3,7 +3,8 @@ project(ZPylonCamera LANGUAGES CXX)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${Z3D_OUTPUT_DIRECTORY}/plugins/cameraacquisition)
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${Z3D_OUTPUT_DIRECTORY}/plugins/cameraacquisition)
 
-find_package(Qt5 COMPONENTS Core REQUIRED)
+find_package(QT NAMES Qt5 Qt6 COMPONENTS Core REQUIRED)
+find_package(Qt${QT_VERSION_MAJOR} COMPONENTS Core REQUIRED)
 find_package(OpenCV REQUIRED)
 find_package(Pylon REQUIRED)
 
@@ -26,7 +27,7 @@ target_include_directories(${PROJECT_NAME} PRIVATE ${PYLON_INCLUDE_DIRS})
 
 target_link_libraries(${PROJECT_NAME}
     PRIVATE
-        Qt5::Core
+        Qt::Core
         ${OpenCV_LIBS}
         ${PYLON_LIBRARIES}
         ZCameraAcquisition

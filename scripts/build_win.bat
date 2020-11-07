@@ -1,4 +1,5 @@
-set Qt5_DIR=C:/Qt/5.13/msvc2017_64
+set QT_DIR=C:/Qt/5.15/msvc2019_64
+set Qt5_DIR=%QT_DIR%
 set OpenCV_DIR=C:/Tools/vcpkg/installed/x64-windows
 
 set BUILD_TYPE=Release

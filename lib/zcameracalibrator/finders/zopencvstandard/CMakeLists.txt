@@ -3,7 +3,8 @@ project(ZOpenCVPatternFinderPlugin LANGUAGES CXX)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${Z3D_OUTPUT_DIRECTORY}/plugins/calibrationpatternfinder)
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${Z3D_OUTPUT_DIRECTORY}/plugins/calibrationpatternfinder)
 
-find_package(Qt5 COMPONENTS Core Widgets REQUIRED)
+find_package(QT NAMES Qt5 Qt6 COMPONENTS Core REQUIRED)
+find_package(Qt${QT_VERSION_MAJOR} COMPONENTS Core Widgets REQUIRED)
 find_package(OpenCV REQUIRED)
 
 file(GLOB HEADER_FILES
@@ -23,8 +24,8 @@ add_library(${PROJECT_NAME} SHARED
 
 target_link_libraries(${PROJECT_NAME}
     PRIVATE
-        Qt5::Core
-        Qt5::Widgets
+        Qt::Core
+        Qt::Widgets
         ${OpenCV_LIBS}
         ZCameraCalibrator
 )

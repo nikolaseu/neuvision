@@ -1,5 +1,6 @@
 #!/bin/bash
-export Qt5_DIR=$(brew --prefix qt)
+export QT_DIR=$(brew --prefix qt)
+export Qt5_DIR=$QT_DIR
 export OpenCV_DIR=$(brew --prefix opencv)
 
 BUILD_TYPE=Release

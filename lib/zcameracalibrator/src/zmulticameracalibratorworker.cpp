@@ -215,7 +215,7 @@ void ZMultiCameraCalibratorWorker::calibrate(const std::vector<ZCameraCalibratio
 
     /// starts execution in other thread
     m_calibrateFutureWatcher.setFuture(
-                QtConcurrent::run(this, &ZMultiCameraCalibratorWorker::calibrateFunctionImpl, currentCalibrations) );
+            QtConcurrent::run(std::bind(&ZMultiCameraCalibratorWorker::calibrateFunctionImpl, this, currentCalibrations)));
 }
 
 void ZMultiCameraCalibratorWorker::calibrateFunctionImpl(const std::vector<ZCameraCalibrationPtr> &currentCalibrations)

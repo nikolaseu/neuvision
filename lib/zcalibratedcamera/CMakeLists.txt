@@ -1,6 +1,7 @@
 project(ZCalibratedCamera LANGUAGES CXX)
 
-find_package(Qt5 COMPONENTS Core REQUIRED)
+find_package(QT NAMES Qt5 Qt6 COMPONENTS Core REQUIRED)
+find_package(Qt${QT_VERSION_MAJOR} COMPONENTS Core REQUIRED)
 
 file(GLOB HEADER_FILES
     ${CMAKE_CURRENT_SOURCE_DIR}/include/${PROJECT_NAME}/*.h)
@@ -21,7 +22,7 @@ target_include_directories(${PROJECT_NAME}
 
 target_link_libraries(${PROJECT_NAME}
     PRIVATE
-        Qt5::Core
+        Qt::Core
     PUBLIC
         ZCore
         ZCameraAcquisition

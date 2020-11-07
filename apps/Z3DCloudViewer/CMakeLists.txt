@@ -1,6 +1,12 @@
 project(Z3DCloudViewer LANGUAGES CXX)
 
-find_package(Qt5 COMPONENTS Widgets Quick Concurrent Xml REQUIRED)
+find_package(QT NAMES Qt5 Qt6 COMPONENTS Core REQUIRED)
+find_package(Qt${QT_VERSION_MAJOR} COMPONENTS Widgets Quick QuickControls2 Concurrent Xml REQUIRED)
+
+if(NOT TARGET ZPointCloud)
+    message(WARNING "ZPointCloud not available, skipping ${PROJECT_NAME}")
+    return()
+endif()
 
 file(GLOB HEADER_FILES
     ${CMAKE_CURRENT_SOURCE_DIR}/*.h)
@@ -16,10 +22,11 @@ add_executable(${PROJECT_NAME}
 
 target_link_libraries(${PROJECT_NAME}
     PRIVATE
-        Qt5::Widgets
-        Qt5::Quick
-        Qt5::Concurrent
-        Qt5::Xml
+        Qt::Widgets
+        Qt::Quick
+        Qt::QuickControls2
+        Qt::Concurrent
+        Qt::Xml
     PUBLIC
         ZGui
         ZPointCloud

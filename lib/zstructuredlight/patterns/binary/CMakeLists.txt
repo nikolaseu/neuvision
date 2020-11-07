@@ -4,7 +4,8 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${Z3D_OUTPUT_DIRECTORY}/plugins/structuredlig
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${Z3D_OUTPUT_DIRECTORY}/plugins/structuredlightpatterns)
 set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS ON) # it's a plugin, just export everything, makes it easier for tests
 
-find_package(Qt5 COMPONENTS Core Quick REQUIRED)
+find_package(QT NAMES Qt5 Qt6 COMPONENTS Core REQUIRED)
+find_package(Qt${QT_VERSION_MAJOR} COMPONENTS Core Quick REQUIRED)
 find_package(OpenCV REQUIRED)
 
 file(GLOB HEADER_FILES
@@ -25,8 +26,8 @@ add_library(${PROJECT_NAME} SHARED
 
 target_link_libraries(${PROJECT_NAME}
     PUBLIC # it's a plugin, so public is fine, and makes it easier for tests (no need to specify all dependencies)
-        Qt5::Core
-        Qt5::Quick
+        Qt::Core
+        Qt::Quick
         ${OpenCV_LIBS}
         ZStructuredLight
 )

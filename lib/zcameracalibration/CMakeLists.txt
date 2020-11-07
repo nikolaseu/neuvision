@@ -1,6 +1,7 @@
 project(ZCameraCalibration LANGUAGES CXX)
 
-find_package(Qt5 COMPONENTS Core Widgets Concurrent REQUIRED)
+find_package(QT NAMES Qt5 Qt6 COMPONENTS Core REQUIRED)
+find_package(Qt${QT_VERSION_MAJOR} COMPONENTS Core Widgets Concurrent REQUIRED)
 find_package(OpenCV REQUIRED)
 
 file(GLOB_RECURSE HEADER_FILES
@@ -26,8 +27,8 @@ target_include_directories(${PROJECT_NAME}
 
 target_link_libraries(${PROJECT_NAME}
     PRIVATE
-        Qt5::Widgets
-        Qt5::Concurrent
+        Qt::Widgets
+        Qt::Concurrent
         ${OpenCV_LIBS}
     PUBLIC
         ZCore

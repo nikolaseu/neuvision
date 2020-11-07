@@ -3,7 +3,8 @@ project(ZPclGeometryLoaders LANGUAGES CXX)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${Z3D_OUTPUT_DIRECTORY}/plugins/pointcloud)
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${Z3D_OUTPUT_DIRECTORY}/plugins/pointcloud)
 
-find_package(Qt5 COMPONENTS Core REQUIRED)
+find_package(QT NAMES Qt5 Qt6 COMPONENTS Core REQUIRED)
+find_package(Qt${QT_VERSION_MAJOR} COMPONENTS Core REQUIRED)
 find_package(PCL COMPONENTS io REQUIRED)
 
 file(GLOB HEADER_FILES
@@ -23,9 +24,9 @@ add_library(${PROJECT_NAME} SHARED
 
 target_link_libraries(${PROJECT_NAME}
     PRIVATE
-        Qt5::Core
-        Qt5::CorePrivate
-        Qt5::Gui
+        Qt::Core
+        Qt::CorePrivate
+        Qt::Gui
         ${PCL_IO_LIBRARIES}
         ZPointCloud
 )

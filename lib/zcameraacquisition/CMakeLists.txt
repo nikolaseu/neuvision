@@ -1,6 +1,7 @@
 project(ZCameraAcquisition LANGUAGES CXX)
 
-find_package(Qt5 COMPONENTS Widgets REQUIRED)
+find_package(QT NAMES Qt5 Qt6 COMPONENTS Core REQUIRED)
+find_package(Qt${QT_VERSION_MAJOR} COMPONENTS Widgets REQUIRED)
 find_package(OpenCV REQUIRED)
 
 file(GLOB HEADER_FILES
@@ -29,7 +30,7 @@ target_include_directories(${PROJECT_NAME}
 target_link_libraries(${PROJECT_NAME}
     PRIVATE
         QtPropertyBrowser
-        Qt5::Widgets
+        Qt::Widgets
         ${OpenCV_LIBS}
     PUBLIC
         ZCore

@@ -3,7 +3,8 @@ project(ZGPhoto2Camera LANGUAGES CXX)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${Z3D_OUTPUT_DIRECTORY}/plugins/cameraacquisition)
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${Z3D_OUTPUT_DIRECTORY}/plugins/cameraacquisition)
 
-find_package(Qt5 COMPONENTS Core Gui REQUIRED)
+find_package(QT NAMES Qt5 Qt6 COMPONENTS Core REQUIRED)
+find_package(Qt${QT_VERSION_MAJOR} COMPONENTS Core Gui REQUIRED)
 find_package(OpenCV REQUIRED)
 find_package(Gphoto2 REQUIRED)
 
@@ -26,8 +27,8 @@ target_include_directories(${PROJECT_NAME} PRIVATE ${Gphoto2_INCLUDE_DIRS})
 
 target_link_libraries(${PROJECT_NAME}
     PRIVATE
-        Qt5::Core
-        Qt5::Gui # FIXME we can replace QImage with cv::Mat
+        Qt::Core
+        Qt::Gui # FIXME we can replace QImage with cv::Mat
         ${OpenCV_LIBS}
         ${Gphoto2_LIBRARIES}
         ZCameraAcquisition

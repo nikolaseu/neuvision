@@ -1,6 +1,12 @@
 project(ZPointCloud LANGUAGES CXX)
 
-find_package(Qt5 COMPONENTS Core Qml 3DCore 3DInput 3DQuick 3DRender 3DQuickRender 3DLogic REQUIRED)
+find_package(QT NAMES Qt5 Qt6 COMPONENTS Core REQUIRED)
+find_package(Qt${QT_VERSION_MAJOR} COMPONENTS Core Concurrent Qml 3DCore 3DInput 3DQuick 3DRender 3DQuickRender 3DLogic)
+
+if(NOT TARGET Qt${QT_VERSION_MAJOR}::3DCore)
+    message(WARNING "Qt3D not available, skipping ${PROJECT_NAME}")
+    return()
+endif()
 
 file(GLOB HEADER_FILES
     ${CMAKE_CURRENT_SOURCE_DIR}/include/${PROJECT_NAME}/*.h)
@@ -28,13 +34,13 @@ target_include_directories(${PROJECT_NAME}
 
 target_link_libraries(${PROJECT_NAME}
     PRIVATE
-        Qt5::Qml
-        Qt5::3DCore
-        Qt5::3DInput
-        Qt5::3DQuick
-        Qt5::3DRender
-        Qt5::3DQuickRender
-        Qt5::3DLogic
+        Qt::Qml
+        Qt::3DCore
+        Qt::3DInput
+        Qt::3DQuick
+        Qt::3DRender
+        Qt::3DQuickRender
+        Qt::3DLogic
     PUBLIC
         ZCore)
 

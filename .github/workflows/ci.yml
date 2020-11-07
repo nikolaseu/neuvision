@@ -16,6 +16,8 @@ jobs:
         sudo apt-get install -y build-essential libopencv-dev libgphoto2-dev
     - name: Install Qt
       uses: jurplel/install-qt-action@v2
+      with:
+        version: '5.15.1'
     - name: Build
       run: sh ./scripts/build_linux.sh
     - name: Test

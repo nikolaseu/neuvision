@@ -1,6 +1,12 @@
 project(Z3DScanner LANGUAGES CXX)
 
-find_package(Qt5 COMPONENTS Widgets Quick QuickControls2 Concurrent REQUIRED)
+find_package(QT NAMES Qt5 Qt6 COMPONENTS Core REQUIRED)
+find_package(Qt${QT_VERSION_MAJOR} COMPONENTS Widgets Quick QuickControls2 Concurrent REQUIRED)
+
+if(NOT TARGET ZStructuredLight)
+    message(WARNING "ZStructuredLight not available, skipping ${PROJECT_NAME}")
+    return()
+endif()
 
 file(GLOB HEADER_FILES
     ${CMAKE_CURRENT_SOURCE_DIR}/src/*.h)
@@ -16,10 +22,10 @@ add_executable(${PROJECT_NAME}
 
 target_link_libraries(${PROJECT_NAME}
     PRIVATE
-        Qt5::Widgets
-        Qt5::Concurrent
-        Qt5::Quick
-        Qt5::QuickControls2
+        Qt::Widgets
+        Qt::Concurrent
+        Qt::Quick
+        Qt::QuickControls2
     PUBLIC
         ZGui
         ZCameraCalibrator

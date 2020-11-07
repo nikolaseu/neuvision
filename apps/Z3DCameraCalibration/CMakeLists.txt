@@ -1,6 +1,7 @@
 project(Z3DCameraCalibration LANGUAGES CXX)
 
-find_package(Qt5 COMPONENTS Widgets REQUIRED)
+find_package(QT NAMES Qt5 Qt6 COMPONENTS Core REQUIRED)
+find_package(Qt${QT_VERSION_MAJOR} COMPONENTS Widgets REQUIRED)
 
 add_executable(${PROJECT_NAME}
     main.cpp
@@ -11,7 +12,7 @@ add_executable(${PROJECT_NAME}
 
 target_link_libraries(${PROJECT_NAME}
     PRIVATE
-        Qt5::Widgets
+        Qt::Widgets
     PUBLIC
         ZCameraAcquisition
         ZCameraCalibration

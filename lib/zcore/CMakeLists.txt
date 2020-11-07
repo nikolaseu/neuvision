@@ -1,6 +1,7 @@
 project(ZCore LANGUAGES CXX)
 
-find_package(Qt5 COMPONENTS Core REQUIRED)
+find_package(QT NAMES Qt5 Qt6 COMPONENTS Core REQUIRED)
+find_package(Qt${QT_VERSION_MAJOR} COMPONENTS Core REQUIRED)
 
 file(GLOB HEADER_FILES
     ${CMAKE_CURRENT_SOURCE_DIR}/include/ZCore/*.h)
@@ -26,7 +27,7 @@ target_include_directories(${PROJECT_NAME}
         $<INSTALL_INTERFACE:include>)
 
 target_link_libraries(${PROJECT_NAME} PRIVATE
-    Qt5::Core)
+    Qt::Core)
 
 set_target_properties(${PROJECT_NAME} PROPERTIES VERSION ${CMAKE_PROJECT_VERSION})
 

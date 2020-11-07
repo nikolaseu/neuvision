@@ -141,7 +141,7 @@ QList<ZCameraInterface::ZCameraAttribute> PylonCamera::getAllAttributes()
             continue;
         }
 
-        QString categoryName = QString::fromLatin1(node->GetName());
+        QString categoryName = QString::fromLatin1(node->GetName(), -1);
         GenApi::NodeList_t childrens;
         node->GetChildren(childrens);
 

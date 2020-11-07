@@ -3,7 +3,8 @@ project(ZStereoStructuredLight LANGUAGES CXX)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${Z3D_OUTPUT_DIRECTORY}/plugins/structuredlight)
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${Z3D_OUTPUT_DIRECTORY}/plugins/structuredlight)
 
-find_package(Qt5 COMPONENTS Core Concurrent REQUIRED)
+find_package(QT NAMES Qt5 Qt6 COMPONENTS Core REQUIRED)
+find_package(Qt${QT_VERSION_MAJOR} COMPONENTS Core Concurrent REQUIRED)
 find_package(OpenCV REQUIRED)
 
 file(GLOB HEADER_FILES
@@ -23,9 +24,9 @@ add_library(${PROJECT_NAME} SHARED
 
 target_link_libraries(${PROJECT_NAME}
     PRIVATE
-        Qt5::Core
-        Qt5::Concurrent
-        Qt5::Widgets
+        Qt::Core
+        Qt::Concurrent
+        Qt::Widgets
         ${OpenCV_LIBS}
         ZCameraCalibration
         ZCameraCalibrator

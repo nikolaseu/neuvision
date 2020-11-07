@@ -1,7 +1,13 @@
 project(ZStructuredLight LANGUAGES CXX)
 
-find_package(Qt5 COMPONENTS Core Widgets REQUIRED)
+find_package(QT NAMES Qt5 Qt6 COMPONENTS Core REQUIRED)
+find_package(Qt${QT_VERSION_MAJOR} COMPONENTS Core Widgets REQUIRED)
 find_package(OpenCV REQUIRED)
+
+if(NOT TARGET ZPointCloud)
+    message(WARNING "ZPointCloud not available, skipping ${PROJECT_NAME}")
+    return()
+endif()
 
 file(GLOB HEADER_FILES
     ${CMAKE_CURRENT_SOURCE_DIR}/include/${PROJECT_NAME}/*.h)
@@ -22,7 +28,7 @@ target_include_directories(${PROJECT_NAME}
 
 target_link_libraries(${PROJECT_NAME}
     PRIVATE
-        Qt5::Widgets
+        Qt::Widgets
         ${OpenCV_LIBS}
     PUBLIC
         ZCore

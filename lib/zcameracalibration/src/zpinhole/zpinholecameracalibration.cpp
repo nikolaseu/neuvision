@@ -653,7 +653,7 @@ void ZPinholeCameraCalibration::setFocalLength(QPointF arg)
 void ZPinholeCameraCalibration::onCalibrationChanged()
 {
     /// run in other thread
-    QtConcurrent::run(this, &ZPinholeCameraCalibration::generateLookUpTable);
+    QtConcurrent::run(std::bind(&ZPinholeCameraCalibration::generateLookUpTable, this));
 }
 
 //void ZPinholeCameraCalibration::setRadialDistortion(QList<double> arg)
