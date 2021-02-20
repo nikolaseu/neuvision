@@ -27,7 +27,6 @@ target_link_libraries(${PROJECT_NAME}
         Qt::QuickControls2
         Qt::Concurrent
         Qt::Xml
-    PUBLIC
         ZGui
         ZPointCloud
 )

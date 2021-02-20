@@ -30,9 +30,11 @@ target_include_directories(${PROJECT_NAME}
 target_link_libraries(${PROJECT_NAME}
     PRIVATE
         QtPropertyBrowser
-        Qt::Widgets
-        ${OpenCV_LIBS}
     PUBLIC
+        Qt::Widgets
+        opencv_core
+        opencv_imgcodecs
+        opencv_imgproc
         ZCore
         ZGui)
 

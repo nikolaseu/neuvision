@@ -26,7 +26,6 @@ target_link_libraries(${PROJECT_NAME}
         Qt::Concurrent
         Qt::Quick
         Qt::QuickControls2
-    PUBLIC
         ZGui
         ZCameraCalibrator
         ZStructuredLight

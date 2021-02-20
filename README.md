@@ -74,17 +74,3 @@ cmake --build .
 Check the [CI scripts](./scripts) for more details.
 
 You can also open the CMake project with QtCreator (version 4.11 has good support for CMake projects) and just run the applications from there.
-
-### Notes for Windows users
-
-To run the applications you also need to add the binaries (*.dll) to the `PATH`.
-Open the _Projects_ tab in the left toolbar of QtCreator and go to the _Build_ (or _Run_) configurations.
-In the environment variables, add to the `PATH` the folder where you have the third party binaries.
-You should use the _Batch Edit_ button to make it easier. In that case:
-- for a _release_ (or _profile_) build you would add:
-  - ```PATH=${PATH};C:\Tools\vcpkg\installed\x64-windows\bin;```
-- for a _debug_ build you would add:
-  - ```PATH=${PATH};C:\Tools\vcpkg\installed\x64-windows\debug\bin;```
-
-> It's really important that you add only the ones corresponding to the build configuration you're
-> currently trying to build/run!

@@ -28,7 +28,7 @@
 #include <QCoreApplication>
 #include <QDateTime>
 #include <QDir>
-#include <opencv2/imgcodecs.hpp>
+#include <opencv2/imgcodecs/imgcodecs.hpp>
 
 Z3D_LOGGING_CATEGORY_FROM_FILE("z3d.zcameraacquisition", QtInfoMsg)
 
