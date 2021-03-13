@@ -17,7 +17,7 @@ jobs:
     - name: Install Qt
       uses: jurplel/install-qt-action@v2
       with:
-        version: '5.15.1'
+        version: '5.15.2'
     - name: Build
       run: sh ./scripts/build_linux.sh
     - name: Test

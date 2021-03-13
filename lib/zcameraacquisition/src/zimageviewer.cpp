@@ -67,20 +67,21 @@ ZImageViewer::ZImageViewer(QWidget *parent)
     m_contextMenu->addAction(m_fitToWindowAction);
 
     /// add colormaps<int, QString>
-    QList<QPair<int, QString> > colormaps;
-    colormaps.push_back(qMakePair<int, QString>(-1                  , tr("None")));
-    colormaps.push_back(qMakePair<int, QString>(cv::COLORMAP_AUTUMN , tr("Autumn")));
-    colormaps.push_back(qMakePair<int, QString>(cv::COLORMAP_BONE   , tr("Bone")));
-    colormaps.push_back(qMakePair<int, QString>(cv::COLORMAP_COOL   , tr("Cool")));
-    colormaps.push_back(qMakePair<int, QString>(cv::COLORMAP_HOT    , tr("Hot")));
-    colormaps.push_back(qMakePair<int, QString>(cv::COLORMAP_HSV    , tr("HSV")));
-    colormaps.push_back(qMakePair<int, QString>(cv::COLORMAP_JET    , tr("Jet")));
-    colormaps.push_back(qMakePair<int, QString>(cv::COLORMAP_OCEAN  , tr("Ocean")));
-    colormaps.push_back(qMakePair<int, QString>(cv::COLORMAP_PINK   , tr("Pink")));
-    colormaps.push_back(qMakePair<int, QString>(cv::COLORMAP_RAINBOW, tr("Rainbow")));
-    colormaps.push_back(qMakePair<int, QString>(cv::COLORMAP_SPRING , tr("Spring")));
-    colormaps.push_back(qMakePair<int, QString>(cv::COLORMAP_SUMMER , tr("Summer")));
-    colormaps.push_back(qMakePair<int, QString>(cv::COLORMAP_WINTER , tr("Winter")));
+    const std::vector<std::pair<int, QString> > colormaps {
+      std::make_pair<int, QString>(-1                  , tr("None")),
+      std::make_pair<int, QString>(cv::COLORMAP_AUTUMN , tr("Autumn")),
+      std::make_pair<int, QString>(cv::COLORMAP_BONE   , tr("Bone")),
+      std::make_pair<int, QString>(cv::COLORMAP_COOL   , tr("Cool")),
+      std::make_pair<int, QString>(cv::COLORMAP_HOT    , tr("Hot")),
+      std::make_pair<int, QString>(cv::COLORMAP_HSV    , tr("HSV")),
+      std::make_pair<int, QString>(cv::COLORMAP_JET    , tr("Jet")),
+      std::make_pair<int, QString>(cv::COLORMAP_OCEAN  , tr("Ocean")),
+      std::make_pair<int, QString>(cv::COLORMAP_PINK   , tr("Pink")),
+      std::make_pair<int, QString>(cv::COLORMAP_RAINBOW, tr("Rainbow")),
+      std::make_pair<int, QString>(cv::COLORMAP_SPRING , tr("Spring")),
+      std::make_pair<int, QString>(cv::COLORMAP_SUMMER , tr("Summer")),
+      std::make_pair<int, QString>(cv::COLORMAP_WINTER , tr("Winter")),
+    };
 
     /// colormaps menu
     m_contextMenu->addSeparator();
