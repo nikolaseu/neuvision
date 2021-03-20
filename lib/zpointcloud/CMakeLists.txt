@@ -3,7 +3,7 @@ project(ZPointCloud LANGUAGES CXX)
 find_package(QT NAMES Qt5 Qt6 COMPONENTS Core REQUIRED)
 find_package(Qt${QT_VERSION_MAJOR} COMPONENTS Core Concurrent Qml 3DCore 3DInput 3DQuick 3DRender 3DQuickRender 3DLogic)
 
-if(NOT TARGET Qt${QT_VERSION_MAJOR}::3DCore)
+if(NOT TARGET Qt::3DCore)
     message(WARNING "Qt3D not available, skipping ${PROJECT_NAME}")
     return()
 endif()

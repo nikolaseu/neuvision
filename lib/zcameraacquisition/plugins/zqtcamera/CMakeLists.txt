@@ -4,8 +4,13 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${Z3D_OUTPUT_DIRECTORY}/plugins/cameraacquisi
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${Z3D_OUTPUT_DIRECTORY}/plugins/cameraacquisition)
 
 find_package(QT NAMES Qt5 Qt6 COMPONENTS Core REQUIRED)
-find_package(Qt${QT_VERSION_MAJOR} COMPONENTS Core Multimedia MultimediaWidgets REQUIRED)
+find_package(Qt${QT_VERSION_MAJOR} COMPONENTS Core Multimedia MultimediaWidgets)
 find_package(OpenCV REQUIRED)
+
+if(NOT TARGET Qt::Multimedia)
+    message(WARNING "Qt::Multimedia not available, skipping plugin " ${PROJECT_NAME})
+    return()
+endif()
 
 file(GLOB HEADER_FILES
     ${CMAKE_CURRENT_SOURCE_DIR}/*.h)

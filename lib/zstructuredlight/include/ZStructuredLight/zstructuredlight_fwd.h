@@ -1,7 +1,7 @@
 #pragma once
 
 #include <memory>
-#include <QPointer>
+#include <QtCore/QPointer>
 
 namespace Z3D
 {

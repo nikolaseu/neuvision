@@ -10,7 +10,7 @@
     { \
         static const QLoggingCategory category = []{ \
             const QFileInfo file(__FILE__);\
-            const QString categoryName = QString("%1.%2").arg(module).arg(file.baseName()); \
+            const QString categoryName = QString("%1.%2").arg(module, file.baseName()); \
             static const QByteArray categoryName2 = categoryName.toUtf8(); \
             return QLoggingCategory(categoryName2.data(), minLogType); \
         }(); \
