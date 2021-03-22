@@ -25,6 +25,7 @@ add_library(${PROJECT_NAME} SHARED
 target_link_libraries(${PROJECT_NAME}
     PRIVATE
         Qt::Core
-        ${OpenCV_LIBS}
+        opencv_core
+        opencv_videoio
         ZCameraAcquisition
 )

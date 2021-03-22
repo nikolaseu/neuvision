@@ -32,7 +32,7 @@ target_include_directories(${PROJECT_NAME} PRIVATE ${PYLON_INCLUDE_DIRS})
 target_link_libraries(${PROJECT_NAME}
     PRIVATE
         Qt::Core
-        ${OpenCV_LIBS}
+        opencv_core
         ${PYLON_LIBRARIES}
         ZCameraAcquisition
 )

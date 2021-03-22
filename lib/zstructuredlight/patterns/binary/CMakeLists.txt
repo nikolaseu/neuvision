@@ -28,6 +28,6 @@ target_link_libraries(${PROJECT_NAME}
     PUBLIC # it's a plugin, so public is fine, and makes it easier for tests (no need to specify all dependencies)
         Qt::Core
         Qt::Quick
-        ${OpenCV_LIBS}
+        opencv_core
         ZStructuredLight
 )

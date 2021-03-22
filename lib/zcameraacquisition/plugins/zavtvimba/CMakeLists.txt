@@ -3,7 +3,8 @@ project(ZAVTVimbaCamera LANGUAGES CXX)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${Z3D_OUTPUT_DIRECTORY}/plugins/cameraacquisition)
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${Z3D_OUTPUT_DIRECTORY}/plugins/cameraacquisition)
 
-find_package(Qt5 COMPONENTS Core REQUIRED)
+find_package(QT NAMES Qt5 Qt6 COMPONENTS Core REQUIRED)
+find_package(Qt${QT_VERSION_MAJOR} COMPONENTS Core REQUIRED)
 find_package(OpenCV REQUIRED)
 find_package(Vimba REQUIRED)
 
@@ -26,8 +27,8 @@ target_include_directories(${PROJECT_NAME} PRIVATE ${VIMBA_INCLUDE_DIRS})
 
 target_link_libraries(${PROJECT_NAME}
     PRIVATE
-        Qt5::Core
-        ${OpenCV_LIBS}
+        Qt::Core
+        opencv_core
         ${VIMBA_LIBRARIES}
         ZCameraAcquisition
 )

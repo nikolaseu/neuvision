@@ -26,11 +26,12 @@ target_include_directories(${PROJECT_NAME}
         $<INSTALL_INTERFACE:include>)
 
 target_link_libraries(${PROJECT_NAME}
-    PRIVATE
+    PUBLIC
         Qt::Widgets
         Qt::Concurrent
-        ${OpenCV_LIBS}
-    PUBLIC
+        opencv_calib3d
+        opencv_core
+        opencv_imgproc
         ZCore
         ZGui)
 

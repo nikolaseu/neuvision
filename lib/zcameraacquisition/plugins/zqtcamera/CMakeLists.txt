@@ -32,6 +32,6 @@ target_link_libraries(${PROJECT_NAME}
         Qt::Core
         Qt::Multimedia
         Qt::MultimediaWidgets
-        ${OpenCV_LIBS}
+        opencv_core
         ZCameraAcquisition
 )

@@ -29,7 +29,7 @@ target_link_libraries(${PROJECT_NAME}
     PRIVATE
         Qt::Core
         Qt::Gui # FIXME we can replace QImage with cv::Mat
-        ${OpenCV_LIBS}
+        opencv_core
         ${Gphoto2_LIBRARIES}
         ZCameraAcquisition
 )

@@ -27,7 +27,7 @@ target_link_libraries(${PROJECT_NAME}
         Qt::Core
         Qt::Concurrent
         Qt::Widgets
-        ${OpenCV_LIBS}
+        opencv_core
         ZCameraCalibration
         ZCameraCalibrator
         ZStructuredLight

@@ -26,6 +26,6 @@ target_link_libraries(${PROJECT_NAME}
     PRIVATE
         Qt::Core
         Qt::Widgets
-        ${OpenCV_LIBS}
+        opencv_core
         ZCameraCalibrator
 )

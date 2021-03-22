@@ -29,7 +29,7 @@ target_include_directories(${PROJECT_NAME}
 target_link_libraries(${PROJECT_NAME}
     PRIVATE
         Qt::Widgets
-        ${OpenCV_LIBS}
+        opencv_core
     PUBLIC
         ZCore
         ZCameraAcquisition
