@@ -1,9 +1,8 @@
-import QtQuick 2.7
+import QtQuick 2.12
 import Qt3D.Core 2.12
 import Qt3D.Render 2.12
 import Qt3D.Input 2.12
 import Qt3D.Logic 2.12
-import QtQml 2.2
 
 Entity {
     id: root
@@ -29,11 +28,11 @@ Entity {
         id: mouseHandler
         property bool _pressed
         sourceDevice: mouseSourceDevice
-        onPressed: { _pressed = true; mousePressed(mouse) }
-        onReleased: { _pressed = false; mouseReleased(mouse)  }
-        onClicked: mouseClicked(mouse)
-        onDoubleClicked: mouseDoubleClicked(mouse)
-        onWheel: {
+        onPressed: function(mouse) { _pressed = true; mousePressed(mouse) }
+        onReleased: function(mouse) { _pressed = false; mouseReleased(mouse)  }
+        onClicked: function(mouse) { mouseClicked(mouse) }
+        onDoubleClicked: function(mouse) { mouseDoubleClicked(mouse) }
+        onWheel: function(wheel) {
             const d = (root.camera.viewCenter.minus(root.camera.position)).length() * 0.2;
             const tz = (wheel.angleDelta.y / 120) * d;
             root.camera.translate(Qt.vector3d(0, 0, tz), Camera.DontTranslateViewCenter)
@@ -122,7 +121,7 @@ Entity {
 
     components: [
         FrameAction {
-            onTriggered: {
+            onTriggered: function(dt) {
                 if (actionMMB.active || (actionLMB.active && actionShift.active)) { // translate
                     const d = (root.camera.viewCenter.minus(root.camera.position)).length() * 0.03;
                     const tx = axisMX.value * root.translateSpeed * d;

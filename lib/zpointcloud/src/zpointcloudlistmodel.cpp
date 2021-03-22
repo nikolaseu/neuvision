@@ -70,20 +70,27 @@ ZPointCloudListModel::ZPointCloudListModel(QObject *parent)
     //                     this, &ZPointCloudListModel::beginRemoveColumns);
 
     QObject::connect(m_p, &ZPointCloudListModelPrivate::rowsAboutToBeMoved,
-                     this, &ZPointCloudListModel::rowsAboutToBeMoved);
+                     this, &ZPointCloudListModel::rowsAboutToBeMoved,
+                     Qt::QueuedConnection);
     QObject::connect(m_p, &ZPointCloudListModelPrivate::rowsAboutToBeRemoved,
-                     this, &ZPointCloudListModel::rowsAboutToBeRemoved);
+                     this, &ZPointCloudListModel::rowsAboutToBeRemoved,
+                     Qt::QueuedConnection);
     QObject::connect(m_p, &ZPointCloudListModelPrivate::rowsAboutToBeInserted,
-                     this, &ZPointCloudListModel::rowsAboutToBeInserted);
+                     this, &ZPointCloudListModel::rowsAboutToBeInserted,
+                     Qt::QueuedConnection);
     QObject::connect(m_p, &ZPointCloudListModelPrivate::rowsMoved,
-                     this, &ZPointCloudListModel::rowsMoved);
+                     this, &ZPointCloudListModel::rowsMoved,
+                     Qt::QueuedConnection);
     QObject::connect(m_p, &ZPointCloudListModelPrivate::rowsRemoved,
-                     this, &ZPointCloudListModel::rowsRemoved);
+                     this, &ZPointCloudListModel::rowsRemoved,
+                     Qt::QueuedConnection);
     QObject::connect(m_p, &ZPointCloudListModelPrivate::rowsInserted,
-                     this, &ZPointCloudListModel::rowsInserted);
+                     this, &ZPointCloudListModel::rowsInserted,
+                     Qt::QueuedConnection);
 
     QObject::connect(m_p, &ZPointCloudListModelPrivate::dataChanged,
-                     this, &ZPointCloudListModel::dataChanged);
+                     this, &ZPointCloudListModel::dataChanged,
+                     Qt::QueuedConnection);
 }
 
 ZPointCloudListModel::~ZPointCloudListModel()
@@ -113,9 +120,7 @@ void ZPointCloudListModel::addPointClouds(const std::vector<ZPointCloudListItem 
     list.reserve(int(pointCloudItems.size()));
     std::copy(pointCloudItems.begin(), pointCloudItems.end(), std::back_inserter(list));
 
-    QMetaObject::invokeMethod(m_p, [=](){
-        m_p->append(list);
-    });
+    m_p->append(list);
 }
 
 int ZPointCloudListModel::rowCount(const QModelIndex &parent) const

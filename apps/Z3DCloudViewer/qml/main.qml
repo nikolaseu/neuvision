@@ -4,14 +4,14 @@ import Qt3D.Input 2.12
 import Qt3D.Render 2.12
 import Qt3D.Logic 2.12 // for FrameAction
 
-import QtQuick 2.10
-import QtQuick.Controls 2.3
-import QtQuick.Dialogs 1.3
-import QtQuick.Layouts 1.3
-import QtQuick.Scene3D 2.0
+import QtQuick 2.12
+import QtQuick.Controls 2.12
+import QtQuick.Layouts 1.12
+import QtQuick.Scene3D 2.12
 
 import QtGraphicalEffects 1.12
 
+import Qt.labs.platform 1.0
 import Qt.labs.settings 1.0
 
 import Z3D.ZPointCloud 1.0 as ZPointCloud
@@ -61,12 +61,12 @@ ApplicationWindow {
     ZPointCloudViewerController {
         id: controller
 
-        onFileLoaded: {
+        onFileLoaded: function(fileUrl) {
             // loading might fail, so only update if it was sucessfully opened
             window.lastOpenedFile = fileUrl;
         }
 
-        onMessage: {
+        onMessage: function(message) {
             statusBar.showMessage(message);
         }
     }
@@ -81,10 +81,10 @@ ApplicationWindow {
     FileDialog {
         id: fileDialog
         title: qsTr("Open a point cloud or project")
-        folder: shortcuts.home
+//        folder: shortcuts.home
         nameFilters: ["PLY files (*.ply)", "OBJ files (*.obj)", "STL files (*.stl)", "PCD files (*.pcd)", "Meshlab project (*.mlp)" ]
-        onAccepted: {
-            controller.loadFile(fileDialog.fileUrl);
+        onAccepted: function() {
+            controller.loadFile(fileDialog.file);
         }
     }
 
@@ -92,7 +92,7 @@ ApplicationWindow {
         anchors.fill: parent
 
         Keys.enabled: true
-        Keys.onReleased: {
+        Keys.onReleased: function(event) {
             if (event.key === Qt.Key_F) {
                 screenRayCaster.triggerForMousePosition();
             }
@@ -205,7 +205,7 @@ ApplicationWindow {
                     },
                     ScreenRayCaster {
                         id: screenRayCaster
-                        onHitsChanged: {
+                        onHitsChanged: function(hits) {
                             if (hits.length > 0) {
 //                                console.log("  " + hits[0].worldIntersection.x, hits[0].worldIntersection.y, hits[0].worldIntersection.z);
                                 mainCamera.zoomTo(Qt.vector3d(hits[0].worldIntersection.x, hits[0].worldIntersection.y, hits[0].worldIntersection.z));
@@ -233,7 +233,7 @@ ApplicationWindow {
                     MouseHandler {
                         id: mouseHandler
                         sourceDevice:  MouseDevice {}
-                        onPositionChanged: {
+                        onPositionChanged: function(mouse) {
 //                            console.log("mouse position changed", mouse)
                             screenRayCaster.mousePosition = Qt.point(mouse.x, mouse.y);
                         }
@@ -371,11 +371,11 @@ ApplicationWindow {
                             text: model.name
                             checked: model.visible
 
-                            onCheckedChanged: {
+                            onCheckedChanged: function() {
                                 model.visible = checked
                             }
 
-                            onHoveredChanged: {
+                            onHoveredChanged: function() {
                                 if (hovered) {
                                     pointCloudListView.currentIndex = index
                                 }
@@ -435,7 +435,7 @@ ApplicationWindow {
 
                     property color color: "#666"
 
-                    onClicked: {
+                    onClicked: function() {
                         colorDialog.color = color
                         colorDialog.open();
                     }
@@ -453,7 +453,7 @@ ApplicationWindow {
                     ColorDialog {
                         id: colorDialog
                         modality: Qt.ApplicationModal
-                        onAccepted: {
+                        onAccepted: function() {
                             colorChooser.color = colorDialog.color;
                         }
                     }
@@ -638,7 +638,7 @@ ApplicationWindow {
                         id: mouseArea
                         anchors.fill: parent
                         hoverEnabled: true
-                        onClicked: {
+                        onClicked: function() {
                             controller.loadFile(modelData)
                         }
                     }

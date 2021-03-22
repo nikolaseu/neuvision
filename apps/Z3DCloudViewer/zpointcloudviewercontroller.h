@@ -1,11 +1,11 @@
 #pragma once
 
+#include "ZPointCloud/zpointcloud_fwd.h"
+
 #include <QObject>
 
 namespace Z3D
 {
-
-class ZPointCloudListModel;
 
 class ZPointCloudViewerController : public QObject
 {
@@ -28,7 +28,7 @@ public slots:
     void loadFile(const QUrl &fileUrl);
 
 private:
-    Z3D::ZPointCloudListModel *m_model;
+    Z3D::ZPointCloudListModel *const m_model;
 };
 
 } // namespace Z3D

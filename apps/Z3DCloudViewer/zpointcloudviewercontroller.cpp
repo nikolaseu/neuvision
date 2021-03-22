@@ -18,7 +18,7 @@ namespace Z3D
 
 ZPointCloudViewerController::ZPointCloudViewerController(QObject *parent)
     : QObject(parent)
-    , m_model(new ZPointCloudListModel(this))
+    , m_model {new ZPointCloudListModel(this)}
 {
 
 }
@@ -92,3 +92,6 @@ void ZPointCloudViewerController::loadFile(const QUrl &fileUrl)
 }
 
 } // namespace Z3D
+
+#include "moc_zpointcloudviewercontroller.cpp"
+#include "zpointcloudviewercontroller.moc"

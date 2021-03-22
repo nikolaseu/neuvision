@@ -45,7 +45,6 @@ int main(int argc, char *argv[])
 
     Z3D::ZApplication app(argc, argv);
     app.loadPlugins();
-    Z3D::ZPointCloudProvider::loadPlugins();
 
     QQmlApplicationEngine engine;
 

@@ -67,3 +67,6 @@ void ZScannerQML::addNewScan(const Z3D::ZPointCloudPtr &cloud)
     auto *pcItem = new Z3D::ZPointCloudListItem(cloud, QDateTime::currentDateTime().toString(Qt::ISODate));
     m_model->addPointCloud(pcItem);
 }
+
+#include "moc_zscannerqml.cpp"
+#include "zscannerqml.moc"
