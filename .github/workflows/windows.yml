@@ -20,7 +20,7 @@ jobs:
     - name: Install Qt
       uses: jurplel/install-qt-action@v2
       with:
-        version: '5.15.2'
+        version: '6.2.0'
     - name: Get latest CMake and Ninja
       # Using 'latest' branch, the most recent CMake and ninja are installed.
       uses: lukka/get-cmake@latest

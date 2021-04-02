@@ -25,12 +25,20 @@
 #include "ZCameraAcquisition/zcamerainfo.h"
 #include "ZCore/zlogging.h"
 
-#include <QCameraInfo>
+#include <QtMultimedia/QCameraDevice>
 
 Z3D_LOGGING_CATEGORY_FROM_FILE("z3d.zcameraacquisition.zqtcamera", QtInfoMsg)
 
 namespace Z3D
 {
+
+ZQtCameraPlugin::ZQtCameraPlugin()
+{
+    QObject::connect(&m_devices, &QMediaDevices::videoInputsChanged,
+                     this, &ZQtCameraPlugin::updateCameras);
+
+    updateCameras();
+}
 
 QString ZQtCameraPlugin::displayName() const
 {
@@ -39,35 +47,47 @@ QString ZQtCameraPlugin::displayName() const
 
 QList<ZCameraInfo *> ZQtCameraPlugin::getConnectedCameras()
 {
-    QList<ZCameraInfo *> cameraList;
-
-    QList<QCameraInfo> cameras = QCameraInfo::availableCameras();
-    zDebug() << "found" << cameras.size() << "cameras.";
-    for (const QCameraInfo &qtcameraInfo : cameras) {
-        QVariantMap extraData;
-        extraData["description"] = qtcameraInfo.description();
-        extraData["deviceName"] = qtcameraInfo.deviceName();
-        cameraList << new ZCameraInfo(this, qtcameraInfo.description(), extraData);
-    }
-
-    return cameraList;
+    return m_cameraList;
 }
 
 ZCameraPtr ZQtCameraPlugin::getCamera(QVariantMap options)
 {
-    QByteArray deviceName = options["deviceName"].toByteArray();
+    const QByteArray cameraId = options["id"].toByteArray();
 
-    if (deviceName.isNull() || deviceName.isEmpty()) {
+    if (cameraId.isNull() || cameraId.isEmpty()) {
         return nullptr;
     }
 
-    auto *qcamera = new QCamera(deviceName);
-    if (qcamera->isAvailable()) {
-        return ZCameraPtr(new ZQtCamera(qcamera));
+    const QList<QCameraDevice> cameras = QMediaDevices::videoInputs();
+    for (const QCameraDevice &cameraDevice : cameras) {
+        if (cameraDevice.id() == cameraId) {
+            auto *camera = new QCamera(cameraDevice);
+            if (camera->isAvailable()) {
+                return ZCameraPtr(new ZQtCamera(camera));
+            }
+            delete camera;
+            break;
+        }
     }
 
-    delete qcamera;
     return nullptr;
+}
+
+void ZQtCameraPlugin::updateCameras()
+{
+    for (auto &cameraInfo : m_cameraList) {
+        cameraInfo->deleteLater();
+    }
+
+    const QList<QCameraDevice> cameras = QMediaDevices::videoInputs();
+    zDebug() << "found" << cameras.size() << "cameras";
+
+    for (const QCameraDevice &cameraDevice : cameras) {
+        QVariantMap extraData;
+        extraData["description"] = cameraDevice.description();
+        extraData["id"] = cameraDevice.id();
+        m_cameraList << new ZCameraInfo(this, cameraDevice.description(), extraData);
+    }
 }
 
 } // namespace Z3D

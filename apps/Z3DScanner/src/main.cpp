@@ -60,7 +60,7 @@ int main(int argc, char* argv[])
 
     Z3D::ZApplicationStyle::applyStyle(Z3D::ZApplicationStyle::DarkStyle);
 
-    zDebug() << "available styles:" << QQuickStyle::availableStyles().join(", ");
+//    zDebug() << "available styles:" << QQuickStyle::availableStyles().join(", ");
     QQuickStyle::setStyle("Universal");
 //    QQuickStyle::setStyle("Imagine");
 

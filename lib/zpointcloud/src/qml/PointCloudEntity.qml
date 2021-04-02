@@ -21,7 +21,7 @@ Entity {
     property real specular: 0.1
     property real shininess: 25.0
 
-    property bool renderPointsAsDiscs: true
+    property bool renderPointsAsDiscs: false
     property bool showColors: true
     property color defaultColor: Qt.rgba(0.5, 0.5, 0.5, 1.0)
 
@@ -52,72 +52,72 @@ Entity {
 //        id: material
 //        baseColor: defaultColor
 //        metalness: specular
-//        roughness: shininess
+//        roughness: shininess / 50
 //    }
 
     PerVertexColorMaterial {
         id: perVertexColorMaterial
     }
 
-    ShaderProgram {
-        id: pointCloudShaderProgram
-        vertexShaderCode: loadSource("qrc:/Z3D/ZPointCloud/shaders/pointcloud.vert")
-        fragmentShaderCode: loadSource("qrc:/Z3D/ZPointCloud/shaders/pointcloud.frag")
-        geometryShaderCode: loadSource("qrc:/Z3D/ZPointCloud/shaders/pointcloud.geom")
-    }
+//    ShaderProgram {
+//        id: pointCloudShaderProgram
+//        vertexShaderCode: loadSource("qrc:/Z3D/ZPointCloud/shaders/pointcloud.vert")
+//        fragmentShaderCode: loadSource("qrc:/Z3D/ZPointCloud/shaders/pointcloud.frag")
+//        geometryShaderCode: loadSource("qrc:/Z3D/ZPointCloud/shaders/pointcloud.geom")
+//    }
 
-    ShaderProgram {
-        id: pointCloudShaderProgramSimple
-        vertexShaderCode: loadSource("qrc:/Z3D/ZPointCloud/shaders/pointcloud_basic.vert")
-        fragmentShaderCode: loadSource("qrc:/Z3D/ZPointCloud/shaders/pointcloud_basic.frag")
-    }
+//    ShaderProgram {
+//        id: pointCloudShaderProgramSimple
+//        vertexShaderCode: loadSource("qrc:/Z3D/ZPointCloud/shaders/pointcloud_basic.vert")
+//        fragmentShaderCode: loadSource("qrc:/Z3D/ZPointCloud/shaders/pointcloud_basic.frag")
+//    }
 
-    Material {
-        id: pointCloudMaterial
+//    Material {
+//        id: pointCloudMaterial
 
-        effect: Effect {
-            parameters: [
-                Parameter { name: "ka"; value: Qt.vector3d(root.ambient, root.ambient, root.ambient) },
-                Parameter { name: "kd"; value: Qt.vector3d(root.diffuse, root.diffuse, root.diffuse) },
-                Parameter { name: "ks"; value: Qt.vector3d(root.specular, root.specular, root.specular) },
-                Parameter { name: "shininess"; value: root.shininess },
-                Parameter { name: "lightPosition";  value: root.lightPosition },
-                Parameter { name: "lightIntensity"; value: root.lightIntensity },
-                Parameter { name: "splatSize"; value: root.splatSize },
-                Parameter { name: "pointSize"; value: root.pointSize },
-                Parameter { name: "defaultColor"; value: Qt.vector3d(root.defaultColor.r, root.defaultColor.g, root.defaultColor.b) },
-                Parameter { name: "hasColors"; value: root.pointCloud.hasColors && root.showColors },
-                Parameter { name: "hasNormals"; value: root.pointCloud.hasNormals },
-                Parameter { name: "hasRadii"; value: root.pointCloud.hasRadii }
-            ]
+//        effect: Effect {
+//            parameters: [
+//                Parameter { name: "ka"; value: Qt.vector3d(root.ambient, root.ambient, root.ambient) },
+//                Parameter { name: "kd"; value: Qt.vector3d(root.diffuse, root.diffuse, root.diffuse) },
+//                Parameter { name: "ks"; value: Qt.vector3d(root.specular, root.specular, root.specular) },
+//                Parameter { name: "shininess"; value: root.shininess },
+//                Parameter { name: "lightPosition";  value: root.lightPosition },
+//                Parameter { name: "lightIntensity"; value: root.lightIntensity },
+//                Parameter { name: "splatSize"; value: root.splatSize },
+//                Parameter { name: "pointSize"; value: root.pointSize },
+//                Parameter { name: "defaultColor"; value: Qt.vector3d(root.defaultColor.r, root.defaultColor.g, root.defaultColor.b) },
+//                Parameter { name: "hasColors"; value: root.pointCloud.hasColors && root.showColors },
+//                Parameter { name: "hasNormals"; value: root.pointCloud.hasNormals },
+//                Parameter { name: "hasRadii"; value: root.pointCloud.hasRadii }
+//            ]
 
-            techniques: Technique {
-                filterKeys: [
-                    FilterKey { name: "renderingStyle"; value: "forward" }
-                ]
+//            techniques: Technique {
+//                filterKeys: [
+//                    FilterKey { name: "renderingStyle"; value: "forward" }
+//                ]
 
-                graphicsApiFilter {
-                    api: GraphicsApiFilter.OpenGL
-                    profile: GraphicsApiFilter.CoreProfile
-                    majorVersion: 3
-                    minorVersion: 3
-                }
+//                graphicsApiFilter {
+//                    api: GraphicsApiFilter.OpenGL
+//                    profile: GraphicsApiFilter.CoreProfile
+//                    majorVersion: 3
+//                    minorVersion: 3
+//                }
 
-                renderPasses: [
-                    RenderPass {
-                        shaderProgram: pointCloud.hasNormals && root.renderPointsAsDiscs
-                                       ? pointCloudShaderProgram
-                                       : pointCloudShaderProgramSimple
-                        renderStates: [
-                            PointSize { sizeMode: PointSize.Programmable },
-                            DepthTest { depthFunction: DepthTest.Less },
-                            CullFace { mode: CullFace.NoCulling }
-                        ]
-                    }
-                ]
-            }
-        }
-    }
+//                renderPasses: [
+//                    RenderPass {
+//                        shaderProgram: pointCloud.hasNormals && root.renderPointsAsDiscs
+//                                       ? pointCloudShaderProgram
+//                                       : pointCloudShaderProgramSimple
+//                        renderStates: [
+//                            PointSize { sizeMode: PointSize.Programmable },
+//                            DepthTest { depthFunction: DepthTest.Less },
+//                            CullFace { mode: CullFace.NoCulling }
+//                        ]
+//                    }
+//                ]
+//            }
+//        }
+//    }
 
     LevelOfDetail {
         id: levelOfDetail
@@ -128,13 +128,22 @@ Entity {
 //        volumeOverride: null // this shit is not working
     }
 
+//    components: [
+//        pointCloudMesh,
+//        !pointCloud.hasTriangles
+//            ? pointCloudMaterial
+//            : (pointCloud.hasColors && root.showColors)
+//                ? perVertexColorMaterial
+//                : material,
+//        transform,
+//        levelOfDetail
+//    ]
+
     components: [
         pointCloudMesh,
-        !pointCloud.hasTriangles
-            ? pointCloudMaterial
-            : (pointCloud.hasColors && root.showColors)
-                ? perVertexColorMaterial
-                : material,
+        (pointCloud.hasColors && root.showColors)
+            ? perVertexColorMaterial
+            : material,
         transform,
         levelOfDetail
     ]

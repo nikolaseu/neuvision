@@ -21,6 +21,8 @@
 
 #include "ZCameraAcquisition/zcameraplugininterface.h"
 
+#include <QtMultimedia/QMediaDevices>
+
 namespace Z3D {
 
 class ZQtCameraPlugin : public QObject, public ZCameraPluginInterface
@@ -30,12 +32,22 @@ class ZQtCameraPlugin : public QObject, public ZCameraPluginInterface
     Q_INTERFACES(Z3D::ZCameraPluginInterface)
 
 public:
+    ZQtCameraPlugin();
+
     /// plugin information
     QString displayName() const override;
 
     /// camera utilities
     QList<ZCameraInfo *> getConnectedCameras() override;
     ZCameraPtr getCamera(QVariantMap options) override;
+
+private slots:
+    void updateCameras();
+
+private:
+    QMediaDevices m_devices;
+
+    QList<ZCameraInfo *> m_cameraList;
 };
 
 } // namespace Z3D

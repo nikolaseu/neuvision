@@ -35,13 +35,9 @@
 
 int main(int argc, char *argv[])
 {
-    QSurfaceFormat glFormat;
-    glFormat.setVersion(3, 3);
-    glFormat.setProfile(QSurfaceFormat::CoreProfile);
-    QSurfaceFormat::setDefaultFormat(glFormat);
-
     /// to print out diagnostic information about each plugin it (Qt) tries to load
     //qputenv("QT_DEBUG_PLUGINS", "1");
+    //qputenv("QSG_INFO", "1");
 
     Z3D::ZApplication app(argc, argv);
     app.loadPlugins();

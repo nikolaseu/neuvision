@@ -54,8 +54,8 @@ ZApplication::ZApplication(int &argc, char **argv)
     zInfo() << "starting" << applicationName()
             << "version" << applicationVersion();
 
-    QApplication::setAttribute(Qt::AA_EnableHighDpiScaling, true);
-    QApplication::setAttribute(Qt::AA_UseDesktopOpenGL, true);
+//    QApplication::setAttribute(Qt::AA_EnableHighDpiScaling, true);
+//    QApplication::setAttribute(Qt::AA_UseDesktopOpenGL, true);
 
 #if (QT_VERSION >= QT_VERSION_CHECK(5, 14, 0))
     QApplication::setHighDpiScaleFactorRoundingPolicy(Qt::HighDpiScaleFactorRoundingPolicy::PassThrough);

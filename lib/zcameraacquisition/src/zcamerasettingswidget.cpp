@@ -273,7 +273,7 @@ void ZCameraSettingsWidget::updateProperties()
         case Z3D::ZCameraInterface::CameraAttributeTypeString:
             //m_currentProperty = m_stringPropertyManager->addProperty(attrName);
             m_stringPropertyManager->setValue(m_currentProperty, attribute.value.toString());
-            m_stringPropertyManager->setReadOnly(m_currentProperty, !attribute.writable);
+//            m_stringPropertyManager->setReadOnly(m_currentProperty, !attribute.writable);
             m_currentProperty->setEnabled(attribute.readable && attribute.writable);
             break;
         case Z3D::ZCameraInterface::CameraAttributeTypeInt:
@@ -283,13 +283,13 @@ void ZCameraSettingsWidget::updateProperties()
                 m_intPropertyManager->setMaximum(m_currentProperty, attribute.maximumValue);
             if (attribute.minimumValue != std::numeric_limits<double>::min())
                 m_intPropertyManager->setMinimum(m_currentProperty, attribute.minimumValue);
-            m_intPropertyManager->setReadOnly(m_currentProperty, !attribute.writable);
+//            m_intPropertyManager->setReadOnly(m_currentProperty, !attribute.writable);
             m_currentProperty->setEnabled(attribute.readable && attribute.writable);
             break;
         case Z3D::ZCameraInterface::CameraAttributeTypeLong:
             //m_currentProperty = m_longPropertyManager->addProperty(attrName);
             m_longPropertyManager->setValue(m_currentProperty, attribute.value.toString());
-            m_longPropertyManager->setReadOnly(m_currentProperty, !attribute.writable);
+//            m_longPropertyManager->setReadOnly(m_currentProperty, !attribute.writable);
             m_currentProperty->setEnabled(attribute.readable && attribute.writable);
             break;
         case Z3D::ZCameraInterface::CameraAttributeTypeFloat:
@@ -299,7 +299,7 @@ void ZCameraSettingsWidget::updateProperties()
                 m_floatPropertyManager->setMaximum(m_currentProperty, attribute.maximumValue);
             if (attribute.minimumValue != std::numeric_limits<double>::min())
                 m_floatPropertyManager->setMinimum(m_currentProperty, attribute.minimumValue);
-            m_floatPropertyManager->setReadOnly(m_currentProperty, !attribute.writable);
+//            m_floatPropertyManager->setReadOnly(m_currentProperty, !attribute.writable);
             m_currentProperty->setEnabled(attribute.readable && attribute.writable);
             break;
         case Z3D::ZCameraInterface::CameraAttributeTypeEnum:

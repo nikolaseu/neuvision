@@ -25,8 +25,8 @@
 
 #include <ZCore/zlogging.h>
 
-#include <Qt3DRender/QAttribute>
-#include <Qt3DRender/QBuffer>
+#include <Qt3DCore/QAttribute>
+#include <Qt3DCore/QBuffer>
 #include <cmath>
 
 Z3D_LOGGING_CATEGORY_FROM_FILE("z3d.zpointcloud", QtInfoMsg)
@@ -39,14 +39,14 @@ class ZPointCloudGeometryPrivate
 public:
     ZPointCloud *pointCloud = nullptr;
 
-    Qt3DRender::QBuffer *vertexBuffer = nullptr;
-    Qt3DRender::QBuffer *indexBuffer = nullptr;
+    Qt3DCore::QBuffer *vertexBuffer = nullptr;
+    Qt3DCore::QBuffer *indexBuffer = nullptr;
 
     uint levelOfDetail = 0; // 0 == original data
 };
 
 ZPointCloudGeometry::ZPointCloudGeometry(Qt3DCore::QNode *parent)
-    : Qt3DRender::QGeometry(parent)
+    : Qt3DCore::QGeometry(parent)
     , m_p(new ZPointCloudGeometryPrivate)
 {
     zDebug() << "creating" << this;
@@ -58,29 +58,29 @@ ZPointCloudGeometry::~ZPointCloudGeometry()
     delete m_p;
 }
 
-Qt3DRender::QAttribute::VertexBaseType pointFieldTypeToAttributeType(const ZPointField::PointFieldTypes &inp)
+Qt3DCore::QAttribute::VertexBaseType pointFieldTypeToAttributeType(const ZPointField::PointFieldTypes &inp)
 {
     switch (inp) {
     case ZPointField::INT8:
-        return Qt3DRender::QAttribute::Byte;
+        return Qt3DCore::QAttribute::Byte;
     case ZPointField::INT16:
-        return Qt3DRender::QAttribute::Short;
+        return Qt3DCore::QAttribute::Short;
     case ZPointField::INT32:
-        return Qt3DRender::QAttribute::Int;
+        return Qt3DCore::QAttribute::Int;
     case ZPointField::UINT8:
-        return Qt3DRender::QAttribute::UnsignedByte;
+        return Qt3DCore::QAttribute::UnsignedByte;
     case ZPointField::UINT16:
-        return Qt3DRender::QAttribute::UnsignedShort;
+        return Qt3DCore::QAttribute::UnsignedShort;
     case ZPointField::UINT32:
-        return Qt3DRender::QAttribute::UnsignedInt;
+        return Qt3DCore::QAttribute::UnsignedInt;
     case ZPointField::FLOAT32:
-        return Qt3DRender::QAttribute::Float;
+        return Qt3DCore::QAttribute::Float;
     case ZPointField::FLOAT64:
-        return Qt3DRender::QAttribute::Double;
+        return Qt3DCore::QAttribute::Double;
     }
 
     zCritical() << "unhandled point field type" << inp;
-    return Qt3DRender::QAttribute::Byte;
+    return Qt3DCore::QAttribute::Byte;
 }
 
 ZPointCloud *ZPointCloudGeometry::pointCloud() const
@@ -108,50 +108,50 @@ void ZPointCloudGeometry::updateAttributes()
     // parse point fields and make reasonable attributes out of them
     if (const auto *pf = findField("position")) {
         zDebug() << "Adding position attribute, field:" << pf;
-        auto *attrib = new Qt3DRender::QAttribute(m_p->vertexBuffer,
-                                                  Qt3DRender::QAttribute::defaultPositionAttributeName(),
+        auto *attrib = new Qt3DCore::QAttribute(m_p->vertexBuffer,
+                                                  Qt3DCore::QAttribute::defaultPositionAttributeName(),
                                                   pointFieldTypeToAttributeType(pf->dataType()),
                                                   pf->count(),
                                                   m_p->pointCloud->vertexCount(),
                                                   pf->offset(),
                                                   m_p->pointCloud->pointStep(),
                                                   this);
-        attrib->setAttributeType(Qt3DRender::QAttribute::VertexAttribute);
+        attrib->setAttributeType(Qt3DCore::QAttribute::VertexAttribute);
         addAttribute(attrib);
         setBoundingVolumePositionAttribute(attrib);
     }
 
     if (const auto *pf = findField("rgb")) {
         zDebug() << "Adding color attribute, field:" << pf;
-        auto *attrib = new Qt3DRender::QAttribute(m_p->vertexBuffer,
-                                                  Qt3DRender::QAttribute::defaultColorAttributeName(),
+        auto *attrib = new Qt3DCore::QAttribute(m_p->vertexBuffer,
+                                                  Qt3DCore::QAttribute::defaultColorAttributeName(),
                                                   pointFieldTypeToAttributeType(pf->dataType()),
                                                   pf->count(),
                                                   m_p->pointCloud->vertexCount(),
                                                   pf->offset(),
                                                   m_p->pointCloud->pointStep(),
                                                   this);
-        attrib->setAttributeType(Qt3DRender::QAttribute::VertexAttribute);
+        attrib->setAttributeType(Qt3DCore::QAttribute::VertexAttribute);
         addAttribute(attrib);
     }
 
     if (const auto *pf = findField("normal")) {
         zDebug() << "Adding normal attribute, field:" << pf;
-        auto *attrib = new Qt3DRender::QAttribute(m_p->vertexBuffer,
-                                                  Qt3DRender::QAttribute::defaultNormalAttributeName(),
+        auto *attrib = new Qt3DCore::QAttribute(m_p->vertexBuffer,
+                                                  Qt3DCore::QAttribute::defaultNormalAttributeName(),
                                                   pointFieldTypeToAttributeType(pf->dataType()),
                                                   pf->count(),
                                                   m_p->pointCloud->vertexCount(),
                                                   pf->offset(),
                                                   m_p->pointCloud->pointStep(),
                                                   this);
-        attrib->setAttributeType(Qt3DRender::QAttribute::VertexAttribute);
+        attrib->setAttributeType(Qt3DCore::QAttribute::VertexAttribute);
         addAttribute(attrib);
     }
 
     if (const auto *pf = findField("radii")) {
         zDebug() << "Adding radii attribute, field:" << pf;
-        auto *attrib = new Qt3DRender::QAttribute(m_p->vertexBuffer,
+        auto *attrib = new Qt3DCore::QAttribute(m_p->vertexBuffer,
                                                   "vertexRadii",
                                                   pointFieldTypeToAttributeType(pf->dataType()),
                                                   pf->count(),
@@ -159,7 +159,7 @@ void ZPointCloudGeometry::updateAttributes()
                                                   pf->offset(),
                                                   m_p->pointCloud->pointStep(),
                                                   this);
-        attrib->setAttributeType(Qt3DRender::QAttribute::VertexAttribute);
+        attrib->setAttributeType(Qt3DCore::QAttribute::VertexAttribute);
         addAttribute(attrib);
     }
 
@@ -167,11 +167,11 @@ void ZPointCloudGeometry::updateAttributes()
     if (m_p->pointCloud->hasTriangles()) {
         // use UINT - no conversion needed, but let's ensure int is 32-bit!
         Q_ASSERT(sizeof(int) == sizeof(quint32));
-        auto *indexAttribute = new Qt3DRender::QAttribute(m_p->indexBuffer,
-                                                          Qt3DRender::QAttribute::UnsignedInt,
+        auto *indexAttribute = new Qt3DCore::QAttribute(m_p->indexBuffer,
+                                                          Qt3DCore::QAttribute::UnsignedInt,
                                                           1,
                                                           m_p->pointCloud->trianglesCount() * 3);
-        indexAttribute->setAttributeType(Qt3DRender::QAttribute::IndexAttribute);
+        indexAttribute->setAttributeType(Qt3DCore::QAttribute::IndexAttribute);
         addAttribute(indexAttribute);
     }
 }
@@ -183,8 +183,8 @@ void ZPointCloudGeometry::setPointCloud(ZPointCloud *pointCloud)
     }
 
     /// remove all attributes
-    const QVector<Qt3DRender::QAttribute *> atts = attributes();
-    for (Qt3DRender::QAttribute *attr : atts) {
+    const QVector<Qt3DCore::QAttribute *> atts = attributes();
+    for (Qt3DCore::QAttribute *attr : atts) {
         removeAttribute(attr);
         attr->deleteLater();
     }
@@ -197,15 +197,15 @@ void ZPointCloudGeometry::setPointCloud(ZPointCloud *pointCloud)
     if (m_p->vertexBuffer) {
         m_p->vertexBuffer->deleteLater();
     }
-    m_p->vertexBuffer = new Qt3DRender::QBuffer(this);
-    m_p->vertexBuffer->setUsage(Qt3DRender::QBuffer::StaticDraw);
+    m_p->vertexBuffer = new Qt3DCore::QBuffer(this);
+    m_p->vertexBuffer->setUsage(Qt3DCore::QBuffer::StaticDraw);
     m_p->vertexBuffer->setData(m_p->pointCloud->vertexData());
 
     if (m_p->indexBuffer) {
         m_p->indexBuffer->deleteLater();
     }
-    m_p->indexBuffer = new Qt3DRender::QBuffer(this);
-    m_p->indexBuffer->setUsage(Qt3DRender::QBuffer::StaticDraw);
+    m_p->indexBuffer = new Qt3DCore::QBuffer(this);
+    m_p->indexBuffer->setUsage(Qt3DCore::QBuffer::StaticDraw);
     m_p->indexBuffer->setData(m_p->pointCloud->trianglesData());
 
     /// add new attributes

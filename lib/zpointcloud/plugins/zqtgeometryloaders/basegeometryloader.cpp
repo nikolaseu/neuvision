@@ -39,9 +39,9 @@
 
 #include "basegeometryloader_p.h"
 
-#include <Qt3DRender/qattribute.h>
-#include <Qt3DRender/qbuffer.h>
-#include <Qt3DRender/qgeometry.h>
+#include <Qt3DCore/qattribute.h>
+#include <Qt3DCore/qbuffer.h>
+#include <Qt3DCore/qgeometry.h>
 
 //#include <Qt3DRender/private/qaxisalignedboundingbox_p.h>
 //#include <Qt3DRender/private/renderlogging_p.h>

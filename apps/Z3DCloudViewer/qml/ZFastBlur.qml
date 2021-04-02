@@ -1,6 +1,6 @@
 import QtQuick 2.12
 
-import QtGraphicalEffects 1.12
+import Qt5Compat.GraphicalEffects
 
 // This is just to avoid repeating code and makes it easier to use blur
 // for things that are on top of another thing, blurring the right area of the

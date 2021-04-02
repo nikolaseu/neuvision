@@ -39,6 +39,7 @@
 
 #include "objgeometryloader.h"
 
+#include <QtCore/QIODevice>
 #include <QtCore/QLoggingCategory>
 #include <QtCore/QRegularExpression>
 

@@ -196,7 +196,7 @@ void ZImageViewer::saveImage()
 void ZImageViewer::mousePressEvent(QMouseEvent* event)
 { 
     if(event->button() == Qt::RightButton) {
-        m_contextMenu->exec(event->globalPos());
+        m_contextMenu->exec(event->globalPosition().toPoint());
     } else {
         QGraphicsView::mousePressEvent(event);
     }

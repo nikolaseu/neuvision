@@ -1,5 +1,5 @@
 brew 'eigen'
 brew 'opencv'
-brew 'qt@5'
+brew 'qt@6'
 brew 'libgphoto2'
 brew 'pcl'
