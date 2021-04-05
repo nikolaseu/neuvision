@@ -24,6 +24,6 @@
 namespace Z3D::ZBinaryPatternDecoder
 {
 
-cv::Mat decodeBinaryPatternImages(const std::vector<cv::Mat> &images, const std::vector<cv::Mat> &invImages, cv::Mat maskImg, bool isGrayCode = true);
+cv::Mat decodeBinaryPatternImages(const std::vector<cv::Mat> &images, const std::vector<cv::Mat> &invImages, const cv::Mat &maskImg, bool isGrayCode = true);
 
 } // namespace Z3D::ZBinaryPatternDecoder

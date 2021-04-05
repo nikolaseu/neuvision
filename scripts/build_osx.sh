@@ -1,6 +1,6 @@
 #!/bin/bash
-export QT_DIR=$(brew --prefix qt)
-export Qt5_DIR=$QT_DIR
+export Qt5_DIR=$(brew --prefix qt@5)
+export QT_DIR=$Qt5_DIR
 export OpenCV_DIR=$(brew --prefix opencv)
 
 BUILD_TYPE=Release
@@ -12,7 +12,6 @@ mkdir "$BUILD_DIR"
 cd "$BUILD_DIR"
 
 cmake $STARTING_DIR \
-	-DCMAKE_OSX_SYSROOT="/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk" \
 	-DCMAKE_BUILD_TYPE=$BUILD_TYPE \
 	-DCMAKE_INSTALL_PREFIX=$INSTALL_DIR
 

@@ -1,7 +1,7 @@
 #include <ZCore/zsettingsitem.h>
 
-#include <QAbstractItemModelTester>
-#include <QtTest>
+#include <QtTest/QAbstractItemModelTester>
+#include <QtTest/QTest>
 
 using namespace Z3D;
 

@@ -1,9 +1,9 @@
-name: build
+name: Ubuntu
 
 on:
   push:
   schedule:
-    - cron:  '0 0 * * 0' # run on sundays
+    - cron:  '0 0 * * SUN' # run on sundays
 
 jobs:
   build:
@@ -13,12 +13,15 @@ jobs:
     - name: Install dependencies
       run: |
         sudo apt-get update
-        sudo apt-get install -y build-essential libopencv-dev libgphoto2-dev
+        sudo apt-get install -y build-essential libopencv-dev libgphoto2-dev libpcl-dev
     - name: Install Qt
       uses: jurplel/install-qt-action@v2
       with:
         version: '5.15.2'
     - name: Build
-      run: sh ./scripts/build_linux.sh
+      run: |
+        sh ./scripts/build_linux.sh
     - name: Test
-      run: cd build/Release && ctest --output-on-failure
+      working-directory: build/Release
+      run: |
+        ctest --output-on-failure

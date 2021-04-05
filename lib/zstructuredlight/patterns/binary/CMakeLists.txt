@@ -24,6 +24,8 @@ add_library(${PROJECT_NAME} SHARED
     zbinarypatternprojection_resources.qrc
 )
 
+set_target_properties(${PROJECT_NAME} PROPERTIES WINDOWS_EXPORT_ALL_SYMBOLS ON)
+
 target_link_libraries(${PROJECT_NAME}
     PUBLIC # it's a plugin, so public is fine, and makes it easier for tests (no need to specify all dependencies)
         Qt::Core

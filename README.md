@@ -1,8 +1,9 @@
 # A framework for Structured Light based 3D scanning projects
 
-[![Build Status](https://travis-ci.com/nikolaseu/neuvision.svg?branch=master)](https://travis-ci.com/nikolaseu/neuvision)
-[![Build status](https://ci.appveyor.com/api/projects/status/q3vr5tbjbh3v8jh5/branch/master?svg=true)](https://ci.appveyor.com/project/nikolaseu/neuvision/branch/master)
-[![Build Status](https://github.com/nikolaseu/neuvision/workflows/build/badge.svg?branch=master)](https://github.com/nikolaseu/neuvision/actions)
+[![Windows](https://ci.appveyor.com/api/projects/status/q3vr5tbjbh3v8jh5/branch/master?svg=true)](https://ci.appveyor.com/project/nikolaseu/neuvision/branch/master)
+[![Windows](https://github.com/nikolaseu/neuvision/actions/workflows/windows.yml/badge.svg)](https://github.com/nikolaseu/neuvision/actions/workflows/windows.yml)
+[![Apple macOS](https://github.com/nikolaseu/neuvision/actions/workflows/macos.yml/badge.svg)](https://github.com/nikolaseu/neuvision/actions/workflows/macos.yml)
+[![Ubuntu](https://github.com/nikolaseu/neuvision/actions/workflows/ubuntu.yml/badge.svg)](https://github.com/nikolaseu/neuvision/actions/workflows/ubuntu.yml)
 
 Engineering degree thesis/project for the title of "Ingeniero en Informatica", Universidad Nacional del Litoral (Santa Fe, Argentina).
 
@@ -28,15 +29,15 @@ There are also some old plugins (might require fixes/changes) for:
 ## Requirements
 
 We assume you already have a suitable C++ compiler and [Qt](https://www.qt.io) installed (at least
-version 5.12).
+version 5.15).
 
 You'll also need some libraries:
 
-- [OpenCV](http://opencv.org) (mostly tested with version 4.1.x)
+- [OpenCV](http://opencv.org) (mostly tested with version 4.2.x or higher)
 
 For the point cloud viewer you might also want to include, optionally (just to open PCD files):
 
-- [PCL](http://www.pointclouds.org) (tested with version 1.9.x)
+- [PCL](http://www.pointclouds.org) (tested with version 1.10.x or higher)
 
 ### Apple macOS
 

@@ -1,0 +1,37 @@
+name: Windows
+
+on:
+  push:
+  schedule:
+    - cron:  '0 0 * * SUN' # run on sundays
+
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+    - uses: actions/checkout@v1
+    - name: Install dependencies
+      uses: lukka/run-vcpkg@v6
+      with:
+        vcpkgArguments: opencv
+        vcpkgGitCommitId: 030cfaa24de9ea1bbf0a4d9c615ce7312ba77af1
+        vcpkgDirectory: C:/Tools/vcpkg
+        vcpkgTriplet: x64-windows
+    - name: Install Qt
+      uses: jurplel/install-qt-action@v2
+      with:
+        version: '5.15.2'
+    - name: Get latest CMake and Ninja
+      # Using 'latest' branch, the most recent CMake and ninja are installed.
+      uses: lukka/get-cmake@latest
+    - name: Setup MSVC developer command prompt
+      uses: ilammy/msvc-dev-cmd@v1
+    - name: Build
+      run: |
+        ./scripts/build_win.bat
+#    - name: Test
+#      working-directory: build/Release
+#      shell: cmd
+#      run: |
+#        set PATH=%PATH%;C:/Tools/vcpkg/installed/x64-windows/bin;%cd%/bin;%cd%/bin/plugins/structuredlightpatterns
+#        ctest --output-on-failure

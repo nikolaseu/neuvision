@@ -1,0 +1,22 @@
+name: Apple macOS
+
+on:
+  push:
+  schedule:
+    - cron:  '0 0 * * SUN' # run on sundays
+
+jobs:
+  build:
+    runs-on: macos-latest
+    steps:
+    - uses: actions/checkout@v1
+    - name: Install dependencies
+      run: |
+        brew bundle
+    - name: Build
+      run: |
+        sh ./scripts/build_osx.sh
+    - name: Test
+      working-directory: build/Release
+      run: |
+        ctest --output-on-failure

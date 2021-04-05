@@ -65,7 +65,7 @@ T grayToBinary(T num)
 } // anonymous namespace
 
 
-cv::Mat decodeBinaryPatternImages(const std::vector<cv::Mat> &images, const std::vector<cv::Mat> &invImages, cv::Mat maskImg, bool isGrayCode)
+cv::Mat decodeBinaryPatternImages(const std::vector<cv::Mat> &images, const std::vector<cv::Mat> &invImages, const cv::Mat &maskImg, bool isGrayCode)
 {
     const size_t imgCount = images.size();
 

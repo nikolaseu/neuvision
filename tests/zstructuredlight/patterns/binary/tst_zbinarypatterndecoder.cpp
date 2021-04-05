@@ -2,7 +2,7 @@
 
 #include "ZStructuredLight/zdecodedpattern.h"
 
-#include <QtTest>
+#include <QtTest/QTest>
 #include <opencv2/imgcodecs.hpp>
 
 namespace
