@@ -23,6 +23,7 @@
 #include "zcameracalibration_global.h"
 
 class QSettings;
+class QWidget;
 
 namespace Z3D
 {

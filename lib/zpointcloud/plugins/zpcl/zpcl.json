@@ -1,3 +1,5 @@
 {
+    "id": "Z3D::ZPointCloudLibraryPlugin",
+    "extensions": [ "pcd" ],
     "notes": "Requires PCL (PointCloud library)"
 }

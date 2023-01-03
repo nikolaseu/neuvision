@@ -22,12 +22,10 @@
 #include "ZPointCloud/zpointcloud_global.h"
 #include "ZPointCloud/zpointcloud_fwd.h"
 
-#include <QObject>
+#include <QtCore/QObject>
 
 namespace Z3D
 {
-
-class ZPointField;
 
 class Z3D_ZPOINTCLOUD_SHARED_EXPORT ZPointCloud : public QObject
 {

@@ -4,12 +4,11 @@
 #include "plygeometryloader.h"
 #include "stlgeometryloader.h"
 
-#include "ZPointCloud/zpointcloud.h"
-#include "ZPointCloud/zpointfield.h"
-
 #include <ZCore/zlogging.h>
+#include <ZPointCloud/zpointcloud.h>
+#include <ZPointCloud/zpointfield.h>
 
-#include <QFile>
+#include <QtCore/QFile>
 
 Z3D_LOGGING_CATEGORY_FROM_FILE("z3d.zpointcloud.zqtgeometryloaders", QtDebugMsg)
 

@@ -22,6 +22,8 @@
 #include "ZStructuredLight/zstructuredlight_fwd.h"
 #include "ZStructuredLight/zstructuredlight_global.h"
 
+#include <QtPlugin>
+
 class QSettings;
 
 namespace Z3D

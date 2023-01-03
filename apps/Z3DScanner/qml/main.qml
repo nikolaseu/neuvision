@@ -1,16 +1,17 @@
-import Qt3D.Core 2.12 as Q3D
-import Qt3D.Extras 2.12
-import Qt3D.Input 2.12
-import Qt3D.Logic 2.12 // for FrameAction
-import Qt3D.Render 2.12
+import Qt3D.Core as Q3D
+import Qt3D.Extras
+import Qt3D.Input
+import Qt3D.Logic // for FrameAction
+import Qt3D.Render
 
-import QtGraphicalEffects 1.12
+import Qt5Compat.GraphicalEffects
 
-import QtQuick 2.12
-import QtQuick.Controls 2.3
-import QtQuick.Dialogs 1.3
-import QtQuick.Layouts 1.3
-import QtQuick.Scene3D 2.12
+import QtCore
+import QtQuick
+import QtQuick.Controls
+import QtQuick.Dialogs
+import QtQuick.Layouts
+import QtQuick.Scene3D
 
 import Z3D.ZPointCloud 1.0 as ZPointCloud
 import "settings"
@@ -42,7 +43,7 @@ ApplicationWindow {
         anchors.fill: parent
 
         Keys.enabled: true
-        Keys.onReleased: {
+        Keys.onReleased: function(event) {
             if (event.key === Qt.Key_F) {
                 screenRayCaster.triggerForMousePosition();
             }
@@ -60,6 +61,11 @@ ApplicationWindow {
 
             Q3D.Entity {
                 id: sceneRoot
+
+                Environment {
+                    /// the skybox and environment lights, for PBR
+                    id: environment
+                }
 
                 ZPointCloud.BasicCamera {
                     id: mainCamera
@@ -119,7 +125,7 @@ ApplicationWindow {
                     },
                     ScreenRayCaster {
                         id: screenRayCaster
-                        onHitsChanged: {
+                        onHitsChanged: function(hits) {
                             if (hits.length > 0) {
 //                                console.log("  " + hits[0].worldIntersection.x, hits[0].worldIntersection.y, hits[0].worldIntersection.z);
                                 mainCamera.zoomTo(Qt.vector3d(hits[0].worldIntersection.x, hits[0].worldIntersection.y, hits[0].worldIntersection.z));
@@ -147,7 +153,7 @@ ApplicationWindow {
                     MouseHandler {
                         id: mouseHandler
                         sourceDevice:  MouseDevice {}
-                        onPositionChanged: {
+                        onPositionChanged: function(mouse) {
 //                            console.log("mouse position changed", mouse)
                             screenRayCaster.mousePosition = Qt.point(mouse.x, mouse.y);
                         }
@@ -252,6 +258,11 @@ ApplicationWindow {
                         }
 
                         Button {
+                            text: "View all"
+                            onClicked: mainCamera.viewAll()
+                        }
+
+                        Button {
                             text: "Settings"
                             onClicked: drawer.open()
                         }
@@ -293,18 +304,17 @@ ApplicationWindow {
                                 MenuItem {
                                     text: "Save as..."
                                     onTriggered: {
-                                        savePointCloudDialog.open()
+                                        savePointCloudDialog.open();
                                     }
 
                                     FileDialog {
                                         id: savePointCloudDialog
                                         title: "Save as..."
-                                        folder: shortcuts.home
-                                        modality: Qt.ApplicationModal
+                                        currentFolder: StandardPaths.standardLocations(StandardPaths.HomeLocation)[0]
                                         nameFilters: [ "PLY files (*.ply)" ]
-                                        selectExisting: false
+                                        fileMode: FileDialog.SaveFile
                                         onAccepted: {
-                                            ZPointCloud.Utils.savePLY(model.pointCloud, savePointCloudDialog.fileUrl);
+                                            ZPointCloud.Utils.savePLY(model.pointCloud, savePointCloudDialog.selectedFile);
                                         }
                                     }
                                 }
@@ -398,7 +408,7 @@ ApplicationWindow {
                             property color color: viewerSettings.defaultColor
 
                             onClicked: {
-                                colorDialog.color = color
+                                colorDialog.selectedColor = color;
                                 colorDialog.open();
                             }
 
@@ -416,7 +426,7 @@ ApplicationWindow {
                                 id: colorDialog
                                 modality: Qt.ApplicationModal
                                 onAccepted: {
-                                    viewerSettings.defaultColor = colorDialog.color;
+                                    viewerSettings.defaultColor = colorDialog.selectedColor;
                                 }
                             }
                         }
@@ -565,14 +575,5 @@ ApplicationWindow {
                 }
             }
         }
-    }
-
-    MouseArea {
-        id: mouseAreaForAvoidingProblemsWithMacTitlebar
-        visible: Qt.platform.os === "osx"
-        anchors.top: parent.top
-        anchors.left: parent.left
-        anchors.right: parent.right
-        height: 24
     }
 }

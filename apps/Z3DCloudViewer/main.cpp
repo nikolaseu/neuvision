@@ -21,51 +21,30 @@
 #include "zpointcloudviewercontroller.h"
 
 #include "ZGui/zapplication.h"
-#include "ZPointCloud/zpointcloud.h"
-#include "ZPointCloud/zpointcloudgeometry.h"
 #include "ZPointCloud/zpointcloudprovider.h"
 
-#if defined(Q_OS_MACOS)
-#include "ZGui/zosxutils.h" // just to hide title bar in OSX
-#include <QWindow>
-#endif
-
-#include <QQmlApplicationEngine>
-#include <QSurfaceFormat>
+#include <QtQml/QQmlApplicationEngine>
 
 int main(int argc, char *argv[])
 {
-    QSurfaceFormat glFormat;
-    glFormat.setVersion(3, 3);
-    glFormat.setProfile(QSurfaceFormat::CoreProfile);
-    QSurfaceFormat::setDefaultFormat(glFormat);
-
     /// to print out diagnostic information about each plugin it (Qt) tries to load
     //qputenv("QT_DEBUG_PLUGINS", "1");
+    //qputenv("QSG_INFO", "1");
+    qputenv("QT3D_RENDERER", "rhi"); // should be the default, but set anyways
 
     Z3D::ZApplication app(argc, argv);
     app.loadPlugins();
+    Z3D::ZPointCloudProvider::loadPlugins();
 
     QQmlApplicationEngine engine;
 
     //! TODO: This is ugly, find a better way to do this
-    Z3D_ZPOINTCLOUD_INIT();
-    Z3D_ZPOINTCLOUD_INIT_QMLENGINE(engine);
+    engine.addImportPath(":/z3d.neuvision/");
 
+    //! FIXME create Qml module to use auto registration / qt_add_qml_module
     qmlRegisterType<Z3D::ZPointCloudViewerController>("Z3D.ZPointCloudViewer", 1, 0, "ZPointCloudViewerController");
 
     engine.load(QUrl(QStringLiteral("qrc:/qml/main.qml")));
-
-#if defined(Q_OS_MACOS)
-    // just to hide title bar in OSX
-    for (auto &obj : engine.rootObjects()) {
-        if (auto *win = qobject_cast<QWindow*>(obj)) {
-            Z3D::ZOSXUtils::hideTitleBar(win->winId());
-//            Z3D::ZOSXUtils::applyTranslucentBackgroundEffect(win->winId());
-            break;
-        }
-    }
-#endif
 
     return app.exec();
 }

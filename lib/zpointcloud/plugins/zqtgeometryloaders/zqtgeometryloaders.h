@@ -1,6 +1,6 @@
 #pragma once
 
-#include "ZPointCloud/zpointcloud.h"
+#include <ZPointCloud/zpointcloud_fwd.h>
 
 class QString;
 

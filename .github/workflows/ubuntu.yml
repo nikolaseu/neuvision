@@ -7,17 +7,19 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     steps:
     - uses: actions/checkout@v1
     - name: Install dependencies
       run: |
         sudo apt-get update
-        sudo apt-get install -y build-essential libopencv-dev libgphoto2-dev libpcl-dev
+        sudo apt-get install -y build-essential ninja-build libopencv-dev libgphoto2-dev libxkbcommon-dev
     - name: Install Qt
-      uses: jurplel/install-qt-action@v2
+      uses: jurplel/install-qt-action@v3
       with:
-        version: '5.15.2'
+        version: '6.4.1'
+        modules: 'qt3d qtmultimedia'
+        cache: 'true'
     - name: Build
       run: |
         sh ./scripts/build_linux.sh

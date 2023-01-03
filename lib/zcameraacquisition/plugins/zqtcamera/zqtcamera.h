@@ -21,8 +21,9 @@
 
 #include "ZCameraAcquisition/zcamerainterface_p.h"
 
-#include <QCamera>
-#include <QCameraImageCapture>
+#include <QtMultimedia/QCamera>
+#include <QtMultimedia/QImageCapture>
+#include <QtMultimedia/QMediaCaptureSession>
 
 namespace Z3D
 {
@@ -36,27 +37,26 @@ public:
     ~ZQtCamera() override;
 
 public slots:
-    virtual bool startAcquisition() override;
-    virtual bool stopAcquisition() override;
+    bool startAcquisition() override;
+    bool stopAcquisition() override;
 
-    virtual QList<Z3D::ZCameraInterface::ZCameraAttribute> getAllAttributes() override;
-    virtual bool setAttribute(const QString &name, const QVariant &value) override;
-    virtual QVariant getAttribute(const QString &name) const override;
+    QList<Z3D::ZCameraInterface::ZCameraAttribute> getAllAttributes() override;
+    bool setAttribute(const QString &name, const QVariant &value) override;
+    QVariant getAttribute(const QString &name) const override;
 
 protected slots:
-    virtual bool setAttribute(const QString &name, const QVariant &value, bool notify) override;
+    bool setAttribute(const QString &name, const QVariant &value, bool notify) override;
 
-    void onImageCaptured(int id, const QImage &preview);
-    void onImageSaved(int id, const QString &fileName);
     void onImageAvailable(int id, const QVideoFrame &buffer);
-    void onCaptureError(int id, QCameraImageCapture::Error error, const QString &message);
+    void onCaptureError(int id, QImageCapture::Error error, const QString &message);
     void onReadyForCaptureChanged(bool ready);
 
 private:
-    QCamera *m_qcamera;
-    QCameraImageCapture *m_qcameraImageCapture;
+    QCamera *const m_camera;
+    QMediaCaptureSession *const m_captureSession;
+    QImageCapture *const m_imageCapture;
 
-    bool m_isCapturing;
+    bool m_isCapturing {false};
 };
 
 } // namespace Z3D

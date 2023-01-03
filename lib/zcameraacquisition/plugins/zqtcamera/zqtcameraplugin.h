@@ -26,16 +26,24 @@ namespace Z3D {
 class ZQtCameraPlugin : public QObject, public ZCameraPluginInterface
 {
     Q_OBJECT
-    Q_PLUGIN_METADATA(IID "z3d.cameraacquisition.cameraplugininterface" FILE "zqtcamera.json")
+    Q_PLUGIN_METADATA(IID ZCameraPluginInterface_iid FILE "zqtcamera.json")
     Q_INTERFACES(Z3D::ZCameraPluginInterface)
 
 public:
+    ZQtCameraPlugin();
+
     /// plugin information
     QString displayName() const override;
 
     /// camera utilities
     QList<ZCameraInfo *> getConnectedCameras() override;
     ZCameraPtr getCamera(QVariantMap options) override;
+
+private slots:
+    void updateCameras();
+
+private:
+    QList<ZCameraInfo *> m_cameraList;
 };
 
 } // namespace Z3D

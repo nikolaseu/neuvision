@@ -24,6 +24,8 @@
 #include <Z3DCameraAcquisition>
 #include <Z3DCameraCalibration>
 
+#include <QObject>
+
 namespace Z3D
 {
 

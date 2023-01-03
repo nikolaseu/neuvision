@@ -19,9 +19,9 @@
 
 #pragma once
 
-#include "ZPointCloud/zpointcloudplugininterface.h"
+#include <ZPointCloud/zpointcloudplugininterface.h>
 
-#include <QObject>
+#include <QtCore/QObject>
 
 namespace Z3D
 {
@@ -29,14 +29,13 @@ namespace Z3D
 class ZPointCloudLibraryPlugin : public QObject, public ZPointCloudPluginInterface
 {
     Q_OBJECT
-    Q_PLUGIN_METADATA(IID "z3d.pointcloud.pointcloudplugininterface" FILE "zpcl.json")
+    Q_PLUGIN_METADATA(IID ZPointCloudPluginInterface_iid FILE "zpcl.json")
     Q_INTERFACES(Z3D::ZPointCloudPluginInterface)
 
 public:
     explicit ZPointCloudLibraryPlugin(QObject *parent = nullptr);
 
     // ZPointCloudPluginInterface interface
-    std::vector<Formats> formats() const override;
     ZPointCloudUniquePtr loadPointCloud(const QString &fileName) const override;
 };
 

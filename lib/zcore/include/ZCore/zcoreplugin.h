@@ -44,6 +44,9 @@ public:
     /// otherwise returns false
     bool load();
 
+    /// Destroys instance and unloads the plugin
+    void unload();
+
     /// Returns a text string with the description of the last error that occurred
     QString errorString();
 

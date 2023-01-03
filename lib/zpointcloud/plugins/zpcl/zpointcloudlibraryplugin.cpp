@@ -22,7 +22,7 @@
 
 #include "zpointcloudpclwrapper.h"
 
-#include "ZCore/zlogging.h"
+#include <ZCore/zlogging.h>
 
 #include <pcl/io/pcd_io.h>
 
@@ -37,24 +37,16 @@ ZPointCloudLibraryPlugin::ZPointCloudLibraryPlugin(QObject *parent)
 
 }
 
-std::vector<ZPointCloudPluginInterface::Formats> ZPointCloudLibraryPlugin::formats() const
-{
-    return {
-        Formats::PCD
-    };
-}
-
 ZPointCloudUniquePtr ZPointCloudLibraryPlugin::loadPointCloud(const QString &filename) const
 {
     zDebug() << "Trying to read PointCloud from" << filename;
 
-    auto pc = new pcl::PCLPointCloud2();
+    auto pc = std::make_unique<pcl::PCLPointCloud2>();
     if (0 == pcl::io::loadPCDFile(filename.toStdString(), *pc)) {
-        return ZPointCloudPCLWrapper::create(pc);
+        return ZPointCloudPCLWrapper::create(std::move(pc));
     }
 
     zWarning() << "Failed to read PointCloud. Invalid/unrecognized format:" << filename;
-    delete pc;
     return nullptr;
 }
 

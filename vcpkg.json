@@ -1,0 +1,7 @@
+{
+    "name": "neuvision",
+    "version-string": "0.3.0",
+    "dependencies": [
+        "opencv"
+    ]
+}

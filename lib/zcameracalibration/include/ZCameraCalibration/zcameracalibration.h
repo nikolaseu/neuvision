@@ -22,6 +22,7 @@
 #include "zcameracalibration_fwd.h"
 #include "zcameracalibration_global.h"
 
+#include <QObject>
 #include <QPointer>
 #include <QString>
 

@@ -21,75 +21,86 @@
 #include "ZPointCloud/zpointcloudprovider.h"
 
 #include "ZPointCloud/zpointcloud.h"
-#include "ZPointCloud/zpointcloud_qml.h"
-#include "ZPointCloud/zpointcloudgeometry.h"
-#include "ZPointCloud/zpointcloudlistmodel.h"
 #include "ZPointCloud/zpointcloudplugininterface.h"
-#include "ZPointCloud/zpointcloudreader.h"
 
 #include <ZCore/zcoreplugin.h>
 #include <ZCore/zlogging.h>
 #include <ZCore/zpluginloader.h>
 
-#include <QDir>
-#include <QQmlEngine>
+#include <QtCore/QJsonArray>
+#include <QtQml/QQmlEngine>
 
 Z3D_LOGGING_CATEGORY_FROM_FILE("z3d.zpointcloud", QtInfoMsg)
 
 namespace Z3D
 {
 
-QMap< QString, ZPointCloudPluginInterface *> ZPointCloudProvider::m_plugins;
-
-void ZPointCloudProvider::registerMetaTypes()
-{
-    qRegisterMetaType<Z3D::ZPointCloudListModel *>("Z3D::ZPointCloudListModel*");
-    qRegisterMetaType<Z3D::ZPointCloud *>("Z3D::ZPointCloud*");
-
-    qmlRegisterType<Z3D::ZPointCloudReader>("Z3D.ZPointCloud", 1, 0, "PointCloudReader");
-    qmlRegisterType<Z3D::ZPointCloudGeometry>("Z3D.ZPointCloud", 1, 0, "PointCloudGeometry");
-
-    qmlRegisterSingletonType<Z3D::ZPointCloudInternal::ZPointCloud_QML>("Z3D.ZPointCloud", 1, 0, "Utils",
-        [](QQmlEngine *engine, QJSEngine *scriptEngine) -> QObject * {
-            Q_UNUSED(engine)
-            Q_UNUSED(scriptEngine)
-            return new Z3D::ZPointCloudInternal::ZPointCloud_QML();
-        });
-}
+std::unordered_map<QString, std::vector<ZCorePlugin *>> ZPointCloudProvider::m_pluginLoaders;
 
 void ZPointCloudProvider::loadPlugins()
 {
-    auto list = ZPluginLoader::plugins("pointcloud");
+    const auto list = ZPluginLoader::plugins("pointcloud");
 
-    for (auto pluginLoader : list) {
-        auto *plugin = pluginLoader->instance<ZPointCloudPluginInterface>();
-        if (plugin) {
-            zDebug() << "pointcloud plugin loaded. type:" << pluginLoader->id();
-            m_plugins.insert(pluginLoader->id(), plugin);
-        } else {
-            zWarning() << "invalid pointcloud plugin:" << plugin;
+    for (const auto &pluginLoader : list) {
+        const auto id = pluginLoader->id();
+        const QJsonObject metaData = pluginLoader->metaData();
+        if (!metaData.contains("extensions")) {
+            zWarning() << "invalid plugin, missing `extensions` field" << metaData;
+            continue;
+        }
+
+        const QJsonArray extensions = metaData["extensions"].toArray();
+        for (const QJsonValue &extensionValue : extensions) {
+            if (!extensionValue.isString()) {
+                zWarning() << "invalid plugin, unhandled `extensions` item:" << extensionValue;
+                continue;
+            }
+            const QString ext = extensionValue.toString().toLower(); /// use lowercase for id!
+            zDebug().nospace() << "registering plugin for extension: " << ext << " [" << id << "]";
+            m_pluginLoaders[ext].push_back(pluginLoader);
         }
     }
 }
 
 void ZPointCloudProvider::unloadPlugins()
 {
-    const auto plugins = m_plugins.values();
-    for (const auto *plugin : plugins) {
-        delete plugin;
+    for (const auto &[_, pluginLoaders] : m_pluginLoaders) {
+        for (const auto &pluginLoader : pluginLoaders) {
+            pluginLoader->unload();
+        }
     }
 
-    m_plugins.clear();
+    m_pluginLoaders.clear();
+}
+
+std::vector<QString> ZPointCloudProvider::formats()
+{
+    std::vector<QString> v;
+    for (const auto &[ext, _] : m_pluginLoaders) {
+        v.push_back(ext);
+    }
+    return v;
 }
 
 ZPointCloudUniquePtr ZPointCloudProvider::loadPointCloud(const QString &fileName)
 {
     zDebug() << "Trying to read PointCloud from" << fileName;
 
-    const auto plugins = m_plugins.values();
-    for (const auto *plugin : plugins) {
-        if (auto pc = plugin->loadPointCloud(fileName)) {
-            return pc;
+    const QFileInfo fileInfo(fileName);
+    if (!fileInfo.exists()) {
+        zWarning() << "Invalid file:" << fileName;
+        return nullptr;
+    }
+
+    const QString extension = fileInfo.suffix().toLower(); /// use lowercase for id!
+    if (m_pluginLoaders.contains(extension)) {
+        const auto &pluginLoaders = m_pluginLoaders.at(extension);
+        for (const auto &pluginLoader : pluginLoaders) {
+            if (auto *plugin = pluginLoader->instance<ZPointCloudPluginInterface>()) {
+                if (auto pc = plugin->loadPointCloud(fileName)) {
+                    return pc;
+                }
+            }
         }
     }
 

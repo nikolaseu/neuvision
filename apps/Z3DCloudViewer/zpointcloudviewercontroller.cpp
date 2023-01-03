@@ -37,7 +37,7 @@ void ZPointCloudViewerController::loadFile(const QUrl &fileUrl)
 {
     zInfo() << "trying to load file" << fileUrl;
 
-    QtConcurrent::run([=](){
+    auto _ = QtConcurrent::run([=](){
         const QFileInfo fileInfo(fileUrl.toLocalFile());
 
         emit message(QString("loading %1 ...").arg(fileInfo.fileName()));

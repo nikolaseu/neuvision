@@ -49,10 +49,10 @@ public:
     ZCameraPtr getCamera() const;
 
 private:
-    ZCameraPluginInterface* m_plugin;
+    ZCameraPluginInterface *const m_plugin;
 
-    QString m_name;
-    QVariantMap m_extraData;
+    const QString m_name;
+    const QVariantMap m_extraData;
 };
 
 } // namespace Z3D

@@ -39,8 +39,8 @@ Item {
         acceptedButtons: Qt.RightButton
         hoverEnabled: true
 
-        onClicked: {
-            if (mouse.button == Qt.RightButton) {
+        onClicked: function(mouse) {
+            if (mouse.button === Qt.RightButton) {
                 root.contextMenu.open();
             }
         }

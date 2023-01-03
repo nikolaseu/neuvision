@@ -26,10 +26,8 @@
 #include <opencv2/core/mat.hpp>
 #include <opencv2/imgproc.hpp>
 
-#include <QCameraViewfinder>
-#include <QDir>
-#include <QFile>
-#include <QTimer>
+#include <QtCore/QTimer>
+#include <QtMultimedia/QCameraDevice>
 
 Z3D_LOGGING_CATEGORY_FROM_FILE("z3d.zcameraacquisition.zqtcamera", QtInfoMsg)
 
@@ -37,63 +35,49 @@ namespace Z3D
 {
 
 ZQtCamera::ZQtCamera(QCamera *qcamera)
-    : m_qcamera(qcamera)
-    , m_isCapturing(false)
+    : m_camera {qcamera}
+    , m_captureSession {new QMediaCaptureSession(this)}
+    , m_imageCapture {new QImageCapture(this)}
 {
-    m_qcamera->setCaptureMode(QCamera::CaptureStillImage);
-    //m_qcamera->setCaptureMode(QCamera::CaptureVideo);
+    m_captureSession->setCamera(m_camera);
+    m_captureSession->setImageCapture(m_imageCapture);
 
-    m_qcameraImageCapture = new QCameraImageCapture(m_qcamera);
-    if (m_qcameraImageCapture->isCaptureDestinationSupported(QCameraImageCapture::CaptureToBuffer)) {
-        m_qcameraImageCapture->setCaptureDestination(QCameraImageCapture::CaptureToBuffer);
-    } else {
-        zWarning() << "QCameraImageCapture::CaptureToBuffer not supported, will save capture to files :(";
-    }
-    m_qcameraImageCapture->setBufferFormat(QVideoFrame::Format_RGB24);
-    //m_qcameraImageCapture->setBufferFormat(QVideoFrame::Format_CameraRaw);
-    //m_qcameraImageCapture->setBufferFormat(QVideoFrame::Format_Y8);
-
-    connect(m_qcameraImageCapture, &QCameraImageCapture::readyForCaptureChanged,
-            this, &ZQtCamera::onReadyForCaptureChanged);
-    connect(m_qcameraImageCapture, &QCameraImageCapture::imageCaptured,
-            this, &ZQtCamera::onImageCaptured);
-    connect(m_qcameraImageCapture, &QCameraImageCapture::imageAvailable,
-            this, &ZQtCamera::onImageAvailable);
-    connect(m_qcameraImageCapture, &QCameraImageCapture::imageSaved,
-            this, &ZQtCamera::onImageSaved);
-    connect(m_qcameraImageCapture, static_cast<void(QCameraImageCapture::*)(int, QCameraImageCapture::Error, const QString &)>(&QCameraImageCapture::error),
-            this, &ZQtCamera::onCaptureError);
-
-    auto *viewfinder = new QCameraViewfinder();
-    //viewfinder->show();
-    m_qcamera->setViewfinder(viewfinder);
-    m_qcamera->start();
+    QObject::connect(m_imageCapture, &QImageCapture::imageAvailable,
+                     this, &ZQtCamera::onImageAvailable);
+    QObject::connect(m_imageCapture, &QImageCapture::readyForCaptureChanged,
+                     this, &ZQtCamera::onReadyForCaptureChanged);
+    QObject::connect(m_imageCapture, &QImageCapture::errorOccurred,
+                     this, &ZQtCamera::onCaptureError);
 }
 
 ZQtCamera::~ZQtCamera()
 {
-    m_qcamera->stop();
-    m_qcamera->deleteLater();
+    m_camera->stop();
+    m_camera->deleteLater();
 }
 
 bool ZQtCamera::startAcquisition()
 {
-    if (!ZCameraBase::startAcquisition() || m_isCapturing)
+    if (!ZCameraBase::startAcquisition() || m_isCapturing) {
         return false;
+    }
 
     m_isCapturing = true;
 
-    m_qcameraImageCapture->capture();
+    m_camera->start();
 
     return true;
 }
 
 bool ZQtCamera::stopAcquisition()
 {
-    if (!ZCameraBase::stopAcquisition() || !m_isCapturing)
+    if (!ZCameraBase::stopAcquisition() || !m_isCapturing) {
         return false;
+    }
 
     m_isCapturing = false;
+
+    m_camera->stop();
 
     return true;
 }
@@ -109,11 +93,12 @@ QList<ZCameraInterface::ZCameraAttribute> ZQtCamera::getAllAttributes()
     attrRes.id = "Resolution";
     attrRes.path = "Resolution";
     attrRes.label = "Resolution";
-    QList<QSize> supportedResolutions = m_qcameraImageCapture->supportedResolutions();
+    const QList<QSize> supportedResolutions = m_camera->cameraDevice().photoResolutions();
     int currentIndex = 0;
     for(const QSize &resolution : supportedResolutions) {
+        zInfo() << resolution;
         attrRes.enumNames << QString("%1x%2").arg(resolution.width()).arg(resolution.height());
-        if (resolution == m_qcameraImageCapture->encodingSettings().resolution()) {
+        if (resolution == m_imageCapture->resolution()) {
             attrRes.enumValue = currentIndex;
         }
         currentIndex++;
@@ -128,9 +113,11 @@ QList<ZCameraInterface::ZCameraAttribute> ZQtCamera::getAllAttributes()
     attrCodec.path = "Codec";
     attrCodec.label = "Codec";
     currentIndex = 0;
-    for (const QString &codecName : m_qcameraImageCapture->supportedImageCodecs()) {
+    const QList<QImageCapture::FileFormat> supportedImageFormats = QImageCapture::supportedFormats();
+    for (const QImageCapture::FileFormat &fileFormat : supportedImageFormats) {
+        const QString codecName = QImageCapture::fileFormatName(fileFormat);
         attrCodec.enumNames << codecName;
-        if (codecName == m_qcameraImageCapture->encodingSettings().codec()) {
+        if (fileFormat == m_imageCapture->fileFormat()) {
             attrCodec.enumValue = currentIndex;
         }
         currentIndex++;
@@ -144,12 +131,13 @@ QList<ZCameraInterface::ZCameraAttribute> ZQtCamera::getAllAttributes()
     attrQuality.id = "Quality";
     attrQuality.path = "Quality";
     attrQuality.label = "Quality";
-    attrQuality.enumNames << "VeryLowQuality"
-                          << "LowQuality"
-                          << "NormalQuality"
-                          << "HighQuality"
-                          << "VeryHighQuality";
-    attrQuality.enumValue = m_qcameraImageCapture->encodingSettings().quality();
+    static const QMetaEnum qualityEnum = QMetaEnum::fromType<QImageCapture::Quality>();
+    for (int i=0; i<qualityEnum.keyCount(); ++i) {
+        attrQuality.enumNames << qualityEnum.key(i);
+        if (qualityEnum.value(i) == m_imageCapture->quality()) {
+            attrQuality.enumValue = i;
+        }
+    }
     attrs << attrQuality;
 
     return attrs;
@@ -158,29 +146,35 @@ QList<ZCameraInterface::ZCameraAttribute> ZQtCamera::getAllAttributes()
 bool ZQtCamera::setAttribute(const QString &name, const QVariant &value)
 {
     zDebug() << "trying to set" << name << "to" << value;
-    QImageEncoderSettings settings = m_qcameraImageCapture->encodingSettings();
+
     if (name == "Resolution") {
         QStringList sizes = value.toString().split("x");
         const int width = sizes.front().toInt();
         const int height = sizes.back().toInt();
-        settings.setResolution(width, height);
+        const QSize resolution(width, height);
+        m_imageCapture->setResolution(resolution);
+        return m_imageCapture->resolution() == resolution;
     } else if (name == "Codec") {
-        settings.setCodec(value.toString());
-    } else if (name == "Quality") {
-        QString quality = value.toString();
-        if (quality == "VeryLowQuality") {
-            settings.setQuality(QMultimedia::VeryLowQuality);
-        } else if (quality == "LowQuality") {
-            settings.setQuality(QMultimedia::LowQuality);
-        } else if (quality == "NormalQuality") {
-            settings.setQuality(QMultimedia::NormalQuality);
-        } else if (quality == "HighQuality") {
-            settings.setQuality(QMultimedia::HighQuality);
-        } else if (quality == "VeryHighQuality") {
-            settings.setQuality(QMultimedia::VeryHighQuality);
+        const QString codecName = value.toString();
+        const QList<QImageCapture::FileFormat> supportedImageFormats = QImageCapture::supportedFormats();
+        for (const QImageCapture::FileFormat &fileFormat : supportedImageFormats) {
+            if (codecName == QImageCapture::fileFormatName(fileFormat)) {
+                m_imageCapture->setFileFormat(fileFormat);
+                return true;
+            }
         }
+    } else if (name == "Quality") {
+        bool ok;
+        const QString qualityStr = value.toString();
+        static const QMetaEnum qualityEnum = QMetaEnum::fromType<QImageCapture::Quality>();
+        const int qualityInt = qualityEnum.keyToValue(qualityStr.toLocal8Bit(), &ok);
+        if (!ok) {
+            return false;
+        }
+        const QImageCapture::Quality quality {static_cast<QImageCapture::Quality>(qualityInt)};
+        m_imageCapture->setQuality(quality);
+        return true;
     }
-    m_qcameraImageCapture->setEncodingSettings(settings);
 
     return false;
 }
@@ -199,22 +193,24 @@ bool ZQtCamera::setAttribute(const QString &name, const QVariant &value, bool no
     return false;
 }
 
-void ZQtCamera::onImageCaptured(int id, const QImage &preview)
+void ZQtCamera::onImageAvailable(int id, const QVideoFrame &buffer)
 {
-    //zDebug() << "imageCaptured:" << id << "format:" << preview.format();
+    const QImage preview = buffer.toImage();
 
     const auto &imgWidth = preview.width();
     const auto &imgHeight = preview.height();
 
+    zDebug() << "imageAvailable:" << id << "size:" << QSize(imgWidth, imgHeight);
+
     cv::Mat cvImage8UC1;
-    cv::Mat cvImageOrig;
 
     switch (preview.format()) {
     case QImage::Format_RGB32:
-    case QImage::Format_ARGB32:
-        cvImageOrig = cv::Mat (imgHeight, imgWidth, CV_8UC4, (void *)preview.constBits(), preview.bytesPerLine());
+    case QImage::Format_ARGB32: {
+        cv::Mat cvImageOrig(imgHeight, imgWidth, CV_8UC4, (void *)preview.constBits(), preview.bytesPerLine());
         cv::cvtColor(cvImageOrig, cvImage8UC1, cv::COLOR_BGRA2GRAY);
         break;
+    }
     default:
         zWarning() << "unknown format:" << preview.format();
     }
@@ -232,33 +228,18 @@ void ZQtCamera::onImageCaptured(int id, const QImage &preview)
     }
 
     if (m_isCapturing) {
-        QTimer::singleShot(0, [=](){
-            m_qcameraImageCapture->capture();
+        QTimer::singleShot(0, m_imageCapture, [=](){
+            m_imageCapture->capture();
         });
     }
 }
 
-void ZQtCamera::onImageSaved(int id, const QString &fileName)
-{
-    if (QFile::remove(fileName)) {
-        zDebug() << "imageSaved and erased:" << id << fileName;
-    } else {
-        zDebug() << "imageSaved:" << id << fileName;
-    }
-}
-
-void ZQtCamera::onImageAvailable(int id, const QVideoFrame &buffer)
-{
-    Q_UNUSED(buffer)
-    zDebug() << "imageAvailable:" << id;
-}
-
-void ZQtCamera::onCaptureError(int id, QCameraImageCapture::Error error, const QString &message)
+void ZQtCamera::onCaptureError(int id, QImageCapture::Error error, const QString &message)
 {
     zDebug() << "captureError:" << id << error << message;
-    if (QCameraImageCapture::NotReadyError == error && m_isCapturing) {
-        QTimer::singleShot(100, [=](){
-            m_qcameraImageCapture->capture();
+    if (QImageCapture::NotReadyError == error && m_isCapturing) {
+        QTimer::singleShot(0, m_imageCapture, [=](){
+            m_imageCapture->capture();
         });
     }
 }
@@ -266,6 +247,12 @@ void ZQtCamera::onCaptureError(int id, QCameraImageCapture::Error error, const Q
 void ZQtCamera::onReadyForCaptureChanged(bool ready)
 {
     zDebug() << "readyForCaptureChanged:" << ready;
+
+    if (ready) {
+        QTimer::singleShot(0, m_imageCapture, [=](){
+            m_imageCapture->capture();
+        });
+    }
 }
 
 } // namespace Z3D

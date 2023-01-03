@@ -234,7 +234,7 @@ void ObjectControllerPrivate::addClassProperties(const QMetaObject *metaObject)
             int type = metaProperty.userType();
             QtVariantProperty *subProperty = 0;
             if (!metaProperty.isReadable()) {
-                subProperty = m_readOnlyManager->addProperty(QVariant::String, QLatin1String(metaProperty.name()));
+                subProperty = m_readOnlyManager->addProperty(QMetaType::QString, QLatin1String(metaProperty.name()));
                 subProperty->setValue(QLatin1String("< Non Readable >"));
             } else if (metaProperty.isEnumType()) {
                 if (metaProperty.isFlagType()) {
@@ -279,7 +279,7 @@ void ObjectControllerPrivate::addClassProperties(const QMetaObject *metaObject)
 
                 subProperty->setValue(metaProperty.read(m_object));
             } else {
-                subProperty = m_readOnlyManager->addProperty(QVariant::String, QLatin1String(metaProperty.name()));
+                subProperty = m_readOnlyManager->addProperty(QMetaType::QString, QLatin1String(metaProperty.name()));
                 subProperty->setValue(QLatin1String("< Unknown Type >"));
                 subProperty->setEnabled(false);
             }

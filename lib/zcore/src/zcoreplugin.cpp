@@ -22,9 +22,10 @@
 
 #include "ZCore/zlogging.h"
 
+#include <QtCore/QElapsedTimer>
 #include <QtCore/QPluginLoader>
 
-Z3D_LOGGING_CATEGORY_FROM_FILE("z3d.zcore", QtInfoMsg)
+Z3D_LOGGING_CATEGORY_FROM_FILE("z3d.zcore", QtDebugMsg)
 
 namespace Z3D
 {
@@ -76,6 +77,9 @@ QJsonObject ZCorePlugin::metaData() const
 
 bool ZCorePlugin::load()
 {
+    QElapsedTimer timer;
+    timer.start();
+
     if (!m_loader->load()) {
         zWarning() << "error loading plugin" << m_loader->fileName()
                    << "->" << m_loader->errorString();
@@ -85,9 +89,17 @@ bool ZCorePlugin::load()
     m_pluginInstance = m_loader->instance();
 
     zDebug() << "loaded plugin id:" << id()
-             << "version:" << version();
+             << "version:" << version()
+             << "in" << timer.elapsed() << "ms";
 
     return true;
+}
+
+void ZCorePlugin::unload()
+{
+    //m_pluginInstance->deleteLater(); /// docs: If you want to ensure that the root component is deleted, you should call unload() as soon you don't need to access the core component anymore. When the library is finally unloaded, the root component will automatically be deleted
+    m_pluginInstance = nullptr;
+    m_loader->unload();
 }
 
 QString ZCorePlugin::errorString()

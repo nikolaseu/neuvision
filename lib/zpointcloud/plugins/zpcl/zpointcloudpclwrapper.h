@@ -19,7 +19,9 @@
 
 #pragma once
 
-#include "ZPointCloud/zpointcloud.h"
+#include <ZPointCloud/zpointcloud.h>
+
+#include <memory>
 
 namespace pcl
 {
@@ -32,9 +34,9 @@ namespace Z3D
 class ZPointCloudPCLWrapper : public ZPointCloud
 {
 public:
-    static ZPointCloudUniquePtr create(pcl::PCLPointCloud2 *pointCloud);
+    static ZPointCloudUniquePtr create(std::unique_ptr<pcl::PCLPointCloud2> pointCloud);
 
-    explicit ZPointCloudPCLWrapper(pcl::PCLPointCloud2 *pointCloud,
+    explicit ZPointCloudPCLWrapper(std::unique_ptr<pcl::PCLPointCloud2> pointCloud,
                                    const std::vector<ZPointField *> &fields,
                                    QObject *parent = nullptr);
 
@@ -45,7 +47,7 @@ public:
     QByteArray trianglesData() const override;
 
 private:
-    const pcl::PCLPointCloud2 *m_pointCloud;
+    const std::unique_ptr<pcl::PCLPointCloud2> m_pointCloud;
 };
 
 } // namespace Z3D

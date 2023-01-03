@@ -26,6 +26,7 @@
 #include <QtCore/QCoreApplication>
 #include <QtCore/QDir>
 #include <QtCore/QFileInfo>
+#include <QtCore/QJsonDocument>
 #include <QtCore/QJsonObject>
 
 Z3D_LOGGING_CATEGORY_FROM_FILE("z3d.zcore", QtDebugMsg)
@@ -33,7 +34,7 @@ Z3D_LOGGING_CATEGORY_FROM_FILE("z3d.zcore", QtDebugMsg)
 namespace Z3D
 {
 
-ZPluginLoader *ZPluginLoader::m_instance = nullptr;
+ZPluginLoader *ZPluginLoader::m_instance = nullptr; //! FIXME avoid static/singletons!
 
 ZPluginLoader *ZPluginLoader::instance()
 {
@@ -44,14 +45,14 @@ ZPluginLoader *ZPluginLoader::instance()
     return m_instance;
 }
 
-void ZPluginLoader::loadPlugins(QString folder)
+void ZPluginLoader::loadPlugins(const QString &folder1)
 {
     QDir pluginsDir = QFileInfo(QCoreApplication::applicationFilePath()).absoluteDir();
 
     /// if no folder is indicated, use standard search path, i.e. "plugins"
-    if (folder.isEmpty()) {
-        folder = "plugins";
-    }
+    const QString folder = (!folder1.isEmpty())
+                                   ? folder1
+                                   : "plugins";
 
 #if !defined(Q_OS_ANDROID)
     if (!pluginsDir.cd(folder)) {
@@ -89,33 +90,33 @@ void ZPluginLoader::loadPlugins(QString folder)
 #endif
 
 #if defined(Q_OS_ANDROID)
-    auto foldersList = QStringList() << ".";
+    const auto foldersList = QStringList() << ".";
 #else
-    auto foldersList = pluginsDir.entryList(QDir::AllDirs | QDir::NoDot | QDir::NoDotDot);
+    const auto foldersList = pluginsDir.entryList(QDir::AllDirs | QDir::NoDot | QDir::NoDotDot);
 #endif
-    auto folderCount = foldersList.size();
+    const auto folderCount = foldersList.size();
     auto folderIndex = -1;
     for (const auto &folderName : foldersList) {
         folderIndex++;
-        QString pluginsFolderName = pluginsDir.absoluteFilePath(folderName);
+        const QString pluginsFolderName = pluginsDir.absoluteFilePath(folderName);
         zDebug() << "loading plugins from" << pluginsFolderName;
-        QDir currentPluginsDir(pluginsFolderName);
-        currentPluginsDir.setNameFilters(filters);
+        const QDir currentPluginsDir(pluginsFolderName);
 
-        auto fileList = currentPluginsDir.entryList(QDir::Files);
-        auto fileCount = fileList.size();
+        const auto fileList = currentPluginsDir.entryList(filters, QDir::Files);
+        const auto fileCount = fileList.size();
         auto fileIndex = -1;
         for (const auto &fileName : fileList) {
             fileIndex++;
-            QString pluginFileName = currentPluginsDir.absoluteFilePath(fileName);
+            const QString pluginFileName = currentPluginsDir.absoluteFilePath(fileName);
 
-            ZCorePlugin *plugin = new ZCorePlugin(pluginFileName);
+            ZCorePlugin *const plugin = new ZCorePlugin(pluginFileName);
 
-            float progress = (float(folderIndex) + float(fileIndex)/fileCount) / folderCount;
+            const float progress = (float(folderIndex) + float(fileIndex)/fileCount) / folderCount;
             emit progressChanged(progress, tr("Loading %1").arg(fileName));
 
-            zDebug() << "found plugin:" << pluginFileName
-                     << "metaData:\n" << plugin->metaData();
+            zDebug().nospace().noquote()
+                    << "found plugin: " << pluginFileName
+                    << ", metaData: " << QJsonDocument(plugin->metaData()).toJson();
 
 #if defined(Q_OS_ANDROID)
             QString pluginType = fileName.section('_', 1, 1);
@@ -136,8 +137,8 @@ void ZPluginLoader::unloadPlugins()
 
 QList<ZCorePlugin *> ZPluginLoader::plugins(const QString &pluginType)
 {
-    auto &plugins = instance()->m_plugins;
-    if (plugins.find(pluginType) != plugins.end()) {
+    const auto &plugins = instance()->m_plugins;
+    if (plugins.contains(pluginType)) {
         return plugins.at(pluginType);
     }
 

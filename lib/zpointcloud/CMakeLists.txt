@@ -1,12 +1,7 @@
 project(ZPointCloud LANGUAGES CXX)
 
 find_package(QT NAMES Qt5 Qt6 COMPONENTS Core REQUIRED)
-find_package(Qt${QT_VERSION_MAJOR} COMPONENTS Core Concurrent Qml 3DCore 3DInput 3DQuick 3DRender 3DQuickRender 3DLogic)
-
-if(NOT TARGET Qt::3DCore)
-    message(WARNING "Qt3D not available, skipping ${PROJECT_NAME}")
-    return()
-endif()
+find_package(Qt${QT_VERSION_MAJOR} COMPONENTS Core Gui REQUIRED)
 
 file(GLOB HEADER_FILES
     ${CMAKE_CURRENT_SOURCE_DIR}/include/${PROJECT_NAME}/*.h)
@@ -14,14 +9,12 @@ file(GLOB HEADER_FILES
 file(GLOB SRC_FILES
     ${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp)
 
-file(GLOB QQMLOBJECTLISTMODEL_SRC_FILES
-    ${CMAKE_CURRENT_SOURCE_DIR}/../../3rdparty/qqmlobjectlistmodel/*.cpp)
-
 add_library(${PROJECT_NAME} SHARED
     ${HEADER_FILES}
     ${SRC_FILES}
-    zpointcloud_resources.qrc
-    ${QQMLOBJECTLISTMODEL_SRC_FILES}) # FIXME
+    ${CMAKE_CURRENT_SOURCE_DIR}/../../3rdparty/qqmlobjectlistmodel/qqmlobjectlistmodel.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/../../3rdparty/qqmlobjectlistmodel/qqmlobjectlistmodel.h
+)
 
 target_compile_definitions(${PROJECT_NAME} PRIVATE Z3D_${PROJECT_NAME}_LIBRARY)
 
@@ -33,15 +26,8 @@ target_include_directories(${PROJECT_NAME}
         $<INSTALL_INTERFACE:include>)
 
 target_link_libraries(${PROJECT_NAME}
-    PRIVATE
-        Qt::Qml
-        Qt::3DCore
-        Qt::3DInput
-        Qt::3DQuick
-        Qt::3DRender
-        Qt::3DQuickRender
-        Qt::3DLogic
     PUBLIC
+        Qt::Gui
         ZCore)
 
 set_target_properties(${PROJECT_NAME} PROPERTIES VERSION ${CMAKE_PROJECT_VERSION})

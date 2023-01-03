@@ -1,41 +1,38 @@
-CMAKE_MINIMUM_REQUIRED(VERSION 3.12)
+cmake_minimum_required(VERSION 3.12)
 
-PROJECT(QtPropertyBrowser)
+project(QtPropertyBrowser
+    LANGUAGES CXX
+    )
 
-OPTION(QtPropertyBrowser_BUILD_EXAMPLES "Build examples" OFF)
-
-##-----------------------------------------------------------------------------
-## Output directories.
-##
-#SET(output_dir ${QtPropertyBrowser_BINARY_DIR}/bin)
-#FOREACH(type LIBRARY RUNTIME ARCHIVE)
-#  IF(NOT DEFINED CMAKE_${type}_OUTPUT_DIRECTORY)
-#    SET(CMAKE_${type}_OUTPUT_DIRECTORY ${output_dir} CACHE INTERNAL "Single output directory for building all libraries.")
-#  ENDIF()
-#ENDFOREACH()
-
-#-----------------------------------------------------------------------------
-# Qt
-#
-find_package(Qt5 COMPONENTS Core Widgets REQUIRED)
-#INCLUDE(${QT_USE_FILE})
+find_package(QT NAMES Qt5 Qt6 COMPONENTS Core REQUIRED)
+find_package(Qt${QT_VERSION_MAJOR} COMPONENTS Core Widgets REQUIRED)
 
 set(CMAKE_AUTOUIC ON)
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
 
-#-----------------------------------------------------------------------------
-# Subdirectories
-#
-ADD_SUBDIRECTORY(src)
-IF(QtPropertyBrowser_BUILD_EXAMPLES)
-  ADD_SUBDIRECTORY(examples)
-ENDIF()
+set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-#-----------------------------------------------------------------------------
-# Generate QtPropertyBrowserConfig file
-#
-CONFIGURE_FILE(UseQtPropertyBrowser.cmake.in
-               ${QtPropertyBrowser_BINARY_DIR}/UseQtPropertyBrowser.cmake COPYONLY)
+file(GLOB HEADER_FILES
+    *.h
+    )
 
-INCLUDE(GenerateQtPropertyBrowserConfig.cmake)
+file(GLOB SRC_FILES
+    *.cpp
+    )
+
+add_library(${PROJECT_NAME}
+    ${HEADER_FILES}
+    ${SRC_FILES}
+    )
+
+target_link_libraries(${PROJECT_NAME}
+    Qt::Core
+    Qt::Widgets
+    )
+
+target_include_directories(${PROJECT_NAME}
+    PUBLIC
+        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
+    )

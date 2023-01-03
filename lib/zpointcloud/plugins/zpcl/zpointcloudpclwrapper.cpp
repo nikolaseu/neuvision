@@ -20,8 +20,8 @@
 
 #include "zpointcloudpclwrapper.h"
 
-#include "ZCore/zlogging.h"
-#include "ZPointCloud/zpointfield.h"
+#include <ZCore/zlogging.h>
+#include <ZPointCloud/zpointfield.h>
 
 #include <pcl/PCLPointCloud2.h>
 #include <pcl/PCLPointField.h>
@@ -75,7 +75,7 @@ ZPointField *fromPclPointField(const pcl::PCLPointField &field)
 
 } // anonymous namespace
 
-ZPointCloudUniquePtr ZPointCloudPCLWrapper::create(pcl::PCLPointCloud2 *pointCloud)
+ZPointCloudUniquePtr ZPointCloudPCLWrapper::create(std::unique_ptr<pcl::PCLPointCloud2> pointCloud)
 {
     std::vector<ZPointField *> fields;
     fields.reserve(pointCloud->fields.size());
@@ -83,10 +83,10 @@ ZPointCloudUniquePtr ZPointCloudPCLWrapper::create(pcl::PCLPointCloud2 *pointClo
         fields.push_back(fromPclPointField(pf));
     }
 
-    return std::make_unique<ZPointCloudPCLWrapper>(pointCloud, fields);
+    return std::make_unique<ZPointCloudPCLWrapper>(std::move(pointCloud), fields);
 }
 
-ZPointCloudPCLWrapper::ZPointCloudPCLWrapper(pcl::PCLPointCloud2 *pointCloud,
+ZPointCloudPCLWrapper::ZPointCloudPCLWrapper(std::unique_ptr<pcl::PCLPointCloud2> pointCloud,
                                              const std::vector<ZPointField *> &fields,
                                              QObject *parent)
     : ZPointCloud(pointCloud->height,
@@ -95,16 +95,15 @@ ZPointCloudPCLWrapper::ZPointCloudPCLWrapper(pcl::PCLPointCloud2 *pointCloud,
                   pointCloud->row_step,
                   fields,
                   parent)
-    , m_pointCloud(pointCloud)
+    , m_pointCloud {std::move(pointCloud)}
 {
     zDebug() << "creating point cloud with" << width() * height() << "points,"
-             << "size:" << vertexData().size() << "bytes";
+             << "size:" << ZPointCloudPCLWrapper::vertexData().size() << "bytes";
 }
 
 ZPointCloudPCLWrapper::~ZPointCloudPCLWrapper()
 {
     zDebug() << "destroying" << this;
-    delete m_pointCloud;
 }
 
 QByteArray ZPointCloudPCLWrapper::vertexData() const

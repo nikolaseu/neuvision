@@ -1,12 +1,19 @@
-cmake_minimum_required(VERSION 3.12)
+cmake_minimum_required(VERSION 3.19)
 
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 
-include(cmake/MunkeiVersionFromGit.cmake)
-version_from_git(
-    LOG ON
-    TIMESTAMP "%Y%m%d%H%M%S"
-)
+if(DEFINED ENV{CI})
+    message(STATUS "Obtaining version from git tag...")
+    include(cmake/MunkeiVersionFromGit.cmake)
+    version_from_git(
+        LOG ON
+        TIMESTAMP "%Y%m%d%H%M%S"
+    )
+else()
+    set(VERSION 0.2.0)
+    set(SEMVER "${VERSION}-SNAPSHOT")
+    message(STATUS "Hardcoded version ${SEMVER}")
+endif()
 
 project(NEUVision
     LANGUAGES CXX
@@ -36,7 +43,7 @@ endif()
 add_compile_definitions(_USE_MATH_DEFINES)
 
 # disable all the deprecated APIs in Qt <= 6
-add_compile_definitions(QT_DISABLE_DEPRECATED_BEFORE=0x060000)
+add_compile_definitions(QT_DISABLE_DEPRECATED_BEFORE=0x060400)
 
 # Output directories
 set(Z3D_OUTPUT_DIRECTORY ${NEUVision_BINARY_DIR}/bin)

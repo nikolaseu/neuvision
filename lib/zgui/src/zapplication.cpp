@@ -53,13 +53,6 @@ ZApplication::ZApplication(int &argc, char **argv)
 
     zInfo() << "starting" << applicationName()
             << "version" << applicationVersion();
-
-    QApplication::setAttribute(Qt::AA_EnableHighDpiScaling, true);
-    QApplication::setAttribute(Qt::AA_UseDesktopOpenGL, true);
-
-#if (QT_VERSION >= QT_VERSION_CHECK(5, 14, 0))
-    QApplication::setHighDpiScaleFactorRoundingPolicy(Qt::HighDpiScaleFactorRoundingPolicy::PassThrough);
-#endif
 }
 
 void ZApplication::loadPlugins()
@@ -70,12 +63,12 @@ void ZApplication::loadPlugins()
 QSplashScreen * ZApplication::showSplashScreen()
 {
     if (!m_splash) {
-        QPixmap pixmap(":/splash");
+        QPixmap pixmap(":/splash.png");
         m_splash = new QSplashScreen(pixmap);
         m_splash->show();
 
         connect(ZPluginLoader::instance(), &ZPluginLoader::progressChanged,
-                [&](float progress, const QString &message) {
+                m_splash, [&](float progress, const QString &message) {
                     zDebug() << "progress:" << progress << "message:" << message;
                     m_splash->showMessage(message);
                     processEvents();

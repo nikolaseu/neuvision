@@ -19,13 +19,14 @@
 
 #pragma once
 
+#include "ZPointCloud/zpointcloud_fwd.h"
 #include "ZPointCloud/zpointcloud_global.h"
 
-#include <QAbstractListModel>
+#include <QtCore/QAbstractListModel>
 
 namespace Z3D
 {
-class ZPointCloudListItem;
+
 class ZPointCloudListModelPrivate;
 
 class Z3D_ZPOINTCLOUD_SHARED_EXPORT ZPointCloudListModel : public QAbstractListModel
@@ -53,7 +54,7 @@ public:
     QHash<int, QByteArray> roleNames() const override;
 
 private:
-    ZPointCloudListModelPrivate *m_p;
+    ZPointCloudListModelPrivate *const m_p;
 };
 
 } // namespace Z3D

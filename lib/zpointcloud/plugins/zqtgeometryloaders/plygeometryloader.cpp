@@ -40,6 +40,7 @@
 #include "plygeometryloader.h"
 
 #include <QtCore/QDataStream>
+#include <QtCore/QIODevice>
 #include <QtCore/QLoggingCategory>
 
 QT_BEGIN_NAMESPACE

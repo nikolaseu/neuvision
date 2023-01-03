@@ -47,7 +47,7 @@ ZStereoSystemImpl::ZStereoSystemImpl(ZMultiCameraCalibrationPtr stereoCalibratio
 
     m_imageSize = m_calibration->imageSize[0];
 
-    QtConcurrent::run(std::bind(&Z3D::ZStereoSystemImpl::stereoRectify, this, 0));
+    auto _ = QtConcurrent::run(std::bind(&Z3D::ZStereoSystemImpl::stereoRectify, this, 0));
 }
 
 ZStereoSystemImpl::~ZStereoSystemImpl()

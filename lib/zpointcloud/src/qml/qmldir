@@ -1,4 +1,0 @@
-module Z3D.ZPointCloud
-BasicCamera 1.0 BasicCamera.qml
-DefaultCameraController 1.0 DefaultCameraController.qml
-PointCloudEntity 1.0 PointCloudEntity.qml

@@ -22,8 +22,8 @@
 #include "ZPointCloud/zpointcloud_fwd.h"
 #include "ZPointCloud/zpointcloud_global.h"
 
-#include <QObject>
-#include <QMatrix4x4>
+#include <QtCore/QObject>
+#include <QtGui/QMatrix4x4>
 
 namespace Z3D
 {

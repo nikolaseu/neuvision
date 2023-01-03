@@ -22,6 +22,8 @@
 
 #include "zqtgeometryloaders.h"
 
+#include <ZPointCloud/zpointcloud.h>
+
 namespace Z3D
 {
 
@@ -29,15 +31,6 @@ ZQtGeometryLoadersPlugin::ZQtGeometryLoadersPlugin(QObject *parent)
     : QObject(parent)
 {
 
-}
-
-std::vector<ZPointCloudPluginInterface::Formats> ZQtGeometryLoadersPlugin::formats() const
-{
-    return {
-        Formats::STL,
-        Formats::OBJ,
-        Formats::PLY
-    };
 }
 
 ZPointCloudUniquePtr ZQtGeometryLoadersPlugin::loadPointCloud(const QString &filename) const

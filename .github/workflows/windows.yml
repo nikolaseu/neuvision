@@ -7,26 +7,31 @@ on:
 
 jobs:
   build:
-    runs-on: windows-latest
+    runs-on: windows-2022
+    env:
+      VCPKG_DEFAULT_TRIPLET: x64-windows
+      VCPKG_INSTALLED_DIR: ${{ github.workspace }}/vcpkg/installed
     steps:
     - uses: actions/checkout@v1
-    - name: Install dependencies
-      uses: lukka/run-vcpkg@v6
-      with:
-        vcpkgArguments: opencv
-        vcpkgGitCommitId: 030cfaa24de9ea1bbf0a4d9c615ce7312ba77af1
-        vcpkgDirectory: C:/Tools/vcpkg
-        vcpkgTriplet: x64-windows
-    - name: Install Qt
-      uses: jurplel/install-qt-action@v2
-      with:
-        version: '5.15.2'
+    - name: Setup MSVC developer command prompt
+      uses: ilammy/msvc-dev-cmd@v1
     - name: Get latest CMake and Ninja
       # Using 'latest' branch, the most recent CMake and ninja are installed.
       uses: lukka/get-cmake@latest
-    - name: Setup MSVC developer command prompt
-      uses: ilammy/msvc-dev-cmd@v1
+    - name: Install dependencies (via vcpkg)
+      uses: lukka/run-vcpkg@v10
+      with:
+        vcpkgGitCommitId: 14e7bb4ae24616ec54ff6b2f6ef4e8659434ea44
+        runVcpkgInstall: true
+    - name: Install Qt
+      uses: jurplel/install-qt-action@v3
+      with:
+        version: '6.4.1'
+        modules: 'qt3d'
+        cache: 'true'
     - name: Build
+      env:
+        CMAKE_PREFIX_PATH: ${{ env.VCPKG_INSTALLED_DIR }}/${{ env.VCPKG_DEFAULT_TRIPLET }}
       run: |
         ./scripts/build_win.bat
 #    - name: Test

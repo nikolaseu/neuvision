@@ -4,7 +4,7 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${Z3D_OUTPUT_DIRECTORY}/plugins/cameraacquisi
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${Z3D_OUTPUT_DIRECTORY}/plugins/cameraacquisition)
 
 find_package(QT NAMES Qt5 Qt6 COMPONENTS Core REQUIRED)
-find_package(Qt${QT_VERSION_MAJOR} COMPONENTS Core Multimedia MultimediaWidgets)
+find_package(Qt${QT_VERSION_MAJOR} COMPONENTS Core Multimedia)
 find_package(OpenCV REQUIRED)
 
 if(NOT TARGET Qt::Multimedia)
@@ -31,7 +31,6 @@ target_link_libraries(${PROJECT_NAME}
     PRIVATE
         Qt::Core
         Qt::Multimedia
-        Qt::MultimediaWidgets
         opencv_core
         ZCameraAcquisition
 )

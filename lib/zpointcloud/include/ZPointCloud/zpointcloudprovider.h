@@ -22,21 +22,13 @@
 #include "ZPointCloud/zpointcloud_fwd.h"
 #include "ZPointCloud/zpointcloud_global.h"
 
-#include <QMap>
-
-//! TODO: This is ugly, find a better way to do this
-#define Z3D_ZPOINTCLOUD_INIT() \
-    Z3D::ZPointCloudProvider::registerMetaTypes(); \
-    Z3D::ZPointCloudProvider::loadPlugins()
-
-//! TODO: This is ugly, find a better way to do this
-#define Z3D_ZPOINTCLOUD_INIT_QMLENGINE(engine) \
-    engine.addImportPath("qrc:/")
+#include <unordered_map>
+#include <vector>
 
 namespace Z3D
 {
 
-class ZPointCloudPluginInterface;
+class ZCorePlugin;
 
 class Z3D_ZPOINTCLOUD_SHARED_EXPORT ZPointCloudProvider
 {
@@ -47,12 +39,14 @@ public:
     static void loadPlugins();
     static void unloadPlugins();
 
+    static std::vector<QString> formats();
     static ZPointCloudUniquePtr loadPointCloud(const QString &fileName);
 
 private:
-    explicit ZPointCloudProvider() {}
+    explicit ZPointCloudProvider() = default;
 
-    static QMap< QString, ZPointCloudPluginInterface *> m_plugins;
+    // map extension => plugins
+    static std::unordered_map<QString, std::vector<ZCorePlugin *>> m_pluginLoaders;
 };
 
 } // namespace Z3D

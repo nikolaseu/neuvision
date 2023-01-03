@@ -29,7 +29,8 @@ set_target_properties(${PROJECT_NAME} PROPERTIES WINDOWS_EXPORT_ALL_SYMBOLS ON)
 target_link_libraries(${PROJECT_NAME}
     PUBLIC # it's a plugin, so public is fine, and makes it easier for tests (no need to specify all dependencies)
         Qt::Core
-        Qt::Quick
         opencv_core
         ZStructuredLight
+    PRIVATE
+        Qt::Quick # Qt 6.5 fails to configure if this is public, CMake says Target "Qt6::QmlIntegration" not found?
 )

@@ -9,13 +9,12 @@ file(GLOB HEADER_FILES
 file(GLOB SRC_FILES
     ${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp)
 
-file(GLOB QQMLOBJECTLISTMODEL_SRC_FILES
-    ${CMAKE_CURRENT_SOURCE_DIR}/../../3rdparty/qqmlobjectlistmodel/*.cpp)
-
 add_library(${PROJECT_NAME} SHARED
     ${HEADER_FILES}
     ${SRC_FILES}
-    ${QQMLOBJECTLISTMODEL_SRC_FILES}) # FIXME
+    ${CMAKE_CURRENT_SOURCE_DIR}/../../3rdparty/qqmlobjectlistmodel/qqmlobjectlistmodel.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/../../3rdparty/qqmlobjectlistmodel/qqmlobjectlistmodel.h
+)
 
 target_compile_definitions(${PROJECT_NAME} PRIVATE Z3D_${PROJECT_NAME}_LIBRARY)
 

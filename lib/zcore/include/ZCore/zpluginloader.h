@@ -24,6 +24,8 @@
 
 #include <QtCore/QObject>
 
+#include <unordered_map>
+
 namespace Z3D
 {
 
@@ -34,7 +36,7 @@ class Z3D_CORE_SHARED_EXPORT ZPluginLoader : public QObject
 public:
     static ZPluginLoader *instance();
 
-    void loadPlugins(QString folder = QString());
+    void loadPlugins(const QString &folder = QString());
     void unloadPlugins();
 
     static QList<ZCorePlugin *> plugins(const QString &pluginType);
@@ -49,7 +51,7 @@ private:
 
     static ZPluginLoader *m_instance;
 
-    std::map<QString, QList<ZCorePlugin *>> m_plugins;
+    std::unordered_map<QString, QList<ZCorePlugin *>> m_plugins;
 };
 
 } // namespace Z3D

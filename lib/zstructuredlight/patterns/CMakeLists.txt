@@ -1,6 +1,6 @@
-file(GLOB subdirs RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/*)
+file(GLOB subdirs RELATIVE ${CMAKE_CURRENT_LIST_DIR} *)
 foreach(subdir ${subdirs})
-    if(IS_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/${subdir})
+    if(EXISTS ${CMAKE_CURRENT_LIST_DIR}/${subdir}/CMakeLists.txt)
         message("Adding pattern projection plugin: " ${subdir})
         add_subdirectory(${subdir})
     endif()

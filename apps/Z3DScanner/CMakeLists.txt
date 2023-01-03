@@ -29,6 +29,7 @@ target_link_libraries(${PROJECT_NAME}
         ZGui
         ZCameraCalibrator
         ZStructuredLight
+        ZPointCloudQml
 )
 
 set_target_properties(${PROJECT_NAME} PROPERTIES VERSION ${CMAKE_PROJECT_VERSION})

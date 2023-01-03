@@ -31,36 +31,26 @@
 #include "ZStructuredLight/zpatternprojectionprovider.h"
 #include "ZStructuredLight/zstructuredlightsystemprovider.h"
 
-#if defined(Q_OS_MACOS)
-#include "ZGui/zosxutils.h" // just to hide title bar in OSX
-#include <QWindow>
-#endif
-
 #include <QDir>
 #include <QQmlApplicationEngine>
 #include <QQmlContext>
 #include <QQuickStyle>
 #include <QSplashScreen>
-#include <QSurfaceFormat>
 
 Z3D_LOGGING_CATEGORY_FROM_FILE("z3d.apps.zscanner", QtInfoMsg)
 
 int main(int argc, char* argv[])
 {
-    QSurfaceFormat glFormat;
-    glFormat.setVersion(3, 3);
-    glFormat.setProfile(QSurfaceFormat::CoreProfile);
-    QSurfaceFormat::setDefaultFormat(glFormat);
-
     /// to print out diagnostic information about each plugin it (Qt) tries to load
     //qputenv("QT_DEBUG_PLUGINS", "1");
+    //qputenv("QSG_INFO", "1");
+    qputenv("QT3D_RENDERER", "rhi"); // should be the default, but set anyways
 
-    ///
     Z3D::ZApplication app(argc, argv);
 
     Z3D::ZApplicationStyle::applyStyle(Z3D::ZApplicationStyle::DarkStyle);
 
-    zDebug() << "available styles:" << QQuickStyle::availableStyles().join(", ");
+//    zDebug() << "available styles:" << QQuickStyle::availableStyles().join(", ");
     QQuickStyle::setStyle("Universal");
 //    QQuickStyle::setStyle("Imagine");
 
@@ -87,6 +77,10 @@ int main(int argc, char* argv[])
         Z3D::ZApplication::processEvents();
         Z3D::ZCalibrationPatternFinderProvider::loadPlugins();
 
+        splash.showMessage("Loading point cloud plugins...");
+        Z3D::ZApplication::processEvents();
+        Z3D::ZPointCloudProvider::loadPlugins();
+
         splash.showMessage("Loading structured light system plugins...");
         Z3D::ZApplication::processEvents();
         Z3D::ZStructuredLightSystemProvider::loadPlugins();
@@ -99,8 +93,7 @@ int main(int argc, char* argv[])
         Z3D::ZApplication::processEvents();
 
         //! TODO: This is ugly, find a better way to do this
-        Z3D_ZPOINTCLOUD_INIT();
-        Z3D_ZPOINTCLOUD_INIT_QMLENGINE(engine);
+        engine.addImportPath(":/z3d.neuvision/");
 
         /// Load config
         QDir configDir = QDir::current();
@@ -127,21 +120,12 @@ int main(int argc, char* argv[])
         splash.showMessage("Loading main window...");
         Z3D::ZApplication::processEvents();
 
+        //! FIXME create Qml module to use auto registration / qt_add_qml_module
         qmlRegisterUncreatableType<Z3D::ZSettingsItem>("Z3D.ZSettingsItem", 1, 0, "ZSettingsItem", "ZSettingsItem cannot be created, must be obtained from an object with settings");
         qRegisterMetaType<Z3D::ZSettingsItemModel*>("Z3D::ZSettingsItemModel*");
 
         engine.rootContext()->setContextProperty("scanner", QVariant::fromValue(new ZScannerQML(structuredLightSystem)));
         engine.load(QUrl(QStringLiteral("qrc:/qml/main.qml")));
-
-#if defined(Q_OS_MACOS)
-        // just to hide title bar in OSX
-        for (auto &obj : engine.rootObjects()) {
-            if (auto win = qobject_cast<QWindow*>(obj)) {
-                Z3D::ZOSXUtils::hideTitleBar(win->winId());
-                break;
-            }
-        }
-#endif
 
         splash.hide();
 

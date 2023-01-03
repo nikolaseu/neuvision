@@ -1,18 +1,19 @@
-import Qt3D.Core 2.12 as Q3D
-import Qt3D.Extras 2.12
-import Qt3D.Input 2.12
-import Qt3D.Render 2.12
+import Qt3D.Core 2.15 as Q3D
+import Qt3D.Extras 2.15
+import Qt3D.Input 2.0
+import Qt3D.Render 2.15
 import Qt3D.Logic 2.12 // for FrameAction
 
-import QtQuick 2.12
-import QtQuick.Controls 2.12
-import QtQuick.Layouts 1.12
-import QtQuick.Scene3D 2.12
+import QtCore
+import QtQuick
+import QtQuick.Controls
+import QtQuick.Dialogs
+import QtQuick.Layouts
+import QtQuick.Scene3D
 
-import QtGraphicalEffects 1.12
+import Qt5Compat.GraphicalEffects
 
-import Qt.labs.platform 1.0
-import Qt.labs.settings 1.0
+import Qt.labs.settings 1.0 // FIXME replace by QtCore available in Qt 6.5+
 
 import Z3D.ZPointCloud 1.0 as ZPointCloud
 import Z3D.ZPointCloudViewer 1.0
@@ -81,10 +82,11 @@ ApplicationWindow {
     FileDialog {
         id: fileDialog
         title: qsTr("Open a point cloud or project")
-//        folder: shortcuts.home
+        currentFolder: StandardPaths.standardLocations(StandardPaths.HomeLocation)[0]
         nameFilters: ["PLY files (*.ply)", "OBJ files (*.obj)", "STL files (*.stl)", "PCD files (*.pcd)", "Meshlab project (*.mlp)" ]
+        fileMode: FileDialog.OpenFile
         onAccepted: function() {
-            controller.loadFile(fileDialog.file);
+            controller.loadFile(fileDialog.selectedFile);
         }
     }
 
@@ -436,7 +438,7 @@ ApplicationWindow {
                     property color color: "#666"
 
                     onClicked: function() {
-                        colorDialog.color = color
+                        colorDialog.selectedColor = color;
                         colorDialog.open();
                     }
 
@@ -454,7 +456,7 @@ ApplicationWindow {
                         id: colorDialog
                         modality: Qt.ApplicationModal
                         onAccepted: function() {
-                            colorChooser.color = colorDialog.color;
+                            colorChooser.color = colorDialog.selectedColor;
                         }
                     }
                 }
@@ -525,15 +527,6 @@ ApplicationWindow {
                 }
             }
         }
-    }
-
-    MouseArea {
-        id: mouseAreaForAvoidingProblemsWithMacTitlebar
-        visible: Qt.platform.os === "osx"
-        anchors.top: parent.top
-        anchors.left: parent.left
-        anchors.right: parent.right
-        height: 24
     }
 
     ColumnLayout {
@@ -639,7 +632,7 @@ ApplicationWindow {
                         anchors.fill: parent
                         hoverEnabled: true
                         onClicked: function() {
-                            controller.loadFile(modelData)
+                            controller.loadFile(modelData);
                         }
                     }
                 }

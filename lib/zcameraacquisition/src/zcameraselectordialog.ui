@@ -69,7 +69,7 @@
        <widget class="QLabel" name="titleLabel">
         <property name="styleSheet">
          <string notr="true">QLabel {
-	font: 25 24pt &quot;Segoe UI&quot;;
+	font: 25 24pt;
 	color: white;
 }</string>
         </property>

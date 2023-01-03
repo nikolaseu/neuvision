@@ -24,8 +24,11 @@
 
 #include "ZGui/zwidget.h"
 
-#include <QtProperty>
-#include <QtStringPropertyManager>
+#include <qtpropertybrowser.h>
+#include <qtpropertymanager.h>
+#include <qtgroupboxpropertybrowser.h>
+
+#include <QtCore/QMap>
 
 namespace Z3D
 {
